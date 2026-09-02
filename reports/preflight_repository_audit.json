@@ -6,17 +6,16 @@
     "branch": "cursor/waike-learning-os-pr1-foundation-001"
   },
   "waike_research_ops": {
-    "blueprint": "8eb2827dc58ffa391842da1bfb1ee665c25a31a7",
-    "observed": "8eb2827dc58ffa391842da1bfb1ee665c25a31a7",
-    "match": true
+    "blueprint_main_at_packet_start": "8eb2827dc58ffa391842da1bfb1ee665c25a31a7",
+    "observed_main_at_packet_start": "8eb2827dc58ffa391842da1bfb1ee665c25a31a7",
+    "match_blueprint": true,
+    "pinned_for_pr1": "ab6f75518063ab06c2f9b9f33de2978610c5aa52",
+    "taxonomy_pr": "https://github.com/gunnchOS3k/waike-research-ops/pull/56",
+    "note": "PIN updated to taxonomy export branch commit when available"
   },
   "gunnchos_device_os": {
     "blueprint": "28562a8456207540c205a1c8a6434a491b0a4771",
     "observed": "28562a8456207540c205a1c8a6434a491b0a4771",
     "match": true
-  },
-  "notes": [
-    "Platform repository created empty; implementation lands via PR 1.",
-    "Taxonomy pin reads curriculum/taxonomy/eighteen_tracks.json; export path supported when present."
-  ]
+  }
 }
