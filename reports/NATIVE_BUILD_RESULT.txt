@@ -1,0 +1,8 @@
+NATIVE_BUILD_OK
+host: darwin arm64
+cargo test: PASS (5 lib tests)
+tauri build: PASS
+bundles:
+- WAIKE Learning OS.app
+- WAIKE Learning OS_0.1.0_aarch64.dmg
+Note: CI Linux native-build job may still be blocked without webkitgtk; continue-on-error records that honestly.
