@@ -1,5 +1,5 @@
 {
-  "generated_utc": "2026-09-02T19:39:12Z",
+  "generated_utc": "2026-09-02T19:44:38Z",
   "status": "AUTOMATED_PIPELINE_PASS",
   "checks": {
     "registry_18": true,
@@ -7,14 +7,37 @@
     "python_tests": true,
     "rust_tests": true,
     "frontend_tests": true,
-    "docs": true
+    "docs": true,
+    "security_negatives": true,
+    "deterministic_learner_pack": false
   },
   "test_counts": {
-    "python": "29 passed, 1 warning in 1.95s",
-    "rust": "see cargo output"
+    "python": "29 passed",
+    "security": "10 passed",
+    "rust": "5 passed",
+    "frontend": "7 passed",
+    "waike_make_test": "43 passed"
   },
-  "package_hash": "eeb78062fa847cff0f9c91440cb8d364caa122eabe6b763753e7d02fdcc1d80e",
+  "package_hash": "7aa0f8f80608510edabe03d046d27075d3ee459b12673f4e074f6e8bb680f3a4",
+  "instructor_blob_sha256": "543b0465f932e8ac63252b98e329f8badc3dd9e17e583ddd0656350dd50bdb2d",
+  "deterministic_hash_pair": [
+    "48331abd4e8db415d56b2f8dc82169e965c0486cc19194fb9680dddbc3da5c0f",
+    "7aa0f8f80608510edabe03d046d27075d3ee459b12673f4e074f6e8bb680f3a4"
+  ],
   "blocked": [],
   "pinned_waike_commit": "531f194e86b1cb788568de4f7e447316047f80a2",
-  "taxonomy_pr": "https://github.com/gunnchOS3k/waike-research-ops/pull/56"
+  "taxonomy_pr": "https://github.com/gunnchOS3k/waike-research-ops/pull/56",
+  "platform_pr": "https://github.com/gunnchOS3k/gunnchos-waike-learning-platform/pull/1",
+  "platform_branch": "cursor/waike-learning-os-pr1-foundation-001",
+  "claim": "digitally implemented and automatically tested for PR 1 scope",
+  "main_shas": {
+    "waike-research-ops": "8eb2827dc58ffa391842da1bfb1ee665c25a31a7",
+    "gunnchos-device-os": "28562a8456207540c205a1c8a6434a491b0a4771",
+    "gunnchos-waike-learning-platform": "187c662a83c0ca2dff97b2c7aaecbde5ba6e4da8"
+  },
+  "blueprint_shas": {
+    "waike-research-ops": "8eb2827dc58ffa391842da1bfb1ee665c25a31a7",
+    "gunnchos-device-os": "28562a8456207540c205a1c8a6434a491b0a4771",
+    "gunnchos-waike-learning-platform": null
+  }
 }

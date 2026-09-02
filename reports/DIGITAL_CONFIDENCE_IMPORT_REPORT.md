@@ -4,8 +4,8 @@
 - source_commit: `531f194e86b1cb788568de4f7e447316047f80a2`
 - learner files: **196**
 - instructor files: **37**
-- learner zip sha256: `e19962f30e3495c4708a0fb6949b2b997e2d90cf29eab8d342dbb2146f3aa986`
-- instructor blob sha256: `5349e6c2d2e9693485a8c1b05f5768795edf7a90b2b0a99ae5419bd07766037b`
+- learner zip sha256: `7aa0f8f80608510edabe03d046d27075d3ee459b12673f4e074f6e8bb680f3a4`
+- instructor blob sha256: `ac8de75056328a61809f3654f282fea60ad39a03860124daf7546f07e318eeac`
 - lessons indexed: 8
 
 ## Lessons
