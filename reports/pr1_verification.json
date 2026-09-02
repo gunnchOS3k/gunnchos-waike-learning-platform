@@ -1,5 +1,5 @@
 {
-  "generated_utc": "2026-09-02T19:44:38Z",
+  "generated_utc": "2026-09-02T19:46:31Z",
   "status": "AUTOMATED_PIPELINE_PASS",
   "checks": {
     "registry_18": true,
@@ -9,20 +9,20 @@
     "frontend_tests": true,
     "docs": true,
     "security_negatives": true,
-    "deterministic_learner_pack": false
+    "deterministic_learner_pack": true
   },
   "test_counts": {
-    "python": "29 passed",
+    "python": "30 passed",
     "security": "10 passed",
     "rust": "5 passed",
     "frontend": "7 passed",
     "waike_make_test": "43 passed"
   },
-  "package_hash": "7aa0f8f80608510edabe03d046d27075d3ee459b12673f4e074f6e8bb680f3a4",
-  "instructor_blob_sha256": "543b0465f932e8ac63252b98e329f8badc3dd9e17e583ddd0656350dd50bdb2d",
+  "package_hash": "306be1665080f7c132c8bf4ccbf50cdfff5fee54de01057d639789c5ca33fb1f",
+  "instructor_blob_sha256": "e7e0947042aa37c7d68cd5aafd6a737f95e96f364914dbd25c7b7df2cc2a2eb1",
   "deterministic_hash_pair": [
-    "48331abd4e8db415d56b2f8dc82169e965c0486cc19194fb9680dddbc3da5c0f",
-    "7aa0f8f80608510edabe03d046d27075d3ee459b12673f4e074f6e8bb680f3a4"
+    "306be1665080f7c132c8bf4ccbf50cdfff5fee54de01057d639789c5ca33fb1f",
+    "306be1665080f7c132c8bf4ccbf50cdfff5fee54de01057d639789c5ca33fb1f"
   ],
   "blocked": [],
   "pinned_waike_commit": "531f194e86b1cb788568de4f7e447316047f80a2",

@@ -11,7 +11,7 @@ from typing import Any, Iterable
 
 from . import crypto
 from .compat import DEFAULT_COMPAT
-from .jsonutil import dump_canonical, dumps_canonical, source_date_epoch_utc
+from .jsonutil import dump_canonical, dumps_canonical, source_date_epoch_utc, zip_write_file
 from .registry import (
     get_track,
     load_pin,
@@ -243,13 +243,13 @@ def compile_module(
     dump_canonical(out / "learner_pack.signature.json", sig_meta)
     (out / "learner_pack.manifest.canonical.json").write_bytes(payload)
 
-    # Zip learner pack
+    # Zip learner pack (deterministic ZipInfo timestamps under SOURCE_DATE_EPOCH)
     zip_path = out / f"{module_id}.learner.zip"
     with zipfile.ZipFile(zip_path, "w", compression=zipfile.ZIP_DEFLATED) as zf:
-        for e in learner_entries:
-            zf.write(learner_root / e["path"], arcname=e["path"])
-        zf.write(out / "learner_pack_manifest.json", arcname="learner_pack_manifest.json")
-        zf.write(out / "learner_pack.signature.json", arcname="learner_pack.signature.json")
+        for e in sorted(learner_entries, key=lambda x: x["path"]):
+            zip_write_file(zf, learner_root / e["path"], e["path"])
+        zip_write_file(zf, out / "learner_pack_manifest.json", "learner_pack_manifest.json")
+        zip_write_file(zf, out / "learner_pack.signature.json", "learner_pack.signature.json")
 
     # Instructor pack: encrypt tree as single blob
     instructor_manifest = {
@@ -266,13 +266,17 @@ def compile_module(
     # Build instructor zip bytes then encrypt
     instructor_zip = out / f"{module_id}.instructor.plain.zip"
     with zipfile.ZipFile(instructor_zip, "w", compression=zipfile.ZIP_DEFLATED) as zf:
-        for e in instructor_entries:
-            zf.write(instructor_root / e["path"], arcname=e["path"])
+        for e in sorted(instructor_entries, key=lambda x: x["path"]):
+            zip_write_file(zf, instructor_root / e["path"], e["path"])
         dump_canonical(out / "instructor_pack_manifest.inner.json", instructor_manifest)
-        zf.write(out / "instructor_pack_manifest.inner.json", arcname="instructor_pack_manifest.json")
+        zip_write_file(zf, out / "instructor_pack_manifest.inner.json", "instructor_pack_manifest.json")
 
     plain = instructor_zip.read_bytes()
-    nonce, ciphertext = crypto.encrypt_aes_gcm(crypto.load_aes_key(aes_path), plain)
+    nonce, ciphertext = crypto.encrypt_aes_gcm(
+        crypto.load_aes_key(aes_path),
+        plain,
+        deterministic_label=f"{module_id}:{pin.get('pinned_commit')}",
+    )
     enc_path = out / f"{module_id}.instructor.aes256gcm"
     enc_path.write_bytes(ciphertext)
     instructor_manifest["encryption"] = {

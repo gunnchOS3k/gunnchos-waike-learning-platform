@@ -72,10 +72,21 @@ def verify_signature(verify_key: VerifyKey, payload: bytes, meta: dict) -> Compa
     return CompatDecision(True)
 
 
-def encrypt_aes_gcm(key: bytes, plaintext: bytes, associated_data: bytes | None = None) -> tuple[bytes, bytes]:
+def encrypt_aes_gcm(
+    key: bytes,
+    plaintext: bytes,
+    associated_data: bytes | None = None,
+    *,
+    deterministic_label: str | None = None,
+) -> tuple[bytes, bytes]:
     if len(key) != 32:
         raise ValueError("AES-256 key must be 32 bytes")
-    nonce = os.urandom(12)
+    # Reproducible ciphertext only when SOURCE_DATE_EPOCH + label are provided (test/CI builds).
+    epoch = os.environ.get("SOURCE_DATE_EPOCH")
+    if epoch is not None and deterministic_label:
+        nonce = hashlib.sha256(f"waike-instructor-nonce:{deterministic_label}:{epoch}".encode()).digest()[:12]
+    else:
+        nonce = os.urandom(12)
     ct = AESGCM(key).encrypt(nonce, plaintext, associated_data)
     return nonce, ct
 
