@@ -34,3 +34,4 @@ test-results/
 pack_out/
 /tmp/
 curriculum/imports/*/build/
+reports/verify_pr1_run.log
