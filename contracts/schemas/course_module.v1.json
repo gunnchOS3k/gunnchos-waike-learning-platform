@@ -1,0 +1,90 @@
+{
+  "$id": "https://waike.learning/contracts/course_module.v1.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "description": {
+      "type": "string"
+    },
+    "lessons": {
+      "items": {
+        "additionalProperties": false,
+        "properties": {
+          "lesson_id": {
+            "type": "string"
+          },
+          "order": {
+            "type": "integer"
+          },
+          "path": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "week": {
+            "type": "integer"
+          }
+        },
+        "required": [
+          "lesson_id",
+          "title",
+          "path"
+        ],
+        "type": "object"
+      },
+      "type": "array"
+    },
+    "materials": {
+      "items": {
+        "additionalProperties": false,
+        "properties": {
+          "media_type": {
+            "type": "string"
+          },
+          "path": {
+            "type": "string"
+          },
+          "role": {
+            "enum": [
+              "learner",
+              "instructor"
+            ]
+          },
+          "sha256": {
+            "pattern": "^[a-f0-9]{64}$",
+            "type": "string"
+          }
+        },
+        "required": [
+          "path",
+          "sha256",
+          "role"
+        ],
+        "type": "object"
+      },
+      "type": "array"
+    },
+    "module_id": {
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "1.0.0"
+    },
+    "title": {
+      "type": "string"
+    },
+    "track_id": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "schema_version",
+    "module_id",
+    "title",
+    "track_id",
+    "lessons"
+  ],
+  "title": "CourseModule",
+  "type": "object"
+}

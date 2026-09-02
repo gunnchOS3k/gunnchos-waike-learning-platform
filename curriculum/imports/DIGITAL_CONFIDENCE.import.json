@@ -1,0 +1,51 @@
+{
+  "module_id": "DIGITAL_CONFIDENCE",
+  "source_commit": "e97e74fc9bfb44b1cdc26b272dc4848264f15fe0",
+  "learner_globs": [
+    "programs/digital_confidence.md",
+    "programs/digital_confidence_to_operator.md",
+    "lessons/by_course/digital_confidence/**",
+    "student_workbooks/by_course/digital_confidence/**",
+    "labs/by_course/digital_confidence/**",
+    "assignments/by_course/digital_confidence/**",
+    "assignment_bodies/by_course/digital_confidence/**",
+    "syllabi/digital_confidence/**",
+    "results/student_packets/digital_confidence_student_packet.md",
+    "results/syllabi/digital_confidence_syllabus.md",
+    "results/assignment_packs/digital_confidence_assignments.md",
+    "results/group_project_packs/digital_confidence_group_project.md",
+    "results/deep_student_packets/digital_confidence_student_packet.md",
+    "results/deep_course_packets/digital_confidence_deep_course_packet.md",
+    "gunnchai_tutor_cards/by_course/digital_confidence.md",
+    "portfolio/by_track/digital_confidence.md",
+    "capstones/by_track/digital_confidence.md",
+    "group_projects/by_course/digital_confidence.yaml",
+    "group_projects/by_course/digital_confidence/**",
+    "case_study_applications/by_course/digital_confidence/**",
+    "assessment/by_course/digital_confidence/**",
+    "industry_alignment/by_course/digital_confidence/**"
+  ],
+  "instructor_only_globs": [
+    "instructor_solution_guides/by_course/digital_confidence/**",
+    "results/instructor_packets/digital_confidence_instructor_packet.md",
+    "results/deep_instructor_packets/digital_confidence_instructor_packet.md",
+    "lessons/by_course/digital_confidence/**/teaching_notes.md",
+    "lessons/by_course/digital_confidence/**/demo_plan.md"
+  ],
+  "instructor_path_markers": [
+    "instructor_solution",
+    "instructor_solution_guide",
+    "instructor_solution_guides/",
+    "solution_guide",
+    "solution_notes_for_instructors",
+    "instructor_notes",
+    "answer_key",
+    "answer_keys/",
+    "/instructor/",
+    "instructor_packet",
+    "deep_instructor",
+    "teaching_notes.md",
+    "demo_plan.md"
+  ],
+  "learner_safe_from_general_it": []
+}

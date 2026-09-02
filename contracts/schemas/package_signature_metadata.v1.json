@@ -1,0 +1,41 @@
+{
+  "$id": "https://waike.learning/contracts/package_signature_metadata.v1.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "alg": {
+      "const": "Ed25519"
+    },
+    "pack_id": {
+      "type": "string"
+    },
+    "public_key_id": {
+      "type": "string"
+    },
+    "role": {
+      "enum": [
+        "learner",
+        "instructor"
+      ]
+    },
+    "schema_version": {
+      "const": "1.0.0"
+    },
+    "signature_b64": {
+      "type": "string"
+    },
+    "signed_payload_sha256": {
+      "pattern": "^[a-f0-9]{64}$",
+      "type": "string"
+    }
+  },
+  "required": [
+    "schema_version",
+    "alg",
+    "public_key_id",
+    "signature_b64",
+    "signed_payload_sha256"
+  ],
+  "title": "PackageSignatureMetadata",
+  "type": "object"
+}

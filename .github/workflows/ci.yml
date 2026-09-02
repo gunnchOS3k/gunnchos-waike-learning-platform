@@ -1,0 +1,15 @@
+# Intentionally disabled: PR1 authoritative gate is `.github/workflows/pr1.yml`.
+# Keeping this file prevents accidental reintroduction of a divergent CI truth
+# (different Node versions, shallow WAIKE clones, continue-on-error native builds).
+name: ci-disabled
+
+on:
+  workflow_dispatch:
+
+jobs:
+  notice:
+    runs-on: ubuntu-latest
+    steps:
+      - run: |
+          echo "Use workflow PR1 (.github/workflows/pr1.yml) as the sole PR1 gate."
+          exit 0

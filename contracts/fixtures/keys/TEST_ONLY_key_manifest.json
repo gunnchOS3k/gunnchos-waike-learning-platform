@@ -1,0 +1,6 @@
+{
+  "warning": "TEST_ONLY \u2014 never use in production",
+  "ed25519_public_hex": "edcb8b3dc4daac1e4c91b8cdfe9a226de661c2a5c90e249ee7c6a0a67c6a11d2",
+  "ed25519_private_hex": "db2ab72d9999278be6818c62e3f71ace1b14017b4dcd0e6e95ddad98effd49b0",
+  "instructor_aes_key_hex": "8e5b5fb2a0d6c5f9f973ee51194b708ce3b884af255d21aa72d7e01c26a672fd"
+}

@@ -1,0 +1,43 @@
+{
+  "generated_utc": "2026-09-02T19:41:26Z",
+  "repositories": [
+    {
+      "name": "waike-research-ops",
+      "remote": "https://github.com/gunnchOS3k/waike-research-ops",
+      "default_branch": "main",
+      "blueprint_main_sha": "8eb2827dc58ffa391842da1bfb1ee665c25a31a7",
+      "observed_main_sha": "8eb2827dc58ffa391842da1bfb1ee665c25a31a7",
+      "taxonomy_branch_sha": "531f194e86b1cb788568de4f7e447316047f80a2",
+      "dirty": false,
+      "finding_class": "fact"
+    },
+    {
+      "name": "gunnchos-device-os",
+      "remote": "https://github.com/gunnchOS3k/gunnchos-device-os",
+      "default_branch": "main",
+      "blueprint_main_sha": "28562a8456207540c205a1c8a6434a491b0a4771",
+      "observed_main_sha": "28562a8456207540c205a1c8a6434a491b0a4771",
+      "seed_browser": "apps/waike_learning present (HTML/JS catalog browser \u2014 not LMS)",
+      "finding_class": "fact"
+    },
+    {
+      "name": "gunnchos-waike-learning-platform",
+      "remote": "https://github.com/gunnchOS3k/gunnchos-waike-learning-platform",
+      "default_branch": "main",
+      "main_sha": "187c662a83c0ca2dff97b2c7aaecbde5ba6e4da8",
+      "pr1_branch": "cursor/waike-learning-os-pr1-foundation-001",
+      "draft_pr": "https://github.com/gunnchOS3k/gunnchos-waike-learning-platform/pull/1",
+      "finding_class": "fact"
+    }
+  ],
+  "taxonomy_package_drift": {
+    "canonical_tracks": 18,
+    "digital_rc_packages_on_disk": 16,
+    "method": "listdir(curriculum/digital_rc) directories",
+    "non_alias_multi_track_package": "GENERAL_IT covers DIGITAL_CONFIDENCE+IT_SUPPORT_HARDWARE",
+    "finding_class": "fact"
+  },
+  "waike_merged_main_after_pr56": "e97e74fc9bfb44b1cdc26b272dc4848264f15fe0",
+  "platform_pin": "e97e74fc9bfb44b1cdc26b272dc4848264f15fe0",
+  "note": "Post taxonomy-merge repin; former branch tips obsolete as authoritative pin."
+}

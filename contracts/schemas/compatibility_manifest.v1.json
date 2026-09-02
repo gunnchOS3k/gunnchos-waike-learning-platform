@@ -1,0 +1,86 @@
+{
+  "$id": "https://waike.learning/contracts/compatibility_manifest.v1.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "client_capabilities": {
+      "items": {
+        "type": "string"
+      },
+      "type": "array"
+    },
+    "contracts": {
+      "additionalProperties": {
+        "properties": {
+          "major": {
+            "minimum": 1,
+            "type": "integer"
+          },
+          "min_minor": {
+            "minimum": 0,
+            "type": "integer"
+          }
+        },
+        "required": [
+          "major"
+        ],
+        "type": "object"
+      },
+      "type": "object"
+    },
+    "platform_max_exclusive": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "platform_min": {
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "1.0.0"
+    },
+    "registry_compat_version": {
+      "type": "string"
+    },
+    "registry_hash": {
+      "type": "string"
+    },
+    "compiler_version": {
+      "type": "string"
+    },
+    "source_commit": {
+      "type": "string"
+    },
+    "package_role": {
+      "enum": [
+        "learner",
+        "instructor"
+      ]
+    },
+    "content_version": {
+      "type": "string"
+    },
+    "client_min": {
+      "type": "string"
+    },
+    "hub_min": {
+      "type": "string"
+    },
+    "downgrade_policy": {
+      "type": "string",
+      "enum": [
+        "reject",
+        "dev_override_required"
+      ]
+    }
+  },
+  "required": [
+    "schema_version",
+    "platform_min",
+    "contracts"
+  ],
+  "title": "CompatibilityManifest",
+  "type": "object"
+}

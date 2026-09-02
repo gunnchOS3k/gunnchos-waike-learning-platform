@@ -1,0 +1,36 @@
+{
+  "$id": "https://waike.learning/contracts/assessment.v1.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "assessment_id": {
+      "type": "string"
+    },
+    "items": {
+      "items": {
+        "type": "object"
+      },
+      "type": "array"
+    },
+    "module_id": {
+      "type": "string"
+    },
+    "rubric_id": {
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "1.0.0"
+    },
+    "title": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "schema_version",
+    "assessment_id",
+    "module_id",
+    "title"
+  ],
+  "title": "Assessment",
+  "type": "object"
+}

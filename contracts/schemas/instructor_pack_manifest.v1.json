@@ -1,0 +1,64 @@
+{
+  "$id": "https://waike.learning/contracts/instructor_pack_manifest.v1.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "InstructorPackManifest",
+  "type": "object",
+  "additionalProperties": true,
+  "required": [
+    "schema_version",
+    "pack_id",
+    "module_id",
+    "role",
+    "files",
+    "encryption",
+    "created_utc"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "1.0.0"
+    },
+    "pack_id": {
+      "type": "string"
+    },
+    "module_id": {
+      "type": "string"
+    },
+    "role": {
+      "const": "instructor"
+    },
+    "title": {
+      "type": "string"
+    },
+    "source_commit": {
+      "type": "string"
+    },
+    "created_utc": {
+      "type": "string"
+    },
+    "files": {
+      "type": "array"
+    },
+    "compatibility": {
+      "type": "object"
+    },
+    "encryption": {
+      "type": "object",
+      "required": [
+        "alg",
+        "nonce_b64",
+        "ciphertext_sha256"
+      ],
+      "properties": {
+        "alg": {
+          "const": "AES-256-GCM"
+        },
+        "nonce_b64": {
+          "type": "string"
+        },
+        "ciphertext_sha256": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}
