@@ -3,12 +3,12 @@
   "source_repo": "waike-research-ops",
   "source_path": "../waike-research-ops",
   "absolute_path_hint": "/Users/gunnchos/dev/waike-learning-os-workspace/waike-research-ops",
-  "pinned_commit": "ab6f75518063ab06c2f9b9f33de2978610c5aa52",
+  "pinned_commit": "531f194e86b1cb788568de4f7e447316047f80a2",
   "taxonomy_paths": [
     "curriculum/taxonomy/eighteen_tracks.json",
     "artifacts/taxonomy/CANONICAL_TRACK_REGISTRY.export.json"
   ],
-  "preferred_taxonomy": "curriculum/taxonomy/eighteen_tracks.json",
+  "preferred_taxonomy": "artifacts/taxonomy/CANONICAL_TRACK_REGISTRY.export.json",
   "module_ids_allowed": [
     "DIGITAL_CONFIDENCE"
   ],
@@ -29,5 +29,6 @@
     "Update pinned_commit when taxonomy export PR lands."
   ],
   "taxonomy_pr": "https://github.com/gunnchOS3k/waike-research-ops/pull/56",
-  "taxonomy_branch": "cursor/waike-learning-taxonomy-contract-001"
+  "taxonomy_branch": "cursor/waike-learning-taxonomy-contract-001",
+  "platform_pr": "https://github.com/gunnchOS3k/gunnchos-waike-learning-platform/pull/1"
 }

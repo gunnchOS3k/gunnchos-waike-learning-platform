@@ -1,10 +1,16 @@
 # PR1 Verification
 
 - Status: `AUTOMATED_PIPELINE_PASS`
-- Pinned WAIKE commit: `ab6f75518063ab06c2f9b9f33de2978610c5aa52`
-- Taxonomy PR: https://github.com/gunnchOS3k/waike-research-ops/pull/56
-- Package hash: `4c32fd36d8dab03e9353a82374db9b50229e54d53f394bdd62885e7bec9cc235`
-- Python: 29 passed, 1 warning in 2.11s
+- Generated: `2026-09-02T19:39:12Z`
+- Platform branch: `cursor/waike-learning-os-pr1-foundation-001`
+- Platform draft PR: https://github.com/gunnchOS3k/gunnchos-waike-learning-platform/pull/1
+- Pinned WAIKE commit: `531f194e86b1cb788568de4f7e447316047f80a2`
+- Taxonomy draft PR: https://github.com/gunnchOS3k/waike-research-ops/pull/56
+- Package hash (learner zip): `eeb78062fa847cff0f9c91440cb8d364caa122eabe6b763753e7d02fdcc1d80e`
+- Python: 29 passed, 1 warning in 1.95s
+- Rust: 5 passed (pack install/verify/tamper/wrong-role + encrypted DB restart)
+- Frontend: 7 passed (vitest)
+- Hub/compiler/security: included in python suite (29)
 
 ## Checks
 
@@ -18,3 +24,7 @@
 ## Claim language
 
 digitally implemented and automatically tested for PR 1 scope
+
+## Not claimed
+
+Full LMS, all-course migration, student validation, production security review, accessibility certification, device-quartet field proof, field pilot.
