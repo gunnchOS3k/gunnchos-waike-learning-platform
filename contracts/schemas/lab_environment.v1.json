@@ -1,0 +1,36 @@
+{
+  "$id": "https://waike.learning/contracts/lab_environment.v1.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "assets": {
+      "items": {
+        "type": "string"
+      },
+      "type": "array"
+    },
+    "entry": {
+      "type": "string"
+    },
+    "lab_id": {
+      "type": "string"
+    },
+    "module_id": {
+      "type": "string"
+    },
+    "runtime": {
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "1.0.0"
+    }
+  },
+  "required": [
+    "schema_version",
+    "lab_id",
+    "module_id",
+    "runtime"
+  ],
+  "title": "LabEnvironment",
+  "type": "object"
+}

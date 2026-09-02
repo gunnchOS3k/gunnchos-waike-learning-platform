@@ -1,0 +1,46 @@
+{
+  "$id": "https://waike.learning/contracts/canonical_track_reference.v1.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "academy_id": {
+      "type": "string"
+    },
+    "aliases": {
+      "items": {
+        "type": "string"
+      },
+      "type": "array"
+    },
+    "extension_class": {
+      "type": "string"
+    },
+    "owner_program_file": {
+      "type": "string"
+    },
+    "requirement_id": {
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "1.0.0"
+    },
+    "source_commit": {
+      "type": "string"
+    },
+    "title": {
+      "type": "string"
+    },
+    "track_id": {
+      "minLength": 1,
+      "type": "string"
+    }
+  },
+  "required": [
+    "schema_version",
+    "track_id",
+    "title",
+    "academy_id"
+  ],
+  "title": "CanonicalTrackReference",
+  "type": "object"
+}

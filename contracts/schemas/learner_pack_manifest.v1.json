@@ -1,0 +1,70 @@
+{
+  "$id": "https://waike.learning/contracts/learner_pack_manifest.v1.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "LearnerPackManifest",
+  "type": "object",
+  "additionalProperties": true,
+  "required": [
+    "schema_version",
+    "pack_id",
+    "module_id",
+    "role",
+    "files",
+    "compatibility",
+    "created_utc",
+    "source_commit"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "1.0.0"
+    },
+    "pack_id": {
+      "type": "string"
+    },
+    "module_id": {
+      "type": "string"
+    },
+    "track_id": {
+      "type": "string"
+    },
+    "course_uuid": {
+      "type": "string"
+    },
+    "role": {
+      "const": "learner"
+    },
+    "title": {
+      "type": "string"
+    },
+    "content_version": {
+      "type": "string"
+    },
+    "compiler_version": {
+      "type": "string"
+    },
+    "source_commit": {
+      "type": "string"
+    },
+    "created_utc": {
+      "type": "string"
+    },
+    "package_size_bytes": {
+      "type": "integer"
+    },
+    "client_min": {
+      "type": "string"
+    },
+    "hub_min": {
+      "type": "string"
+    },
+    "content_root_sha256": {
+      "type": "string"
+    },
+    "compatibility": {
+      "type": "object"
+    },
+    "files": {
+      "type": "array"
+    }
+  }
+}

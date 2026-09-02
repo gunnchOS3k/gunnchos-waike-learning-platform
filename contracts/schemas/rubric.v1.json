@@ -1,0 +1,46 @@
+{
+  "$id": "https://waike.learning/contracts/rubric.v1.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "criteria": {
+      "items": {
+        "properties": {
+          "description": {
+            "type": "string"
+          },
+          "id": {
+            "type": "string"
+          },
+          "max_points": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "id",
+          "description",
+          "max_points"
+        ],
+        "type": "object"
+      },
+      "type": "array"
+    },
+    "rubric_id": {
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "1.0.0"
+    },
+    "title": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "schema_version",
+    "rubric_id",
+    "title",
+    "criteria"
+  ],
+  "title": "Rubric",
+  "type": "object"
+}

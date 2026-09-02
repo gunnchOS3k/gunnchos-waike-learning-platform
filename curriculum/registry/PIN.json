@@ -1,0 +1,33 @@
+{
+  "schema_version": "1.0.0",
+  "source_repo": "waike-research-ops",
+  "source_path": "../waike-research-ops",
+  "absolute_path_hint": "/Users/gunnchos/dev/waike-learning-os-workspace/waike-research-ops",
+  "pinned_commit": "ab6f75518063ab06c2f9b9f33de2978610c5aa52",
+  "taxonomy_paths": [
+    "curriculum/taxonomy/eighteen_tracks.json",
+    "artifacts/taxonomy/CANONICAL_TRACK_REGISTRY.export.json"
+  ],
+  "preferred_taxonomy": "curriculum/taxonomy/eighteen_tracks.json",
+  "module_ids_allowed": [
+    "DIGITAL_CONFIDENCE"
+  ],
+  "aliases": {
+    "digital_confidence": "DIGITAL_CONFIDENCE",
+    "WAIKE_COURSE_DIGITAL_CONFIDENCE": "DIGITAL_CONFIDENCE"
+  },
+  "note": "Update pinned_commit when taxonomy export PR lands.",
+  "package_aliases_evidence_backed": {
+    "COMPUTER_NETWORKING": "NETWORKING_INFRA",
+    "CYBERSECURITY": "CYBER_SOC"
+  },
+  "non_aliases": {
+    "GENERAL_IT": "Multi-track package id covering DIGITAL_CONFIDENCE+IT_SUPPORT_HARDWARE \u2014 NOT a unique track alias"
+  },
+  "notes": [
+    "Prefer DIGITAL_CONFIDENCE lessons path for PR1 module import, not GENERAL_IT package.",
+    "Update pinned_commit when taxonomy export PR lands."
+  ],
+  "taxonomy_pr": "https://github.com/gunnchOS3k/waike-research-ops/pull/56",
+  "taxonomy_branch": "cursor/waike-learning-taxonomy-contract-001"
+}

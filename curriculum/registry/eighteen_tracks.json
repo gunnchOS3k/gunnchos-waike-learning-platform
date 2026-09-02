@@ -1,0 +1,155 @@
+{
+  "schema": "waike.taxonomy.eighteen_tracks.v1",
+  "owner_repo": "waike-research-ops",
+  "owner_truth": "programs/00_program_index.md plus six additional program files already on origin/main",
+  "date_checked": "2026-08-14",
+  "accepted_main_sha_at_packet_start": "d36e97d",
+  "do_not_delete_advanced_tracks": true,
+  "tracks": [
+    {
+      "track_id": "DIGITAL_CONFIDENCE",
+      "requirement_id": "WAIKE_COURSE_DIGITAL_CONFIDENCE",
+      "title": "Digital Confidence to Computer Operator",
+      "owner_program_file": "programs/digital_confidence_to_operator.md",
+      "academy_id": "ACADEMY_IT",
+      "extension_class": "FOUNDATION"
+    },
+    {
+      "track_id": "IT_SUPPORT_HARDWARE",
+      "requirement_id": "WAIKE_COURSE_IT_SUPPORT_HARDWARE",
+      "title": "IT Support and Hardware Foundations",
+      "owner_program_file": "programs/it_support_hardware.md",
+      "academy_id": "ACADEMY_IT",
+      "extension_class": "FOUNDATION"
+    },
+    {
+      "track_id": "SOFTWARE_BUILDER",
+      "requirement_id": "WAIKE_COURSE_SOFTWARE_BUILDER",
+      "title": "Software Builder Zero-to-Hero",
+      "owner_program_file": "programs/software_builder.md",
+      "academy_id": "ACADEMY_SOFTWARE",
+      "extension_class": "FOUNDATION"
+    },
+    {
+      "track_id": "NETWORKING_INFRA",
+      "requirement_id": "WAIKE_COURSE_NETWORKING_INFRA",
+      "title": "Networking and Internet Infrastructure",
+      "owner_program_file": "programs/networking_infrastructure.md",
+      "academy_id": "ACADEMY_NETWORKING",
+      "extension_class": "FOUNDATION"
+    },
+    {
+      "track_id": "CYBER_SOC",
+      "requirement_id": "WAIKE_COURSE_CYBER_SOC",
+      "title": "Cybersecurity Foundations and SOC Readiness",
+      "owner_program_file": "programs/cybersecurity_soc.md",
+      "academy_id": "ACADEMY_CYBER",
+      "extension_class": "FOUNDATION"
+    },
+    {
+      "track_id": "DATA_DASHBOARDS",
+      "requirement_id": "WAIKE_COURSE_DATA_DASHBOARDS",
+      "title": "Data, Databases, and Dashboards",
+      "owner_program_file": "programs/data_databases_dashboards.md",
+      "academy_id": "ACADEMY_SOFTWARE",
+      "extension_class": "FOUNDATION"
+    },
+    {
+      "track_id": "AI_ML_EDGE",
+      "requirement_id": "WAIKE_COURSE_AI_ML_EDGE",
+      "title": "AI/ML and Edge AI Foundations",
+      "owner_program_file": "programs/ai_ml_edge.md",
+      "academy_id": "ACADEMY_SOFTWARE",
+      "extension_class": "ADVANCED_EXTENSION"
+    },
+    {
+      "track_id": "EMBEDDED_PROTOTYPING",
+      "requirement_id": "WAIKE_COURSE_EMBEDDED_PROTOTYPING",
+      "title": "Embedded Systems and Device Prototyping",
+      "owner_program_file": "programs/embedded_prototyping.md",
+      "academy_id": "ACADEMY_HARDWARE",
+      "extension_class": "ADVANCED_EXTENSION"
+    },
+    {
+      "track_id": "WIRELESS_6G",
+      "requirement_id": "WAIKE_COURSE_WIRELESS_6G",
+      "title": "Wireless, DSP, and 6G Foundations",
+      "owner_program_file": "programs/wireless_6g_foundations.md",
+      "academy_id": "ACADEMY_NETWORKING",
+      "extension_class": "ADVANCED_EXTENSION"
+    },
+    {
+      "track_id": "PM_AGILE_LSS",
+      "requirement_id": "WAIKE_COURSE_PM_AGILE_LSS",
+      "title": "Project Management, Agile, and Lean Six Sigma",
+      "owner_program_file": "programs/pm_agile_lss.md",
+      "academy_id": "ACADEMY_PROCESS_PM",
+      "extension_class": "FOUNDATION"
+    },
+    {
+      "track_id": "GAME_DEV_INTERACTIVE",
+      "requirement_id": "WAIKE_COURSE_GAME_DEV_INTERACTIVE",
+      "title": "Game Development and Interactive Media",
+      "owner_program_file": "programs/game_dev_interactive.md",
+      "academy_id": "ACADEMY_SOFTWARE",
+      "extension_class": "ADVANCED_EXTENSION"
+    },
+    {
+      "track_id": "SEVEN_GC_APPRENTICESHIP",
+      "requirement_id": "WAIKE_COURSE_SEVEN_GC_APPRENTICESHIP",
+      "title": "7GC AI-RAN Research Apprenticeship",
+      "owner_program_file": "programs/seven_gc_apprenticeship.md",
+      "academy_id": "ACADEMY_SOFTWARE",
+      "extension_class": "RESEARCH_APPRENTICESHIP",
+      "note": "Not collapsed into another academy. Remains an advanced overlay."
+    },
+    {
+      "track_id": "CLOUD_DEVOPS",
+      "requirement_id": "WAIKE_COURSE_CLOUD_DEVOPS",
+      "title": "Cloud and DevOps",
+      "owner_program_file": "programs/cloud_and_devops.md",
+      "academy_id": "ACADEMY_SOFTWARE",
+      "extension_class": "ADVANCED_EXTENSION"
+    },
+    {
+      "track_id": "COMM_PD_ETHICS",
+      "requirement_id": "WAIKE_COURSE_COMM_PD_ETHICS",
+      "title": "Communication, Professional Development, and Ethics",
+      "owner_program_file": "programs/communication_professional_development_and_ethics.md",
+      "academy_id": "ACADEMY_PROF_DEV",
+      "extension_class": "FOUNDATION"
+    },
+    {
+      "track_id": "ROBOTICS_CONTROL",
+      "requirement_id": "WAIKE_COURSE_ROBOTICS_CONTROL",
+      "title": "Robotics and Control",
+      "owner_program_file": "programs/robotics_and_control.md",
+      "academy_id": "ACADEMY_HARDWARE",
+      "extension_class": "ADVANCED_EXTENSION"
+    },
+    {
+      "track_id": "GUNNCHOS_PRODUCT_LAB",
+      "requirement_id": "WAIKE_COURSE_GUNNCHOS_PRODUCT_LAB",
+      "title": "gunnchOS Device OS and Product Lab",
+      "owner_program_file": "programs/gunnchos_device_os_and_product_lab.md",
+      "academy_id": "ACADEMY_HARDWARE",
+      "extension_class": "ADVANCED_EXTENSION"
+    },
+    {
+      "track_id": "HARDWARE_ENGINEERING",
+      "requirement_id": "WAIKE_COURSE_HARDWARE_ENGINEERING",
+      "title": "Hardware Engineering",
+      "owner_program_file": "programs/hardware_engineering.md",
+      "academy_id": "ACADEMY_HARDWARE",
+      "extension_class": "FOUNDATION"
+    },
+    {
+      "track_id": "DATA_VIZ_BI",
+      "requirement_id": "WAIKE_COURSE_DATA_VIZ_BI",
+      "title": "Data Visualization and Business Intelligence",
+      "owner_program_file": "programs/data_visualization_and_business_intelligence.md",
+      "academy_id": "ACADEMY_SOFTWARE",
+      "extension_class": "ADVANCED_EXTENSION"
+    }
+  ]
+}

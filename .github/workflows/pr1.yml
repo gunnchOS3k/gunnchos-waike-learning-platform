@@ -1,0 +1,195 @@
+name: PR1
+
+on:
+  pull_request:
+  push:
+    branches: [main, "cursor/**"]
+
+env:
+  SOURCE_DATE_EPOCH: "1700000000"
+  WAIKE_DEV_DB_KEY: "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef"
+  CARGO_TERM_COLOR: always
+
+jobs:
+  contracts-compiler:
+    name: contracts/compiler
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+        with:
+          repository: gunnchOS3k/waike-research-ops
+          path: waike-research-ops
+          ref: 8eb2827dc58ffa391842da1bfb1ee665c25a31a7
+      - uses: astral-sh/setup-uv@v4
+      - name: Align WAIKE pin
+        run: |
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          pin = Path("curriculum/registry/PIN.json")
+          data = json.loads(pin.read_text())
+          data["source_path"] = "./waike-research-ops"
+          data["absolute_path_hint"] = str(Path("waike-research-ops").resolve())
+          pin.write_text(json.dumps(data, indent=2) + "\n")
+          PY
+      - name: Bootstrap + test
+        run: |
+          uv venv .venv
+          uv pip install --python .venv/bin/python -e tools/course_compiler cryptography PyNaCl jsonschema pyyaml pytest
+          .venv/bin/course-compiler compile DIGITAL_CONFIDENCE --out pack_out
+          .venv/bin/pytest -q tests/compatibility tests/security tests/integration
+
+  hub:
+    name: hub
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v4
+      - run: |
+          uv venv .venv
+          uv pip install --python .venv/bin/python -e services/hub fastapi uvicorn pydantic httpx pytest
+          .venv/bin/pytest -q services/hub/tests
+
+  rust:
+    name: rust
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+        with:
+          repository: gunnchOS3k/waike-research-ops
+          path: waike-research-ops
+          ref: 8eb2827dc58ffa391842da1bfb1ee665c25a31a7
+      - uses: astral-sh/setup-uv@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - name: Prepare pack + cargo test
+        run: |
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          pin = Path("curriculum/registry/PIN.json")
+          data = json.loads(pin.read_text())
+          data["source_path"] = "./waike-research-ops"
+          data["absolute_path_hint"] = str(Path("waike-research-ops").resolve())
+          pin.write_text(json.dumps(data, indent=2) + "\n")
+          PY
+          uv venv .venv
+          uv pip install --python .venv/bin/python -e tools/course_compiler cryptography PyNaCl jsonschema pyyaml
+          .venv/bin/course-compiler compile DIGITAL_CONFIDENCE --out pack_out
+          cd apps/client/src-tauri && cargo test
+
+  frontend:
+    name: frontend
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: pnpm
+          cache-dependency-path: apps/client/pnpm-lock.yaml
+      - working-directory: apps/client
+        run: |
+          pnpm install
+          pnpm run lint
+          pnpm test
+          pnpm run build
+
+  native-linux:
+    name: native build linux
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: pnpm
+          cache-dependency-path: apps/client/pnpm-lock.yaml
+      - uses: dtolnay/rust-toolchain@stable
+      - name: Install Tauri Linux deps
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libwebkit2gtk-4.1-dev libappindicator3-dev librsvg2-dev patchelf
+      - working-directory: apps/client
+        run: |
+          pnpm install
+          pnpm run build
+      - working-directory: apps/client/src-tauri
+        run: cargo check
+
+  security:
+    name: security
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+        with:
+          repository: gunnchOS3k/waike-research-ops
+          path: waike-research-ops
+          ref: 8eb2827dc58ffa391842da1bfb1ee665c25a31a7
+      - uses: astral-sh/setup-uv@v4
+      - run: |
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          pin = Path("curriculum/registry/PIN.json")
+          data = json.loads(pin.read_text())
+          data["source_path"] = "./waike-research-ops"
+          data["absolute_path_hint"] = str(Path("waike-research-ops").resolve())
+          pin.write_text(json.dumps(data, indent=2) + "\n")
+          PY
+          uv venv .venv
+          uv pip install --python .venv/bin/python -e tools/course_compiler cryptography PyNaCl jsonschema pyyaml pytest
+          .venv/bin/pytest -q tests/security
+
+  verify-pr1:
+    name: verify-pr1
+    needs: [contracts-compiler, hub, rust, frontend, native-linux, security]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+        with:
+          repository: gunnchOS3k/waike-research-ops
+          path: waike-research-ops
+          ref: 8eb2827dc58ffa391842da1bfb1ee665c25a31a7
+      - uses: astral-sh/setup-uv@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: pnpm
+          cache-dependency-path: apps/client/pnpm-lock.yaml
+      - uses: dtolnay/rust-toolchain@stable
+      - name: Align pin + bootstrap + verify
+        run: |
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          pin = Path("curriculum/registry/PIN.json")
+          data = json.loads(pin.read_text())
+          data["source_path"] = "./waike-research-ops"
+          data["absolute_path_hint"] = str(Path("waike-research-ops").resolve())
+          pin.write_text(json.dumps(data, indent=2) + "\n")
+          PY
+          uv venv .venv
+          uv pip install --python .venv/bin/python -e tools/course_compiler -e services/hub cryptography PyNaCl jsonschema pyyaml pytest httpx fastapi uvicorn pydantic
+          cd apps/client && pnpm install && cd ../..
+          .venv/bin/course-compiler compile DIGITAL_CONFIDENCE --out pack_out
+          .venv/bin/pytest -q tests services/hub/tests
+          cd apps/client/src-tauri && cargo test && cd ../../..
+          cd apps/client && pnpm test && pnpm run build && cd ../..
+          .venv/bin/python scripts/verify_pr1.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: pr1-reports
+          path: reports/
