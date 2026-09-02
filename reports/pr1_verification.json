@@ -1,43 +1,46 @@
 {
-  "generated_utc": "2026-09-02T19:46:31Z",
+  "generated_utc": "2026-09-02T20:54:59Z",
   "status": "AUTOMATED_PIPELINE_PASS",
   "checks": {
+    "provenance_match": true,
     "registry_18": true,
     "compile": true,
+    "learner_deterministic": true,
+    "instructor_plaintext_deterministic": true,
+    "instructor_ciphertext_unique": true,
+    "report_provenance": true,
     "python_tests": true,
     "rust_tests": true,
     "frontend_tests": true,
-    "docs": true,
-    "security_negatives": true,
-    "deterministic_learner_pack": true
+    "docs": true
   },
   "test_counts": {
-    "python": "30 passed",
-    "security": "10 passed",
-    "rust": "5 passed",
-    "frontend": "7 passed",
-    "waike_make_test": "43 passed"
+    "python": "38 passed, 1 warning in 1.99s",
+    "rust": "see cargo output / exit_codes"
   },
-  "package_hash": "306be1665080f7c132c8bf4ccbf50cdfff5fee54de01057d639789c5ca33fb1f",
-  "instructor_blob_sha256": "e7e0947042aa37c7d68cd5aafd6a737f95e96f364914dbd25c7b7df2cc2a2eb1",
-  "deterministic_hash_pair": [
-    "306be1665080f7c132c8bf4ccbf50cdfff5fee54de01057d639789c5ca33fb1f",
-    "306be1665080f7c132c8bf4ccbf50cdfff5fee54de01057d639789c5ca33fb1f"
-  ],
+  "package_hash": "7e823653f3d4bae370c73b1adb72d0693b925bcfaf7e0632ee7d0c74f5dc5ce2",
   "blocked": [],
-  "pinned_waike_commit": "531f194e86b1cb788568de4f7e447316047f80a2",
-  "taxonomy_pr": "https://github.com/gunnchOS3k/waike-research-ops/pull/56",
-  "platform_pr": "https://github.com/gunnchOS3k/gunnchos-waike-learning-platform/pull/1",
-  "platform_branch": "cursor/waike-learning-os-pr1-foundation-001",
-  "claim": "digitally implemented and automatically tested for PR 1 scope",
-  "main_shas": {
-    "waike-research-ops": "8eb2827dc58ffa391842da1bfb1ee665c25a31a7",
-    "gunnchos-device-os": "28562a8456207540c205a1c8a6434a491b0a4771",
-    "gunnchos-waike-learning-platform": "187c662a83c0ca2dff97b2c7aaecbde5ba6e4da8"
+  "exit_codes": {
+    "waike_rev_parse": 0,
+    "compile_pair": 0,
+    "python_tests": 0,
+    "rust_tests": 0,
+    "frontend_tests": 0
   },
-  "blueprint_shas": {
-    "waike-research-ops": "8eb2827dc58ffa391842da1bfb1ee665c25a31a7",
-    "gunnchos-device-os": "28562a8456207540c205a1c8a6434a491b0a4771",
-    "gunnchos-waike-learning-platform": null
-  }
+  "declared_pinned_commit": "1a164c279f8d3f54b69a313b92c25936b4b4bc44",
+  "taxonomy_pr": "https://github.com/gunnchOS3k/waike-research-ops/pull/56",
+  "observed_source_commit": "1a164c279f8d3f54b69a313b92c25936b4b4bc44",
+  "learner_hash_pair": [
+    "7e823653f3d4bae370c73b1adb72d0693b925bcfaf7e0632ee7d0c74f5dc5ce2",
+    "7e823653f3d4bae370c73b1adb72d0693b925bcfaf7e0632ee7d0c74f5dc5ce2"
+  ],
+  "instructor_plaintext_hash_pair": [
+    "a16b5c851569452e6f5ce745edd51971c928836d702dd8f70df0de3214584095",
+    "a16b5c851569452e6f5ce745edd51971c928836d702dd8f70df0de3214584095"
+  ],
+  "instructor_ciphertext_pair": [
+    "adec7e689251ee3a36946db1853386dec5d85875c06a1f8f7159fb0ea39ec140",
+    "9db69d7d51c8e020b763384855fa07fcddf509a9c62bc255b26f01249d32abff"
+  ],
+  "claim": "DIGITALLY_IMPLEMENTED_AND_AUTOMATICALLY_TESTED_FOR_PR1_SCOPE"
 }

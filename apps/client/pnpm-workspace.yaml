@@ -1,2 +1,7 @@
+packages:
+  - "."
 allowBuilds:
-  esbuild: true
+  esbuild: set this to true or false
+onlyBuiltDependencies:
+  - esbuild
+  - "@tauri-apps/cli"

@@ -1,11 +1,14 @@
 # DIGITAL_CONFIDENCE Import Report
 
 - module_id: `DIGITAL_CONFIDENCE`
-- source_commit: `531f194e86b1cb788568de4f7e447316047f80a2`
+- declared_pinned_commit: `1a164c279f8d3f54b69a313b92c25936b4b4bc44`
+- observed_source_commit: `1a164c279f8d3f54b69a313b92c25936b4b4bc44`
+- provenance_match: `true`
 - learner files: **196**
 - instructor files: **37**
-- learner zip sha256: `306be1665080f7c132c8bf4ccbf50cdfff5fee54de01057d639789c5ca33fb1f`
-- instructor blob sha256: `e7e0947042aa37c7d68cd5aafd6a737f95e96f364914dbd25c7b7df2cc2a2eb1`
+- learner zip sha256: `7e823653f3d4bae370c73b1adb72d0693b925bcfaf7e0632ee7d0c74f5dc5ce2`
+- instructor plaintext sha256: `a16b5c851569452e6f5ce745edd51971c928836d702dd8f70df0de3214584095`
+- instructor ciphertext sha256 (non-reproducible): `f0ef87cc71045bc599fd1dd77f8c2fc9d9d46fb8aa266ddfeca53cb0278f7184`
 - lessons indexed: 8
 
 ## Lessons

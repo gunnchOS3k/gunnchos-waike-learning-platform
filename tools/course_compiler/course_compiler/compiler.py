@@ -13,12 +13,14 @@ from . import crypto
 from .compat import DEFAULT_COMPAT
 from .jsonutil import dump_canonical, dumps_canonical, source_date_epoch_utc, zip_write_file
 from .registry import (
+    assert_signing_key_allowed,
     get_track,
     load_pin,
     load_taxonomy,
     repo_root,
     resolve_module_id,
     resolve_waike_root,
+    verify_waike_provenance,
 )
 
 INSTRUCTOR_NAME_HINTS = (
@@ -122,6 +124,8 @@ def compile_module(
     pin = load_pin()
     module_id = resolve_module_id(module_raw, pin)
     waike = resolve_waike_root(pin)
+    # Gate 2: never claim PIN provenance without verifying observed checkout HEAD.
+    provenance = verify_waike_provenance(pin, waike)
     taxonomy = load_taxonomy(waike, pin)
     track = get_track(module_id, taxonomy)
 
@@ -238,6 +242,7 @@ def compile_module(
     sk_path = signing_key_path or (keys_dir / "TEST_ONLY_ed25519_private.key")
     vk_path = keys_dir / "TEST_ONLY_ed25519_public.key"
     aes_path = instructor_key_path or (keys_dir / "TEST_ONLY_instructor_aes256.key")
+    assert_signing_key_allowed(sk_path, release_mode=False)
     signing_key = crypto.load_signing_key(sk_path)
     payload, sig_meta = crypto.sign_manifest_dict(signing_key, learner_manifest)
     dump_canonical(out / "learner_pack.signature.json", sig_meta)
@@ -272,17 +277,24 @@ def compile_module(
         zip_write_file(zf, out / "instructor_pack_manifest.inner.json", "instructor_pack_manifest.json")
 
     plain = instructor_zip.read_bytes()
-    nonce, ciphertext = crypto.encrypt_aes_gcm(
-        crypto.load_aes_key(aes_path),
-        plain,
-        deterministic_label=f"{module_id}:{pin.get('pinned_commit')}",
+    instructor_plaintext_sha256 = crypto.sha256_bytes(plain)
+    instructor_manifest_sha256 = crypto.sha256_bytes(
+        dumps_canonical(instructor_manifest).encode("utf-8")
     )
+    (out / "instructor_plaintext.sha256").write_text(instructor_plaintext_sha256 + "\n", encoding="utf-8")
+    (out / "instructor_manifest.canonical.sha256").write_text(
+        instructor_manifest_sha256 + "\n", encoding="utf-8"
+    )
+    # AES-GCM: fresh CSPRNG nonce every encryption; ciphertext is NOT reproducible.
+    nonce, ciphertext = crypto.encrypt_aes_gcm(crypto.load_aes_key(aes_path), plain)
     enc_path = out / f"{module_id}.instructor.aes256gcm"
     enc_path.write_bytes(ciphertext)
     instructor_manifest["encryption"] = {
         "alg": "AES-256-GCM",
         "nonce_b64": __import__("base64").b64encode(nonce).decode("ascii"),
         "ciphertext_sha256": crypto.sha256_bytes(ciphertext),
+        "plaintext_sha256": instructor_plaintext_sha256,
+        "manifest_sha256": instructor_manifest_sha256,
     }
     dump_canonical(out / "instructor_pack_manifest.json", instructor_manifest)
     instructor_zip.unlink(missing_ok=True)
@@ -295,7 +307,10 @@ def compile_module(
 
     report = {
         "module_id": module_id,
-        "source_commit": pin.get("pinned_commit"),
+        "declared_pinned_commit": provenance["declared_pinned_commit"],
+        "observed_source_commit": provenance["observed_source_commit"],
+        "source_commit": provenance["observed_source_commit"],
+        "provenance_match": True,
         "waike_root": str(waike),
         "learner_file_count": len(learner_entries),
         "instructor_file_count": len(instructor_entries),
@@ -303,6 +318,8 @@ def compile_module(
         "learner_zip_sha256": crypto.sha256_file(zip_path),
         "instructor_blob": _rel(enc_path),
         "instructor_blob_sha256": crypto.sha256_file(enc_path),
+        "instructor_plaintext_sha256": instructor_plaintext_sha256,
+        "instructor_manifest_sha256": instructor_manifest_sha256,
         "lessons": lessons,
         "verify_key_path": _rel(vk_path),
         "signing_key_warning": "TEST_ONLY",
@@ -314,11 +331,14 @@ def compile_module(
         f"# DIGITAL_CONFIDENCE Import Report",
         "",
         f"- module_id: `{module_id}`",
-        f"- source_commit: `{pin.get('pinned_commit')}`",
+        f"- declared_pinned_commit: `{provenance['declared_pinned_commit']}`",
+        f"- observed_source_commit: `{provenance['observed_source_commit']}`",
+        f"- provenance_match: `true`",
         f"- learner files: **{len(learner_entries)}**",
         f"- instructor files: **{len(instructor_entries)}**",
         f"- learner zip sha256: `{report['learner_zip_sha256']}`",
-        f"- instructor blob sha256: `{report['instructor_blob_sha256']}`",
+        f"- instructor plaintext sha256: `{instructor_plaintext_sha256}`",
+        f"- instructor ciphertext sha256 (non-reproducible): `{report['instructor_blob_sha256']}`",
         f"- lessons indexed: {len(lessons)}",
         "",
         "## Lessons",

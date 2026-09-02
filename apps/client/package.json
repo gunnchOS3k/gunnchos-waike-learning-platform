@@ -3,6 +3,7 @@
   "private": true,
   "version": "0.1.0",
   "type": "module",
+  "packageManager": "pnpm@9.15.9",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
@@ -30,11 +31,5 @@
     "vite": "^6.0.3",
     "vitest": "^2.1.8",
     "@tauri-apps/cli": "^2.1.0"
-  },
-  "pnpm": {
-    "onlyBuiltDependencies": [
-      "esbuild",
-      "@tauri-apps/cli"
-    ]
   }
 }

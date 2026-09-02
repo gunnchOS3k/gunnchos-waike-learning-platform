@@ -667,33 +667,35 @@ mod tests {
         let dir = tempfile::tempdir().unwrap();
         let work = dir.path().join("tampered");
         copy_dir(&pack_src, &work).unwrap();
-        let learner = work.join("learner");
-        if learner.is_dir() {
-            for entry in WalkDir::new(&learner).into_iter().filter_map(|e| e.ok()) {
-                if entry.file_type().is_file() {
-                    let rel = entry.path().strip_prefix(&learner).unwrap();
-                    let target = work.join(rel);
-                    if let Some(parent) = target.parent() {
-                        fs::create_dir_all(parent).unwrap();
-                    }
-                    fs::copy(entry.path(), &target).unwrap();
-                }
-            }
-        }
-        // flip a byte in a lesson file
-        let target = WalkDir::new(&work)
-            .into_iter()
-            .filter_map(|e| e.ok())
-            .find(|e| {
-                e.file_type().is_file()
-                    && e.path().extension().and_then(|x| x.to_str()) == Some("md")
-            })
+
+        // Tamper a file that is actually listed in the signed manifest hashes.
+        let manifest: Value = serde_json::from_str(
+            &fs::read_to_string(work.join("learner_pack_manifest.json")).unwrap(),
+        )
+        .unwrap();
+        let rel = manifest["files"]
+            .as_array()
             .unwrap()
-            .path()
-            .to_path_buf();
+            .iter()
+            .find_map(|e| {
+                let p = e.get("path")?.as_str()?;
+                if p.ends_with(".md") {
+                    Some(p.to_string())
+                } else {
+                    None
+                }
+            })
+            .expect("expected a markdown file in learner manifest");
+
+        let candidates = [work.join("learner").join(&rel), work.join(&rel)];
+        let target = candidates
+            .into_iter()
+            .find(|p| p.is_file())
+            .expect("manifest path must exist on disk");
         let mut bytes = fs::read(&target).unwrap();
         bytes[0] ^= 0x01;
         fs::write(&target, bytes).unwrap();
+
         let key_bytes = verify_key_bytes();
         let mut arr = [0u8; 32];
         arr.copy_from_slice(&key_bytes);

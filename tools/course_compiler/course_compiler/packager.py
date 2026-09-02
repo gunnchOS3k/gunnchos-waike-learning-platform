@@ -173,17 +173,8 @@ def build_packs(
             tar.add(instructor_content / e["path"], arcname=e["path"])
     plaintext = tar_buf.getvalue()
     aes_key = load_aes_key(instructor_key_path)
-    # Deterministic nonce for reproducible instructor ciphertext under SOURCE_DATE_EPOCH
-    import os
-    import hashlib
-
-    if os.environ.get("SOURCE_DATE_EPOCH"):
-        nonce = hashlib.sha256(f"instructor-nonce:{plan.module_id}:{content_version}:{os.environ['SOURCE_DATE_EPOCH']}".encode()).digest()[:12]
-        from cryptography.hazmat.primitives.ciphers.aead import AESGCM
-
-        ciphertext = AESGCM(aes_key).encrypt(nonce, plaintext, pack_id_instructor.encode())
-    else:
-        nonce, ciphertext = encrypt_aes_gcm(aes_key, plaintext, pack_id_instructor.encode())
+    # Fresh CSPRNG nonce every encryption; do not derive from SOURCE_DATE_EPOCH.
+    nonce, ciphertext = encrypt_aes_gcm(aes_key, plaintext, pack_id_instructor.encode())
 
     (instructor_dir / "instructor_pack.bin").write_bytes(ciphertext)
     instructor_manifest = {
@@ -205,6 +196,7 @@ def build_packs(
             "alg": "AES-256-GCM",
             "nonce_b64": b64(nonce),
             "ciphertext_sha256": sha256_bytes(ciphertext),
+            "plaintext_sha256": sha256_bytes(plaintext),
         },
     }
     d = validate_document("instructor_pack_manifest", instructor_manifest)

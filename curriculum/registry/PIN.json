@@ -3,7 +3,7 @@
   "source_repo": "waike-research-ops",
   "source_path": "../waike-research-ops",
   "absolute_path_hint": "/Users/gunnchos/dev/waike-learning-os-workspace/waike-research-ops",
-  "pinned_commit": "531f194e86b1cb788568de4f7e447316047f80a2",
+  "pinned_commit": "1a164c279f8d3f54b69a313b92c25936b4b4bc44",
   "taxonomy_paths": [
     "curriculum/taxonomy/eighteen_tracks.json",
     "artifacts/taxonomy/CANONICAL_TRACK_REGISTRY.export.json"

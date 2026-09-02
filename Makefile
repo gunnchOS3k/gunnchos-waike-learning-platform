@@ -15,7 +15,7 @@ bootstrap:
 	@test -d .venv || uv venv .venv
 	uv pip install -e tools/course_compiler -e "services/hub" --python $(PYTHON)
 	uv pip install pytest httpx jsonschema pyyaml cryptography PyNaCl --python $(PYTHON)
-	cd $(CLIENT) && (command -v pnpm >/dev/null && pnpm install || npm install)
+	cd $(CLIENT) && (command -v pnpm >/dev/null && corepack enable && corepack prepare pnpm.15.9 --activate && pnpm install || npm install)
 	@mkdir -p reports
 	@echo "Bootstrap complete. WAIKE_DEV_DB_KEY is set for local/CI encrypted DB."
 

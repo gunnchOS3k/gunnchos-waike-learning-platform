@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import subprocess
 from pathlib import Path
 from typing import Any
 
@@ -44,6 +45,69 @@ def resolve_waike_root(pin: dict[str, Any] | None = None) -> Path:
             return c
     raise RegistryError(RejectionReason.UNKNOWN_MODULE, f"WAIKE root not found; tried {candidates}")
 
+
+def observed_waike_commit(waike_root: Path) -> str:
+    """Return `git rev-parse HEAD` for the checked-out WAIKE source (fail closed)."""
+    try:
+        out = subprocess.check_output(
+            ["git", "-C", str(waike_root), "rev-parse", "HEAD"],
+            stderr=subprocess.STDOUT,
+            text=True,
+        )
+    except (subprocess.CalledProcessError, FileNotFoundError, OSError) as exc:
+        raise RegistryError(
+            RejectionReason.PROVENANCE_MISMATCH,
+            f"unable to read observed WAIKE HEAD at {waike_root}: {exc}",
+        ) from exc
+    sha = out.strip()
+    if len(sha) < 40:
+        raise RegistryError(
+            RejectionReason.PROVENANCE_MISMATCH,
+            f"observed WAIKE HEAD malformed: {sha!r}",
+        )
+    return sha
+
+
+def verify_waike_provenance(pin: dict[str, Any] | None = None, waike_root: Path | None = None) -> dict[str, str]:
+    """Abort when declared PIN commit differs from observed checkout HEAD."""
+    pin = pin or load_pin()
+    root = waike_root or resolve_waike_root(pin)
+    declared = str(pin.get("pinned_commit") or "").strip()
+    observed = observed_waike_commit(root)
+    if not declared:
+        raise RegistryError(RejectionReason.PROVENANCE_MISMATCH, "PIN.json missing pinned_commit")
+    if declared != observed:
+        raise RegistryError(
+            RejectionReason.PROVENANCE_MISMATCH,
+            f"declared_pinned_commit={declared} observed_source_commit={observed}",
+        )
+    return {
+        "declared_pinned_commit": declared,
+        "observed_source_commit": observed,
+        "waike_root": str(root),
+    }
+
+
+def assert_signing_key_allowed(signing_key_path: Path, *, release_mode: bool = False) -> None:
+    """Fail closed: TEST_ONLY keys cannot be used as production signing material."""
+    name = signing_key_path.name
+    text = ""
+    try:
+        text = signing_key_path.read_text(encoding="utf-8", errors="ignore")
+    except OSError:
+        pass
+    labeled_test = "TEST_ONLY" in name or "TEST_ONLY" in text[:200]
+    if release_mode and labeled_test:
+        raise RegistryError(
+            RejectionReason.RELEASE_TEST_KEY_FORBIDDEN,
+            f"release mode rejects TEST_ONLY signing key: {signing_key_path}",
+        )
+    if not release_mode and not labeled_test:
+        # Development may use fixtures; require explicit TEST_ONLY labeling for committed fixtures.
+        raise RegistryError(
+            RejectionReason.RELEASE_TEST_KEY_FORBIDDEN,
+            f"dev/test signing key must be explicitly labeled TEST_ONLY: {signing_key_path}",
+        )
 
 def load_taxonomy(waike_root: Path, pin: dict[str, Any] | None = None) -> dict[str, Any]:
     pin = pin or load_pin()
