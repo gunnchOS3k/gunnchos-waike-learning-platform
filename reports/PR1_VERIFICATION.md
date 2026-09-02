@@ -1,12 +1,14 @@
-# PR1 Verification
+# PR1 Verification — post taxonomy-merge repin
 
 - Status: `AUTOMATED_PIPELINE_PASS`
 - Claim: `DIGITALLY_IMPLEMENTED_AND_AUTOMATICALLY_TESTED_FOR_PR1_SCOPE`
-- declared_pinned_commit: `1a164c279f8d3f54b69a313b92c25936b4b4bc44`
-- observed_source_commit: `1a164c279f8d3f54b69a313b92c25936b4b4bc44`
-- Taxonomy PR: https://github.com/gunnchOS3k/waike-research-ops/pull/56
-- Package hash: `7e823653f3d4bae370c73b1adb72d0693b925bcfaf7e0632ee7d0c74f5dc5ce2`
-- Python: 38 passed, 1 warning in 1.99s
+- declared_pinned_commit (WAIKE merged main): `e97e74fc9bfb44b1cdc26b272dc4848264f15fe0`
+- observed_source_commit: `e97e74fc9bfb44b1cdc26b272dc4848264f15fe0`
+- Taxonomy PR #56: **merged** into main at the pin above
+- Learner package hash: `732ec8af7600b0d415ae2898fd6113ea056ca9ad7ec013b759b05327c10d4505`
+- Python: 38 passed
+- Rust: 5 passed
+- Frontend: 7 passed
 
 ## Checks
 
@@ -22,10 +24,7 @@
 - PASS `frontend_tests`
 - PASS `docs`
 
-## Exit codes
+## Artifact distinction
 
-- `waike_rev_parse`: `0`
-- `compile_pair`: `0`
-- `python_tests`: `0`
-- `rust_tests`: `0`
-- `frontend_tests`: `0`
+- Desktop recovered DMG = historical exact PR1 artifact evidence
+- Final GitHub Actions macOS artifact after this repin = authoritative for final PR1 head

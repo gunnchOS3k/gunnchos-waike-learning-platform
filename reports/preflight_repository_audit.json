@@ -36,5 +36,8 @@
     "method": "listdir(curriculum/digital_rc) directories",
     "non_alias_multi_track_package": "GENERAL_IT covers DIGITAL_CONFIDENCE+IT_SUPPORT_HARDWARE",
     "finding_class": "fact"
-  }
+  },
+  "waike_merged_main_after_pr56": "e97e74fc9bfb44b1cdc26b272dc4848264f15fe0",
+  "platform_pin": "e97e74fc9bfb44b1cdc26b272dc4848264f15fe0",
+  "note": "Post taxonomy-merge repin; former branch tips obsolete as authoritative pin."
 }

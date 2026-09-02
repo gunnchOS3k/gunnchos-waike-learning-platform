@@ -1,6 +1,6 @@
 {
   "module_id": "DIGITAL_CONFIDENCE",
-  "source_commit": "ab6f75518063ab06c2f9b9f33de2978610c5aa52",
+  "source_commit": "e97e74fc9bfb44b1cdc26b272dc4848264f15fe0",
   "learner_globs": [
     "programs/digital_confidence.md",
     "programs/digital_confidence_to_operator.md",

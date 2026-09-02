@@ -11,8 +11,8 @@ env:
   SOURCE_DATE_EPOCH: "1700000000"
   WAIKE_DEV_DB_KEY: "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef"
   CARGO_TERM_COLOR: always
-  # Must match curriculum/registry/PIN.json while taxonomy PR #56 is unmerged.
-  WAIKE_PIN_REF: "1a164c279f8d3f54b69a313b92c25936b4b4bc44"
+  # Must match curriculum/registry/PIN.json — waike-research-ops merged main after PR #56.
+  WAIKE_PIN_REF: "e97e74fc9bfb44b1cdc26b272dc4848264f15fe0"
 
 jobs:
   contracts-compiler:
@@ -245,16 +245,28 @@ jobs:
       - name: Verify DMG + write reports
         run: |
           python3 scripts/verify_macos_dmg.py
+      - name: Record PR head SHA for artifact naming
+        id: meta
+        run: |
+          HEAD_SHA="${{ github.event.pull_request.head.sha }}"
+          if [ -z "$HEAD_SHA" ]; then HEAD_SHA="${{ github.sha }}"; fi
+          SHORT="${HEAD_SHA:0:12}"
+          echo "head_sha=$HEAD_SHA" >> "$GITHUB_OUTPUT"
+          echo "short_sha=$SHORT" >> "$GITHUB_OUTPUT"
+          echo "artifact_head_sha=$HEAD_SHA" > reports/MACOS_ARTIFACT_META.txt
+          echo "waike_pin_ref=${{ env.WAIKE_PIN_REF }}" >> reports/MACOS_ARTIFACT_META.txt
       - uses: actions/upload-artifact@v4
         with:
-          name: waike-learning-os-pr1-macos-${{ github.sha }}
+          name: waike-learning-os-pr1-macos-${{ steps.meta.outputs.short_sha }}
           path: |
             apps/client/src-tauri/target/release/bundle/dmg/*.dmg
             reports/MACOS_DMG_VERIFICATION.md
             reports/MACOS_DMG_VERIFICATION.json
             reports/MACOS_SHA256SUMS.txt
+            reports/MACOS_ARTIFACT_META.txt
           retention-days: 14
           if-no-files-found: error
+
 
   verify-pr1:
     name: verify-pr1
@@ -303,8 +315,14 @@ jobs:
           cd apps/client/src-tauri && cargo test && cd ../../..
           cd apps/client && pnpm test && pnpm run build && cd ../..
           .venv/bin/python scripts/verify_pr1.py
+      - name: Record PR head for reports artifact
+        id: reports_meta
+        run: |
+          HEAD_SHA="${{ github.event.pull_request.head.sha }}"
+          if [ -z "$HEAD_SHA" ]; then HEAD_SHA="${{ github.sha }}"; fi
+          echo "short_sha=${HEAD_SHA:0:12}" >> "$GITHUB_OUTPUT"
       - uses: actions/upload-artifact@v4
         with:
-          name: pr1-reports-${{ github.sha }}
+          name: pr1-reports-${{ steps.reports_meta.outputs.short_sha }}
           path: reports/
           retention-days: 14
