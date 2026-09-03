@@ -1,35 +1,67 @@
 {
-  "generated_utc": "2026-09-03T23:29:38Z",
+  "generated_utc": "2026-09-03T23:46:30Z",
   "status": "AUTOMATED_PIPELINE_PASS",
+  "program_status": "PR2_READY_FOR_OWNER_REVIEW",
   "claim": "ASSESSMENT_LIFECYCLE_DIGITALLY_COMPLETE",
-  "checks": {
-    "provenance_match": true,
-    "real_waike_assignment_present": true,
-    "domain_entities_16": true,
-    "python_tests": true,
-    "assessment_e2e_present": true,
-    "frontend_tests": true
+  "declared_pinned_commit": "e97e74fc9bfb44b1cdc26b272dc4848264f15fe0",
+  "observed_source_commit": "e97e74fc9bfb44b1cdc26b272dc4848264f15fe0",
+  "platform_main_sha": "5431bd49689622328d20fb7eb778e0e34284e935",
+  "pr_head_sha": "30b31c96813cc780df0f71b8e0b2dfe85e3ece04",
+  "draft_pr_url": "https://github.com/gunnchOS3k/gunnchos-waike-learning-platform/pull/2",
+  "remote_ci": {
+    "pr_run_id": "33818081120",
+    "push_run_id": "33818077304",
+    "required_jobs": {
+      "contracts/compiler": "SUCCESS",
+      "assessment-lifecycle": "SUCCESS",
+      "hub": "SUCCESS",
+      "rust": "SUCCESS",
+      "frontend": "SUCCESS",
+      "native build linux": "SUCCESS",
+      "security": "SUCCESS",
+      "macos native artifact": "SUCCESS",
+      "verify-pr2": "SUCCESS"
+    }
   },
+  "artifacts": [
+    {
+      "name": "pr2-reports-30b31c96813c",
+      "id": 9917558815,
+      "digest": "sha256:900af855ece51eb49ca5e8a33e3f4b1a7415ff00f99b8d43ff063c41c80feec0"
+    },
+    {
+      "name": "waike-learning-os-pr2-macos-30b31c96813c",
+      "id": 9917342059,
+      "digest": "sha256:ac0202e148392f4c2100b877d9c1b47057a9b70ff5c73600d64e1a06876ff1ce"
+    }
+  ],
   "test_counts": {
     "python_passed": 43,
-    "frontend_passed": 1
+    "frontend_passed": 8,
+    "rust_passed": 5,
+    "assessment_e2e_steps": 15
+  },
+  "real_assignment": {
+    "assignment_id": "digital_confidence_w01",
+    "title": "Mental model reflection",
+    "source_path": "assignments/by_course/digital_confidence/week_01.yaml"
   },
   "wave_acceptance": {
-    "1_learner_sees_assignment": "covered_by_e2e",
-    "2_drafts": "covered_by_e2e",
-    "3_restart_preserves_draft": "covered_by_e2e",
-    "4_submits": "covered_by_e2e",
-    "5_idempotent_submit": "covered_by_e2e",
-    "6_instructor_sees_submission": "covered_by_e2e",
-    "7_instructor_grades_rubric": "covered_by_e2e",
-    "8_learner_receives_grade_feedback": "covered_by_e2e",
-    "9_mastery_gap": "covered_by_e2e",
-    "10_remediation_assigned": "covered_by_e2e",
-    "11_learner_resubmits": "covered_by_e2e",
-    "12_instructor_regrades": "covered_by_e2e",
-    "13_mastery_updates": "covered_by_e2e",
-    "14_portfolio_evidence": "covered_by_e2e",
-    "15_unauthorized_negatives": "covered_by_e2e"
+    "1_learner_sees_assignment": "PASS",
+    "2_drafts": "PASS",
+    "3_restart_preserves_draft": "PASS",
+    "4_submits": "PASS",
+    "5_idempotent_submit": "PASS",
+    "6_instructor_sees_submission": "PASS",
+    "7_instructor_grades_rubric": "PASS",
+    "8_learner_receives_grade_feedback": "PASS",
+    "9_mastery_gap": "PASS",
+    "10_remediation_assigned": "PASS",
+    "11_learner_resubmits": "PASS",
+    "12_instructor_regrades": "PASS",
+    "13_mastery_updates": "PASS",
+    "14_portfolio_evidence": "PASS",
+    "15_unauthorized_negatives": "PASS"
   },
   "security_negatives": {
     "other_learner_submission": "403 FORBIDDEN_OTHER_LEARNER",
@@ -39,19 +71,8 @@
     "role_mismatch_header": "403 ROLE_MISMATCH",
     "instructor_draft": "403 LEARNER_ROLE_REQUIRED"
   },
-  "blocked": [],
-  "exit_codes": {
-    "waike_rev_parse": 0,
-    "pytest": 0,
-    "frontend_tests": 0
-  },
   "claim_boundary": {
-    "earned_only_with": [
-      "15-step assessment E2E PASS",
-      "unauthorized access negatives FAIL closed",
-      "real DIGITAL_CONFIDENCE assignment seed",
-      "remote CI required jobs SUCCESS"
-    ],
+    "earned": true,
     "does_not_claim": [
       "human/field validation",
       "accessibility certification",
@@ -60,7 +81,5 @@
       "offline sync (PR4)"
     ]
   },
-  "declared_pinned_commit": "e97e74fc9bfb44b1cdc26b272dc4848264f15fe0",
-  "observed_source_commit": "e97e74fc9bfb44b1cdc26b272dc4848264f15fe0",
-  "pytest_tail": "...........................................                              [100%]\n=============================== warnings summary ===============================\n.venv/lib/python3.14/site-packages/fastapi/testclient.py:1\n  /Users/gunnchos/dev/waike-learning-os-workspace/gunnchos-waike-learning-platform/.venv/lib/python3.14/site-packages/fastapi/testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.\n    from starlette.testclient import TestClient as TestClient  # noqa\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n43 passed, 1 warning in 2.17s\n"
+  "blocked": []
 }
