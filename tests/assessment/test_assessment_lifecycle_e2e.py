@@ -15,16 +15,30 @@ from fastapi.testclient import TestClient
 from app.main import HubConfig, create_app
 
 ROOT = Path(__file__).resolve().parents[2]
-WAIKE = ROOT.parent / "waike-research-ops"
 ASSIGNMENT_ID = "digital_confidence_w01"
+
+
+def _waike() -> Path:
+    import os
+
+    env = os.environ.get("WAIKE_ROOT")
+    if env and Path(env).is_dir():
+        return Path(env)
+    nested = ROOT / "waike-research-ops"
+    if nested.is_dir():
+        return nested
+    sibling = ROOT.parent / "waike-research-ops"
+    if sibling.is_dir():
+        return sibling
+    raise FileNotFoundError(f"WAIKE SoT missing under {ROOT} or sibling")
 
 
 @pytest.fixture()
 def client(tmp_path, monkeypatch):
-    assert WAIKE.is_dir(), f"WAIKE SoT missing at {WAIKE}"
-    assign = WAIKE / "assignments/by_course/digital_confidence/week_01.yaml"
+    waike = _waike()
+    assign = waike / "assignments/by_course/digital_confidence/week_01.yaml"
     assert assign.is_file(), "real DIGITAL_CONFIDENCE week_01 assignment required"
-    monkeypatch.setenv("WAIKE_ROOT", str(WAIKE))
+    monkeypatch.setenv("WAIKE_ROOT", str(waike))
     db = tmp_path / "assessment.sqlite3"
     app = create_app(HubConfig(), db_path=db, seed=True)
     return TestClient(app)

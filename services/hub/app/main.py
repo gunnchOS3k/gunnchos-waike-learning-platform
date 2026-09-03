@@ -37,15 +37,23 @@ def _default_db_path() -> Path:
     return Path(__file__).resolve().parents[1] / "data" / "hub.sqlite3"
 
 
+def _platform_root() -> Path:
+    return Path(__file__).resolve().parents[3]
+
+
 def _resolve_waike_root() -> Path | None:
     env = os.environ.get("WAIKE_ROOT")
-    if env:
+    if env and Path(env).is_dir():
         return Path(env)
-    # Prefer sibling checkout in the learning-os workspace
-    sibling = Path(__file__).resolve().parents[4] / "waike-research-ops"
+    root = _platform_root()
+    # CI checks out waike-research-ops inside the platform workspace.
+    nested = root / "waike-research-ops"
+    if nested.is_dir():
+        return nested
+    sibling = root.parent / "waike-research-ops"
     if sibling.is_dir():
         return sibling
-    pin_hint = Path(__file__).resolve().parents[3] / "curriculum" / "registry" / "PIN.json"
+    pin_hint = root / "curriculum" / "registry" / "PIN.json"
     if pin_hint.is_file():
         import json
 
@@ -57,7 +65,7 @@ def _resolve_waike_root() -> Path | None:
 
 
 def _source_commit(waike_root: Path | None) -> str:
-    pin = Path(__file__).resolve().parents[3] / "curriculum" / "registry" / "PIN.json"
+    pin = _platform_root() / "curriculum" / "registry" / "PIN.json"
     if pin.is_file():
         import json
 
