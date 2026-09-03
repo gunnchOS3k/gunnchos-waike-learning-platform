@@ -1,0 +1,37 @@
+{
+  "$id": "https://waike.learning/contracts/assessment_lifecycle/domain_index.v1.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "AssessmentLifecycleDomainIndex",
+  "type": "object",
+  "description": "Versioned domain contracts implemented in PR2 hub persistence/API",
+  "required": ["schema_version", "entities"],
+  "properties": {
+    "schema_version": { "const": "1.0.0" },
+    "entities": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "Assignment",
+          "AssignmentVersion",
+          "Submission",
+          "SubmissionRevision",
+          "SubmissionArtifact",
+          "SubmissionReceipt",
+          "Rubric",
+          "RubricCriterion",
+          "RubricLevel",
+          "RubricEvaluation",
+          "Grade",
+          "Feedback",
+          "Outcome",
+          "MasteryRecord",
+          "RemediationPlan",
+          "PortfolioArtifact"
+        ]
+      },
+      "minItems": 16,
+      "uniqueItems": true
+    }
+  }
+}

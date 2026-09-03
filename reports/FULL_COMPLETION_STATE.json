@@ -1,0 +1,42 @@
+{
+  "platform_main_sha": "5431bd49689622328d20fb7eb778e0e34284e935",
+  "waike_main_sha": "e97e74fc9bfb44b1cdc26b272dc4848264f15fe0",
+  "device_os_main_sha": "28562a8456207540c205a1c8a6434a491b0a4771",
+  "pr1_ancestor_ok": true,
+  "taxonomy_ancestor_ok": true,
+  "current_wave": "PR2_ASSESSMENT_LIFECYCLE",
+  "current_branch": "cursor/waike-learning-pr2-assessment-lifecycle",
+  "current_pr": null,
+  "status": "LOCAL_VERIFIED_PENDING_REMOTE_CI",
+  "waves": {
+    "PR1_FOUNDATION": "MERGED",
+    "PR2_ASSESSMENT_LIFECYCLE": "IN_PROGRESS",
+    "PR3_IDENTITY_INSTRUCTOR": "PENDING",
+    "PR4_OFFLINE_SYNC": "PENDING",
+    "PR5_ASSESSMENT_BREADTH": "PENDING",
+    "PR6_GUNNCHAI": "PENDING",
+    "PR7_ALL_18_TRACKS": "PENDING",
+    "PR8_INTEROP_DEVICEOS": "PENDING",
+    "PR9_HARDENING": "PENDING",
+    "PR10_FULL_ACCEPTANCE": "PENDING"
+  },
+  "claims_earned": [
+    "DIGITALLY_IMPLEMENTED_AND_AUTOMATICALLY_TESTED_FOR_PR1_SCOPE"
+  ],
+  "claim_pending": "ASSESSMENT_LIFECYCLE_DIGITALLY_COMPLETE",
+  "local_verification": {
+    "python_passed": 43,
+    "frontend_passed": 8,
+    "rust_passed": 5,
+    "verify_pr2_status": "AUTOMATED_PIPELINE_PASS"
+  },
+  "digital_blockers": [
+    "Remote draft PR + green PR2 Actions required before PR2_READY_FOR_OWNER_REVIEW",
+    "GitHub API auth Forbidden for gunnchOS3k keyring token at Gate 0 — push/PR may need owner re-auth"
+  ],
+  "external_human_gates": [
+    "Owner merge of PR2 when READY_FOR_OWNER_REVIEW",
+    "Human/field/accessibility/security certification (never claimed by automation)"
+  ],
+  "last_verified_utc": "2026-09-03T23:35:00Z"
+}

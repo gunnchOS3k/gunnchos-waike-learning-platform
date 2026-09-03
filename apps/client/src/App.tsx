@@ -1,8 +1,12 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { invoke } from "@tauri-apps/api/core";
+import { AssessmentWorkspace } from "./components/assessment/AssessmentWorkspace";
+import { InstructorQueue } from "./components/assessment/InstructorQueue";
 import { CourseCard } from "./components/CourseCard";
 import { LessonReader } from "./components/LessonReader";
 import { TrustBanner } from "./components/TrustBanner";
+import { createHttpHubClient, type HubActor, type HubClient } from "./lib/hub/client";
+import { createMockHubClient } from "./lib/hub/mockHub";
 import { browseInstallPack, isTauri } from "./lib/tauriBridge";
 import type { LessonContent, LessonInfo, ModuleView, TrustStatus } from "./lib/types";
 import {
@@ -11,6 +15,8 @@ import {
   simulateInstallFailure,
   simulateVerifiedInstall,
 } from "./lib/mockRuntime";
+
+type Mode = "lessons" | "assignments" | "instruct";
 
 function formatPackError(err: unknown): string {
   const raw = typeof err === "string" ? err : err && typeof err === "object" ? JSON.stringify(err) : String(err);
@@ -36,6 +42,12 @@ function formatPackError(err: unknown): string {
   return raw;
 }
 
+function resolveHub(actor: HubActor): HubClient {
+  const base = (import.meta.env.VITE_HUB_URL as string | undefined) || "";
+  if (base) return createHttpHubClient(base.replace(/\/$/, ""), actor);
+  return createMockHubClient(actor);
+}
+
 export default function App() {
   const [trust, setTrust] = useState<TrustStatus>(mockTrust);
   const [module, setModule] = useState<ModuleView | null>(isTauri() ? null : mockModule);
@@ -43,6 +55,10 @@ export default function App() {
   const [error, setError] = useState<string | null>(null);
   const [resumeOffset, setResumeOffset] = useState(0);
   const [resumeHint, setResumeHint] = useState<string | null>(null);
+  const [mode, setMode] = useState<Mode>("lessons");
+  const [actor, setActor] = useState<HubActor>({ actorId: "learner-a", role: "learner" });
+
+  const hub = useMemo(() => resolveHub(actor), [actor]);
 
   useEffect(() => {
     if (!isTauri()) return;
@@ -77,7 +93,6 @@ export default function App() {
     setError(null);
     try {
       if (!isTauri()) {
-        // Browser/Vitest path: simulate verified install unless a test sets window flag.
         const failure = (window as unknown as { __WAIKE_MOCK_FAIL__?: string }).__WAIKE_MOCK_FAIL__;
         if (failure) {
           throw simulateInstallFailure(failure);
@@ -166,6 +181,12 @@ export default function App() {
     [lesson, module],
   );
 
+  function switchActor(next: HubActor) {
+    setActor(next);
+    if (next.role === "instructor" && mode === "assignments") setMode("instruct");
+    if (next.role === "learner" && mode === "instruct") setMode("assignments");
+  }
+
   return (
     <div className="app-shell">
       <a className="skip-link" href="#main">
@@ -174,8 +195,8 @@ export default function App() {
       <header>
         <h1 className="brand">WAIKE Learning OS</h1>
         <p className="tagline">
-          Local-first learning client. Packages are verified before trust. Device OS seed browser is
-          not this LMS.
+          Local-first learning client. Packages are verified before trust. Assessment lifecycle is
+          live for DIGITAL_CONFIDENCE.
         </p>
         <div className="toolbar">
           <button type="button" onClick={() => void onInstall()}>
@@ -187,10 +208,45 @@ export default function App() {
             onClick={() => {
               setLesson(null);
               setError(null);
+              setMode("lessons");
             }}
           >
             Back to module
           </button>
+        </div>
+        <div className="mode-bar" role="navigation" aria-label="Primary">
+          <button
+            type="button"
+            className={mode === "lessons" ? "mode-active" : "ghost"}
+            onClick={() => setMode("lessons")}
+          >
+            Lessons
+          </button>
+          <button
+            type="button"
+            className={mode === "assignments" ? "mode-active" : "ghost"}
+            data-testid="mode-assignments"
+            onClick={() => {
+              switchActor({ actorId: "learner-a", role: "learner" });
+              setMode("assignments");
+            }}
+          >
+            Assignments
+          </button>
+          <button
+            type="button"
+            className={mode === "instruct" ? "mode-active" : "ghost"}
+            data-testid="mode-instruct"
+            onClick={() => {
+              switchActor({ actorId: "instructor-1", role: "instructor" });
+              setMode("instruct");
+            }}
+          >
+            Instruct
+          </button>
+          <span className="muted actor-chip" data-testid="actor-chip">
+            {actor.role}:{actor.actorId}
+          </span>
         </div>
       </header>
 
@@ -207,26 +263,32 @@ export default function App() {
       ) : null}
 
       <div className="layout" id="main">
-        {module ? (
-          <CourseCard module={module} onOpenLesson={(l) => void onOpenLesson(l)} />
-        ) : (
-          <section className="course-card">
-            <h2>No course installed</h2>
-            <p className="muted">Install a signed DIGITAL_CONFIDENCE learner pack to begin.</p>
-          </section>
-        )}
-        {lesson ? (
-          <LessonReader
-            lesson={lesson}
-            resumeOffset={resumeOffset}
-            onSavePosition={(o) => void onSavePosition(o)}
-          />
-        ) : (
-          <section className="lesson-reader">
-            <h2>Lesson reader</h2>
-            <p className="muted">Select a lesson after the pack verifies.</p>
-          </section>
-        )}
+        {mode === "lessons" ? (
+          <>
+            {module ? (
+              <CourseCard module={module} onOpenLesson={(l) => void onOpenLesson(l)} />
+            ) : (
+              <section className="course-card">
+                <h2>No course installed</h2>
+                <p className="muted">Install a signed DIGITAL_CONFIDENCE learner pack to begin.</p>
+              </section>
+            )}
+            {lesson ? (
+              <LessonReader
+                lesson={lesson}
+                resumeOffset={resumeOffset}
+                onSavePosition={(o) => void onSavePosition(o)}
+              />
+            ) : (
+              <section className="lesson-reader">
+                <h2>Lesson reader</h2>
+                <p className="muted">Select a lesson after the pack verifies.</p>
+              </section>
+            )}
+          </>
+        ) : null}
+        {mode === "assignments" ? <AssessmentWorkspace hub={hub} /> : null}
+        {mode === "instruct" ? <InstructorQueue hub={hub} /> : null}
       </div>
     </div>
   );

@@ -1,0 +1,66 @@
+{
+  "generated_utc": "2026-09-03T23:29:38Z",
+  "status": "AUTOMATED_PIPELINE_PASS",
+  "claim": "ASSESSMENT_LIFECYCLE_DIGITALLY_COMPLETE",
+  "checks": {
+    "provenance_match": true,
+    "real_waike_assignment_present": true,
+    "domain_entities_16": true,
+    "python_tests": true,
+    "assessment_e2e_present": true,
+    "frontend_tests": true
+  },
+  "test_counts": {
+    "python_passed": 43,
+    "frontend_passed": 1
+  },
+  "wave_acceptance": {
+    "1_learner_sees_assignment": "covered_by_e2e",
+    "2_drafts": "covered_by_e2e",
+    "3_restart_preserves_draft": "covered_by_e2e",
+    "4_submits": "covered_by_e2e",
+    "5_idempotent_submit": "covered_by_e2e",
+    "6_instructor_sees_submission": "covered_by_e2e",
+    "7_instructor_grades_rubric": "covered_by_e2e",
+    "8_learner_receives_grade_feedback": "covered_by_e2e",
+    "9_mastery_gap": "covered_by_e2e",
+    "10_remediation_assigned": "covered_by_e2e",
+    "11_learner_resubmits": "covered_by_e2e",
+    "12_instructor_regrades": "covered_by_e2e",
+    "13_mastery_updates": "covered_by_e2e",
+    "14_portfolio_evidence": "covered_by_e2e",
+    "15_unauthorized_negatives": "covered_by_e2e"
+  },
+  "security_negatives": {
+    "other_learner_submission": "403 FORBIDDEN_OTHER_LEARNER",
+    "learner_instructor_queue": "403",
+    "learner_grade": "403",
+    "other_learner_portfolio": "403",
+    "role_mismatch_header": "403 ROLE_MISMATCH",
+    "instructor_draft": "403 LEARNER_ROLE_REQUIRED"
+  },
+  "blocked": [],
+  "exit_codes": {
+    "waike_rev_parse": 0,
+    "pytest": 0,
+    "frontend_tests": 0
+  },
+  "claim_boundary": {
+    "earned_only_with": [
+      "15-step assessment E2E PASS",
+      "unauthorized access negatives FAIL closed",
+      "real DIGITAL_CONFIDENCE assignment seed",
+      "remote CI required jobs SUCCESS"
+    ],
+    "does_not_claim": [
+      "human/field validation",
+      "accessibility certification",
+      "security certification",
+      "multi-user identity (PR3)",
+      "offline sync (PR4)"
+    ]
+  },
+  "declared_pinned_commit": "e97e74fc9bfb44b1cdc26b272dc4848264f15fe0",
+  "observed_source_commit": "e97e74fc9bfb44b1cdc26b272dc4848264f15fe0",
+  "pytest_tail": "...........................................                              [100%]\n=============================== warnings summary ===============================\n.venv/lib/python3.14/site-packages/fastapi/testclient.py:1\n  /Users/gunnchos/dev/waike-learning-os-workspace/gunnchos-waike-learning-platform/.venv/lib/python3.14/site-packages/fastapi/testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.\n    from starlette.testclient import TestClient as TestClient  # noqa\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n43 passed, 1 warning in 2.17s\n"
+}

@@ -1,0 +1,21 @@
+{
+  "schema_version": "1.0.0",
+  "entities": [
+    "Assignment",
+    "AssignmentVersion",
+    "Submission",
+    "SubmissionRevision",
+    "SubmissionArtifact",
+    "SubmissionReceipt",
+    "Rubric",
+    "RubricCriterion",
+    "RubricLevel",
+    "RubricEvaluation",
+    "Grade",
+    "Feedback",
+    "Outcome",
+    "MasteryRecord",
+    "RemediationPlan",
+    "PortfolioArtifact"
+  ]
+}

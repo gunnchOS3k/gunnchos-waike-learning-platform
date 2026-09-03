@@ -1,0 +1,15 @@
+{
+  "$id": "https://waike.learning/contracts/assessment_lifecycle/submission_receipt.v1.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "SubmissionReceipt",
+  "type": "object",
+  "additionalProperties": true,
+  "required": ["receipt_id", "submission_id", "content_hash", "issued_at", "immutable_payload"],
+  "properties": {
+    "receipt_id": { "type": "string" },
+    "submission_id": { "type": "string" },
+    "content_hash": { "type": "string", "minLength": 64, "maxLength": 64 },
+    "issued_at": { "type": "string" },
+    "immutable_payload": { "type": "string" }
+  }
+}

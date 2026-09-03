@@ -1,0 +1,23 @@
+{
+  "$id": "https://waike.learning/contracts/assessment_lifecycle/assignment.v1.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Assignment",
+  "type": "object",
+  "additionalProperties": true,
+  "required": ["schema_version", "assignment_id", "module_id", "title", "body_markdown", "rubric_id", "source_path", "source_commit"],
+  "properties": {
+    "schema_version": { "const": "1.0.0" },
+    "assignment_id": { "type": "string" },
+    "module_id": { "type": "string" },
+    "title": { "type": "string" },
+    "body_markdown": { "type": "string" },
+    "rubric_id": { "type": "string" },
+    "source_path": { "type": "string" },
+    "source_commit": { "type": "string" },
+    "week": { "type": "integer" },
+    "mastery_threshold": { "type": "number" },
+    "portfolio_connection": { "type": "integer" },
+    "revision_policy": { "type": "string" },
+    "current_version": { "type": "integer" }
+  }
+}
