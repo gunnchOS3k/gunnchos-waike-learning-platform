@@ -8,13 +8,14 @@
   "current_wave": "PR3_IDENTITY_INSTRUCTOR",
   "current_branch": "cursor/waike-learning-pr3-identity-instructor",
   "current_pr": null,
-  "verified_implementation_sha": null,
-  "report_generated_from_sha": null,
-  "status": "PR3_IMPLEMENTATION_PUSHED_AWAITING_REMOTE_CI",
+  "pr_create_url": "https://github.com/gunnchOS3k/gunnchos-waike-learning-platform/pull/new/cursor/waike-learning-pr3-identity-instructor",
+  "verified_implementation_sha": "c9e48cba9531abb3047227ea025814ad1be4f03e",
+  "report_generated_from_sha": "c9e48cba9531abb3047227ea025814ad1be4f03e",
+  "status": "PR3_NOT_READY",
   "waves": {
     "PR1_FOUNDATION": "MERGED",
     "PR2_ASSESSMENT_LIFECYCLE": "MERGED",
-    "PR3_IDENTITY_INSTRUCTOR": "AWAITING_REMOTE_CI",
+    "PR3_IDENTITY_INSTRUCTOR": "PUSHED_AWAITING_DRAFT_PR_AND_REMOTE_CI",
     "PR4_OFFLINE_SYNC": "PENDING",
     "PR5_ASSESSMENT_BREADTH": "PENDING",
     "PR6_GUNNCHAI": "PENDING",
@@ -31,12 +32,23 @@
     "MULTI_USER_LMS_ALPHA_DIGITALLY_COMPLETE",
     "PR3_READY_FOR_OWNER_REVIEW"
   ],
+  "local_verify_pr3": {
+    "status": "AUTOMATED_PIPELINE_PASS",
+    "python_passed": 82,
+    "frontend_passed": 18
+  },
   "remote_ci_run_ids": {},
-  "digital_blockers": [],
+  "digital_blockers": [
+    "gh auth token invalid — draft PR could not be opened via API; branch is pushed",
+    "Remote Actions run IDs not yet collected"
+  ],
   "external_human_gates": [
-    "Owner merge of draft PR3 after green CI",
+    "Open draft PR from pushed branch (gh auth login), wait for green PR3 Actions",
+    "Owner merge of draft PR3",
     "Human/field/accessibility/security certification (never claimed by automation)"
   ],
-  "last_verified_utc": "2026-09-04T03:14:00Z",
-  "evidence_note": "Local verify-pr3 PASS. Do not claim PR3_READY_FOR_OWNER_REVIEW until remote Actions required jobs are green. Avoid self-stale final-head report commit loops: verified_implementation_sha is the CI-green integrity head, not subsequent docs-only commits."
+  "owner_action": "PR3_NOT_READY",
+  "next_wave_only_after_merge": "Wave 4 / PR4 — Offline-first sync and cross-device continuity",
+  "last_verified_utc": "2026-09-04T03:20:00Z",
+  "evidence_note": "Implementation head c9e48cb pushed. Do not claim MULTI_USER_LMS_ALPHA_DIGITALLY_COMPLETE until remote PR3 workflow required jobs are green."
 }
