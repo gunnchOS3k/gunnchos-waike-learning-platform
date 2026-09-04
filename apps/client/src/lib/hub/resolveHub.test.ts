@@ -8,17 +8,18 @@ afterEach(() => {
   vi.unstubAllGlobals();
 });
 
-describe("resolveHubClient fail-closed", () => {
-  const actor = { actorId: "learner-a", role: "learner" as const };
+const getToken = () => null;
+const actor = { actorId: "learner-a", role: "learner" as const };
 
+describe("resolveHubClient fail-closed", () => {
   it("uses deterministic mock in test mode without hub URL", () => {
-    const r = resolveHubClient(actor, { MODE: "test" });
+    const r = resolveHubClient(getToken, undefined, actor, { MODE: "test" });
     expect(r.status).toBe("mock");
     expect(r.client).not.toBeNull();
   });
 
   it("uses mock when VITE_WAIKE_MOCK_HUB=true outside test", () => {
-    const r = resolveHubClient(actor, {
+    const r = resolveHubClient(getToken, undefined, actor, {
       MODE: "production",
       VITE_WAIKE_MOCK_HUB: "true",
     });
@@ -26,7 +27,7 @@ describe("resolveHubClient fail-closed", () => {
   });
 
   it("does not create mock assessment state in production without hub config", () => {
-    const r = resolveHubClient(actor, { MODE: "production" });
+    const r = resolveHubClient(getToken, undefined, actor, { MODE: "production" });
     expect(r.status).toBe("unavailable");
     expect(r.client).toBeNull();
     if (r.status === "unavailable") {
@@ -35,13 +36,13 @@ describe("resolveHubClient fail-closed", () => {
   });
 
   it("does not create mock in native/development without hub or explicit mock flag", () => {
-    const r = resolveHubClient(actor, { MODE: "development" });
+    const r = resolveHubClient(getToken, undefined, actor, { MODE: "development" });
     expect(r.status).toBe("unavailable");
     expect(r.client).toBeNull();
   });
 
   it("creates HTTP hub client when VITE_HUB_URL is configured", () => {
-    const r = resolveHubClient(actor, {
+    const r = resolveHubClient(getToken, undefined, actor, {
       MODE: "production",
       VITE_HUB_URL: "https://hub.example.edu/",
     });
@@ -54,7 +55,7 @@ describe("resolveHubClient fail-closed", () => {
 });
 
 describe("createHttpHubClient", () => {
-  it("sends requests to the configured hub with fixture actor headers", async () => {
+  it("sends bearer token when session present", async () => {
     const calls: Array<{ url: string; init?: RequestInit }> = [];
     vi.stubGlobal(
       "fetch",
@@ -66,16 +67,12 @@ describe("createHttpHubClient", () => {
         );
       }),
     );
-    const client = createHttpHubClient("http://127.0.0.1:8765", {
-      actorId: "learner-a",
-      role: "learner",
-    });
+    const client = createHttpHubClient("http://127.0.0.1:8765", () => "tok_abc");
     const list = await client.listAssignments();
     expect(list[0]?.assignment_id).toBe("digital_confidence_w01");
     expect(calls[0]?.url).toBe("http://127.0.0.1:8765/api/v1/assignments");
     const headers = calls[0]?.init?.headers as Record<string, string>;
-    expect(headers["X-Waike-Actor-Id"]).toBe("learner-a");
-    expect(headers["X-Waike-Actor-Role"]).toBe("learner");
+    expect(headers.Authorization).toBe("Bearer tok_abc");
   });
 
   it("posts grades without force_mastery_gap", async () => {
@@ -95,10 +92,7 @@ describe("createHttpHubClient", () => {
         );
       }),
     );
-    const client = createHttpHubClient("http://hub.local", {
-      actorId: "instructor-1",
-      role: "instructor",
-    });
+    const client = createHttpHubClient("http://hub.local", () => "tok");
     await client.grade("sub1", {
       criterion_scores: [{ criterion_id: "crit_a", points: 2 }],
       feedback_body: "ok",

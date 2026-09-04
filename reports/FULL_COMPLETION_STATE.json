@@ -1,19 +1,20 @@
 {
-  "platform_main_sha": "5431bd49689622328d20fb7eb778e0e34284e935",
+  "platform_main_sha": "9178657c789de046d76ca45211074470d9699732",
   "waike_main_sha": "e97e74fc9bfb44b1cdc26b272dc4848264f15fe0",
   "device_os_main_sha": "28562a8456207540c205a1c8a6434a491b0a4771",
   "pr1_ancestor_ok": true,
+  "pr2_ancestor_ok": true,
   "taxonomy_ancestor_ok": true,
-  "current_wave": "PR2_ASSESSMENT_LIFECYCLE",
-  "current_branch": "cursor/waike-learning-pr2-assessment-lifecycle",
-  "current_pr": "https://github.com/gunnchOS3k/gunnchos-waike-learning-platform/pull/2",
-  "verified_implementation_sha": "91e8cbd1216bb6edb1db925c7698fbf21c8cdfa0",
-  "report_generated_from_sha": "91e8cbd1216bb6edb1db925c7698fbf21c8cdfa0",
-  "status": "PR2_READY_FOR_OWNER_REVIEW",
+  "current_wave": "PR3_IDENTITY_INSTRUCTOR",
+  "current_branch": "cursor/waike-learning-pr3-identity-instructor",
+  "current_pr": null,
+  "verified_implementation_sha": null,
+  "report_generated_from_sha": null,
+  "status": "PR3_IMPLEMENTATION_PUSHED_AWAITING_REMOTE_CI",
   "waves": {
     "PR1_FOUNDATION": "MERGED",
-    "PR2_ASSESSMENT_LIFECYCLE": "READY_FOR_OWNER_REVIEW",
-    "PR3_IDENTITY_INSTRUCTOR": "PENDING",
+    "PR2_ASSESSMENT_LIFECYCLE": "MERGED",
+    "PR3_IDENTITY_INSTRUCTOR": "AWAITING_REMOTE_CI",
     "PR4_OFFLINE_SYNC": "PENDING",
     "PR5_ASSESSMENT_BREADTH": "PENDING",
     "PR6_GUNNCHAI": "PENDING",
@@ -26,15 +27,16 @@
     "DIGITALLY_IMPLEMENTED_AND_AUTOMATICALLY_TESTED_FOR_PR1_SCOPE",
     "ASSESSMENT_LIFECYCLE_DIGITALLY_COMPLETE"
   ],
-  "remote_ci_run_ids": {
-    "pr": "33821020817",
-    "push": "33821017895"
-  },
+  "claims_pending_remote_ci": [
+    "MULTI_USER_LMS_ALPHA_DIGITALLY_COMPLETE",
+    "PR3_READY_FOR_OWNER_REVIEW"
+  ],
+  "remote_ci_run_ids": {},
   "digital_blockers": [],
   "external_human_gates": [
-    "Owner merge of draft PR #2",
+    "Owner merge of draft PR3 after green CI",
     "Human/field/accessibility/security certification (never claimed by automation)"
   ],
-  "last_verified_utc": "2026-09-04T00:27:00Z",
-  "evidence_note": "Merge decision should use verified_implementation_sha (CI-green integrity-fix head). Subsequent docs-only report commits are not the verified implementation head."
+  "last_verified_utc": "2026-09-04T03:14:00Z",
+  "evidence_note": "Local verify-pr3 PASS. Do not claim PR3_READY_FOR_OWNER_REVIEW until remote Actions required jobs are green. Avoid self-stale final-head report commit loops: verified_implementation_sha is the CI-green integrity head, not subsequent docs-only commits."
 }

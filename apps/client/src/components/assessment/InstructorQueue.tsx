@@ -8,7 +8,7 @@ export function InstructorQueue({ hub }: Props) {
   const [queue, setQueue] = useState<Array<{ submission_id: string; learner_id: string; attempt_number: number; status: string }>>([]);
   const [active, setActive] = useState<SubmissionView | null>(null);
   const [feedback, setFeedback] = useState("Instructor feedback");
-  const [points, setPoints] = useState(2);
+  const [criterionPoints, setCriterionPoints] = useState<Record<string, number>>({});
   const [message, setMessage] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
@@ -18,6 +18,11 @@ export function InstructorQueue({ hub }: Props) {
     if (!id) return;
     const detail = await hub.getAssignment(id);
     setAssignment(detail);
+    const initial: Record<string, number> = {};
+    for (const c of detail.rubric.criteria) {
+      initial[c.criterion_id] = 2;
+    }
+    setCriterionPoints(initial);
     setQueue(await hub.queue(id));
   }
 
@@ -39,12 +44,15 @@ export function InstructorQueue({ hub }: Props) {
     setError(null);
     try {
       const result = await hub.grade(active.submission_id, {
-        criterion_scores: assignment.rubric.criteria.map((c) => ({
-          criterion_id: c.criterion_id,
-          points,
-          level_id: c.levels.find((l) => l.score === points)?.level_id,
-          comment: `score ${points}`,
-        })),
+        criterion_scores: assignment.rubric.criteria.map((c) => {
+          const points = criterionPoints[c.criterion_id] ?? 0;
+          return {
+            criterion_id: c.criterion_id,
+            points,
+            level_id: c.levels.find((l) => l.score === points)?.level_id,
+            comment: `score ${points}`,
+          };
+        }),
         feedback_body: feedback,
       });
       setMessage(
@@ -75,17 +83,36 @@ export function InstructorQueue({ hub }: Props) {
         <div className="grade-panel" data-testid="grade-panel">
           <h3>Submission {active.submission_id}</h3>
           <pre className="assignment-body">{active.text_response}</pre>
-          <label className="field-label" htmlFor="points">
-            Rubric points (all criteria)
-          </label>
+          <fieldset data-testid="criterion-scores">
+            <legend>Criterion scores</legend>
+            {assignment?.rubric.criteria.map((c) => (
+              <div key={c.criterion_id} className="criterion-row">
+                <label className="field-label" htmlFor={`crit-${c.criterion_id}`}>
+                  {c.description} (0–{c.max_points})
+                </label>
+                <input
+                  id={`crit-${c.criterion_id}`}
+                  data-testid={`rubric-points-${c.criterion_id}`}
+                  type="number"
+                  min={0}
+                  max={c.max_points}
+                  value={criterionPoints[c.criterion_id] ?? 0}
+                  onChange={(e) =>
+                    setCriterionPoints((prev) => ({
+                      ...prev,
+                      [c.criterion_id]: Number(e.target.value),
+                    }))
+                  }
+                />
+              </div>
+            ))}
+          </fieldset>
+          {/* Compat alias for older tests */}
           <input
-            id="points"
             data-testid="rubric-points"
-            type="number"
-            min={0}
-            max={4}
-            value={points}
-            onChange={(e) => setPoints(Number(e.target.value))}
+            type="hidden"
+            value={Object.values(criterionPoints)[0] ?? 2}
+            readOnly
           />
           <label className="field-label" htmlFor="feedback">
             Feedback

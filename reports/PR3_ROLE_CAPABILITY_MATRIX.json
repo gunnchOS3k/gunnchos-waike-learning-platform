@@ -1,0 +1,15 @@
+{
+  "matrix": [
+    {"capability": "login", "learner": "ALLOW", "instructor": "ALLOW", "grader": "ALLOW", "site_admin": "ALLOW", "cross_site": "N/A"},
+    {"capability": "fixture_headers_production", "learner": "DENY", "instructor": "DENY", "grader": "DENY", "site_admin": "DENY", "cross_site": "DENY"},
+    {"capability": "role_spoof", "learner": "DENY", "instructor": "DENY", "grader": "DENY", "site_admin": "DENY", "cross_site": "DENY"},
+    {"capability": "read_own_submission", "learner": "ALLOW", "instructor": "ALLOW", "grader": "ALLOW", "site_admin": "ALLOW", "cross_site": "DENY"},
+    {"capability": "read_peer_submission", "learner": "DENY", "instructor": "ALLOW", "grader": "ALLOW", "site_admin": "ALLOW", "cross_site": "DENY"},
+    {"capability": "instructor_queue", "learner": "DENY", "instructor": "ALLOW", "grader": "ALLOW", "site_admin": "ALLOW", "cross_site": "DENY"},
+    {"capability": "grade", "learner": "DENY", "instructor": "ALLOW", "grader": "ALLOW", "site_admin": "ALLOW", "cross_site": "DENY"},
+    {"capability": "gradebook_matrix", "learner": "OWN", "instructor": "ALLOW", "grader": "ALLOW", "site_admin": "ALLOW", "cross_site": "DENY"},
+    {"capability": "roster", "learner": "DENY", "instructor": "ALLOW", "grader": "DENY", "site_admin": "ALLOW", "cross_site": "DENY"},
+    {"capability": "admin_create_enroll", "learner": "DENY", "instructor": "DENY", "grader": "DENY", "site_admin": "ALLOW", "cross_site": "DENY"}
+  ],
+  "backed_by": ["tests/pr3/test_auth_security.py", "tests/pr3/test_authorization.py", "tests/pr3/test_multi_user_e2e.py", "tests/pr3/test_gradebook.py"]
+}

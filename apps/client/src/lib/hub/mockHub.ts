@@ -71,7 +71,113 @@ export function resetMockHubStore(): void {
 
 /** Deterministic in-browser/Vitest hub stand-in for UI flows (server E2E is authoritative). */
 export function createMockHubClient(actor: HubActor): HubClient {
+  const instructorSide = actor.role === "instructor" || actor.role === "grader" || actor.role === "site_admin";
   return {
+    async login(username) {
+      return {
+        token: `mock-token-${username}`,
+        expires_at: new Date(Date.now() + 3600_000).toISOString(),
+        user: {
+          user_id: username,
+          username,
+          display_name: username,
+          site_id: "site-alpha",
+          roles: [actor.role],
+        },
+      };
+    },
+    async logout() {},
+    async me() {
+      return {
+        user_id: actor.actorId,
+        username: actor.actorId,
+        display_name: actor.actorId,
+        site_id: "site-alpha",
+        roles: [actor.role],
+      };
+    },
+    async learnerHome() {
+      return [
+        {
+          section_id: "sec_alpha_dc_w01",
+          code: "DC-W01-A",
+          title: "Digital Confidence — Alpha",
+          mastery: STORE.mastery.mastered != null
+            ? {
+                mastered: STORE.mastery.mastered || 0,
+                score: STORE.mastery.score || 0,
+                gap_notes: STORE.mastery.gap_notes || "",
+              }
+            : null,
+          recent_feedback: STORE.submissions.flatMap((s) => s.feedback).slice(0, 3),
+        },
+      ];
+    },
+    async listSections() {
+      return [{ section_id: "sec_alpha_dc_w01", code: "DC-W01-A", title: "Digital Confidence — Alpha" }];
+    },
+    async roster() {
+      if (!instructorSide) throw new Error("403");
+      return [
+        { user_id: "learner-a", display_name: "Learner A", status: "active" },
+        { user_id: "learner-b", display_name: "Learner B", status: "active" },
+      ];
+    },
+    async instructorDashboard() {
+      if (!instructorSide) throw new Error("403");
+      return {
+        section: { title: "Digital Confidence — Alpha" },
+        metrics: {
+          active_enrollments: 2,
+          submissions: STORE.submissions.length,
+          ungraded: STORE.submissions.filter((s) => !s.grade).length,
+        },
+      };
+    },
+    async sectionGradebook() {
+      return {
+        section_id: "sec_alpha_dc_w01",
+        categories: [{ category_id: "c1", name: "Assignments", weight: 1 }],
+        items: [{ item_id: "i1", title: "Week 01", points_possible: 20 }],
+        rows:
+          actor.role === "learner"
+            ? [
+                {
+                  learner_id: actor.actorId,
+                  display_name: actor.actorId,
+                  overall_percent: STORE.gradebook[0]
+                    ? (STORE.gradebook[0].points_earned / STORE.gradebook[0].points_possible) * 100
+                    : null,
+                  cells: {},
+                },
+              ]
+            : [
+                {
+                  learner_id: "learner-a",
+                  display_name: "Learner A",
+                  overall_percent: 80,
+                  cells: { i1: { status: "graded", points_earned: 16, percent: 80 } },
+                },
+              ],
+      };
+    },
+    async listUsers() {
+      if (actor.role !== "site_admin") throw new Error("403");
+      return [
+        {
+          user_id: "learner-a",
+          username: "learner-a",
+          display_name: "Learner A",
+          disabled: 0,
+          roles: ["learner"],
+        },
+      ];
+    },
+    async createUser() {
+      return { user_id: "user_new" };
+    },
+    async disableUser() {},
+    async enroll() {},
     async listAssignments(): Promise<AssignmentSummary[]> {
       return [assignment];
     },
@@ -139,7 +245,7 @@ export function createMockHubClient(actor: HubActor): HubClient {
     },
     async history() {
       return STORE.submissions
-        .filter((s) => actor.role === "instructor" || s.learner_id === actor.actorId)
+        .filter((s) => instructorSide || s.learner_id === actor.actorId)
         .map((s) => ({
           submission_id: s.submission_id,
           attempt_number: s.attempt_number,
@@ -148,7 +254,7 @@ export function createMockHubClient(actor: HubActor): HubClient {
         }));
     },
     async queue() {
-      if (actor.role !== "instructor") throw new Error("403");
+      if (!instructorSide) throw new Error("403");
       return STORE.submissions.map((s) => ({
         submission_id: s.submission_id,
         learner_id: s.learner_id,
@@ -157,7 +263,7 @@ export function createMockHubClient(actor: HubActor): HubClient {
       }));
     },
     async grade(submissionId, body) {
-      if (actor.role !== "instructor") throw new Error("403");
+      if (!instructorSide) throw new Error("403");
       const s = STORE.submissions.find((x) => x.submission_id === submissionId);
       if (!s) throw new Error("404");
       const pts = body.criterion_scores.reduce((a, c) => a + c.points, 0);

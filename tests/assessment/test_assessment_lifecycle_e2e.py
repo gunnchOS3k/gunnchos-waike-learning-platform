@@ -40,7 +40,12 @@ def client(tmp_path, monkeypatch):
     assert assign.is_file(), "real DIGITAL_CONFIDENCE week_01 assignment required"
     monkeypatch.setenv("WAIKE_ROOT", str(waike))
     db = tmp_path / "assessment.sqlite3"
-    app = create_app(HubConfig(), db_path=db, seed=True)
+    # PR2 regression: explicit fixture auth (PR3 defaults are production sessions).
+    app = create_app(
+        HubConfig(fixture_auth_enabled=True, production_auth_enabled=False),
+        db_path=db,
+        seed=True,
+    )
     return TestClient(app)
 
 
@@ -103,7 +108,7 @@ def test_assessment_lifecycle_fifteen_steps(client):
 
     # 3. restart preserves draft (new client, same DB)
     db_path = Path(client.app.state.db_path)
-    client2 = TestClient(create_app(HubConfig(), db_path=db_path, seed=True))
+    client2 = TestClient(create_app(HubConfig(fixture_auth_enabled=True, production_auth_enabled=False), db_path=db_path, seed=True))
     resumed = client2.get(f"/api/v1/assignments/{ASSIGNMENT_ID}/draft", headers=LEARNER)
     assert resumed.status_code == 200
     assert "Draft reflection" in resumed.json()["text_response"]
@@ -336,7 +341,7 @@ def test_receipt_survives_restart_and_sql_immutability(client, tmp_path):
     db_path = Path(client.app.state.db_path)
 
     # Restart hub against same DB — receipt still readable and hash matches.
-    client2 = TestClient(create_app(HubConfig(), db_path=db_path, seed=True))
+    client2 = TestClient(create_app(HubConfig(fixture_auth_enabled=True, production_auth_enabled=False), db_path=db_path, seed=True))
     again = client2.get(f"/api/v1/submissions/{sub['submission_id']}/receipt", headers=LEARNER)
     assert again.status_code == 200
     assert again.json()["content_hash"] == content_hash

@@ -5,7 +5,8 @@ import { InstructorQueue } from "./components/assessment/InstructorQueue";
 import { CourseCard } from "./components/CourseCard";
 import { LessonReader } from "./components/LessonReader";
 import { TrustBanner } from "./components/TrustBanner";
-import type { HubActor, HubClient } from "./lib/hub/client";
+import type { AuthSession, HubActor, HubClient, SectionCard, SessionUser } from "./lib/hub/client";
+import { HubAuthError } from "./lib/hub/client";
 import { resolveHubClient } from "./lib/hub/resolveHub";
 import { browseInstallPack, isTauri } from "./lib/tauriBridge";
 import type { LessonContent, LessonInfo, ModuleView, TrustStatus } from "./lib/types";
@@ -16,7 +17,9 @@ import {
   simulateVerifiedInstall,
 } from "./lib/mockRuntime";
 
-type Mode = "lessons" | "assignments" | "instruct";
+type Mode = "lessons" | "home" | "assignments" | "instruct" | "gradebook" | "admin" | "roster";
+
+const SESSION_KEY = "waike_hub_session";
 
 function formatPackError(err: unknown): string {
   const raw = typeof err === "string" ? err : err && typeof err === "object" ? JSON.stringify(err) : String(err);
@@ -42,6 +45,15 @@ function formatPackError(err: unknown): string {
   return raw;
 }
 
+function loadSession(): AuthSession | null {
+  try {
+    const raw = sessionStorage.getItem(SESSION_KEY);
+    return raw ? (JSON.parse(raw) as AuthSession) : null;
+  } catch {
+    return null;
+  }
+}
+
 export default function App() {
   const [trust, setTrust] = useState<TrustStatus>(mockTrust);
   const [module, setModule] = useState<ModuleView | null>(isTauri() ? null : mockModule);
@@ -50,12 +62,54 @@ export default function App() {
   const [resumeOffset, setResumeOffset] = useState(0);
   const [resumeHint, setResumeHint] = useState<string | null>(null);
   const [mode, setMode] = useState<Mode>("lessons");
-  const [actor, setActor] = useState<HubActor>({ actorId: "learner-a", role: "learner" });
+  const [session, setSession] = useState<AuthSession | null>(() => loadSession());
+  const [sessionExpired, setSessionExpired] = useState(false);
+  const [mockActor, setMockActor] = useState<HubActor>({ actorId: "learner-a", role: "learner" });
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [homeCards, setHomeCards] = useState<SectionCard[]>([]);
+  const [sectionId] = useState("sec_alpha_dc_w01");
+  const [dashboard, setDashboard] = useState<{
+    metrics: { active_enrollments: number; submissions: number; ungraded: number };
+  } | null>(null);
+  const [roster, setRoster] = useState<Array<{ user_id: string; display_name: string; status: string }>>([]);
+  const [gradebookRows, setGradebookRows] = useState<
+    Array<{ learner_id: string; display_name: string; overall_percent: number | null }>
+  >([]);
+  const [adminUsers, setAdminUsers] = useState<
+    Array<{ user_id: string; username: string; display_name: string; disabled: number; roles: string[] }>
+  >([]);
+  const [loading, setLoading] = useState(false);
 
-  const hubResolution = useMemo(() => resolveHubClient(actor), [actor]);
+  const tokenRef = useCallback(() => session?.token ?? null, [session]);
+
+  const onAuthFailure = useCallback((detail: string) => {
+    if (detail.includes("SESSION") || detail.includes("AUTH") || detail.includes("EXPIRED")) {
+      setSessionExpired(true);
+      setSession(null);
+      sessionStorage.removeItem(SESSION_KEY);
+    }
+  }, []);
+
+  const hubResolution = useMemo(
+    () => resolveHubClient(tokenRef, onAuthFailure, mockActor),
+    [tokenRef, onAuthFailure, mockActor],
+  );
   const hub: HubClient | null = hubResolution.client;
   const hubUnavailable =
     hubResolution.status === "unavailable" ? hubResolution.reason : null;
+  const isMock = hubResolution.status === "mock";
+  const user: SessionUser | null = session?.user ?? (isMock
+    ? {
+        user_id: mockActor.actorId,
+        username: mockActor.actorId,
+        display_name: mockActor.actorId,
+        site_id: "site-alpha",
+        roles: [mockActor.role],
+      }
+    : null);
+  const primaryRole = user?.roles[0] ?? null;
+  const needsLogin = hubResolution.status === "http" && !session;
 
   useEffect(() => {
     if (!isTauri()) return;
@@ -178,11 +232,69 @@ export default function App() {
     [lesson, module],
   );
 
-  function switchActor(next: HubActor) {
-    setActor(next);
-    if (next.role === "instructor" && mode === "assignments") setMode("instruct");
-    if (next.role === "learner" && mode === "instruct") setMode("assignments");
+  async function onLogin(e: React.FormEvent) {
+    e.preventDefault();
+    if (!hub) return;
+    setLoading(true);
+    setError(null);
+    setSessionExpired(false);
+    try {
+      const s = await hub.login(username, password);
+      setSession(s);
+      sessionStorage.setItem(SESSION_KEY, JSON.stringify(s));
+      setMode(s.user.roles.includes("learner") ? "home" : "instruct");
+    } catch (err) {
+      setError(err instanceof HubAuthError ? err.detail : String(err));
+    } finally {
+      setLoading(false);
+    }
   }
+
+  async function onLogout() {
+    if (hub && session) {
+      try {
+        await hub.logout();
+      } catch {
+        /* revoke best-effort */
+      }
+    }
+    setSession(null);
+    sessionStorage.removeItem(SESSION_KEY);
+    setMode("lessons");
+  }
+
+  useEffect(() => {
+    if (!hub || (!session && !isMock)) return;
+    if (mode === "home" && (primaryRole === "learner" || isMock)) {
+      void hub.learnerHome().then(setHomeCards).catch((err) => setError(String(err)));
+    }
+    if (mode === "instruct") {
+      void hub
+        .instructorDashboard(sectionId)
+        .then((d) => setDashboard(d))
+        .catch((err) => setError(String(err)));
+    }
+    if (mode === "roster") {
+      void hub.roster(sectionId).then(setRoster).catch((err) => setError(String(err)));
+    }
+    if (mode === "gradebook") {
+      void hub
+        .sectionGradebook(sectionId)
+        .then((g) =>
+          setGradebookRows(
+            g.rows.map((r) => ({
+              learner_id: r.learner_id,
+              display_name: r.display_name,
+              overall_percent: r.overall_percent,
+            })),
+          ),
+        )
+        .catch((err) => setError(String(err)));
+    }
+    if (mode === "admin" && primaryRole === "site_admin") {
+      void hub.listUsers().then(setAdminUsers).catch((err) => setError(String(err)));
+    }
+  }, [hub, session, isMock, mode, primaryRole, sectionId]);
 
   function HubUnavailablePanel({ title }: { title: string }) {
     return (
@@ -200,6 +312,56 @@ export default function App() {
     );
   }
 
+  if (needsLogin) {
+    return (
+      <div className="app-shell">
+        <header>
+          <h1 className="brand">WAIKE Learning OS</h1>
+          <p className="tagline">Sign in to your school hub session.</p>
+        </header>
+        {sessionExpired ? (
+          <div className="error-box" role="alert" data-testid="session-expired">
+            Session expired — please sign in again.
+          </div>
+        ) : null}
+        <form className="panel" onSubmit={(e) => void onLogin(e)} data-testid="login-form">
+          <h2>Sign in</h2>
+          <label className="field-label" htmlFor="username">
+            Username
+          </label>
+          <input
+            id="username"
+            data-testid="login-username"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+            autoComplete="username"
+            required
+          />
+          <label className="field-label" htmlFor="password">
+            Password
+          </label>
+          <input
+            id="password"
+            type="password"
+            data-testid="login-password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            autoComplete="current-password"
+            required
+          />
+          <button type="submit" data-testid="login-submit" disabled={loading}>
+            {loading ? "Signing in…" : "Sign in"}
+          </button>
+          {error ? (
+            <div className="error-box" role="alert">
+              {error}
+            </div>
+          ) : null}
+        </form>
+      </div>
+    );
+  }
+
   return (
     <div className="app-shell">
       <a className="skip-link" href="#main">
@@ -208,8 +370,8 @@ export default function App() {
       <header>
         <h1 className="brand">WAIKE Learning OS</h1>
         <p className="tagline">
-          Local-first learning client. Packages are verified before trust. Assessment lifecycle is
-          live for DIGITAL_CONFIDENCE.
+          Local-first learning client. Packages are verified before trust. Multi-user identity and
+          gradebook are live for DIGITAL_CONFIDENCE.
         </p>
         <div className="toolbar">
           <button type="button" onClick={() => void onInstall()}>
@@ -226,6 +388,11 @@ export default function App() {
           >
             Back to module
           </button>
+          {user ? (
+            <button type="button" className="ghost" data-testid="logout-btn" onClick={() => void onLogout()}>
+              Sign out ({user.display_name})
+            </button>
+          ) : null}
         </div>
         <div className="mode-bar" role="navigation" aria-label="Primary">
           <button
@@ -235,31 +402,81 @@ export default function App() {
           >
             Lessons
           </button>
+          {(primaryRole === "learner" || isMock) && (
+            <>
+              <button
+                type="button"
+                className={mode === "home" ? "mode-active" : "ghost"}
+                data-testid="mode-home"
+                onClick={() => {
+                  if (isMock) setMockActor({ actorId: "learner-a", role: "learner" });
+                  setMode("home");
+                }}
+              >
+                Home
+              </button>
+              <button
+                type="button"
+                className={mode === "assignments" ? "mode-active" : "ghost"}
+                data-testid="mode-assignments"
+                onClick={() => {
+                  if (isMock) setMockActor({ actorId: "learner-a", role: "learner" });
+                  setMode("assignments");
+                }}
+              >
+                Assignments
+              </button>
+            </>
+          )}
+          {(primaryRole === "instructor" ||
+            primaryRole === "grader" ||
+            primaryRole === "site_admin" ||
+            isMock) && (
+            <>
+              <button
+                type="button"
+                className={mode === "instruct" ? "mode-active" : "ghost"}
+                data-testid="mode-instruct"
+                onClick={() => {
+                  if (isMock) setMockActor({ actorId: "instructor-1", role: "instructor" });
+                  setMode("instruct");
+                }}
+              >
+                Instruct
+              </button>
+              <button
+                type="button"
+                className={mode === "roster" ? "mode-active" : "ghost"}
+                data-testid="mode-roster"
+                onClick={() => setMode("roster")}
+              >
+                Roster
+              </button>
+            </>
+          )}
           <button
             type="button"
-            className={mode === "assignments" ? "mode-active" : "ghost"}
-            data-testid="mode-assignments"
-            onClick={() => {
-              switchActor({ actorId: "learner-a", role: "learner" });
-              setMode("assignments");
-            }}
+            className={mode === "gradebook" ? "mode-active" : "ghost"}
+            data-testid="mode-gradebook"
+            onClick={() => setMode("gradebook")}
           >
-            Assignments
+            Gradebook
           </button>
-          <button
-            type="button"
-            className={mode === "instruct" ? "mode-active" : "ghost"}
-            data-testid="mode-instruct"
-            onClick={() => {
-              switchActor({ actorId: "instructor-1", role: "instructor" });
-              setMode("instruct");
-            }}
-          >
-            Instruct
-          </button>
-          <span className="muted actor-chip" data-testid="actor-chip">
-            {actor.role}:{actor.actorId}
-          </span>
+          {primaryRole === "site_admin" ? (
+            <button
+              type="button"
+              className={mode === "admin" ? "mode-active" : "ghost"}
+              data-testid="mode-admin"
+              onClick={() => setMode("admin")}
+            >
+              Admin
+            </button>
+          ) : null}
+          {user ? (
+            <span className="muted actor-chip" data-testid="session-chip">
+              {primaryRole}:{user.username}
+            </span>
+          ) : null}
           {hubResolution.status === "mock" ? (
             <span className="muted" data-testid="hub-mode-chip">
               hub:mock
@@ -283,6 +500,11 @@ export default function App() {
         <p className="muted" data-testid="resume-hint">
           {resumeHint}
         </p>
+      ) : null}
+      {sessionExpired ? (
+        <div className="error-box" role="alert" data-testid="session-expired">
+          Session expired
+        </div>
       ) : null}
       {error ? (
         <div className="error-box" role="alert" data-testid="error-box">
@@ -315,6 +537,37 @@ export default function App() {
             )}
           </>
         ) : null}
+        {mode === "home" ? (
+          hub ? (
+            <section className="panel" data-testid="learner-home">
+              <h2>My sections</h2>
+              {homeCards.length === 0 ? (
+                <p className="muted" data-testid="empty-home">
+                  No active enrollments.
+                </p>
+              ) : (
+                <ul>
+                  {homeCards.map((c) => (
+                    <li key={c.section_id}>
+                      <strong>{c.title}</strong> ({c.code})
+                      {c.mastery ? (
+                        <span className="muted">
+                          {" "}
+                          · mastery={c.mastery.mastered ? "yes" : "gap"}
+                        </span>
+                      ) : null}
+                      {c.recent_feedback[0] ? (
+                        <p className="muted">Feedback: {c.recent_feedback[0].body}</p>
+                      ) : null}
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </section>
+          ) : (
+            <HubUnavailablePanel title="Learner home" />
+          )
+        ) : null}
         {mode === "assignments" ? (
           hub ? (
             <AssessmentWorkspace hub={hub} />
@@ -324,9 +577,98 @@ export default function App() {
         ) : null}
         {mode === "instruct" ? (
           hub ? (
-            <InstructorQueue hub={hub} />
+            <>
+              <section className="panel" data-testid="instructor-dashboard">
+                <h2>Instructor dashboard</h2>
+                {dashboard ? (
+                  <p data-testid="instructor-metrics">
+                    Enrolled {dashboard.metrics.active_enrollments} · Submissions{" "}
+                    {dashboard.metrics.submissions} · Ungraded {dashboard.metrics.ungraded}
+                  </p>
+                ) : (
+                  <p className="muted">Loading metrics…</p>
+                )}
+              </section>
+              <InstructorQueue hub={hub} />
+            </>
           ) : (
             <HubUnavailablePanel title="Instructor grading queue" />
+          )
+        ) : null}
+        {mode === "roster" ? (
+          hub ? (
+            <section className="panel" data-testid="roster-panel">
+              <h2>Section roster</h2>
+              {roster.length === 0 ? (
+                <p className="muted">No enrollments.</p>
+              ) : (
+                <ul>
+                  {roster.map((r) => (
+                    <li key={r.user_id}>
+                      {r.display_name} · {r.status}
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </section>
+          ) : (
+            <HubUnavailablePanel title="Roster" />
+          )
+        ) : null}
+        {mode === "gradebook" ? (
+          hub ? (
+            <section className="panel" data-testid="gradebook-panel">
+              <h2>Gradebook</h2>
+              {gradebookRows.length === 0 ? (
+                <p className="muted">No scores yet.</p>
+              ) : (
+                <table>
+                  <thead>
+                    <tr>
+                      <th scope="col">Learner</th>
+                      <th scope="col">Overall %</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {gradebookRows.map((r) => (
+                      <tr key={r.learner_id}>
+                        <td>{r.display_name}</td>
+                        <td>{r.overall_percent == null ? "—" : r.overall_percent.toFixed(1)}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              )}
+            </section>
+          ) : (
+            <HubUnavailablePanel title="Gradebook" />
+          )
+        ) : null}
+        {mode === "admin" ? (
+          hub ? (
+            <section className="panel" data-testid="admin-console">
+              <h2>Site admin</h2>
+              <ul>
+                {adminUsers.map((u) => (
+                  <li key={u.user_id}>
+                    {u.username} · {u.roles.join(",")} · {u.disabled ? "disabled" : "active"}
+                    <button
+                      type="button"
+                      className="ghost"
+                      onClick={() =>
+                        void hub
+                          .disableUser(u.user_id, !u.disabled)
+                          .then(() => hub.listUsers().then(setAdminUsers))
+                      }
+                    >
+                      {u.disabled ? "Enable" : "Disable"}
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            </section>
+          ) : (
+            <HubUnavailablePanel title="Admin" />
           )
         ) : null}
       </div>

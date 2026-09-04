@@ -63,7 +63,10 @@ def live_hub(tmp_path):
     env = os.environ.copy()
     env["WAIKE_ROOT"] = str(waike)
     env["WAIKE_HUB_DB"] = str(db)
+    env["WAIKE_FIXTURE_AUTH"] = "1"
     env["PYTHONPATH"] = str(ROOT / "services" / "hub") + os.pathsep + env.get("PYTHONPATH", "")
+    # Recreate module-level app with fixture auth by importing after env is set:
+    # uvicorn loads app.main:app — create_app() reads WAIKE_FIXTURE_AUTH at import time.
     proc = subprocess.Popen(
         [
             sys.executable,

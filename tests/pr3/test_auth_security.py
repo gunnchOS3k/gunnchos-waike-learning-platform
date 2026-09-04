@@ -1,0 +1,157 @@
+"""PR3 auth security tests — production sessions, password hashing, fixture rejection."""
+
+from __future__ import annotations
+
+from datetime import datetime, timedelta, timezone
+
+from app.auth import session_token_hash
+from app.modules.identity import FIXTURE_PASSWORD
+
+# fixtures: client, prod_app from conftest; helpers:
+
+
+def login(client, username="learner-alpha", password=FIXTURE_PASSWORD):
+    r = client.post("/api/v1/auth/login", json={"username": username, "password": password})
+    assert r.status_code == 200, r.text
+    return r.json()
+
+
+def auth_header(token: str) -> dict[str, str]:
+    return {"Authorization": f"Bearer {token}"}
+
+
+def test_valid_login(client):
+    body = login(client)
+    assert body["user"]["user_id"] == "learner-alpha"
+    me = client.get("/api/v1/auth/me", headers=auth_header(body["token"]))
+    assert me.status_code == 200
+    assert me.json()["user_id"] == "learner-alpha"
+
+
+def test_wrong_password(client):
+    r = client.post(
+        "/api/v1/auth/login",
+        json={"username": "learner-alpha", "password": "definitely-wrong-password"},
+    )
+    assert r.status_code == 401
+    assert r.json()["detail"] == "INVALID_PASSWORD"
+
+
+def test_unknown_user(client):
+    r = client.post(
+        "/api/v1/auth/login",
+        json={"username": "no-such-user", "password": FIXTURE_PASSWORD},
+    )
+    assert r.status_code == 401
+    assert r.json()["detail"] == "UNKNOWN_USER"
+
+
+def test_disabled_user_rejected(client):
+    admin = login(client, "admin-alpha")
+    ah = auth_header(admin["token"])
+    cu = client.post(
+        "/api/v1/admin/users",
+        headers=ah,
+        json={
+            "username": "temp-disabled",
+            "display_name": "Temp",
+            "password": FIXTURE_PASSWORD,
+            "roles": ["learner"],
+        },
+    )
+    assert cu.status_code == 200
+    uid = cu.json()["user_id"]
+    client.post(f"/api/v1/admin/users/{uid}/disable", headers=ah, json={"disabled": True})
+    r = client.post(
+        "/api/v1/auth/login",
+        json={"username": "temp-disabled", "password": FIXTURE_PASSWORD},
+    )
+    assert r.status_code == 403
+    assert r.json()["detail"] == "USER_DISABLED"
+
+
+def test_logout_and_reuse_rejected(client):
+    body = login(client)
+    h = auth_header(body["token"])
+    assert client.post("/api/v1/auth/logout", headers=h).status_code == 200
+    r = client.get("/api/v1/auth/me", headers=h)
+    assert r.status_code == 401
+    assert r.json()["detail"] == "SESSION_REVOKED"
+
+
+def test_malformed_token(client):
+    r = client.get("/api/v1/auth/me", headers={"Authorization": "Bearer short"})
+    assert r.status_code == 401
+    assert r.json()["detail"] in {"MALFORMED_TOKEN", "INVALID_SESSION"}
+
+
+def test_expired_session(prod_app, client):
+    body = login(client)
+    past = (datetime.now(tz=timezone.utc) - timedelta(hours=1)).strftime("%Y-%m-%dT%H:%M:%SZ")
+    prod_app.state.db.execute(
+        "UPDATE sessions SET expires_at=? WHERE session_id=?",
+        (past, body["session_id"]),
+    )
+    prod_app.state.db.commit()
+    r = client.get("/api/v1/auth/me", headers=auth_header(body["token"]))
+    assert r.status_code == 401
+    assert r.json()["detail"] == "SESSION_EXPIRED"
+
+
+def test_revoked_session(prod_app, client):
+    body = login(client)
+    prod_app.state.db.execute(
+        "UPDATE sessions SET revoked=1 WHERE session_id=?", (body["session_id"],)
+    )
+    prod_app.state.db.commit()
+    r = client.get("/api/v1/auth/me", headers=auth_header(body["token"]))
+    assert r.status_code == 401
+    assert r.json()["detail"] == "SESSION_REVOKED"
+
+
+def test_fixture_headers_rejected_in_production(client):
+    r = client.get(
+        "/api/v1/assignments",
+        headers={"X-Waike-Actor-Id": "learner-alpha", "X-Waike-Actor-Role": "learner"},
+    )
+    assert r.status_code == 401
+    assert r.json()["detail"] == "FIXTURE_AUTH_REJECTED"
+
+
+def test_role_spoof_rejected(tmp_path, monkeypatch):
+    from pathlib import Path
+
+    from fastapi.testclient import TestClient
+
+    from app.main import HubConfig, create_app
+
+    root = Path(__file__).resolve().parents[2]
+    monkeypatch.setenv("WAIKE_ROOT", str(root.parent / "waike-research-ops"))
+    app = create_app(
+        HubConfig(production_auth_enabled=False, fixture_auth_enabled=True),
+        db_path=tmp_path / "fx.sqlite3",
+        seed=True,
+    )
+    c = TestClient(app)
+    r = c.get(
+        "/api/v1/assignments",
+        headers={"X-Waike-Actor-Id": "learner-alpha", "X-Waike-Actor-Role": "instructor"},
+    )
+    assert r.status_code == 403
+    assert r.json()["detail"] == "ROLE_MISMATCH"
+
+
+def test_password_hash_not_plaintext(prod_app):
+    row = prod_app.state.db.execute(
+        "SELECT password_hash FROM users WHERE user_id='learner-alpha'"
+    ).fetchone()
+    assert FIXTURE_PASSWORD not in row["password_hash"]
+    assert row["password_hash"].startswith("$argon2") or row["password_hash"].startswith("scrypt$")
+
+
+def test_session_stores_hash_not_token(prod_app, client):
+    body = login(client)
+    row = prod_app.state.db.execute(
+        "SELECT token_hash FROM sessions WHERE session_id=?", (body["session_id"],)
+    ).fetchone()
+    assert row["token_hash"] == session_token_hash(body["token"])
