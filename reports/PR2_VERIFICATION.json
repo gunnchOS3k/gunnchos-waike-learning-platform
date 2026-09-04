@@ -1,60 +1,79 @@
 {
-  "generated_utc": "2026-09-04T00:15:00Z",
-  "status": "PENDING_REMOTE_CI",
-  "program_status": "PR2_CLOSURE_PASS_IN_PROGRESS",
-  "claim": null,
+  "generated_utc": "2026-09-04T00:27:00Z",
+  "status": "AUTOMATED_PIPELINE_PASS",
+  "program_status": "PR2_READY_FOR_OWNER_REVIEW",
+  "claim": "ASSESSMENT_LIFECYCLE_DIGITALLY_COMPLETE",
   "declared_pinned_commit": "e97e74fc9bfb44b1cdc26b272dc4848264f15fe0",
   "observed_source_commit": "e97e74fc9bfb44b1cdc26b272dc4848264f15fe0",
   "platform_main_sha": "5431bd49689622328d20fb7eb778e0e34284e935",
-  "verified_implementation_sha": null,
-  "report_generated_from_sha": null,
+  "verified_implementation_sha": "91e8cbd1216bb6edb1db925c7698fbf21c8cdfa0",
+  "report_generated_from_sha": "91e8cbd1216bb6edb1db925c7698fbf21c8cdfa0",
   "draft_pr_url": "https://github.com/gunnchOS3k/gunnchos-waike-learning-platform/pull/2",
   "closure_fixes": {
-    "fail_closed_hub_mock": "IMPLEMENTED_LOCAL",
-    "force_mastery_gap_removed": "IMPLEMENTED_LOCAL",
-    "rubric_grade_integrity": "IMPLEMENTED_LOCAL",
-    "receipt_append_only_triggers": "IMPLEMENTED_LOCAL",
-    "fixture_auth_claim": "IMPLEMENTED_LOCAL",
-    "http_client_hub_seam": "IMPLEMENTED_LOCAL"
-  },
-  "local_verification": {
-    "assessment_and_hub_pytest": "21 passed (includes 15-step E2E, rubric negatives, receipt immutability, HTTP seams)",
-    "frontend_vitest": "15 passed",
-    "frontend_tsc": "PASS"
+    "fail_closed_hub_mock": "PASS",
+    "force_mastery_gap_removed": "PASS",
+    "rubric_grade_integrity": "PASS",
+    "receipt_append_only_triggers": "PASS",
+    "fixture_auth_claim": "PASS",
+    "http_client_hub_seam": "PASS"
   },
   "remote_ci": {
-    "note": "Do not claim PASS until required jobs are green on the pushed implementation head. Use Actions artifact metadata for runtime head SHA.",
+    "pr_run_id": "33821020817",
+    "push_run_id": "33821017895",
+    "head_sha_from_actions": "91e8cbd1216bb6edb1db925c7698fbf21c8cdfa0",
     "required_jobs": {
-      "contracts/compiler": "PENDING",
-      "assessment-lifecycle": "PENDING",
-      "hub": "PENDING",
-      "rust": "PENDING",
-      "frontend": "PENDING",
-      "native build linux": "PENDING",
-      "security": "PENDING",
-      "macos native artifact": "PENDING",
-      "verify-pr2": "PENDING"
+      "contracts/compiler": "SUCCESS",
+      "assessment-lifecycle": "SUCCESS",
+      "hub": "SUCCESS",
+      "rust": "SUCCESS",
+      "frontend": "SUCCESS",
+      "native build linux": "SUCCESS",
+      "security": "SUCCESS",
+      "macos native artifact": "SUCCESS",
+      "verify-pr2": "SUCCESS"
     }
   },
+  "artifacts": [
+    {
+      "name": "pr2-reports-91e8cbd1216b",
+      "id": 9918500319,
+      "digest": "sha256:3c4f45764898148d25deecf3e8bba540e2e9446038bc4f663800c3cb0b1a7bb1",
+      "workflow_head_sha": "91e8cbd1216bb6edb1db925c7698fbf21c8cdfa0"
+    },
+    {
+      "name": "waike-learning-os-pr2-macos-91e8cbd1216b",
+      "id": 9918381575,
+      "digest": "sha256:06c9301b98f8b4ad10e40999609501a596fd8a3750a588cd8fdbaaa8b487bd1e",
+      "workflow_head_sha": "91e8cbd1216bb6edb1db925c7698fbf21c8cdfa0"
+    }
+  ],
   "wave_acceptance": {
-    "1_learner_sees_assignment": "PASS_LOCAL_E2E",
-    "2_drafts": "PASS_LOCAL_E2E",
-    "3_restart_preserves_draft": "PASS_LOCAL_E2E",
-    "4_submits": "PASS_LOCAL_E2E",
-    "5_idempotent_submit": "PASS_LOCAL_E2E",
-    "6_instructor_sees_submission": "PASS_LOCAL_E2E",
-    "7_instructor_grades_rubric": "PASS_LOCAL_E2E",
-    "8_learner_receives_grade_feedback": "PASS_LOCAL_E2E",
-    "9_mastery_gap": "PASS_LOCAL_E2E",
-    "10_remediation_assigned": "PASS_LOCAL_E2E",
-    "11_learner_resubmits": "PASS_LOCAL_E2E",
-    "12_instructor_regrades": "PASS_LOCAL_E2E",
-    "13_mastery_updates": "PASS_LOCAL_E2E",
-    "14_portfolio_evidence": "PASS_LOCAL_E2E",
-    "15_unauthorized_negatives": "PASS_LOCAL_E2E"
+    "1_learner_sees_assignment": "PASS",
+    "2_drafts": "PASS",
+    "3_restart_preserves_draft": "PASS",
+    "4_submits": "PASS",
+    "5_idempotent_submit": "PASS",
+    "6_instructor_sees_submission": "PASS",
+    "7_instructor_grades_rubric": "PASS",
+    "8_learner_receives_grade_feedback": "PASS",
+    "9_mastery_gap": "PASS",
+    "10_remediation_assigned": "PASS",
+    "11_learner_resubmits": "PASS",
+    "12_instructor_regrades": "PASS",
+    "13_mastery_updates": "PASS",
+    "14_portfolio_evidence": "PASS",
+    "15_unauthorized_negatives": "PASS"
+  },
+  "security_negatives": {
+    "other_learner_submission": "403 FORBIDDEN_OTHER_LEARNER",
+    "learner_instructor_queue": "403",
+    "learner_grade": "403",
+    "other_learner_portfolio": "403",
+    "role_mismatch_header": "403 ROLE_MISMATCH",
+    "instructor_draft": "403 LEARNER_ROLE_REQUIRED"
   },
   "claim_boundary": {
-    "earned": false,
+    "earned": true,
     "fixture_auth_enabled": true,
     "production_auth_enabled": false,
     "does_not_claim": [
@@ -66,7 +85,6 @@
       "production auth"
     ]
   },
-  "blocked": [
-    "Remote PR2 CI not yet verified on this closure-pass head"
-  ]
+  "blocked": [],
+  "evidence_note": "verified_implementation_sha is the CI-green integrity-fix head. This report file may be updated in a later docs commit; do not treat a subsequent docs-only SHA as the verified implementation head."
 }

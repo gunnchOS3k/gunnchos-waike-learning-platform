@@ -7,11 +7,12 @@
   "current_wave": "PR2_ASSESSMENT_LIFECYCLE",
   "current_branch": "cursor/waike-learning-pr2-assessment-lifecycle",
   "current_pr": "https://github.com/gunnchOS3k/gunnchos-waike-learning-platform/pull/2",
-  "verified_implementation_sha": null,
-  "status": "PR2_CLOSURE_PASS_IN_PROGRESS",
+  "verified_implementation_sha": "91e8cbd1216bb6edb1db925c7698fbf21c8cdfa0",
+  "report_generated_from_sha": "91e8cbd1216bb6edb1db925c7698fbf21c8cdfa0",
+  "status": "PR2_READY_FOR_OWNER_REVIEW",
   "waves": {
     "PR1_FOUNDATION": "MERGED",
-    "PR2_ASSESSMENT_LIFECYCLE": "CLOSURE_PASS_IN_PROGRESS",
+    "PR2_ASSESSMENT_LIFECYCLE": "READY_FOR_OWNER_REVIEW",
     "PR3_IDENTITY_INSTRUCTOR": "PENDING",
     "PR4_OFFLINE_SYNC": "PENDING",
     "PR5_ASSESSMENT_BREADTH": "PENDING",
@@ -22,18 +23,18 @@
     "PR10_FULL_ACCEPTANCE": "PENDING"
   },
   "claims_earned": [
-    "DIGITALLY_IMPLEMENTED_AND_AUTOMATICALLY_TESTED_FOR_PR1_SCOPE"
-  ],
-  "claims_pending_remote": [
+    "DIGITALLY_IMPLEMENTED_AND_AUTOMATICALLY_TESTED_FOR_PR1_SCOPE",
     "ASSESSMENT_LIFECYCLE_DIGITALLY_COMPLETE"
   ],
-  "remote_ci_run_ids": {},
-  "digital_blockers": [
-    "Await green remote PR2 CI on closure-pass implementation head"
-  ],
+  "remote_ci_run_ids": {
+    "pr": "33821020817",
+    "push": "33821017895"
+  },
+  "digital_blockers": [],
   "external_human_gates": [
-    "Owner merge of draft PR #2 after green CI",
+    "Owner merge of draft PR #2",
     "Human/field/accessibility/security certification (never claimed by automation)"
   ],
-  "last_verified_utc": "2026-09-04T00:15:00Z"
+  "last_verified_utc": "2026-09-04T00:27:00Z",
+  "evidence_note": "Merge decision should use verified_implementation_sha (CI-green integrity-fix head). Subsequent docs-only report commits are not the verified implementation head."
 }
