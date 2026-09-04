@@ -126,7 +126,16 @@ def test_role_spoof_rejected(tmp_path, monkeypatch):
     from app.main import HubConfig, create_app
 
     root = Path(__file__).resolve().parents[2]
-    monkeypatch.setenv("WAIKE_ROOT", str(root.parent / "waike-research-ops"))
+    import os
+
+    env = os.environ.get("WAIKE_ROOT")
+    if env and Path(env).is_dir():
+        waike = Path(env)
+    elif (root / "waike-research-ops").is_dir():
+        waike = root / "waike-research-ops"
+    else:
+        waike = root.parent / "waike-research-ops"
+    monkeypatch.setenv("WAIKE_ROOT", str(waike))
     app = create_app(
         HubConfig(production_auth_enabled=False, fixture_auth_enabled=True),
         db_path=tmp_path / "fx.sqlite3",

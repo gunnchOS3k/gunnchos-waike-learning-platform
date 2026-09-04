@@ -264,7 +264,7 @@ jobs:
           pin.write_text(json.dumps(data, indent=2) + "\n")
           PY
           uv venv .venv
-          uv pip install --python .venv/bin/python fastapi uvicorn pydantic httpx pytest pyyaml jsonschema argon2-cffi
+          uv pip install --python .venv/bin/python -e tools/course_compiler cryptography PyNaCl fastapi uvicorn pydantic httpx pytest pyyaml jsonschema argon2-cffi
           .venv/bin/pytest -q tests/security tests/pr3/test_auth_security.py --tb=short
 
   hub:

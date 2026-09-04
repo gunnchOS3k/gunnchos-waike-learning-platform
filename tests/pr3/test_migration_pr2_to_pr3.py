@@ -20,8 +20,24 @@ from app.modules.sections import SectionService  # noqa: E402
 from app.auth import Actor, Role  # noqa: E402
 
 
+def _waike() -> Path:
+    import os
+
+    env = os.environ.get("WAIKE_ROOT")
+    if env and Path(env).is_dir():
+        return Path(env)
+    nested = ROOT / "waike-research-ops"
+    if nested.is_dir():
+        return nested
+    sibling = ROOT.parent / "waike-research-ops"
+    if sibling.is_dir():
+        return sibling
+    raise FileNotFoundError(f"waike-research-ops missing (tried WAIKE_ROOT, {nested}, {sibling})")
+
+
 def test_pr2_shaped_db_migrates_preserving_receipts(tmp_path, monkeypatch):
-    monkeypatch.setenv("WAIKE_ROOT", str(ROOT.parent / "waike-research-ops"))
+    waike = _waike()
+    monkeypatch.setenv("WAIKE_ROOT", str(waike))
     db = tmp_path / "migrate.sqlite3"
 
     # Phase 1: apply only m001+m002 by temporarily truncating MIGRATIONS — simulate PR2 DB
@@ -38,7 +54,6 @@ def test_pr2_shaped_db_migrates_preserving_receipts(tmp_path, monkeypatch):
         assert "002_receipt_immutability" in applied
         assert "003_identity_sections_gradebook" not in applied
 
-        waike = ROOT.parent / "waike-research-ops"
         svc = AssessmentService(conn, waike_root=waike, source_commit="test")
         svc.seed_synthetic_actors()
         assign = svc.seed_digital_confidence_assignment()
