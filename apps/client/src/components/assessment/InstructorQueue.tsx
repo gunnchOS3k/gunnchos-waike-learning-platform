@@ -9,7 +9,6 @@ export function InstructorQueue({ hub }: Props) {
   const [active, setActive] = useState<SubmissionView | null>(null);
   const [feedback, setFeedback] = useState("Instructor feedback");
   const [points, setPoints] = useState(2);
-  const [forceGap, setForceGap] = useState(true);
   const [message, setMessage] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
@@ -47,7 +46,6 @@ export function InstructorQueue({ hub }: Props) {
           comment: `score ${points}`,
         })),
         feedback_body: feedback,
-        force_mastery_gap: forceGap,
       });
       setMessage(
         `Graded · mastery=${result.mastery.mastered} · remediation=${result.remediation?.status || "none"} · portfolio=${result.portfolio ? "yes" : "no"}`,
@@ -99,15 +97,6 @@ export function InstructorQueue({ hub }: Props) {
             value={feedback}
             onChange={(e) => setFeedback(e.target.value)}
           />
-          <label className="check">
-            <input
-              type="checkbox"
-              checked={forceGap}
-              onChange={(e) => setForceGap(e.target.checked)}
-              data-testid="force-gap"
-            />
-            Force mastery gap (remediation scenario)
-          </label>
           <div className="toolbar">
             <button type="button" data-testid="return-grade-btn" onClick={() => void onGrade()}>
               Return grade

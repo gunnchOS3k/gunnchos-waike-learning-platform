@@ -84,6 +84,7 @@ describe("WAIKE Learning OS shell", () => {
   it("runs learner assignment draft submit and instructor grade path", async () => {
     const user = userEvent.setup();
     render(<App />);
+    expect(screen.getByTestId("hub-mode-chip").textContent).toMatch(/hub:mock/);
     await user.click(screen.getByTestId("mode-assignments"));
     await waitFor(() => {
       expect(screen.getByTestId("assignment-workspace")).toBeInTheDocument();
@@ -104,6 +105,7 @@ describe("WAIKE Learning OS shell", () => {
     await waitFor(() => {
       expect(screen.getByTestId("instructor-queue")).toBeInTheDocument();
     });
+    expect(screen.queryByTestId("force-gap")).not.toBeInTheDocument();
     await user.click(screen.getByRole("button", { name: /learner-a · attempt 1/i }));
     await user.click(screen.getByTestId("return-grade-btn"));
     await waitFor(() => {

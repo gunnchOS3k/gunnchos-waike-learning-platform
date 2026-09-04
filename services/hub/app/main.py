@@ -18,14 +18,19 @@ APP_VERSION = "0.2.0-pr2"
 class DatabaseConfig(BaseModel):
     enabled: bool = True
     url: str | None = Field(default=None, description="sqlite path or postgresql URL")
-    note: str = "PR2 uses SQLite hub persistence with migrations. Auth is synthetic fixture headers."
+    note: str = (
+        "PR2 uses SQLite hub persistence with migrations. "
+        "Actor identity is synthetic fixture headers only (not production auth)."
+    )
 
 
 class HubConfig(BaseModel):
     app_name: str = "waike-learning-hub"
     version: str = APP_VERSION
     environment: str = "development"
-    auth_enabled: bool = True
+    # Honest PR2 claim: fixture header actors only. Production auth is Wave 3 / PR3.
+    fixture_auth_enabled: bool = True
+    production_auth_enabled: bool = False
     learner_data_enabled: bool = True
     database: DatabaseConfig = Field(default_factory=DatabaseConfig)
 
@@ -78,7 +83,10 @@ def create_app(config: HubConfig | None = None, db_path: Path | None = None, see
     app = FastAPI(
         title="WAIKE Learning Hub",
         version=cfg.version,
-        description="PR2 assessment lifecycle hub. Synthetic fixture auth via X-Waike-Actor-* headers.",
+        description=(
+            "PR2 assessment lifecycle hub. Fixture auth via X-Waike-Actor-* headers "
+            "(fixture_auth_enabled=true; production_auth_enabled=false)."
+        ),
     )
     app.state.config = cfg
 
@@ -104,7 +112,8 @@ def create_app(config: HubConfig | None = None, db_path: Path | None = None, see
     def version() -> dict:
         return {
             "version": cfg.version,
-            "auth_enabled": cfg.auth_enabled,
+            "fixture_auth_enabled": cfg.fixture_auth_enabled,
+            "production_auth_enabled": cfg.production_auth_enabled,
             "learner_data_enabled": cfg.learner_data_enabled,
             "assessment_lifecycle": True,
         }

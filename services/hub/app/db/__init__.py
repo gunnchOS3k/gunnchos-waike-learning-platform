@@ -4,10 +4,12 @@ import sqlite3
 from pathlib import Path
 
 from app.migrations.m001_assessment_lifecycle import SQL as M001
+from app.migrations.m002_receipt_immutability import SQL as M002
 
 
 MIGRATIONS: list[tuple[str, str]] = [
     ("001_assessment_lifecycle", M001),
+    ("002_receipt_immutability", M002),
 ]
 
 

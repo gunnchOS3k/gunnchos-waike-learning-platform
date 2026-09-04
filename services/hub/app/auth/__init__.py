@@ -13,7 +13,7 @@ class Role(str, Enum):
     SITE_ADMIN = "site_admin"
 
 
-# Synthetic fixtures only — PR3 owns full multi-user identity.
+# Synthetic fixture actors only — production_auth_enabled=false until Wave 3 / PR3.
 SYNTHETIC_ACTORS: dict[str, dict[str, str]] = {
     "learner-a": {"role": Role.LEARNER.value, "display_name": "Learner A"},
     "learner-b": {"role": Role.LEARNER.value, "display_name": "Learner B"},

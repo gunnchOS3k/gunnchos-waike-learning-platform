@@ -5,8 +5,8 @@ import { InstructorQueue } from "./components/assessment/InstructorQueue";
 import { CourseCard } from "./components/CourseCard";
 import { LessonReader } from "./components/LessonReader";
 import { TrustBanner } from "./components/TrustBanner";
-import { createHttpHubClient, type HubActor, type HubClient } from "./lib/hub/client";
-import { createMockHubClient } from "./lib/hub/mockHub";
+import type { HubActor, HubClient } from "./lib/hub/client";
+import { resolveHubClient } from "./lib/hub/resolveHub";
 import { browseInstallPack, isTauri } from "./lib/tauriBridge";
 import type { LessonContent, LessonInfo, ModuleView, TrustStatus } from "./lib/types";
 import {
@@ -42,12 +42,6 @@ function formatPackError(err: unknown): string {
   return raw;
 }
 
-function resolveHub(actor: HubActor): HubClient {
-  const base = (import.meta.env.VITE_HUB_URL as string | undefined) || "";
-  if (base) return createHttpHubClient(base.replace(/\/$/, ""), actor);
-  return createMockHubClient(actor);
-}
-
 export default function App() {
   const [trust, setTrust] = useState<TrustStatus>(mockTrust);
   const [module, setModule] = useState<ModuleView | null>(isTauri() ? null : mockModule);
@@ -58,7 +52,10 @@ export default function App() {
   const [mode, setMode] = useState<Mode>("lessons");
   const [actor, setActor] = useState<HubActor>({ actorId: "learner-a", role: "learner" });
 
-  const hub = useMemo(() => resolveHub(actor), [actor]);
+  const hubResolution = useMemo(() => resolveHubClient(actor), [actor]);
+  const hub: HubClient | null = hubResolution.client;
+  const hubUnavailable =
+    hubResolution.status === "unavailable" ? hubResolution.reason : null;
 
   useEffect(() => {
     if (!isTauri()) return;
@@ -187,6 +184,22 @@ export default function App() {
     if (next.role === "learner" && mode === "instruct") setMode("assignments");
   }
 
+  function HubUnavailablePanel({ title }: { title: string }) {
+    return (
+      <section className="panel" data-testid="hub-unavailable">
+        <h2>{title}</h2>
+        <div className="error-box" role="alert" data-testid="hub-unavailable-message">
+          {hubUnavailable || "School Hub not configured / unavailable"}
+        </div>
+        <p className="muted">
+          Set <code>VITE_HUB_URL</code> to a school hub, or enable the explicit test mock with{" "}
+          <code>VITE_WAIKE_MOCK_HUB=true</code>. Assessment features will not fake submission or
+          grading without a hub.
+        </p>
+      </section>
+    );
+  }
+
   return (
     <div className="app-shell">
       <a className="skip-link" href="#main">
@@ -247,6 +260,21 @@ export default function App() {
           <span className="muted actor-chip" data-testid="actor-chip">
             {actor.role}:{actor.actorId}
           </span>
+          {hubResolution.status === "mock" ? (
+            <span className="muted" data-testid="hub-mode-chip">
+              hub:mock
+            </span>
+          ) : null}
+          {hubResolution.status === "http" ? (
+            <span className="muted" data-testid="hub-mode-chip">
+              hub:http
+            </span>
+          ) : null}
+          {hubResolution.status === "unavailable" ? (
+            <span className="muted" data-testid="hub-mode-chip">
+              hub:unavailable
+            </span>
+          ) : null}
         </div>
       </header>
 
@@ -287,8 +315,20 @@ export default function App() {
             )}
           </>
         ) : null}
-        {mode === "assignments" ? <AssessmentWorkspace hub={hub} /> : null}
-        {mode === "instruct" ? <InstructorQueue hub={hub} /> : null}
+        {mode === "assignments" ? (
+          hub ? (
+            <AssessmentWorkspace hub={hub} />
+          ) : (
+            <HubUnavailablePanel title="Assignments" />
+          )
+        ) : null}
+        {mode === "instruct" ? (
+          hub ? (
+            <InstructorQueue hub={hub} />
+          ) : (
+            <HubUnavailablePanel title="Instructor grading queue" />
+          )
+        ) : null}
       </div>
     </div>
   );

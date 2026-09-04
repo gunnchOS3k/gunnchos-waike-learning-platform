@@ -155,7 +155,7 @@ def test_assessment_lifecycle_fifteen_steps(client):
     assert view.json()["learner_id"] == "learner-a"
     steps["6_instructor_sees_submission"] = True
 
-    # 7. instructor grades by rubric (force mastery gap for remediation path)
+    # 7. instructor grades by rubric (score below mastery threshold → gap)
     grade1 = client.post(
         f"/api/v1/instructor/submissions/{submission_id}/grade",
         headers=INSTRUCTOR,
@@ -163,7 +163,6 @@ def test_assessment_lifecycle_fifteen_steps(client):
             "criterion_scores": _criteria_scores(assignment, 2.0),
             "feedback_body": "Developing — strengthen documentation and conceptual depth.",
             "return_to_learner": True,
-            "force_mastery_gap": True,
         },
     )
     assert grade1.status_code == 200
@@ -220,7 +219,7 @@ def test_assessment_lifecycle_fifteen_steps(client):
     assert len(hist2.json()) == 2
     steps["11_learner_resubmits"] = True
 
-    # 12. instructor regrades
+    # 12. instructor regrades (score at/above threshold → mastery)
     grade2 = client.post(
         f"/api/v1/instructor/submissions/{sub2['submission_id']}/grade",
         headers=INSTRUCTOR,
@@ -228,7 +227,6 @@ def test_assessment_lifecycle_fifteen_steps(client):
             "criterion_scores": _criteria_scores(assignment, 4.0),
             "feedback_body": "Excellent revision — portfolio ready.",
             "return_to_learner": True,
-            "force_mastery_gap": False,
         },
     )
     assert grade2.status_code == 200
@@ -245,7 +243,6 @@ def test_assessment_lifecycle_fifteen_steps(client):
             "criterion_scores": _criteria_scores(assignment, 2.0),
             "feedback_body": "Historical attempt remains developing.",
             "return_to_learner": True,
-            "force_mastery_gap": True,
         },
     )
     assert revise.status_code == 200
@@ -322,3 +319,43 @@ def test_receipt_immutable_payload(client):
     payload = json.loads(rcpt.json()["immutable_payload"])
     assert payload["content_hash"] == sub["content_hash"]
     assert payload["submission_id"] == sub["submission_id"]
+
+
+def test_receipt_survives_restart_and_sql_immutability(client, tmp_path):
+    """Append-only receipts: readable after restart; direct SQL UPDATE/DELETE fail."""
+    import sqlite3
+
+    sub = client.post(
+        f"/api/v1/assignments/{ASSIGNMENT_ID}/submit",
+        headers=LEARNER,
+        json={"idempotency_key": "idem-receipt-immutable", "text_response": "Immutable receipt body."},
+    ).json()
+    receipt = client.get(f"/api/v1/submissions/{sub['submission_id']}/receipt", headers=LEARNER).json()
+    content_hash = receipt["content_hash"]
+    receipt_id = receipt["receipt_id"]
+    db_path = Path(client.app.state.db_path)
+
+    # Restart hub against same DB — receipt still readable and hash matches.
+    client2 = TestClient(create_app(HubConfig(), db_path=db_path, seed=True))
+    again = client2.get(f"/api/v1/submissions/{sub['submission_id']}/receipt", headers=LEARNER)
+    assert again.status_code == 200
+    assert again.json()["content_hash"] == content_hash
+    assert again.json()["receipt_id"] == receipt_id
+    assert json.loads(again.json()["immutable_payload"])["content_hash"] == content_hash
+
+    # Direct SQL mutation must be rejected by triggers.
+    conn = sqlite3.connect(str(db_path))
+    with pytest.raises(sqlite3.IntegrityError, match="SUBMISSION_RECEIPT_IMMUTABLE"):
+        conn.execute(
+            "UPDATE submission_receipts SET content_hash=? WHERE receipt_id=?",
+            ("0" * 64, receipt_id),
+        )
+    conn.rollback()
+    with pytest.raises(sqlite3.IntegrityError, match="SUBMISSION_RECEIPT_IMMUTABLE"):
+        conn.execute("DELETE FROM submission_receipts WHERE receipt_id=?", (receipt_id,))
+    conn.rollback()
+    row = conn.execute(
+        "SELECT content_hash FROM submission_receipts WHERE receipt_id=?", (receipt_id,)
+    ).fetchone()
+    assert row[0] == content_hash
+    conn.close()

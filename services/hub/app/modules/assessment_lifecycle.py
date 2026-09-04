@@ -507,6 +507,84 @@ class AssessmentService:
         )
         return [dict(r) for r in rows]
 
+    def _validate_criterion_scores(
+        self,
+        assignment: dict[str, Any],
+        criterion_scores: list[dict[str, Any]],
+    ) -> tuple[list[dict[str, Any]], float, float]:
+        """Fail-closed rubric integrity. Validate fully before any mutation."""
+        if not criterion_scores:
+            raise ServiceError("EMPTY_CRITERION_SCORES", 400)
+
+        required = {
+            c["criterion_id"]: c for c in assignment["rubric"]["criteria"] if not c.get("optional")
+        }
+        if not required:
+            raise ServiceError("RUBRIC_HAS_NO_REQUIRED_CRITERIA", 500)
+
+        seen: set[str] = set()
+        normalized: list[dict[str, Any]] = []
+        points_earned = 0.0
+
+        for item in criterion_scores:
+            criterion_id = str(item.get("criterion_id") or "")
+            if not criterion_id:
+                raise ServiceError("MISSING_CRITERION_ID", 400)
+            if criterion_id in seen:
+                raise ServiceError("DUPLICATE_CRITERION", 400)
+            seen.add(criterion_id)
+
+            crit_meta = required.get(criterion_id)
+            if crit_meta is None:
+                # Unknown / not required for this rubric → fail closed for full returned grade
+                raise ServiceError("UNKNOWN_OR_OPTIONAL_CRITERION", 400)
+
+            raw_points = item.get("points")
+            try:
+                points = float(raw_points)
+            except (TypeError, ValueError):
+                raise ServiceError("INVALID_POINTS", 400) from None
+            if points != points or points in (float("inf"), float("-inf")):  # NaN / inf
+                raise ServiceError("INVALID_POINTS", 400)
+            max_points = float(crit_meta["max_points"])
+            if points < 0 or points > max_points:
+                raise ServiceError("POINTS_OUT_OF_RANGE", 400)
+
+            level_id = item.get("level_id")
+            if level_id is not None and str(level_id).strip() != "":
+                level_id = str(level_id)
+                level = _row(
+                    self.conn,
+                    "SELECT * FROM rubric_levels WHERE level_id=?",
+                    (level_id,),
+                )
+                if not level:
+                    raise ServiceError("INVALID_LEVEL", 400)
+                if level["criterion_id"] != criterion_id:
+                    raise ServiceError("LEVEL_CRITERION_MISMATCH", 400)
+                if abs(float(level["score"]) - points) > 1e-9:
+                    raise ServiceError("LEVEL_POINTS_MISMATCH", 400)
+            else:
+                level_id = None
+
+            points_earned += points
+            normalized.append(
+                {
+                    "criterion_id": criterion_id,
+                    "points": points,
+                    "level_id": level_id,
+                    "comment": str(item.get("comment") or ""),
+                }
+            )
+
+        missing = set(required.keys()) - seen
+        if missing:
+            raise ServiceError("MISSING_REQUIRED_CRITERIA", 400)
+
+        # Full returned grade: points_possible is the entire rubric, not a subset.
+        points_possible = sum(float(c["max_points"]) for c in required.values())
+        return normalized, points_earned, points_possible
+
     def grade_submission(
         self,
         actor: Actor,
@@ -514,7 +592,6 @@ class AssessmentService:
         criterion_scores: list[dict[str, Any]],
         feedback_body: str,
         return_to_learner: bool = True,
-        force_mastery_gap: bool | None = None,
     ) -> dict[str, Any]:
         if not actor.is_instructor_side:
             raise ServiceError("INSTRUCTOR_ROLE_REQUIRED", 403)
@@ -523,225 +600,248 @@ class AssessmentService:
             raise ServiceError("SUBMISSION_NOT_FOUND", 404)
         assignment = self.get_assignment(sub["assignment_id"])
         existing_grade = _row(self.conn, "SELECT * FROM grades WHERE submission_id=?", (submission_id,))
+        prior_evals = _rows(
+            self.conn,
+            "SELECT evaluation_id, criterion_id, level_id, points, comment FROM rubric_evaluations WHERE submission_id=?",
+            (submission_id,),
+        )
+
+        # Validate-before-mutate: failed grading must not delete/replace existing evaluations.
+        try:
+            normalized, points_earned, points_possible = self._validate_criterion_scores(
+                assignment, criterion_scores
+            )
+        except ServiceError:
+            # Ensure no partial mutation leaked (validate path is read-only).
+            after = _rows(
+                self.conn,
+                "SELECT evaluation_id, criterion_id, level_id, points, comment FROM rubric_evaluations WHERE submission_id=?",
+                (submission_id,),
+            )
+            if [dict(r) for r in after] != [dict(r) for r in prior_evals]:
+                self.conn.rollback()
+            raise
 
         now = _now()
-        points_earned = 0.0
-        points_possible = 0.0
-        # Replace evaluations for this grading pass
-        self.conn.execute("DELETE FROM rubric_evaluations WHERE submission_id=?", (submission_id,))
-        for item in criterion_scores:
-            criterion_id = item["criterion_id"]
-            points = float(item["points"])
-            comment = str(item.get("comment") or "")
-            level_id = item.get("level_id")
-            crit = _row(self.conn, "SELECT * FROM rubric_criteria WHERE criterion_id=?", (criterion_id,))
-            if not crit or crit["rubric_id"] != assignment["rubric_id"]:
-                raise ServiceError("INVALID_CRITERION", 400)
-            points_possible += float(crit["max_points"])
-            points_earned += points
+        try:
+            self.conn.execute("DELETE FROM rubric_evaluations WHERE submission_id=?", (submission_id,))
+            for item in normalized:
+                self.conn.execute(
+                    """
+                    INSERT INTO rubric_evaluations(evaluation_id, submission_id, criterion_id, level_id, points, comment, graded_by, graded_at)
+                    VALUES (?,?,?,?,?,?,?,?)
+                    """,
+                    (
+                        _id("eval"),
+                        submission_id,
+                        item["criterion_id"],
+                        item["level_id"],
+                        item["points"],
+                        item["comment"],
+                        actor.actor_id,
+                        now,
+                    ),
+                )
+
+            if existing_grade:
+                before = dict(existing_grade)
+                rev = int(existing_grade["revision"]) + 1
+                self.conn.execute(
+                    """
+                    UPDATE grades SET points_earned=?, points_possible=?, returned=?, graded_by=?, graded_at=?, revision=?
+                    WHERE grade_id=?
+                    """,
+                    (
+                        points_earned,
+                        points_possible,
+                        1 if return_to_learner else 0,
+                        actor.actor_id,
+                        now,
+                        rev,
+                        existing_grade["grade_id"],
+                    ),
+                )
+                grade_id = existing_grade["grade_id"]
+                after = dict(_row(self.conn, "SELECT * FROM grades WHERE grade_id=?", (grade_id,)))
+                self.conn.execute(
+                    """
+                    INSERT INTO grade_audit(audit_id, grade_id, actor_id, action, before_json, after_json, created_at)
+                    VALUES (?,?,?,?,?,?,?)
+                    """,
+                    (
+                        _id("gaud"),
+                        grade_id,
+                        actor.actor_id,
+                        "revise_grade",
+                        json.dumps({k: before[k] for k in before.keys()}),
+                        json.dumps({k: after[k] for k in after.keys()}),
+                        now,
+                    ),
+                )
+            else:
+                grade_id = _id("grd")
+                self.conn.execute(
+                    """
+                    INSERT INTO grades(grade_id, submission_id, learner_id, assignment_id, points_earned, points_possible, returned, graded_by, graded_at, revision)
+                    VALUES (?,?,?,?,?,?,?,?,?,?)
+                    """,
+                    (
+                        grade_id,
+                        submission_id,
+                        sub["learner_id"],
+                        sub["assignment_id"],
+                        points_earned,
+                        points_possible,
+                        1 if return_to_learner else 0,
+                        actor.actor_id,
+                        now,
+                        1,
+                    ),
+                )
+                self.conn.execute(
+                    """
+                    INSERT INTO grade_audit(audit_id, grade_id, actor_id, action, before_json, after_json, created_at)
+                    VALUES (?,?,?,?,?,?,?)
+                    """,
+                    (
+                        _id("gaud"),
+                        grade_id,
+                        actor.actor_id,
+                        "create_grade",
+                        None,
+                        json.dumps({"points_earned": points_earned, "points_possible": points_possible}),
+                        now,
+                    ),
+                )
+
+            if feedback_body.strip():
+                self.conn.execute(
+                    """
+                    INSERT INTO feedback(feedback_id, submission_id, author_id, body, visible_to_learner, created_at)
+                    VALUES (?,?,?,?,?,?)
+                    """,
+                    (_id("fb"), submission_id, actor.actor_id, feedback_body, 1 if return_to_learner else 0, now),
+                )
+
             self.conn.execute(
-                """
-                INSERT INTO rubric_evaluations(evaluation_id, submission_id, criterion_id, level_id, points, comment, graded_by, graded_at)
-                VALUES (?,?,?,?,?,?,?,?)
-                """,
-                (_id("eval"), submission_id, criterion_id, level_id, points, comment, actor.actor_id, now),
+                "UPDATE submissions SET status=? WHERE submission_id=?",
+                ("returned" if return_to_learner else "graded", submission_id),
             )
 
-        if existing_grade:
-            before = dict(existing_grade)
-            rev = int(existing_grade["revision"]) + 1
             self.conn.execute(
                 """
-                UPDATE grades SET points_earned=?, points_possible=?, returned=?, graded_by=?, graded_at=?, revision=?
-                WHERE grade_id=?
+                INSERT INTO gradebook_entries(entry_id, learner_id, assignment_id, grade_id, points_earned, points_possible, status, updated_at)
+                VALUES (?,?,?,?,?,?,?,?)
+                ON CONFLICT(learner_id, assignment_id) DO UPDATE SET
+                  grade_id=excluded.grade_id,
+                  points_earned=excluded.points_earned,
+                  points_possible=excluded.points_possible,
+                  status=excluded.status,
+                  updated_at=excluded.updated_at
                 """,
                 (
+                    _id("gbe"),
+                    sub["learner_id"],
+                    sub["assignment_id"],
+                    grade_id,
                     points_earned,
                     points_possible,
-                    1 if return_to_learner else 0,
-                    actor.actor_id,
-                    now,
-                    rev,
-                    existing_grade["grade_id"],
-                ),
-            )
-            grade_id = existing_grade["grade_id"]
-            after = dict(_row(self.conn, "SELECT * FROM grades WHERE grade_id=?", (grade_id,)))
-            self.conn.execute(
-                """
-                INSERT INTO grade_audit(audit_id, grade_id, actor_id, action, before_json, after_json, created_at)
-                VALUES (?,?,?,?,?,?,?)
-                """,
-                (
-                    _id("gaud"),
-                    grade_id,
-                    actor.actor_id,
-                    "revise_grade",
-                    json.dumps({k: before[k] for k in before.keys()}),
-                    json.dumps({k: after[k] for k in after.keys()}),
+                    "returned" if return_to_learner else "graded",
                     now,
                 ),
             )
-        else:
-            grade_id = _id("grd")
+
+            # Mastery derives from persisted rubric evaluation + assignment threshold only.
+            avg = points_earned / max(len(normalized), 1)
+            threshold = float(assignment["mastery_threshold"])
+            mastered = avg >= threshold
+            mastery_id = _id("mst")
+            gap = "" if mastered else f"Average {avg:.2f} below threshold {threshold}"
             self.conn.execute(
                 """
-                INSERT INTO grades(grade_id, submission_id, learner_id, assignment_id, points_earned, points_possible, returned, graded_by, graded_at, revision)
+                INSERT INTO mastery_records(mastery_id, learner_id, outcome_id, assignment_id, submission_id, score, threshold, mastered, gap_notes, evaluated_at)
                 VALUES (?,?,?,?,?,?,?,?,?,?)
                 """,
                 (
-                    grade_id,
-                    submission_id,
+                    mastery_id,
                     sub["learner_id"],
-                    sub["assignment_id"],
-                    points_earned,
-                    points_possible,
-                    1 if return_to_learner else 0,
-                    actor.actor_id,
-                    now,
-                    1,
-                ),
-            )
-            self.conn.execute(
-                """
-                INSERT INTO grade_audit(audit_id, grade_id, actor_id, action, before_json, after_json, created_at)
-                VALUES (?,?,?,?,?,?,?)
-                """,
-                (
-                    _id("gaud"),
-                    grade_id,
-                    actor.actor_id,
-                    "create_grade",
-                    None,
-                    json.dumps({"points_earned": points_earned, "points_possible": points_possible}),
-                    now,
-                ),
-            )
-
-        if feedback_body.strip():
-            self.conn.execute(
-                """
-                INSERT INTO feedback(feedback_id, submission_id, author_id, body, visible_to_learner, created_at)
-                VALUES (?,?,?,?,?,?)
-                """,
-                (_id("fb"), submission_id, actor.actor_id, feedback_body, 1 if return_to_learner else 0, now),
-            )
-
-        self.conn.execute(
-            "UPDATE submissions SET status=? WHERE submission_id=?",
-            ("returned" if return_to_learner else "graded", submission_id),
-        )
-
-        # Gradebook
-        self.conn.execute(
-            """
-            INSERT INTO gradebook_entries(entry_id, learner_id, assignment_id, grade_id, points_earned, points_possible, status, updated_at)
-            VALUES (?,?,?,?,?,?,?,?)
-            ON CONFLICT(learner_id, assignment_id) DO UPDATE SET
-              grade_id=excluded.grade_id,
-              points_earned=excluded.points_earned,
-              points_possible=excluded.points_possible,
-              status=excluded.status,
-              updated_at=excluded.updated_at
-            """,
-            (
-                _id("gbe"),
-                sub["learner_id"],
-                sub["assignment_id"],
-                grade_id,
-                points_earned,
-                points_possible,
-                "returned" if return_to_learner else "graded",
-                now,
-            ),
-        )
-
-        # Mastery: average criterion points vs threshold
-        avg = points_earned / max(len(criterion_scores), 1)
-        threshold = float(assignment["mastery_threshold"])
-        if force_mastery_gap is True:
-            mastered = False
-        elif force_mastery_gap is False:
-            mastered = True
-        else:
-            mastered = avg >= threshold
-        mastery_id = _id("mst")
-        gap = "" if mastered else f"Average {avg:.2f} below threshold {threshold}"
-        self.conn.execute(
-            """
-            INSERT INTO mastery_records(mastery_id, learner_id, outcome_id, assignment_id, submission_id, score, threshold, mastered, gap_notes, evaluated_at)
-            VALUES (?,?,?,?,?,?,?,?,?,?)
-            """,
-            (
-                mastery_id,
-                sub["learner_id"],
-                assignment["outcome_id"],
-                sub["assignment_id"],
-                submission_id,
-                avg,
-                threshold,
-                1 if mastered else 0,
-                gap,
-                now,
-            ),
-        )
-
-        remediation = None
-        if not mastered:
-            plan_id = _id("rem")
-            task = (
-                f"Remediation for {assignment['title']}: revise your reflection to strengthen "
-                f"conceptual understanding and documentation quality. Address: {gap}"
-            )
-            self.conn.execute(
-                """
-                INSERT INTO remediation_plans(plan_id, learner_id, assignment_id, mastery_id, task_markdown, status, created_by, created_at)
-                VALUES (?,?,?,?,?,?,?,?)
-                """,
-                (plan_id, sub["learner_id"], sub["assignment_id"], mastery_id, task, "assigned", actor.actor_id, now),
-            )
-            remediation = dict(_row(self.conn, "SELECT * FROM remediation_plans WHERE plan_id=?", (plan_id,)))
-
-        portfolio = None
-        if mastered and int(assignment["portfolio_connection"]) == 1:
-            portfolio_id = _id("port")
-            self.conn.execute(
-                """
-                INSERT INTO portfolio_artifacts(portfolio_id, learner_id, assignment_id, submission_id, title, evidence_hash, created_at)
-                VALUES (?,?,?,?,?,?,?)
-                ON CONFLICT(learner_id, submission_id) DO UPDATE SET
-                  title=excluded.title,
-                  evidence_hash=excluded.evidence_hash,
-                  created_at=excluded.created_at
-                """,
-                (
-                    portfolio_id,
-                    sub["learner_id"],
+                    assignment["outcome_id"],
                     sub["assignment_id"],
                     submission_id,
-                    f"Portfolio evidence — {assignment['title']}",
-                    sub["content_hash"],
+                    avg,
+                    threshold,
+                    1 if mastered else 0,
+                    gap,
                     now,
                 ),
             )
-            portfolio = dict(
-                _row(
-                    self.conn,
-                    "SELECT * FROM portfolio_artifacts WHERE learner_id=? AND submission_id=?",
-                    (sub["learner_id"], submission_id),
+
+            remediation = None
+            if not mastered:
+                plan_id = _id("rem")
+                task = (
+                    f"Remediation for {assignment['title']}: revise your reflection to strengthen "
+                    f"conceptual understanding and documentation quality. Address: {gap}"
                 )
-            )
-            # Complete open remediation if any
-            self.conn.execute(
-                """
-                UPDATE remediation_plans SET status='completed', completed_at=?
-                WHERE learner_id=? AND assignment_id=? AND status='assigned'
-                """,
-                (now, sub["learner_id"], sub["assignment_id"]),
-            )
+                self.conn.execute(
+                    """
+                    INSERT INTO remediation_plans(plan_id, learner_id, assignment_id, mastery_id, task_markdown, status, created_by, created_at)
+                    VALUES (?,?,?,?,?,?,?,?)
+                    """,
+                    (plan_id, sub["learner_id"], sub["assignment_id"], mastery_id, task, "assigned", actor.actor_id, now),
+                )
+                remediation = dict(_row(self.conn, "SELECT * FROM remediation_plans WHERE plan_id=?", (plan_id,)))
 
-        _audit(self.conn, actor.actor_id, "grade", "submission", submission_id, {"grade_id": grade_id, "mastered": mastered})
-        self.conn.commit()
+            portfolio = None
+            if mastered and int(assignment["portfolio_connection"]) == 1:
+                portfolio_id = _id("port")
+                self.conn.execute(
+                    """
+                    INSERT INTO portfolio_artifacts(portfolio_id, learner_id, assignment_id, submission_id, title, evidence_hash, created_at)
+                    VALUES (?,?,?,?,?,?,?)
+                    ON CONFLICT(learner_id, submission_id) DO UPDATE SET
+                      title=excluded.title,
+                      evidence_hash=excluded.evidence_hash,
+                      created_at=excluded.created_at
+                    """,
+                    (
+                        portfolio_id,
+                        sub["learner_id"],
+                        sub["assignment_id"],
+                        submission_id,
+                        f"Portfolio evidence — {assignment['title']}",
+                        sub["content_hash"],
+                        now,
+                    ),
+                )
+                portfolio = dict(
+                    _row(
+                        self.conn,
+                        "SELECT * FROM portfolio_artifacts WHERE learner_id=? AND submission_id=?",
+                        (sub["learner_id"], submission_id),
+                    )
+                )
+                self.conn.execute(
+                    """
+                    UPDATE remediation_plans SET status='completed', completed_at=?
+                    WHERE learner_id=? AND assignment_id=? AND status='assigned'
+                    """,
+                    (now, sub["learner_id"], sub["assignment_id"]),
+                )
+
+            _audit(
+                self.conn,
+                actor.actor_id,
+                "grade",
+                "submission",
+                submission_id,
+                {"grade_id": grade_id, "mastered": mastered},
+            )
+            self.conn.commit()
+        except Exception:
+            self.conn.rollback()
+            raise
+
         return {
             "grade": dict(_row(self.conn, "SELECT * FROM grades WHERE grade_id=?", (grade_id,))),
             "mastery": dict(_row(self.conn, "SELECT * FROM mastery_records WHERE mastery_id=?", (mastery_id,))),

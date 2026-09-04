@@ -183,18 +183,12 @@ export function createMockHubClient(actor: HubActor): HubClient {
         comment: c.comment || "",
       }));
       s.status = "returned";
-      const mastered =
-        body.force_mastery_gap === true
-          ? 0
-          : body.force_mastery_gap === false
-            ? 1
-            : pts / Math.max(body.criterion_scores.length, 1) >= 3
-              ? 1
-              : 0;
+      const avg = pts / Math.max(body.criterion_scores.length, 1);
+      const mastered = avg >= 3 ? 1 : 0;
       STORE.mastery = {
         mastered,
         gap_notes: mastered ? "" : "gap",
-        score: pts / Math.max(body.criterion_scores.length, 1),
+        score: avg,
       };
       STORE.gradebook = [
         {

@@ -46,7 +46,6 @@ class GradeBody(BaseModel):
     criterion_scores: list[CriterionScore]
     feedback_body: str = ""
     return_to_learner: bool = True
-    force_mastery_gap: bool | None = None
 
 
 @router.get("/assignments")
@@ -211,7 +210,6 @@ def grade(
             criterion_scores=[c.model_dump() for c in body.criterion_scores],
             feedback_body=body.feedback_body,
             return_to_learner=body.return_to_learner,
-            force_mastery_gap=body.force_mastery_gap,
         )
     except ServiceError as e:
         raise _http(e) from e

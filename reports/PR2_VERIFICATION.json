@@ -1,85 +1,72 @@
 {
-  "generated_utc": "2026-09-03T23:46:30Z",
-  "status": "AUTOMATED_PIPELINE_PASS",
-  "program_status": "PR2_READY_FOR_OWNER_REVIEW",
-  "claim": "ASSESSMENT_LIFECYCLE_DIGITALLY_COMPLETE",
+  "generated_utc": "2026-09-04T00:15:00Z",
+  "status": "PENDING_REMOTE_CI",
+  "program_status": "PR2_CLOSURE_PASS_IN_PROGRESS",
+  "claim": null,
   "declared_pinned_commit": "e97e74fc9bfb44b1cdc26b272dc4848264f15fe0",
   "observed_source_commit": "e97e74fc9bfb44b1cdc26b272dc4848264f15fe0",
   "platform_main_sha": "5431bd49689622328d20fb7eb778e0e34284e935",
-  "pr_head_sha": "30b31c96813cc780df0f71b8e0b2dfe85e3ece04",
+  "verified_implementation_sha": null,
+  "report_generated_from_sha": null,
   "draft_pr_url": "https://github.com/gunnchOS3k/gunnchos-waike-learning-platform/pull/2",
+  "closure_fixes": {
+    "fail_closed_hub_mock": "IMPLEMENTED_LOCAL",
+    "force_mastery_gap_removed": "IMPLEMENTED_LOCAL",
+    "rubric_grade_integrity": "IMPLEMENTED_LOCAL",
+    "receipt_append_only_triggers": "IMPLEMENTED_LOCAL",
+    "fixture_auth_claim": "IMPLEMENTED_LOCAL",
+    "http_client_hub_seam": "IMPLEMENTED_LOCAL"
+  },
+  "local_verification": {
+    "assessment_and_hub_pytest": "21 passed (includes 15-step E2E, rubric negatives, receipt immutability, HTTP seams)",
+    "frontend_vitest": "15 passed",
+    "frontend_tsc": "PASS"
+  },
   "remote_ci": {
-    "pr_run_id": "33818081120",
-    "push_run_id": "33818077304",
+    "note": "Do not claim PASS until required jobs are green on the pushed implementation head. Use Actions artifact metadata for runtime head SHA.",
     "required_jobs": {
-      "contracts/compiler": "SUCCESS",
-      "assessment-lifecycle": "SUCCESS",
-      "hub": "SUCCESS",
-      "rust": "SUCCESS",
-      "frontend": "SUCCESS",
-      "native build linux": "SUCCESS",
-      "security": "SUCCESS",
-      "macos native artifact": "SUCCESS",
-      "verify-pr2": "SUCCESS"
+      "contracts/compiler": "PENDING",
+      "assessment-lifecycle": "PENDING",
+      "hub": "PENDING",
+      "rust": "PENDING",
+      "frontend": "PENDING",
+      "native build linux": "PENDING",
+      "security": "PENDING",
+      "macos native artifact": "PENDING",
+      "verify-pr2": "PENDING"
     }
-  },
-  "artifacts": [
-    {
-      "name": "pr2-reports-30b31c96813c",
-      "id": 9917558815,
-      "digest": "sha256:900af855ece51eb49ca5e8a33e3f4b1a7415ff00f99b8d43ff063c41c80feec0"
-    },
-    {
-      "name": "waike-learning-os-pr2-macos-30b31c96813c",
-      "id": 9917342059,
-      "digest": "sha256:ac0202e148392f4c2100b877d9c1b47057a9b70ff5c73600d64e1a06876ff1ce"
-    }
-  ],
-  "test_counts": {
-    "python_passed": 43,
-    "frontend_passed": 8,
-    "rust_passed": 5,
-    "assessment_e2e_steps": 15
-  },
-  "real_assignment": {
-    "assignment_id": "digital_confidence_w01",
-    "title": "Mental model reflection",
-    "source_path": "assignments/by_course/digital_confidence/week_01.yaml"
   },
   "wave_acceptance": {
-    "1_learner_sees_assignment": "PASS",
-    "2_drafts": "PASS",
-    "3_restart_preserves_draft": "PASS",
-    "4_submits": "PASS",
-    "5_idempotent_submit": "PASS",
-    "6_instructor_sees_submission": "PASS",
-    "7_instructor_grades_rubric": "PASS",
-    "8_learner_receives_grade_feedback": "PASS",
-    "9_mastery_gap": "PASS",
-    "10_remediation_assigned": "PASS",
-    "11_learner_resubmits": "PASS",
-    "12_instructor_regrades": "PASS",
-    "13_mastery_updates": "PASS",
-    "14_portfolio_evidence": "PASS",
-    "15_unauthorized_negatives": "PASS"
-  },
-  "security_negatives": {
-    "other_learner_submission": "403 FORBIDDEN_OTHER_LEARNER",
-    "learner_instructor_queue": "403",
-    "learner_grade": "403",
-    "other_learner_portfolio": "403",
-    "role_mismatch_header": "403 ROLE_MISMATCH",
-    "instructor_draft": "403 LEARNER_ROLE_REQUIRED"
+    "1_learner_sees_assignment": "PASS_LOCAL_E2E",
+    "2_drafts": "PASS_LOCAL_E2E",
+    "3_restart_preserves_draft": "PASS_LOCAL_E2E",
+    "4_submits": "PASS_LOCAL_E2E",
+    "5_idempotent_submit": "PASS_LOCAL_E2E",
+    "6_instructor_sees_submission": "PASS_LOCAL_E2E",
+    "7_instructor_grades_rubric": "PASS_LOCAL_E2E",
+    "8_learner_receives_grade_feedback": "PASS_LOCAL_E2E",
+    "9_mastery_gap": "PASS_LOCAL_E2E",
+    "10_remediation_assigned": "PASS_LOCAL_E2E",
+    "11_learner_resubmits": "PASS_LOCAL_E2E",
+    "12_instructor_regrades": "PASS_LOCAL_E2E",
+    "13_mastery_updates": "PASS_LOCAL_E2E",
+    "14_portfolio_evidence": "PASS_LOCAL_E2E",
+    "15_unauthorized_negatives": "PASS_LOCAL_E2E"
   },
   "claim_boundary": {
-    "earned": true,
+    "earned": false,
+    "fixture_auth_enabled": true,
+    "production_auth_enabled": false,
     "does_not_claim": [
       "human/field validation",
       "accessibility certification",
       "security certification",
       "multi-user identity (PR3)",
-      "offline sync (PR4)"
+      "offline sync (PR4)",
+      "production auth"
     ]
   },
-  "blocked": []
+  "blocked": [
+    "Remote PR2 CI not yet verified on this closure-pass head"
+  ]
 }

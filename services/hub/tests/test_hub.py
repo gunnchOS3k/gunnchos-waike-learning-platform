@@ -32,7 +32,8 @@ def client(tmp_path, monkeypatch):
     db = tmp_path / "hub.sqlite3"
     app = create_app(
         config=HubConfig(
-            auth_enabled=True,
+            fixture_auth_enabled=True,
+            production_auth_enabled=False,
             learner_data_enabled=True,
             database={"enabled": True, "url": str(db), "note": "test"},
         ),
@@ -56,10 +57,12 @@ def test_version_enables_pr2_flags(client):
     r = client.get("/version")
     assert r.status_code == 200
     body = r.json()
-    assert body["auth_enabled"] is True
+    assert body["fixture_auth_enabled"] is True
+    assert body["production_auth_enabled"] is False
     assert body["learner_data_enabled"] is True
     assert body["assessment_lifecycle"] is True
     assert "pr2" in body["version"]
+    assert "auth_enabled" not in body or body.get("production_auth_enabled") is False
 
 
 def test_config_db_enabled(client):
@@ -67,6 +70,8 @@ def test_config_db_enabled(client):
     assert r.status_code == 200
     body = r.json()
     assert body["database"]["enabled"] is True
+    assert body["fixture_auth_enabled"] is True
+    assert body["production_auth_enabled"] is False
 
 
 def test_auth_required(client):

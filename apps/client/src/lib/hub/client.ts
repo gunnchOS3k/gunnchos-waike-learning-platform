@@ -69,7 +69,6 @@ export interface HubClient {
     body: {
       criterion_scores: Array<{ criterion_id: string; points: number; level_id?: string; comment?: string }>;
       feedback_body: string;
-      force_mastery_gap?: boolean | null;
     },
   ): Promise<{ grade: SubmissionView["grade"]; mastery: { mastered: number; gap_notes: string }; remediation: { status: string } | null; portfolio: { portfolio_id: string } | null }>;
   remediation(): Promise<Array<{ plan_id: string; assignment_id: string; task_markdown: string; status: string }>>;
