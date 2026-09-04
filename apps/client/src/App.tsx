@@ -1,8 +1,12 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { invoke } from "@tauri-apps/api/core";
+import { AssessmentWorkspace } from "./components/assessment/AssessmentWorkspace";
+import { InstructorQueue } from "./components/assessment/InstructorQueue";
 import { CourseCard } from "./components/CourseCard";
 import { LessonReader } from "./components/LessonReader";
 import { TrustBanner } from "./components/TrustBanner";
+import type { HubActor, HubClient } from "./lib/hub/client";
+import { resolveHubClient } from "./lib/hub/resolveHub";
 import { browseInstallPack, isTauri } from "./lib/tauriBridge";
 import type { LessonContent, LessonInfo, ModuleView, TrustStatus } from "./lib/types";
 import {
@@ -11,6 +15,8 @@ import {
   simulateInstallFailure,
   simulateVerifiedInstall,
 } from "./lib/mockRuntime";
+
+type Mode = "lessons" | "assignments" | "instruct";
 
 function formatPackError(err: unknown): string {
   const raw = typeof err === "string" ? err : err && typeof err === "object" ? JSON.stringify(err) : String(err);
@@ -43,6 +49,13 @@ export default function App() {
   const [error, setError] = useState<string | null>(null);
   const [resumeOffset, setResumeOffset] = useState(0);
   const [resumeHint, setResumeHint] = useState<string | null>(null);
+  const [mode, setMode] = useState<Mode>("lessons");
+  const [actor, setActor] = useState<HubActor>({ actorId: "learner-a", role: "learner" });
+
+  const hubResolution = useMemo(() => resolveHubClient(actor), [actor]);
+  const hub: HubClient | null = hubResolution.client;
+  const hubUnavailable =
+    hubResolution.status === "unavailable" ? hubResolution.reason : null;
 
   useEffect(() => {
     if (!isTauri()) return;
@@ -77,7 +90,6 @@ export default function App() {
     setError(null);
     try {
       if (!isTauri()) {
-        // Browser/Vitest path: simulate verified install unless a test sets window flag.
         const failure = (window as unknown as { __WAIKE_MOCK_FAIL__?: string }).__WAIKE_MOCK_FAIL__;
         if (failure) {
           throw simulateInstallFailure(failure);
@@ -166,6 +178,28 @@ export default function App() {
     [lesson, module],
   );
 
+  function switchActor(next: HubActor) {
+    setActor(next);
+    if (next.role === "instructor" && mode === "assignments") setMode("instruct");
+    if (next.role === "learner" && mode === "instruct") setMode("assignments");
+  }
+
+  function HubUnavailablePanel({ title }: { title: string }) {
+    return (
+      <section className="panel" data-testid="hub-unavailable">
+        <h2>{title}</h2>
+        <div className="error-box" role="alert" data-testid="hub-unavailable-message">
+          {hubUnavailable || "School Hub not configured / unavailable"}
+        </div>
+        <p className="muted">
+          Set <code>VITE_HUB_URL</code> to a school hub, or enable the explicit test mock with{" "}
+          <code>VITE_WAIKE_MOCK_HUB=true</code>. Assessment features will not fake submission or
+          grading without a hub.
+        </p>
+      </section>
+    );
+  }
+
   return (
     <div className="app-shell">
       <a className="skip-link" href="#main">
@@ -174,8 +208,8 @@ export default function App() {
       <header>
         <h1 className="brand">WAIKE Learning OS</h1>
         <p className="tagline">
-          Local-first learning client. Packages are verified before trust. Device OS seed browser is
-          not this LMS.
+          Local-first learning client. Packages are verified before trust. Assessment lifecycle is
+          live for DIGITAL_CONFIDENCE.
         </p>
         <div className="toolbar">
           <button type="button" onClick={() => void onInstall()}>
@@ -187,10 +221,60 @@ export default function App() {
             onClick={() => {
               setLesson(null);
               setError(null);
+              setMode("lessons");
             }}
           >
             Back to module
           </button>
+        </div>
+        <div className="mode-bar" role="navigation" aria-label="Primary">
+          <button
+            type="button"
+            className={mode === "lessons" ? "mode-active" : "ghost"}
+            onClick={() => setMode("lessons")}
+          >
+            Lessons
+          </button>
+          <button
+            type="button"
+            className={mode === "assignments" ? "mode-active" : "ghost"}
+            data-testid="mode-assignments"
+            onClick={() => {
+              switchActor({ actorId: "learner-a", role: "learner" });
+              setMode("assignments");
+            }}
+          >
+            Assignments
+          </button>
+          <button
+            type="button"
+            className={mode === "instruct" ? "mode-active" : "ghost"}
+            data-testid="mode-instruct"
+            onClick={() => {
+              switchActor({ actorId: "instructor-1", role: "instructor" });
+              setMode("instruct");
+            }}
+          >
+            Instruct
+          </button>
+          <span className="muted actor-chip" data-testid="actor-chip">
+            {actor.role}:{actor.actorId}
+          </span>
+          {hubResolution.status === "mock" ? (
+            <span className="muted" data-testid="hub-mode-chip">
+              hub:mock
+            </span>
+          ) : null}
+          {hubResolution.status === "http" ? (
+            <span className="muted" data-testid="hub-mode-chip">
+              hub:http
+            </span>
+          ) : null}
+          {hubResolution.status === "unavailable" ? (
+            <span className="muted" data-testid="hub-mode-chip">
+              hub:unavailable
+            </span>
+          ) : null}
         </div>
       </header>
 
@@ -207,26 +291,44 @@ export default function App() {
       ) : null}
 
       <div className="layout" id="main">
-        {module ? (
-          <CourseCard module={module} onOpenLesson={(l) => void onOpenLesson(l)} />
-        ) : (
-          <section className="course-card">
-            <h2>No course installed</h2>
-            <p className="muted">Install a signed DIGITAL_CONFIDENCE learner pack to begin.</p>
-          </section>
-        )}
-        {lesson ? (
-          <LessonReader
-            lesson={lesson}
-            resumeOffset={resumeOffset}
-            onSavePosition={(o) => void onSavePosition(o)}
-          />
-        ) : (
-          <section className="lesson-reader">
-            <h2>Lesson reader</h2>
-            <p className="muted">Select a lesson after the pack verifies.</p>
-          </section>
-        )}
+        {mode === "lessons" ? (
+          <>
+            {module ? (
+              <CourseCard module={module} onOpenLesson={(l) => void onOpenLesson(l)} />
+            ) : (
+              <section className="course-card">
+                <h2>No course installed</h2>
+                <p className="muted">Install a signed DIGITAL_CONFIDENCE learner pack to begin.</p>
+              </section>
+            )}
+            {lesson ? (
+              <LessonReader
+                lesson={lesson}
+                resumeOffset={resumeOffset}
+                onSavePosition={(o) => void onSavePosition(o)}
+              />
+            ) : (
+              <section className="lesson-reader">
+                <h2>Lesson reader</h2>
+                <p className="muted">Select a lesson after the pack verifies.</p>
+              </section>
+            )}
+          </>
+        ) : null}
+        {mode === "assignments" ? (
+          hub ? (
+            <AssessmentWorkspace hub={hub} />
+          ) : (
+            <HubUnavailablePanel title="Assignments" />
+          )
+        ) : null}
+        {mode === "instruct" ? (
+          hub ? (
+            <InstructorQueue hub={hub} />
+          ) : (
+            <HubUnavailablePanel title="Instructor grading queue" />
+          )
+        ) : null}
       </div>
     </div>
   );

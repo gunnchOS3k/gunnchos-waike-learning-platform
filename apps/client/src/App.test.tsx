@@ -2,14 +2,17 @@ import { cleanup, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import App from "./App";
+import { resetMockHubStore } from "./lib/hub/mockHub";
 
 afterEach(() => {
   cleanup();
+  resetMockHubStore();
   delete (window as unknown as { __WAIKE_MOCK_FAIL__?: string }).__WAIKE_MOCK_FAIL__;
   delete (window as unknown as { __WAIKE_RESUME_OFFSET__?: number }).__WAIKE_RESUME_OFFSET__;
 });
 
 beforeEach(() => {
+  resetMockHubStore();
   delete (window as unknown as { __WAIKE_MOCK_FAIL__?: string }).__WAIKE_MOCK_FAIL__;
 });
 
@@ -76,5 +79,42 @@ describe("WAIKE Learning OS shell", () => {
     await user.tab(); // skip link
     await user.tab(); // install CTA
     expect(screen.getByRole("button", { name: /Install learner pack/i })).toHaveFocus();
+  });
+
+  it("runs learner assignment draft submit and instructor grade path", async () => {
+    const user = userEvent.setup();
+    render(<App />);
+    expect(screen.getByTestId("hub-mode-chip").textContent).toMatch(/hub:mock/);
+    await user.click(screen.getByTestId("mode-assignments"));
+    await waitFor(() => {
+      expect(screen.getByTestId("assignment-workspace")).toBeInTheDocument();
+    });
+    expect(screen.getByTestId("assignment-body").textContent).toMatch(/digital confidence/i);
+    const draft = screen.getByTestId("draft-text");
+    await user.clear(draft);
+    await user.type(draft, "Community reflection draft");
+    await waitFor(() => {
+      expect(screen.getByTestId("draft-meta").textContent).toMatch(/Draft rev/i);
+    });
+    await user.click(screen.getByTestId("submit-btn"));
+    await waitFor(() => {
+      expect(screen.getByTestId("receipt-card")).toBeInTheDocument();
+    });
+
+    await user.click(screen.getByTestId("mode-instruct"));
+    await waitFor(() => {
+      expect(screen.getByTestId("instructor-queue")).toBeInTheDocument();
+    });
+    expect(screen.queryByTestId("force-gap")).not.toBeInTheDocument();
+    await user.click(screen.getByRole("button", { name: /learner-a · attempt 1/i }));
+    await user.click(screen.getByTestId("return-grade-btn"));
+    await waitFor(() => {
+      expect(screen.getByTestId("instructor-status").textContent).toMatch(/Graded/i);
+    });
+
+    await user.click(screen.getByTestId("mode-assignments"));
+    await waitFor(() => {
+      expect(screen.getByTestId("remediation-list").textContent).toMatch(/assigned|Revise/i);
+    });
   });
 });

@@ -94,6 +94,39 @@ button:focus-visible, .lesson-link:focus-visible, .lesson-body:focus-visible {
   font-size: 0.92rem; margin: 0;
 }
 .error-box { border-color: color-mix(in srgb, var(--danger) 50%, transparent); color: #ffd4ce; }
+.mode-bar { display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; margin: 0.5rem 0 1rem; }
+.mode-active {
+  background: color-mix(in srgb, var(--accent) 85%, white);
+  color: #042019;
+}
+.actor-chip { margin-left: 0.25rem; font-size: 0.9rem; }
+.panel, .receipt-card, .grade-panel {
+  background: rgba(8, 18, 24, 0.55);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: var(--radius);
+  padding: 1rem 1.1rem;
+  grid-column: 1 / -1;
+}
+.assignment-body {
+  max-height: 220px; overflow: auto; margin: 0.75rem 0;
+  padding: 0.75rem; border-radius: 10px; background: rgba(0,0,0,0.25);
+}
+.assignment-body pre { white-space: pre-wrap; margin: 0; font: inherit; }
+.field-label { display: block; margin: 0.75rem 0 0.35rem; color: var(--muted); }
+textarea, input[type="number"] {
+  width: 100%;
+  font: inherit;
+  color: var(--ink);
+  background: rgba(0,0,0,0.28);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 10px;
+  padding: 0.7rem 0.8rem;
+}
+.file-btn { display: inline-flex; align-items: center; }
+.side-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 1rem; }
+@media (max-width: 860px) { .side-grid { grid-template-columns: 1fr; } }
+.side-grid ul { padding-left: 1.1rem; }
+.check { display: flex; gap: 0.5rem; align-items: center; margin: 0.75rem 0; color: var(--muted); }
 @media (prefers-reduced-motion: reduce) {
   * { animation: none !important; transition: none !important; }
 }
