@@ -106,7 +106,10 @@ describe("WAIKE Learning OS shell", () => {
       expect(screen.getByTestId("instructor-queue")).toBeInTheDocument();
     });
     expect(screen.queryByTestId("force-gap")).not.toBeInTheDocument();
+    expect(screen.queryByTestId("actor-chip")).not.toBeInTheDocument();
+    expect(screen.getByTestId("session-chip")).toBeInTheDocument();
     await user.click(screen.getByRole("button", { name: /learner-a · attempt 1/i }));
+    expect(screen.getByTestId("criterion-scores")).toBeInTheDocument();
     await user.click(screen.getByTestId("return-grade-btn"));
     await waitFor(() => {
       expect(screen.getByTestId("instructor-status").textContent).toMatch(/Graded/i);

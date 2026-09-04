@@ -13,10 +13,18 @@ import yaml
 
 from app.auth import Actor, Role, SYNTHETIC_ACTORS
 
+# Optional PR3 collaborators (typed loosely to avoid circular imports at module load).
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from app.modules.gradebook_service import GradebookService
+    from app.modules.sections import SectionService
+
 
 SCHEMA_VERSION = "1.0.0"
 MODULE_ID = "DIGITAL_CONFIDENCE"
 MASTERY_THRESHOLD = 3.0
+DEFAULT_SECTION_ID = "sec_alpha_dc_w01"
 
 
 def _now() -> str:
@@ -62,10 +70,35 @@ class ServiceError(Exception):
 class AssessmentService:
     """Modular-monolith assessment lifecycle (assignments → portfolio)."""
 
-    def __init__(self, conn: sqlite3.Connection, waike_root: Path | None = None, source_commit: str = "") -> None:
+    def __init__(
+        self,
+        conn: sqlite3.Connection,
+        waike_root: Path | None = None,
+        source_commit: str = "",
+        sections: SectionService | None = None,
+        gradebook: GradebookService | None = None,
+    ) -> None:
         self.conn = conn
         self.waike_root = waike_root
         self.source_commit = source_commit
+        self.sections = sections
+        self.gradebook_svc = gradebook
+
+    def _has_column(self, table: str, column: str) -> bool:
+        cols = {r[1] for r in self.conn.execute(f"PRAGMA table_info({table})").fetchall()}
+        return column in cols
+
+    def _resolve_section_id(self, actor: Actor, section_id: str | None = None) -> str | None:
+        if not self._has_column("submissions", "section_id"):
+            return None
+        if section_id:
+            return section_id
+        if self.sections is None:
+            return None
+        if actor.is_learner:
+            return self.sections.default_section_for_learner(actor)
+        rows = self.sections.list_sections_for_actor(actor)
+        return rows[0]["section_id"] if rows else DEFAULT_SECTION_ID
 
     # --- seed -----------------------------------------------------------------
     def seed_synthetic_actors(self) -> None:
@@ -226,10 +259,14 @@ class AssessmentService:
         text_response: str,
         artifact_name: str | None = None,
         artifact_bytes: bytes | None = None,
+        section_id: str | None = None,
     ) -> dict[str, Any]:
         if not actor.is_learner:
             raise ServiceError("LEARNER_ROLE_REQUIRED", 403)
         self.get_assignment(assignment_id)
+        sid = self._resolve_section_id(actor, section_id)
+        if self.sections is not None and sid and not self.sections.is_enrolled(actor.actor_id, sid):
+            raise ServiceError("NOT_ENROLLED", 403)
         existing = _row(
             self.conn,
             "SELECT * FROM drafts WHERE assignment_id=? AND learner_id=?",
@@ -239,41 +276,79 @@ class AssessmentService:
         now = _now()
         if existing:
             rev = int(existing["revision"]) + 1
-            self.conn.execute(
-                """
-                UPDATE drafts SET text_response=?, artifact_name=?, artifact_bytes=?, artifact_sha256=?, revision=?, updated_at=?
-                WHERE draft_id=?
-                """,
-                (
-                    text_response,
-                    artifact_name if artifact_name is not None else existing["artifact_name"],
-                    artifact_bytes if artifact_bytes is not None else existing["artifact_bytes"],
-                    art_sha if artifact_bytes is not None else existing["artifact_sha256"],
-                    rev,
-                    now,
-                    existing["draft_id"],
-                ),
-            )
+            if self._has_column("drafts", "section_id"):
+                self.conn.execute(
+                    """
+                    UPDATE drafts SET text_response=?, artifact_name=?, artifact_bytes=?, artifact_sha256=?, revision=?, updated_at=?, section_id=COALESCE(?, section_id)
+                    WHERE draft_id=?
+                    """,
+                    (
+                        text_response,
+                        artifact_name if artifact_name is not None else existing["artifact_name"],
+                        artifact_bytes if artifact_bytes is not None else existing["artifact_bytes"],
+                        art_sha if artifact_bytes is not None else existing["artifact_sha256"],
+                        rev,
+                        now,
+                        sid,
+                        existing["draft_id"],
+                    ),
+                )
+            else:
+                self.conn.execute(
+                    """
+                    UPDATE drafts SET text_response=?, artifact_name=?, artifact_bytes=?, artifact_sha256=?, revision=?, updated_at=?
+                    WHERE draft_id=?
+                    """,
+                    (
+                        text_response,
+                        artifact_name if artifact_name is not None else existing["artifact_name"],
+                        artifact_bytes if artifact_bytes is not None else existing["artifact_bytes"],
+                        art_sha if artifact_bytes is not None else existing["artifact_sha256"],
+                        rev,
+                        now,
+                        existing["draft_id"],
+                    ),
+                )
             draft_id = existing["draft_id"]
         else:
             draft_id = _id("draft")
-            self.conn.execute(
-                """
-                INSERT INTO drafts(draft_id, assignment_id, learner_id, text_response, artifact_name, artifact_bytes, artifact_sha256, revision, updated_at)
-                VALUES (?,?,?,?,?,?,?,?,?)
-                """,
-                (
-                    draft_id,
-                    assignment_id,
-                    actor.actor_id,
-                    text_response,
-                    artifact_name,
-                    artifact_bytes,
-                    art_sha,
-                    1,
-                    now,
-                ),
-            )
+            if self._has_column("drafts", "section_id"):
+                self.conn.execute(
+                    """
+                    INSERT INTO drafts(draft_id, assignment_id, learner_id, text_response, artifact_name, artifact_bytes, artifact_sha256, revision, updated_at, section_id)
+                    VALUES (?,?,?,?,?,?,?,?,?,?)
+                    """,
+                    (
+                        draft_id,
+                        assignment_id,
+                        actor.actor_id,
+                        text_response,
+                        artifact_name,
+                        artifact_bytes,
+                        art_sha,
+                        1,
+                        now,
+                        sid,
+                    ),
+                )
+            else:
+                self.conn.execute(
+                    """
+                    INSERT INTO drafts(draft_id, assignment_id, learner_id, text_response, artifact_name, artifact_bytes, artifact_sha256, revision, updated_at)
+                    VALUES (?,?,?,?,?,?,?,?,?)
+                    """,
+                    (
+                        draft_id,
+                        assignment_id,
+                        actor.actor_id,
+                        text_response,
+                        artifact_name,
+                        artifact_bytes,
+                        art_sha,
+                        1,
+                        now,
+                    ),
+                )
         _audit(self.conn, actor.actor_id, "draft_autosave", "draft", draft_id, {"assignment_id": assignment_id})
         self.conn.commit()
         return self.get_draft(actor, assignment_id)
@@ -309,6 +384,7 @@ class AssessmentService:
         artifact_name: str | None = None,
         artifact_bytes: bytes | None = None,
         content_type: str = "application/octet-stream",
+        section_id: str | None = None,
     ) -> dict[str, Any]:
         if not actor.is_learner:
             raise ServiceError("LEARNER_ROLE_REQUIRED", 403)
@@ -328,6 +404,10 @@ class AssessmentService:
         text = text_response if text_response is not None else draft["text_response"]
         if not (text or "").strip():
             raise ServiceError("EMPTY_SUBMISSION", 400)
+
+        sid = self._resolve_section_id(actor, section_id)
+        if self.sections is not None and sid and not self.sections.is_enrolled(actor.actor_id, sid):
+            raise ServiceError("NOT_ENROLLED", 403)
 
         # Resolve artifact: explicit upload wins, else draft artifact bytes
         art_name = artifact_name
@@ -356,26 +436,49 @@ class AssessmentService:
 
         now = _now()
         submission_id = _id("sub")
-        self.conn.execute(
-            """
-            INSERT INTO submissions(
-              submission_id, assignment_id, assignment_version, learner_id, attempt_number,
-              status, text_response, content_hash, idempotency_key, submitted_at
-            ) VALUES (?,?,?,?,?,?,?,?,?,?)
-            """,
-            (
-                submission_id,
-                assignment_id,
-                int(assignment["current_version"]),
-                actor.actor_id,
-                attempt,
-                "submitted",
-                text,
-                content_hash,
-                idempotency_key,
-                now,
-            ),
-        )
+        if self._has_column("submissions", "section_id"):
+            self.conn.execute(
+                """
+                INSERT INTO submissions(
+                  submission_id, assignment_id, assignment_version, learner_id, attempt_number,
+                  status, text_response, content_hash, idempotency_key, submitted_at, section_id
+                ) VALUES (?,?,?,?,?,?,?,?,?,?,?)
+                """,
+                (
+                    submission_id,
+                    assignment_id,
+                    int(assignment["current_version"]),
+                    actor.actor_id,
+                    attempt,
+                    "submitted",
+                    text,
+                    content_hash,
+                    idempotency_key,
+                    now,
+                    sid,
+                ),
+            )
+        else:
+            self.conn.execute(
+                """
+                INSERT INTO submissions(
+                  submission_id, assignment_id, assignment_version, learner_id, attempt_number,
+                  status, text_response, content_hash, idempotency_key, submitted_at
+                ) VALUES (?,?,?,?,?,?,?,?,?,?)
+                """,
+                (
+                    submission_id,
+                    assignment_id,
+                    int(assignment["current_version"]),
+                    actor.actor_id,
+                    attempt,
+                    "submitted",
+                    text,
+                    content_hash,
+                    idempotency_key,
+                    now,
+                ),
+            )
         revision_id = _id("srev")
         self.conn.execute(
             """
@@ -427,6 +530,19 @@ class AssessmentService:
             raise ServiceError("SUBMISSION_NOT_FOUND", 404)
         if actor.is_learner and row["learner_id"] != actor.actor_id:
             raise ServiceError("FORBIDDEN_OTHER_LEARNER", 403)
+        # Cross-site / section isolation for instructor-side
+        if actor.is_instructor_side and self.sections is not None:
+            sid = row["section_id"] if "section_id" in row.keys() else None
+            if sid:
+                sec = _row(self.conn, "SELECT site_id FROM sections WHERE section_id=?", (sid,))
+                if sec and sec["site_id"] != actor.site_id:
+                    raise ServiceError("CROSS_SITE_FORBIDDEN", 403)
+                if not (
+                    self.sections.can_instruct(actor, sid)
+                    or self.sections.can_grade(actor, sid)
+                    or actor.is_site_admin
+                ):
+                    raise ServiceError("FORBIDDEN", 403)
         arts = [
             {
                 "artifact_id": a["artifact_id"],
@@ -489,22 +605,45 @@ class AssessmentService:
         return [dict(r) for r in rows]
 
     # --- instructor queue / grade --------------------------------------------
-    def instructor_queue(self, actor: Actor, assignment_id: str) -> list[dict[str, Any]]:
+    def instructor_queue(
+        self, actor: Actor, assignment_id: str, section_id: str | None = None
+    ) -> list[dict[str, Any]]:
         if not actor.is_instructor_side:
             raise ServiceError("INSTRUCTOR_ROLE_REQUIRED", 403)
         self.get_assignment(assignment_id)
-        rows = _rows(
-            self.conn,
-            """
-            SELECT s.submission_id, s.learner_id, s.attempt_number, s.status, s.submitted_at, s.content_hash,
-                   g.returned AS grade_returned
-            FROM submissions s
-            LEFT JOIN grades g ON g.submission_id = s.submission_id
-            WHERE s.assignment_id=?
-            ORDER BY s.submitted_at
-            """,
-            (assignment_id,),
-        )
+        sid = self._resolve_section_id(actor, section_id)
+        if sid and self.sections is not None:
+            if not (
+                self.sections.can_instruct(actor, sid)
+                or self.sections.can_grade(actor, sid)
+                or actor.is_site_admin
+            ):
+                raise ServiceError("FORBIDDEN", 403)
+            rows = _rows(
+                self.conn,
+                """
+                SELECT s.submission_id, s.learner_id, s.attempt_number, s.status, s.submitted_at, s.content_hash,
+                       s.section_id, g.returned AS grade_returned
+                FROM submissions s
+                LEFT JOIN grades g ON g.submission_id = s.submission_id
+                WHERE s.assignment_id=? AND (s.section_id=? OR s.section_id IS NULL)
+                ORDER BY s.submitted_at
+                """,
+                (assignment_id, sid),
+            )
+        else:
+            rows = _rows(
+                self.conn,
+                """
+                SELECT s.submission_id, s.learner_id, s.attempt_number, s.status, s.submitted_at, s.content_hash,
+                       s.section_id, g.returned AS grade_returned
+                FROM submissions s
+                LEFT JOIN grades g ON g.submission_id = s.submission_id
+                WHERE s.assignment_id=?
+                ORDER BY s.submitted_at
+                """,
+                (assignment_id,),
+            )
         return [dict(r) for r in rows]
 
     def _validate_criterion_scores(
@@ -598,6 +737,17 @@ class AssessmentService:
         sub = _row(self.conn, "SELECT * FROM submissions WHERE submission_id=?", (submission_id,))
         if not sub:
             raise ServiceError("SUBMISSION_NOT_FOUND", 404)
+        sid = sub["section_id"] if "section_id" in sub.keys() else None
+        if sid and self.sections is not None:
+            sec = _row(self.conn, "SELECT site_id FROM sections WHERE section_id=?", (sid,))
+            if sec and sec["site_id"] != actor.site_id:
+                raise ServiceError("CROSS_SITE_FORBIDDEN", 403)
+            if not (
+                self.sections.can_instruct(actor, sid)
+                or self.sections.can_grade(actor, sid)
+                or actor.is_site_admin
+            ):
+                raise ServiceError("FORBIDDEN", 403)
         assignment = self.get_assignment(sub["assignment_id"])
         existing_grade = _row(self.conn, "SELECT * FROM grades WHERE submission_id=?", (submission_id,))
         prior_evals = _rows(
@@ -750,6 +900,11 @@ class AssessmentService:
                     now,
                 ),
             )
+            if self._has_column("gradebook_entries", "section_id") and sid:
+                self.conn.execute(
+                    "UPDATE gradebook_entries SET section_id=? WHERE learner_id=? AND assignment_id=?",
+                    (sid, sub["learner_id"], sub["assignment_id"]),
+                )
 
             # Mastery derives from persisted rubric evaluation + assignment threshold only.
             avg = points_earned / max(len(normalized), 1)
@@ -838,6 +993,18 @@ class AssessmentService:
                 {"grade_id": grade_id, "mastered": mastered},
             )
             self.conn.commit()
+            if self.gradebook_svc is not None and sid:
+                try:
+                    self.gradebook_svc.sync_from_assessment_grade(
+                        actor,
+                        sid,
+                        sub["assignment_id"],
+                        sub["learner_id"],
+                        points_earned,
+                        points_possible,
+                    )
+                except ServiceError:
+                    pass
         except Exception:
             self.conn.rollback()
             raise

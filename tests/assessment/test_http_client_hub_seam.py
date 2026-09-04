@@ -37,7 +37,7 @@ def hub(tmp_path, monkeypatch):
     waike = _waike()
     monkeypatch.setenv("WAIKE_ROOT", str(waike))
     db = tmp_path / "http_seam.sqlite3"
-    app = create_app(HubConfig(), db_path=db, seed=True)
+    app = create_app(HubConfig(fixture_auth_enabled=True, production_auth_enabled=False), db_path=db, seed=True)
     return TestClient(app)
 
 

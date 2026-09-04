@@ -1,4 +1,4 @@
-import type { HubActor, HubClient } from "./client";
+import type { AuthSession, HubActor, HubClient } from "./client";
 import { createHttpHubClient } from "./client";
 import { createMockHubClient } from "./mockHub";
 
@@ -14,15 +14,25 @@ export type HubEnv = {
 };
 
 /** Fail-closed hub resolution: never silently mock in production/native. */
-export function resolveHubClient(actor: HubActor, env: HubEnv = import.meta.env): HubResolution {
+export function resolveHubClient(
+  getToken: () => string | null,
+  onAuthFailure?: (detail: string) => void,
+  actor?: HubActor,
+  env: HubEnv = import.meta.env,
+): HubResolution {
   const base = (env.VITE_HUB_URL || "").trim().replace(/\/$/, "");
   if (base) {
-    return { status: "http", client: createHttpHubClient(base, actor), baseUrl: base };
+    return {
+      status: "http",
+      client: createHttpHubClient(base, getToken, onAuthFailure, undefined),
+      baseUrl: base,
+    };
   }
   const allowMock =
     env.MODE === "test" || String(env.VITE_WAIKE_MOCK_HUB || "").toLowerCase() === "true";
   if (allowMock) {
-    return { status: "mock", client: createMockHubClient(actor) };
+    const mockActor = actor ?? { actorId: "learner-a", role: "learner" as const };
+    return { status: "mock", client: createMockHubClient(mockActor) };
   }
   return {
     status: "unavailable",
@@ -30,3 +40,5 @@ export function resolveHubClient(actor: HubActor, env: HubEnv = import.meta.env)
     reason: "School Hub not configured / unavailable",
   };
 }
+
+export type { AuthSession };

@@ -33,7 +33,7 @@ def client(tmp_path, monkeypatch):
     waike = _waike()
     monkeypatch.setenv("WAIKE_ROOT", str(waike))
     db = tmp_path / "rubric.sqlite3"
-    return TestClient(create_app(HubConfig(), db_path=db, seed=True))
+    return TestClient(create_app(HubConfig(fixture_auth_enabled=True, production_auth_enabled=False), db_path=db, seed=True))
 
 
 def H(actor: str, role: str) -> dict[str, str]:

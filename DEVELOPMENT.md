@@ -31,13 +31,22 @@ export SOURCE_DATE_EPOCH=1700000000
 .venv/bin/course-compiler compile DIGITAL_CONFIDENCE --out pack_out
 ```
 
-## Hub (scaffold only)
+## Hub (PR3)
 
 ```bash
-.venv/bin/uvicorn hub.app.main:app --app-dir services --reload
+# Production-shaped runtime: never auto-seeds Alpha/Beta test accounts.
+PYTHONPATH=services/hub .venv/bin/uvicorn app.main:app --app-dir services/hub --reload
+
+# One-time first admin (password via getpass or WAIKE_BOOTSTRAP_ADMIN_PASSWORD — never argv):
+PYTHONPATH=services/hub .venv/bin/python -m app.cli bootstrap-admin \
+  --site-id site-prod --site-name "Prod Site" \
+  --username root-admin --display-name "Root Admin"
+
+# Synthetic fixtures only for tests (seed=True) or explicit:
+#   WAIKE_SEED_TEST_FIXTURES=true WAIKE_ENV=development
 ```
 
-Live learner auth and learner data stores are **not** enabled in PR 1.
+Login requires `site_id` (usernames are site-scoped).
 
 ## Encrypted local storage (dev fallback)
 

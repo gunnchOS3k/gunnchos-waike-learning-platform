@@ -63,7 +63,11 @@ def live_hub(tmp_path):
     env = os.environ.copy()
     env["WAIKE_ROOT"] = str(waike)
     env["WAIKE_HUB_DB"] = str(db)
+    env["WAIKE_FIXTURE_AUTH"] = "1"
+    env["WAIKE_SEED_TEST_FIXTURES"] = "true"
+    env["WAIKE_ENV"] = "development"
     env["PYTHONPATH"] = str(ROOT / "services" / "hub") + os.pathsep + env.get("PYTHONPATH", "")
+    # uvicorn loads app.main:app (seed=False); WAIKE_SEED_TEST_FIXTURES opts into fixtures.
     proc = subprocess.Popen(
         [
             sys.executable,

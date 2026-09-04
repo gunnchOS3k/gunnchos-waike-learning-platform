@@ -1,19 +1,21 @@
 {
-  "platform_main_sha": "5431bd49689622328d20fb7eb778e0e34284e935",
+  "platform_main_sha": "9178657c789de046d76ca45211074470d9699732",
   "waike_main_sha": "e97e74fc9bfb44b1cdc26b272dc4848264f15fe0",
   "device_os_main_sha": "28562a8456207540c205a1c8a6434a491b0a4771",
   "pr1_ancestor_ok": true,
+  "pr2_ancestor_ok": true,
   "taxonomy_ancestor_ok": true,
-  "current_wave": "PR2_ASSESSMENT_LIFECYCLE",
-  "current_branch": "cursor/waike-learning-pr2-assessment-lifecycle",
-  "current_pr": "https://github.com/gunnchOS3k/gunnchos-waike-learning-platform/pull/2",
-  "verified_implementation_sha": "91e8cbd1216bb6edb1db925c7698fbf21c8cdfa0",
-  "report_generated_from_sha": "91e8cbd1216bb6edb1db925c7698fbf21c8cdfa0",
-  "status": "PR2_READY_FOR_OWNER_REVIEW",
+  "current_wave": "PR3_IDENTITY_INSTRUCTOR",
+  "current_branch": "cursor/waike-learning-pr3-identity-instructor",
+  "current_pr": null,
+  "pr_create_url": "https://github.com/gunnchOS3k/gunnchos-waike-learning-platform/pull/new/cursor/waike-learning-pr3-identity-instructor",
+  "verified_implementation_sha": "c9e48cba9531abb3047227ea025814ad1be4f03e",
+  "report_generated_from_sha": "c9e48cba9531abb3047227ea025814ad1be4f03e",
+  "status": "PR3_NOT_READY",
   "waves": {
     "PR1_FOUNDATION": "MERGED",
-    "PR2_ASSESSMENT_LIFECYCLE": "READY_FOR_OWNER_REVIEW",
-    "PR3_IDENTITY_INSTRUCTOR": "PENDING",
+    "PR2_ASSESSMENT_LIFECYCLE": "MERGED",
+    "PR3_IDENTITY_INSTRUCTOR": "PUSHED_AWAITING_DRAFT_PR_AND_REMOTE_CI",
     "PR4_OFFLINE_SYNC": "PENDING",
     "PR5_ASSESSMENT_BREADTH": "PENDING",
     "PR6_GUNNCHAI": "PENDING",
@@ -26,15 +28,27 @@
     "DIGITALLY_IMPLEMENTED_AND_AUTOMATICALLY_TESTED_FOR_PR1_SCOPE",
     "ASSESSMENT_LIFECYCLE_DIGITALLY_COMPLETE"
   ],
-  "remote_ci_run_ids": {
-    "pr": "33821020817",
-    "push": "33821017895"
+  "claims_pending_remote_ci": [
+    "MULTI_USER_LMS_ALPHA_DIGITALLY_COMPLETE",
+    "PR3_READY_FOR_OWNER_REVIEW"
+  ],
+  "local_verify_pr3": {
+    "status": "AUTOMATED_PIPELINE_PASS",
+    "python_passed": 82,
+    "frontend_passed": 18
   },
-  "digital_blockers": [],
+  "remote_ci_run_ids": {},
+  "digital_blockers": [
+    "gh auth token invalid — draft PR could not be opened via API; branch is pushed",
+    "Remote Actions run IDs not yet collected"
+  ],
   "external_human_gates": [
-    "Owner merge of draft PR #2",
+    "Open draft PR from pushed branch (gh auth login), wait for green PR3 Actions",
+    "Owner merge of draft PR3",
     "Human/field/accessibility/security certification (never claimed by automation)"
   ],
-  "last_verified_utc": "2026-09-04T00:27:00Z",
-  "evidence_note": "Merge decision should use verified_implementation_sha (CI-green integrity-fix head). Subsequent docs-only report commits are not the verified implementation head."
+  "owner_action": "PR3_NOT_READY",
+  "next_wave_only_after_merge": "Wave 4 / PR4 — Offline-first sync and cross-device continuity",
+  "last_verified_utc": "2026-09-04T03:20:00Z",
+  "evidence_note": "Implementation head c9e48cb pushed. Do not claim MULTI_USER_LMS_ALPHA_DIGITALLY_COMPLETE until remote PR3 workflow required jobs are green."
 }

@@ -1,0 +1,13 @@
+{
+  "states": ["graded", "ungraded", "missing", "late", "excused"],
+  "rules": {
+    "graded": "points_earned required, finite, in [0, points_possible]",
+    "ungraded": "points null; excluded from category mean until scored",
+    "missing": "treated as 0 when missing_as_zero=1",
+    "late": "points reduced by late_penalty_pct",
+    "excused": "excluded from category average"
+  },
+  "overall": "weighted_mean(category_percent, category_weight)",
+  "nan_policy": "reject",
+  "tests": ["tests/pr3/test_gradebook.py"]
+}
