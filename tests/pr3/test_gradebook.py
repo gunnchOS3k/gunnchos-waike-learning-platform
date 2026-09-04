@@ -7,8 +7,11 @@ from app.modules.identity import FIXTURE_PASSWORD
 SECTION = "sec_alpha_dc_w01"
 
 
-def login(client, username: str, password: str = FIXTURE_PASSWORD):
-    r = client.post("/api/v1/auth/login", json={"username": username, "password": password})
+def login(client, username: str, password: str = FIXTURE_PASSWORD, site_id: str = "site-alpha"):
+    r = client.post(
+        "/api/v1/auth/login",
+        json={"username": username, "password": password, "site_id": site_id},
+    )
     assert r.status_code == 200, r.text
     return r.json()
 

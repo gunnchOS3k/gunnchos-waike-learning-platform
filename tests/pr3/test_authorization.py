@@ -8,8 +8,21 @@ SECTION_ALPHA = "sec_alpha_dc_w01"
 SECTION_BETA = "sec_beta_dc_w01"
 
 
-def login(client, username: str, password: str = FIXTURE_PASSWORD):
-    r = client.post("/api/v1/auth/login", json={"username": username, "password": password})
+def login(client, username: str, password: str = FIXTURE_PASSWORD, site_id: str | None = None):
+    sid = site_id or {
+        "admin-alpha": "site-alpha",
+        "instructor-alpha": "site-alpha",
+        "grader-alpha": "site-alpha",
+        "learner-alpha": "site-alpha",
+        "learner-beta": "site-alpha",
+        "admin-beta": "site-beta",
+        "instructor-beta": "site-beta",
+        "learner-gamma": "site-beta",
+    }.get(username, "site-alpha")
+    r = client.post(
+        "/api/v1/auth/login",
+        json={"username": username, "password": password, "site_id": sid},
+    )
     assert r.status_code == 200, r.text
     return r.json()
 

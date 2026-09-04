@@ -54,6 +54,16 @@ function loadSession(): AuthSession | null {
   }
 }
 
+/** Match hub primary-role precedence: site_admin > instructor > grader > learner. */
+function resolvePrimaryRole(roles: string[] | undefined | null): string | null {
+  if (!roles || roles.length === 0) return null;
+  const order = ["site_admin", "instructor", "grader", "learner"];
+  for (const r of order) {
+    if (roles.includes(r)) return r;
+  }
+  return roles[0] ?? null;
+}
+
 export default function App() {
   const [trust, setTrust] = useState<TrustStatus>(mockTrust);
   const [module, setModule] = useState<ModuleView | null>(isTauri() ? null : mockModule);
@@ -67,6 +77,7 @@ export default function App() {
   const [mockActor, setMockActor] = useState<HubActor>({ actorId: "learner-a", role: "learner" });
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [siteId, setSiteId] = useState("site-alpha");
   const [homeCards, setHomeCards] = useState<SectionCard[]>([]);
   const [sectionId] = useState("sec_alpha_dc_w01");
   const [dashboard, setDashboard] = useState<{
@@ -108,7 +119,7 @@ export default function App() {
         roles: [mockActor.role],
       }
     : null);
-  const primaryRole = user?.roles[0] ?? null;
+  const primaryRole = resolvePrimaryRole(user?.roles);
   const needsLogin = hubResolution.status === "http" && !session;
 
   useEffect(() => {
@@ -239,10 +250,11 @@ export default function App() {
     setError(null);
     setSessionExpired(false);
     try {
-      const s = await hub.login(username, password);
+      const s = await hub.login(username, password, siteId);
       setSession(s);
       sessionStorage.setItem(SESSION_KEY, JSON.stringify(s));
-      setMode(s.user.roles.includes("learner") ? "home" : "instruct");
+      const role = resolvePrimaryRole(s.user.roles);
+      setMode(role === "learner" ? "home" : "instruct");
     } catch (err) {
       setError(err instanceof HubAuthError ? err.detail : String(err));
     } finally {
@@ -326,6 +338,17 @@ export default function App() {
         ) : null}
         <form className="panel" onSubmit={(e) => void onLogin(e)} data-testid="login-form">
           <h2>Sign in</h2>
+          <label className="field-label" htmlFor="site-id">
+            Site ID
+          </label>
+          <input
+            id="site-id"
+            data-testid="login-site-id"
+            value={siteId}
+            onChange={(e) => setSiteId(e.target.value)}
+            autoComplete="organization"
+            required
+          />
           <label className="field-label" htmlFor="username">
             Username
           </label>

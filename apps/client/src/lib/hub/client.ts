@@ -102,7 +102,7 @@ export class HubAuthError extends Error {
 }
 
 export interface HubClient {
-  login(username: string, password: string, siteId?: string): Promise<AuthSession>;
+  login(username: string, password: string, siteId: string): Promise<AuthSession>;
   logout(): Promise<void>;
   me(): Promise<SessionUser & { session_id?: string }>;
   learnerHome(): Promise<SectionCard[]>;
@@ -189,13 +189,16 @@ export function createHttpHubClient(
   }
   return {
     login: async (username, password, siteId) => {
+      if (!siteId || !siteId.trim()) {
+        throw new HubAuthError(400, "SITE_ID_REQUIRED");
+      }
       const body = await req<{
         token: string;
         expires_at: string;
         user: SessionUser;
       }>("/api/v1/auth/login", {
         method: "POST",
-        body: JSON.stringify({ username, password, site_id: siteId ?? null }),
+        body: JSON.stringify({ username, password, site_id: siteId.trim() }),
       });
       return { token: body.token, expires_at: body.expires_at, user: body.user };
     },

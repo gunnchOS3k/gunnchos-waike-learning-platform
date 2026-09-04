@@ -141,7 +141,7 @@ def test_pr2_shaped_db_migrates_preserving_receipts(tmp_path, monkeypatch):
         # Login as migrated learner-a
         r = client.post(
             "/api/v1/auth/login",
-            json={"username": "learner-a", "password": FIXTURE_PASSWORD},
+            json={"username": "learner-a", "password": FIXTURE_PASSWORD, "site_id": "site-alpha"},
         )
         assert r.status_code == 200
         h = {"Authorization": f"Bearer {r.json()['token']}"}

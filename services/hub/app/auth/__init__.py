@@ -18,6 +18,8 @@ __all__ = [
     "Role",
     "Actor",
     "SYNTHETIC_ACTORS",
+    "ROLE_PRECEDENCE",
+    "primary_role",
     "hash_password",
     "verify_password",
     "require_actor",
@@ -35,6 +37,23 @@ class Role(str, Enum):
     INSTRUCTOR = "instructor"
     GRADER = "grader"
     SITE_ADMIN = "site_admin"
+
+
+# Deterministic primary-role order when UI/compat needs a single role.
+ROLE_PRECEDENCE: tuple[Role, ...] = (
+    Role.SITE_ADMIN,
+    Role.INSTRUCTOR,
+    Role.GRADER,
+    Role.LEARNER,
+)
+
+
+def primary_role(roles: list[Role] | tuple[Role, ...]) -> Role:
+    role_set = set(roles)
+    for candidate in ROLE_PRECEDENCE:
+        if candidate in role_set:
+            return candidate
+    raise ValueError("NO_ACTIVE_ROLE")
 
 
 # Legacy fixture actor IDs preserved for PR2 regression when fixture_auth_enabled=True.
@@ -56,19 +75,23 @@ class Actor:
     session_id: str | None = None
     username: str = ""
 
+    def has_role(self, role: Role) -> bool:
+        """True when the actor has an active membership for ``role`` (not SQL order)."""
+        if self.role == role:
+            return True
+        return role in self.roles
+
     @property
     def is_instructor_side(self) -> bool:
-        return self.role in {Role.INSTRUCTOR, Role.GRADER, Role.SITE_ADMIN} or any(
-            r in {Role.INSTRUCTOR, Role.GRADER, Role.SITE_ADMIN} for r in self.roles
-        )
+        return any(self.has_role(r) for r in (Role.INSTRUCTOR, Role.GRADER, Role.SITE_ADMIN))
 
     @property
     def is_learner(self) -> bool:
-        return self.role == Role.LEARNER or Role.LEARNER in self.roles
+        return self.has_role(Role.LEARNER)
 
     @property
     def is_site_admin(self) -> bool:
-        return self.role == Role.SITE_ADMIN or Role.SITE_ADMIN in self.roles
+        return self.has_role(Role.SITE_ADMIN)
 
 
 def session_token_hash(token: str) -> str:
@@ -130,7 +153,10 @@ def _actor_from_user(
     roles = _roles_for(conn, user_row["user_id"], user_row["site_id"])
     if not roles:
         raise HTTPException(status_code=403, detail="NO_ACTIVE_ROLE")
-    role = preferred_role if preferred_role in roles else roles[0]
+    try:
+        role = preferred_role if preferred_role in roles else primary_role(roles)
+    except ValueError as e:
+        raise HTTPException(status_code=403, detail="NO_ACTIVE_ROLE") from e
     return Actor(
         actor_id=user_row["user_id"],
         role=role,
@@ -236,18 +262,18 @@ async def require_actor(
 
 
 def require_learner(actor: Actor) -> Actor:
-    if actor.role != Role.LEARNER:
+    if not actor.has_role(Role.LEARNER):
         raise HTTPException(status_code=403, detail="LEARNER_ROLE_REQUIRED")
     return actor
 
 
 def require_instructor_side(actor: Actor) -> Actor:
-    if actor.role not in {Role.INSTRUCTOR, Role.GRADER, Role.SITE_ADMIN}:
+    if not any(actor.has_role(r) for r in (Role.INSTRUCTOR, Role.GRADER, Role.SITE_ADMIN)):
         raise HTTPException(status_code=403, detail="INSTRUCTOR_ROLE_REQUIRED")
     return actor
 
 
 def require_site_admin(actor: Actor) -> Actor:
-    if actor.role != Role.SITE_ADMIN:
+    if not actor.has_role(Role.SITE_ADMIN):
         raise HTTPException(status_code=403, detail="SITE_ADMIN_REQUIRED")
     return actor

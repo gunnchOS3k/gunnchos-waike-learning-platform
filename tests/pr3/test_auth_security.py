@@ -4,20 +4,41 @@ from __future__ import annotations
 
 from datetime import datetime, timedelta, timezone
 
-from app.auth import session_token_hash
+from app.auth import hash_password, session_token_hash
 from app.modules.identity import FIXTURE_PASSWORD
 
-# fixtures: client, prod_app from conftest; helpers:
+SITE_FOR_USER = {
+    "admin-alpha": "site-alpha",
+    "instructor-alpha": "site-alpha",
+    "grader-alpha": "site-alpha",
+    "learner-alpha": "site-alpha",
+    "learner-beta": "site-alpha",
+    "admin-beta": "site-beta",
+    "instructor-beta": "site-beta",
+    "learner-gamma": "site-beta",
+}
 
 
-def login(client, username="learner-alpha", password=FIXTURE_PASSWORD):
-    r = client.post("/api/v1/auth/login", json={"username": username, "password": password})
+def login(client, username="learner-alpha", password=FIXTURE_PASSWORD, site_id=None):
+    sid = site_id or SITE_FOR_USER.get(username, "site-alpha")
+    r = client.post(
+        "/api/v1/auth/login",
+        json={"username": username, "password": password, "site_id": sid},
+    )
     assert r.status_code == 200, r.text
     return r.json()
 
 
 def auth_header(token: str) -> dict[str, str]:
     return {"Authorization": f"Bearer {token}"}
+
+
+def _login_json(username: str, password: str = FIXTURE_PASSWORD, site_id: str | None = None) -> dict:
+    return {
+        "username": username,
+        "password": password,
+        "site_id": site_id or SITE_FOR_USER.get(username, "site-alpha"),
+    }
 
 
 def test_valid_login(client):
@@ -31,7 +52,7 @@ def test_valid_login(client):
 def test_wrong_password(client):
     r = client.post(
         "/api/v1/auth/login",
-        json={"username": "learner-alpha", "password": "definitely-wrong-password"},
+        json=_login_json("learner-alpha", "definitely-wrong-password"),
     )
     assert r.status_code == 401
     assert r.json()["detail"] == "INVALID_PASSWORD"
@@ -40,10 +61,86 @@ def test_wrong_password(client):
 def test_unknown_user(client):
     r = client.post(
         "/api/v1/auth/login",
-        json={"username": "no-such-user", "password": FIXTURE_PASSWORD},
+        json=_login_json("no-such-user"),
     )
     assert r.status_code == 401
     assert r.json()["detail"] == "UNKNOWN_USER"
+
+
+def test_missing_site_id_rejected(client):
+    r = client.post(
+        "/api/v1/auth/login",
+        json={"username": "learner-alpha", "password": FIXTURE_PASSWORD},
+    )
+    assert r.status_code == 422
+
+
+def test_empty_site_id_rejected(client):
+    r = client.post(
+        "/api/v1/auth/login",
+        json={"username": "learner-alpha", "password": FIXTURE_PASSWORD, "site_id": ""},
+    )
+    assert r.status_code == 422
+
+
+def test_wrong_site_does_not_leak_username(client):
+    r = client.post(
+        "/api/v1/auth/login",
+        json=_login_json("learner-alpha", site_id="site-beta"),
+    )
+    assert r.status_code == 401
+    assert r.json()["detail"] == "UNKNOWN_USER"
+
+
+def test_same_username_site_scoped(client, prod_app):
+    admin = login(client, "admin-alpha")
+    ah = auth_header(admin["token"])
+    cu = client.post(
+        "/api/v1/admin/users",
+        headers=ah,
+        json={
+            "username": "shared-name",
+            "display_name": "Shared Alpha",
+            "password": FIXTURE_PASSWORD,
+            "roles": ["learner"],
+        },
+    )
+    assert cu.status_code == 200
+    admin_b = login(client, "admin-beta", site_id="site-beta")
+    bh = auth_header(admin_b["token"])
+    cu2 = client.post(
+        "/api/v1/admin/users",
+        headers=bh,
+        json={
+            "username": "shared-name",
+            "display_name": "Shared Beta",
+            "password": FIXTURE_PASSWORD,
+            "roles": ["learner"],
+        },
+    )
+    assert cu2.status_code == 200
+    a = client.post("/api/v1/auth/login", json=_login_json("shared-name", site_id="site-alpha"))
+    b = client.post("/api/v1/auth/login", json=_login_json("shared-name", site_id="site-beta"))
+    assert a.status_code == 200 and b.status_code == 200
+    assert a.json()["user"]["site_id"] == "site-alpha"
+    assert b.json()["user"]["site_id"] == "site-beta"
+    assert a.json()["user"]["user_id"] != b.json()["user"]["user_id"]
+    # Alpha-only password must not authenticate the beta account.
+    prod_app.state.db.execute(
+        "UPDATE users SET password_hash=? WHERE username=? AND site_id=?",
+        (hash_password("AlphaOnlyPass9!"), "shared-name", "site-alpha"),
+    )
+    prod_app.state.db.commit()
+    cross = client.post(
+        "/api/v1/auth/login",
+        json={
+            "username": "shared-name",
+            "password": "AlphaOnlyPass9!",
+            "site_id": "site-beta",
+        },
+    )
+    assert cross.status_code == 401
+    assert cross.json()["detail"] == "INVALID_PASSWORD"
 
 
 def test_disabled_user_rejected(client):
@@ -64,7 +161,7 @@ def test_disabled_user_rejected(client):
     client.post(f"/api/v1/admin/users/{uid}/disable", headers=ah, json={"disabled": True})
     r = client.post(
         "/api/v1/auth/login",
-        json={"username": "temp-disabled", "password": FIXTURE_PASSWORD},
+        json=_login_json("temp-disabled"),
     )
     assert r.status_code == 403
     assert r.json()["detail"] == "USER_DISABLED"

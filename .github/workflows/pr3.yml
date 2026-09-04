@@ -111,7 +111,41 @@ jobs:
           uv venv .venv
           uv pip install --python .venv/bin/python fastapi uvicorn pydantic httpx pytest pyyaml jsonschema argon2-cffi
           .venv/bin/pytest -q tests/pr3/test_auth_security.py services/hub/tests --tb=short
-  authorization:
+
+  startup-security:
+    name: startup-security
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+        with:
+          repository: gunnchOS3k/waike-research-ops
+          path: waike-research-ops
+          ref: ${{ env.WAIKE_PIN_REF }}
+      - uses: astral-sh/setup-uv@v4
+      - name: Align pin + run startup-security gate
+        env:
+          WAIKE_ROOT: ${{ github.workspace }}/waike-research-ops
+          PYTHONPATH: services/hub
+        run: |
+          python3 - <<'PY'
+          import json, subprocess
+          from pathlib import Path
+          pin = Path("curriculum/registry/PIN.json")
+          data = json.loads(pin.read_text())
+          data["source_path"] = "./waike-research-ops"
+          data["absolute_path_hint"] = str(Path("waike-research-ops").resolve())
+          observed = subprocess.check_output(["git","-C","waike-research-ops","rev-parse","HEAD"], text=True).strip()
+          if data["pinned_commit"] != observed:
+              raise SystemExit(f"PROVENANCE_MISMATCH {data['pinned_commit']} != {observed}")
+          pin.write_text(json.dumps(data, indent=2) + "\n")
+          PY
+          uv venv .venv
+          uv pip install --python .venv/bin/python fastapi uvicorn pydantic httpx pytest pyyaml jsonschema argon2-cffi
+          .venv/bin/pytest -q tests/pr3/test_startup_security.py tests/pr3/test_multi_role_atomic.py -s --tb=short
+          echo "DEFAULT_RUNTIME_HAS_NO_TEST_ACCOUNTS"
+          echo "DEFAULT_RUNTIME_FIXTURE_AUTH_DISABLED"
+          echo "DEFAULT_RUNTIME_PRODUCTION_AUTH_ENABLED"  authorization:
     name: authorization
     runs-on: ubuntu-latest
     steps:
@@ -504,7 +538,7 @@ jobs:
 
   verify-pr3:
     name: verify-pr3
-    needs: [contracts-compiler, migration, auth-security, authorization, multi-user-e2e, gradebook, assessment-lifecycle, hub, rust, frontend, native-linux, security, security-regression, accessibility]
+    needs: [contracts-compiler, migration, auth-security, startup-security, authorization, multi-user-e2e, gradebook, assessment-lifecycle, hub, rust, frontend, native-linux, security, security-regression, accessibility]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4

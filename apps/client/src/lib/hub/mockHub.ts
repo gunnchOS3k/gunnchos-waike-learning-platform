@@ -73,7 +73,7 @@ export function resetMockHubStore(): void {
 export function createMockHubClient(actor: HubActor): HubClient {
   const instructorSide = actor.role === "instructor" || actor.role === "grader" || actor.role === "site_admin";
   return {
-    async login(username) {
+    async login(username, _password, siteId) {
       return {
         token: `mock-token-${username}`,
         expires_at: new Date(Date.now() + 3600_000).toISOString(),
@@ -81,7 +81,7 @@ export function createMockHubClient(actor: HubActor): HubClient {
           user_id: username,
           username,
           display_name: username,
-          site_id: "site-alpha",
+          site_id: siteId || "site-alpha",
           roles: [actor.role],
         },
       };

@@ -38,6 +38,29 @@ class HubConfig(BaseModel):
     database: DatabaseConfig = Field(default_factory=DatabaseConfig)
 
 
+def _env_truthy(name: str) -> bool:
+    return os.environ.get(name, "").lower() in {"1", "true", "yes"}
+
+
+def _waike_env_name() -> str:
+    return (os.environ.get("WAIKE_ENV") or os.environ.get("ENVIRONMENT") or "development").lower()
+
+
+def _fixture_seeding_allowed_by_env() -> bool:
+    """Synthetic Alpha/Beta fixtures require unmistakable opt-in and non-production shape.
+
+    Impossible in production mode unless an explicit test/dev path is also selected
+    (WAIKE_FIXTURE_AUTH or WAIKE_ENV in {test,dev,development,local}).
+    """
+    if not _env_truthy("WAIKE_SEED_TEST_FIXTURES"):
+        return False
+    env_name = _waike_env_name()
+    if env_name in {"production", "prod"}:
+        # Production mode: require an explicit test/dev selector (fixture auth) as well.
+        return _env_truthy("WAIKE_FIXTURE_AUTH")
+    return True
+
+
 def _default_db_path() -> Path:
     override = os.environ.get("WAIKE_HUB_DB")
     if override:
@@ -80,13 +103,19 @@ def _source_commit(waike_root: Path | None) -> str:
     return ""
 
 
-def create_app(config: HubConfig | None = None, db_path: Path | None = None, seed: bool = True) -> FastAPI:
+def create_app(config: HubConfig | None = None, db_path: Path | None = None, seed: bool = False) -> FastAPI:
+    """Create hub app. Synthetic fixture seeding is off by default.
+
+    Prefer ``seed=True`` in tests. Runtime opt-in requires ``WAIKE_SEED_TEST_FIXTURES=true``
+    and is refused for production-shaped processes without an explicit test/dev selector.
+    """
     if config is None:
         # Allow process env to opt into fixture auth for live HTTP seam / local PR2 tools.
-        fixture = os.environ.get("WAIKE_FIXTURE_AUTH", "").lower() in {"1", "true", "yes"}
+        fixture = _env_truthy("WAIKE_FIXTURE_AUTH")
         config = HubConfig(
             fixture_auth_enabled=fixture,
             production_auth_enabled=not fixture,
+            environment=_waike_env_name(),
         )
     cfg = config
     app = FastAPI(
@@ -94,7 +123,9 @@ def create_app(config: HubConfig | None = None, db_path: Path | None = None, see
         version=cfg.version,
         description=(
             "PR3 multi-user LMS alpha. production_auth_enabled=true by default; "
-            "fixture X-Waike-Actor-* headers only when fixture_auth_enabled=true."
+            "fixture X-Waike-Actor-* headers only when fixture_auth_enabled=true. "
+            "Synthetic test accounts are never seeded unless tests pass seed=True or "
+            "WAIKE_SEED_TEST_FIXTURES=true is set for a non-production path."
         ),
     )
     app.state.config = cfg
@@ -116,7 +147,8 @@ def create_app(config: HubConfig | None = None, db_path: Path | None = None, see
         gradebook=gradebook,
     )
 
-    if seed:
+    should_seed = bool(seed) or _fixture_seeding_allowed_by_env()
+    if should_seed:
         # Always keep PR2 actors table for assessment FK-ish references.
         assessment.seed_synthetic_actors()
         identity.seed_sites_and_users()
@@ -133,6 +165,7 @@ def create_app(config: HubConfig | None = None, db_path: Path | None = None, see
     app.state.sections = sections
     app.state.gradebook = gradebook
     app.state.waike_root = str(waike) if waike else None
+    app.state.seeded_test_fixtures = should_seed
 
     @app.get("/healthz")
     def healthz() -> dict:
@@ -148,6 +181,7 @@ def create_app(config: HubConfig | None = None, db_path: Path | None = None, see
             "assessment_lifecycle": True,
             "identity": True,
             "gradebook": True,
+            "seeded_test_fixtures": should_seed,
         }
 
     @app.get("/config")
@@ -158,4 +192,5 @@ def create_app(config: HubConfig | None = None, db_path: Path | None = None, see
     return app
 
 
-app = create_app()
+# Production-shaped module import: never auto-seed Alpha/Beta test accounts.
+app = create_app(seed=False)

@@ -42,7 +42,8 @@ def _http(err: ServiceError) -> HTTPException:
 class LoginBody(BaseModel):
     username: str
     password: str
-    site_id: str | None = None
+    # Required: usernames are site-scoped UNIQUE(site_id, username); no ambiguous multi-site login.
+    site_id: str = Field(min_length=1)
 
 
 class CreateUserBody(BaseModel):

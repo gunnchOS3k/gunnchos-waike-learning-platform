@@ -214,7 +214,7 @@ class SectionService:
         return self.get_section(actor, sec["section_id"])
 
     def list_sections_for_actor(self, actor: Actor) -> list[dict[str, Any]]:
-        if actor.role == Role.LEARNER:
+        if actor.is_learner and not actor.is_instructor_side and not actor.is_site_admin:
             rows = _rows(
                 self.conn,
                 """
@@ -247,13 +247,15 @@ class SectionService:
 
     def get_section(self, actor: Actor, section_id: str) -> dict[str, Any]:
         sec = self._section_same_site(actor, section_id)
-        if actor.role == Role.LEARNER and not self.is_enrolled(actor.actor_id, section_id):
+        if actor.is_site_admin:
+            return self._enrich(dict(sec))
+        if self.can_instruct(actor, section_id) or self.can_grade(actor, section_id):
+            return self._enrich(dict(sec))
+        if actor.is_learner and self.is_enrolled(actor.actor_id, section_id):
+            return self._enrich(dict(sec))
+        if actor.is_learner:
             raise ServiceError("NOT_ENROLLED", 403)
-        if actor.role in {Role.INSTRUCTOR, Role.GRADER} and not (
-            self.can_instruct(actor, section_id) or self.can_grade(actor, section_id) or actor.is_site_admin
-        ):
-            raise ServiceError("FORBIDDEN", 403)
-        return self._enrich(dict(sec))
+        raise ServiceError("FORBIDDEN", 403)
 
     def get_section_public(self, section_id: str) -> dict[str, Any]:
         sec = _row(self.conn, "SELECT * FROM sections WHERE section_id=?", (section_id,))
@@ -279,9 +281,20 @@ class SectionService:
         return [dict(r) for r in rows]
 
     def learner_home(self, actor: Actor) -> list[dict[str, Any]]:
-        if actor.role != Role.LEARNER:
+        if not actor.is_learner:
             raise ServiceError("LEARNER_ROLE_REQUIRED", 403)
-        sections = self.list_sections_for_actor(actor)
+        # Enrollment-scoped even for multi-role actors (primary may be instructor/admin).
+        enrolled = _rows(
+            self.conn,
+            """
+            SELECT s.* FROM sections s
+            JOIN enrollments e ON e.section_id = s.section_id
+            WHERE e.user_id=? AND e.status='active' AND s.site_id=?
+            ORDER BY s.code
+            """,
+            (actor.actor_id, actor.site_id),
+        )
+        sections = [self._enrich(dict(r)) for r in enrolled]
         out = []
         for s in sections:
             mastery = _row(

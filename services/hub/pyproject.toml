@@ -13,6 +13,9 @@ dependencies = [
 [project.optional-dependencies]
 dev = ["pytest>=8", "httpx>=0.27"]
 
+[project.scripts]
+waike-hub = "app.cli:main"
+
 [tool.setuptools.packages.find]
 include = ["app*"]
 exclude = ["data*", "tests*"]
