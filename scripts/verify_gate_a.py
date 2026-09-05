@@ -15,6 +15,12 @@ ROOT = Path(__file__).resolve().parents[1]
 REPORTS = ROOT / "reports"
 SOURCE_DATE_EPOCH = os.environ.get("SOURCE_DATE_EPOCH", "1700000000")
 CLAIM = "OFFLINE_AND_ACTIVITY_ENGINE_DIGITALLY_COMPLETE"
+ANSI = re.compile(r"\x1b\[[0-9;]*m")
+
+
+def plain(proc: subprocess.CompletedProcess) -> str:
+    """Combined output with colour codes stripped, so counts parse under CI."""
+    return ANSI.sub("", (proc.stdout or "") + (proc.stderr or ""))
 
 
 def run(cmd: list[str], cwd: Path | None = None, env: dict | None = None) -> subprocess.CompletedProcess:
@@ -81,7 +87,7 @@ def main() -> int:
     )
     results["exit_codes"]["pytest"] = pt.returncode
     results["checks"]["python_tests"] = pt.returncode == 0
-    out = (pt.stdout or "") + (pt.stderr or "")
+    out = plain(pt)
     m = re.search(r"(\d+) passed", out)
     results["test_counts"]["python_passed"] = int(m.group(1)) if m else 0
     if pt.returncode != 0:
@@ -100,7 +106,7 @@ def main() -> int:
     )
     results["exit_codes"]["gate_a"] = gate_a.returncode
     results["checks"]["gate_a_tests"] = gate_a.returncode == 0
-    ga_out = (gate_a.stdout or "") + (gate_a.stderr or "")
+    ga_out = plain(gate_a)
     gm = re.search(r"(\d+) passed", ga_out)
     results["test_counts"]["gate_a_passed"] = int(gm.group(1)) if gm else 0
     if gate_a.returncode != 0:
@@ -110,9 +116,9 @@ def main() -> int:
     rust = run(["cargo", "test", "offline"], cwd=ROOT / "apps/client/src-tauri")
     results["exit_codes"]["rust_offline"] = rust.returncode
     results["checks"]["native_offline_tests"] = rust.returncode == 0
-    rust_out = (rust.stdout or "") + (rust.stderr or "")
+    rust_out = plain(rust)
     rm = re.search(r"(\d+) passed", rust_out)
-    results["test_counts"]["rust_passed"] = int(rm.group(1)) if rm else 0
+    results["test_counts"]["rust_offline_passed"] = int(rm.group(1)) if rm else 0
     if rust.returncode != 0:
         results["blocked"].append("native_offline_tests_failed")
         print(rust_out[-4000:])
@@ -124,7 +130,7 @@ def main() -> int:
     )
     results["exit_codes"]["client_live"] = live.returncode
     results["checks"]["client_live_tests"] = live.returncode == 0
-    live_out = (live.stdout or "") + (live.stderr or "")
+    live_out = plain(live)
     lm = re.search(r"Tests\s+(\d+) passed", live_out)
     results["test_counts"]["client_live_passed"] = int(lm.group(1)) if lm else 0
     if live.returncode != 0:
@@ -186,7 +192,7 @@ def main() -> int:
         f"- python_passed: {results['test_counts'].get('python_passed')}",
         f"- python_skipped: {results['test_counts'].get('python_skipped')}",
         f"- gate_a_passed: {results['test_counts'].get('gate_a_passed')}",
-        f"- rust_passed: {results['test_counts'].get('rust_passed')}",
+        f"- rust_offline_passed: {results['test_counts'].get('rust_offline_passed')}",
         f"- client_live_passed: {results['test_counts'].get('client_live_passed')}",
         "",
         "## Checks",
