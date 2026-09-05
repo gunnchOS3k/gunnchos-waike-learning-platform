@@ -579,12 +579,10 @@ def issue_lease(body: LeaseBody, request: Request, actor: Actor = Depends(requir
 
 @router.get("/sync/leases/{lease_id}")
 def get_lease(lease_id: str, request: Request, actor: Actor = Depends(require_actor)) -> dict[str, Any]:
-    lease = _sync(request).get_lease(lease_id)
-    if not lease:
-        raise HTTPException(status_code=404, detail="LEASE_NOT_FOUND")
-    if lease["user_id"] != actor.actor_id and not actor.is_instructor_side:
-        raise HTTPException(status_code=403, detail="FORBIDDEN")
-    return lease
+    try:
+        return _sync(request).read_lease(actor, lease_id)
+    except ServiceError as e:
+        raise _http(e) from e
 
 
 @router.post("/sync/leases/{lease_id}/revoke")
@@ -665,6 +663,8 @@ class LabCompleteBody(BaseModel):
     artifact_hashes: list[str] = Field(default_factory=list)
     client_mutation_id: str = Field(min_length=8)
     fabricate_hardware: bool = False
+    # Data only: the runner command, interpreter, and arguments are server-fixed.
+    learner_input: str | None = None
 
 
 class ThreadBody(BaseModel):
@@ -725,6 +725,16 @@ class BatchGradeBody(BaseModel):
 class RegradeBody(BaseModel):
     submission_id: str
     reason: str
+
+
+@router.get("/sections/{section_id}/activities")
+def section_activities(
+    section_id: str, request: Request, actor: Actor = Depends(require_actor)
+) -> dict[str, Any]:
+    try:
+        return _activities(request).section_activities(actor, section_id)
+    except ServiceError as e:
+        raise _http(e) from e
 
 
 @router.get("/quizzes/{quiz_id}")
@@ -793,6 +803,34 @@ def manual_quiz_grade(
         raise _http(e) from e
 
 
+@router.get("/quiz-attempts/{attempt_id}")
+def quiz_attempt_detail(
+    attempt_id: str, request: Request, actor: Actor = Depends(require_actor)
+) -> dict[str, Any]:
+    """Learners get their own result; staff get the grading view for their section."""
+    try:
+        if actor.is_instructor_side:
+            return _activities(request).instructor_attempt_detail(actor, attempt_id)
+        require_learner(actor)
+        return _activities(request).learner_attempt_detail(actor, attempt_id)
+    except ServiceError as e:
+        raise _http(e) from e
+
+
+@router.get("/instructor/sections/{section_id}/manual-queue")
+def instructor_manual_queue(
+    section_id: str,
+    request: Request,
+    anonymous: bool = False,
+    actor: Actor = Depends(require_actor),
+) -> list[dict[str, Any]]:
+    require_instructor_side(actor)
+    try:
+        return _activities(request).instructor_manual_queue(actor, section_id, anonymous=anonymous)
+    except ServiceError as e:
+        raise _http(e) from e
+
+
 @router.get("/labs/{lab_id}")
 def get_lab(lab_id: str, request: Request, actor: Actor = Depends(require_actor)) -> dict[str, Any]:
     try:
@@ -814,7 +852,36 @@ def complete_lab(
             artifact_hashes=body.artifact_hashes,
             client_mutation_id=body.client_mutation_id,
             fabricate_hardware=body.fabricate_hardware,
+            learner_input=body.learner_input,
         )
+    except ServiceError as e:
+        raise _http(e) from e
+
+
+@router.get("/labs/{lab_id}/runs")
+def list_lab_runs(lab_id: str, request: Request, actor: Actor = Depends(require_actor)) -> list[dict[str, Any]]:
+    try:
+        return _activities(request).list_lab_runs(actor, lab_id)
+    except ServiceError as e:
+        raise _http(e) from e
+
+
+@router.get("/discussions/threads")
+def list_threads(
+    section_id: str, request: Request, actor: Actor = Depends(require_actor)
+) -> list[dict[str, Any]]:
+    try:
+        return _activities(request).list_threads(actor, section_id)
+    except ServiceError as e:
+        raise _http(e) from e
+
+
+@router.get("/discussions/threads/{thread_id}/posts")
+def list_posts(
+    thread_id: str, request: Request, actor: Actor = Depends(require_actor)
+) -> list[dict[str, Any]]:
+    try:
+        return _activities(request).list_posts(actor, thread_id)
     except ServiceError as e:
         raise _http(e) from e
 
@@ -853,6 +920,16 @@ def moderate_discussion(
     require_instructor_side(actor)
     try:
         return _activities(request).moderate_post(actor, post_id, body.note, body.delete)
+    except ServiceError as e:
+        raise _http(e) from e
+
+
+@router.get("/groups")
+def list_groups(
+    section_id: str, request: Request, actor: Actor = Depends(require_actor)
+) -> list[dict[str, Any]]:
+    try:
+        return _activities(request).list_groups(actor, section_id)
     except ServiceError as e:
         raise _http(e) from e
 

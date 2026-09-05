@@ -903,9 +903,311 @@ jobs:
           retention-days: 14
           if-no-files-found: error
 
+  object-authz-sabotage:
+    name: object-authz-sabotage
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+        with:
+          repository: gunnchOS3k/waike-research-ops
+          path: waike-research-ops
+          ref: ${{ env.WAIKE_PIN_REF }}
+      - uses: astral-sh/setup-uv@v4
+      - name: Align WAIKE pin provenance
+        run: |
+          python3 - <<'PY'
+          import json, subprocess
+          from pathlib import Path
+          pin = Path("curriculum/registry/PIN.json")
+          data = json.loads(pin.read_text())
+          data["source_path"] = "./waike-research-ops"
+          data["absolute_path_hint"] = str(Path("waike-research-ops").resolve())
+          observed = subprocess.check_output(["git","-C","waike-research-ops","rev-parse","HEAD"], text=True).strip()
+          if data["pinned_commit"] != observed:
+              raise SystemExit(f"PROVENANCE_MISMATCH {data['pinned_commit']} != {observed}")
+          pin.write_text(json.dumps(data, indent=2) + "\n")
+          PY
+      - name: Run object-authz-sabotage
+        env:
+          WAIKE_ROOT: ${{ github.workspace }}/waike-research-ops
+          PYTHONPATH: services/hub
+        run: |
+          uv venv .venv
+          uv pip install --python .venv/bin/python fastapi uvicorn pydantic httpx pytest pyyaml jsonschema argon2-cffi
+          .venv/bin/pytest -q tests/gate_a/test_object_authz_closure.py tests/gate_a/test_adversarial_sabotage.py --tb=short
+
+  idempotency-tamper:
+    name: idempotency-tamper
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+        with:
+          repository: gunnchOS3k/waike-research-ops
+          path: waike-research-ops
+          ref: ${{ env.WAIKE_PIN_REF }}
+      - uses: astral-sh/setup-uv@v4
+      - name: Align WAIKE pin provenance
+        run: |
+          python3 - <<'PY'
+          import json, subprocess
+          from pathlib import Path
+          pin = Path("curriculum/registry/PIN.json")
+          data = json.loads(pin.read_text())
+          data["source_path"] = "./waike-research-ops"
+          data["absolute_path_hint"] = str(Path("waike-research-ops").resolve())
+          observed = subprocess.check_output(["git","-C","waike-research-ops","rev-parse","HEAD"], text=True).strip()
+          if data["pinned_commit"] != observed:
+              raise SystemExit(f"PROVENANCE_MISMATCH {data['pinned_commit']} != {observed}")
+          pin.write_text(json.dumps(data, indent=2) + "\n")
+          PY
+      - name: Run idempotency-tamper
+        env:
+          WAIKE_ROOT: ${{ github.workspace }}/waike-research-ops
+          PYTHONPATH: services/hub
+        run: |
+          uv venv .venv
+          uv pip install --python .venv/bin/python fastapi uvicorn pydantic httpx pytest pyyaml jsonschema argon2-cffi
+          .venv/bin/pytest -q tests/gate_a/test_idempotency_closure.py --tb=short
+
+  attachment-tenancy:
+    name: attachment-tenancy
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+        with:
+          repository: gunnchOS3k/waike-research-ops
+          path: waike-research-ops
+          ref: ${{ env.WAIKE_PIN_REF }}
+      - uses: astral-sh/setup-uv@v4
+      - name: Align WAIKE pin provenance
+        run: |
+          python3 - <<'PY'
+          import json, subprocess
+          from pathlib import Path
+          pin = Path("curriculum/registry/PIN.json")
+          data = json.loads(pin.read_text())
+          data["source_path"] = "./waike-research-ops"
+          data["absolute_path_hint"] = str(Path("waike-research-ops").resolve())
+          observed = subprocess.check_output(["git","-C","waike-research-ops","rev-parse","HEAD"], text=True).strip()
+          if data["pinned_commit"] != observed:
+              raise SystemExit(f"PROVENANCE_MISMATCH {data['pinned_commit']} != {observed}")
+          pin.write_text(json.dumps(data, indent=2) + "\n")
+          PY
+      - name: Run attachment-tenancy
+        env:
+          WAIKE_ROOT: ${{ github.workspace }}/waike-research-ops
+          PYTHONPATH: services/hub
+        run: |
+          uv venv .venv
+          uv pip install --python .venv/bin/python fastapi uvicorn pydantic httpx pytest pyyaml jsonschema argon2-cffi
+          .venv/bin/pytest -q tests/gate_a/test_attachment_tenancy_closure.py --tb=short
+
+  quiz-integrity:
+    name: quiz-integrity
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+        with:
+          repository: gunnchOS3k/waike-research-ops
+          path: waike-research-ops
+          ref: ${{ env.WAIKE_PIN_REF }}
+      - uses: astral-sh/setup-uv@v4
+      - name: Align WAIKE pin provenance
+        run: |
+          python3 - <<'PY'
+          import json, subprocess
+          from pathlib import Path
+          pin = Path("curriculum/registry/PIN.json")
+          data = json.loads(pin.read_text())
+          data["source_path"] = "./waike-research-ops"
+          data["absolute_path_hint"] = str(Path("waike-research-ops").resolve())
+          observed = subprocess.check_output(["git","-C","waike-research-ops","rev-parse","HEAD"], text=True).strip()
+          if data["pinned_commit"] != observed:
+              raise SystemExit(f"PROVENANCE_MISMATCH {data['pinned_commit']} != {observed}")
+          pin.write_text(json.dumps(data, indent=2) + "\n")
+          PY
+      - name: Run quiz-integrity
+        env:
+          WAIKE_ROOT: ${{ github.workspace }}/waike-research-ops
+          PYTHONPATH: services/hub
+        run: |
+          uv venv .venv
+          uv pip install --python .venv/bin/python fastapi uvicorn pydantic httpx pytest pyyaml jsonschema argon2-cffi
+          .venv/bin/pytest -q tests/gate_a/test_quiz_timing_closure.py tests/gate_a/test_manual_grading_closure.py --tb=short
+
+  lab-runner:
+    name: lab-runner
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+        with:
+          repository: gunnchOS3k/waike-research-ops
+          path: waike-research-ops
+          ref: ${{ env.WAIKE_PIN_REF }}
+      - uses: astral-sh/setup-uv@v4
+      - name: Align WAIKE pin provenance
+        run: |
+          python3 - <<'PY'
+          import json, subprocess
+          from pathlib import Path
+          pin = Path("curriculum/registry/PIN.json")
+          data = json.loads(pin.read_text())
+          data["source_path"] = "./waike-research-ops"
+          data["absolute_path_hint"] = str(Path("waike-research-ops").resolve())
+          observed = subprocess.check_output(["git","-C","waike-research-ops","rev-parse","HEAD"], text=True).strip()
+          if data["pinned_commit"] != observed:
+              raise SystemExit(f"PROVENANCE_MISMATCH {data['pinned_commit']} != {observed}")
+          pin.write_text(json.dumps(data, indent=2) + "\n")
+          PY
+      - name: Run lab-runner
+        env:
+          WAIKE_ROOT: ${{ github.workspace }}/waike-research-ops
+          PYTHONPATH: services/hub
+        run: |
+          uv venv .venv
+          uv pip install --python .venv/bin/python fastapi uvicorn pydantic httpx pytest pyyaml jsonschema argon2-cffi
+          .venv/bin/pytest -q tests/gate_a/test_lab_runner_closure.py --tb=short
+
+  transaction-integrity:
+    name: transaction-integrity
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+        with:
+          repository: gunnchOS3k/waike-research-ops
+          path: waike-research-ops
+          ref: ${{ env.WAIKE_PIN_REF }}
+      - uses: astral-sh/setup-uv@v4
+      - name: Align WAIKE pin provenance
+        run: |
+          python3 - <<'PY'
+          import json, subprocess
+          from pathlib import Path
+          pin = Path("curriculum/registry/PIN.json")
+          data = json.loads(pin.read_text())
+          data["source_path"] = "./waike-research-ops"
+          data["absolute_path_hint"] = str(Path("waike-research-ops").resolve())
+          observed = subprocess.check_output(["git","-C","waike-research-ops","rev-parse","HEAD"], text=True).strip()
+          if data["pinned_commit"] != observed:
+              raise SystemExit(f"PROVENANCE_MISMATCH {data['pinned_commit']} != {observed}")
+          pin.write_text(json.dumps(data, indent=2) + "\n")
+          PY
+      - name: Run transaction-integrity
+        env:
+          WAIKE_ROOT: ${{ github.workspace }}/waike-research-ops
+          PYTHONPATH: services/hub
+        run: |
+          uv venv .venv
+          uv pip install --python .venv/bin/python fastapi uvicorn pydantic httpx pytest pyyaml jsonschema argon2-cffi
+          .venv/bin/pytest -q tests/gate_a/test_transaction_integrity_closure.py --tb=short
+
+  native-offline-wiring:
+    name: native-offline-wiring
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+        with:
+          repository: gunnchOS3k/waike-research-ops
+          path: waike-research-ops
+          ref: ${{ env.WAIKE_PIN_REF }}
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9.15.9
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: pnpm
+          cache-dependency-path: apps/client/pnpm-lock.yaml
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: astral-sh/setup-uv@v4
+      - name: Align WAIKE pin provenance
+        run: |
+          python3 - <<'PY'
+          import json, subprocess
+          from pathlib import Path
+          pin = Path("curriculum/registry/PIN.json")
+          data = json.loads(pin.read_text())
+          data["source_path"] = "./waike-research-ops"
+          data["absolute_path_hint"] = str(Path("waike-research-ops").resolve())
+          observed = subprocess.check_output(["git","-C","waike-research-ops","rev-parse","HEAD"], text=True).strip()
+          if data["pinned_commit"] != observed:
+              raise SystemExit(f"PROVENANCE_MISMATCH {data['pinned_commit']} != {observed}")
+          pin.write_text(json.dumps(data, indent=2) + "\n")
+          PY
+      - name: Install Linux Tauri/GTK deps
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libwebkit2gtk-4.1-dev libgtk-3-dev libayatana-appindicator3-dev librsvg2-dev patchelf pkg-config libglib2.0-dev
+      - name: Rust encrypted-store offline tests
+        working-directory: apps/client/src-tauri
+        run: cargo test offline
+      - name: Coordinator against a real hub
+        env:
+          WAIKE_ROOT: ${{ github.workspace }}/waike-research-ops
+          PYTHONPATH: services/hub
+        run: |
+          uv venv .venv
+          uv pip install --python .venv/bin/python fastapi uvicorn pydantic httpx pytest pyyaml jsonschema argon2-cffi
+          cd apps/client
+          pnpm install --frozen-lockfile
+          pnpm exec vitest run --config vitest.live.config.ts src/test/live/syncCoordinator.live.test.ts
+
+  production-activity-ui:
+    name: production-activity-ui
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+        with:
+          repository: gunnchOS3k/waike-research-ops
+          path: waike-research-ops
+          ref: ${{ env.WAIKE_PIN_REF }}
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9.15.9
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: pnpm
+          cache-dependency-path: apps/client/pnpm-lock.yaml
+      - uses: astral-sh/setup-uv@v4
+      - name: Align WAIKE pin provenance
+        run: |
+          python3 - <<'PY'
+          import json, subprocess
+          from pathlib import Path
+          pin = Path("curriculum/registry/PIN.json")
+          data = json.loads(pin.read_text())
+          data["source_path"] = "./waike-research-ops"
+          data["absolute_path_hint"] = str(Path("waike-research-ops").resolve())
+          observed = subprocess.check_output(["git","-C","waike-research-ops","rev-parse","HEAD"], text=True).strip()
+          if data["pinned_commit"] != observed:
+              raise SystemExit(f"PROVENANCE_MISMATCH {data['pinned_commit']} != {observed}")
+          pin.write_text(json.dumps(data, indent=2) + "\n")
+          PY
+      - name: Activity screens against a real hub
+        env:
+          WAIKE_ROOT: ${{ github.workspace }}/waike-research-ops
+          PYTHONPATH: services/hub
+        run: |
+          uv venv .venv
+          uv pip install --python .venv/bin/python fastapi uvicorn pydantic httpx pytest pyyaml jsonschema argon2-cffi
+          cd apps/client
+          pnpm install --frozen-lockfile
+          pnpm exec vitest run --config vitest.live.config.ts src/test/live/activityUi.live.test.tsx
+          pnpm run lint
+          pnpm run build
+
   verify-gate-a:
     name: verify-gate-a
-    needs: [foundation-regression, auth-security, authorization, migration, sync-model, sync-api, offline-restart, idempotency, conflict, cross-device, attachment-security, quizzes, labs, discussions, groups, accommodations, grading-efficiency, learner-e2e, instructor-e2e, frontend, accessibility, rust, native-linux, adversarial-sabotage, macos-native]
+    needs: [foundation-regression, auth-security, authorization, migration, sync-model, sync-api, offline-restart, idempotency, conflict, cross-device, attachment-security, quizzes, labs, discussions, groups, accommodations, grading-efficiency, learner-e2e, instructor-e2e, frontend, accessibility, rust, native-linux, adversarial-sabotage, macos-native, native-offline-wiring, object-authz-sabotage, idempotency-tamper, attachment-tenancy, quiz-integrity, lab-runner, production-activity-ui, transaction-integrity]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -952,7 +1254,7 @@ jobs:
           .venv/bin/course-compiler compile DIGITAL_CONFIDENCE --out pack_out
           PYTHONPATH=services/hub .venv/bin/pytest -q tests services/hub/tests
           cd apps/client/src-tauri && cargo test && cd ../../..
-          cd apps/client && pnpm test && pnpm run build && cd ../..
+          cd apps/client && pnpm test && pnpm run test:live && pnpm run build && cd ../..
           .venv/bin/python scripts/verify_gate_a.py
       - name: Record PR head for reports artifact
         id: reports_meta

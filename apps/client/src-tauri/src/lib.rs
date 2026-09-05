@@ -1,10 +1,15 @@
 mod db;
 mod error;
 mod keyring_store;
+mod offline;
+#[cfg(test)]
+mod offline_tests;
 mod pack;
 
+use chrono::Utc;
 use error::{ui_code, AppError};
 use keyring_store::{resolve_db_key, KeySource};
+use offline::{CachedLease, OfflineState, SyncCounts, SyncOutboxItem};
 use pack::{LessonContent, LessonInfo, PackService, TrustStatus};
 use serde::Serialize;
 use std::fs;
@@ -137,6 +142,140 @@ fn get_resume_position(
     Ok(svc.resume_position(&pack_id)?)
 }
 
+// --- Gate A offline sync commands -------------------------------------------
+//
+// Every command takes typed values. There is no command that accepts SQL, a table
+// name, or a column name, so the webview cannot reach past this surface.
+
+macro_rules! with_db {
+    ($state:expr, $db:ident, $body:expr) => {{
+        let svc = $state
+            .service
+            .lock()
+            .map_err(|e| AppError::Db(e.to_string()))?;
+        let $db = &svc.db;
+        let out: Result<_, AppError> = $body;
+        out.map_err(CommandError::from)
+    }};
+}
+
+#[tauri::command]
+fn sync_cache_lease(
+    state: State<'_, AppState>,
+    lease: CachedLease,
+    cached_at: String,
+) -> Result<(), CommandError> {
+    with_db!(state, db, db.cache_lease(&lease, &cached_at))
+}
+
+#[tauri::command]
+fn sync_get_lease(
+    state: State<'_, AppState>,
+    section_id: String,
+) -> Result<Option<CachedLease>, CommandError> {
+    with_db!(state, db, db.get_section_lease(&section_id))
+}
+
+#[tauri::command]
+fn sync_list_leases(state: State<'_, AppState>) -> Result<Vec<CachedLease>, CommandError> {
+    with_db!(state, db, db.list_leases())
+}
+
+#[tauri::command]
+fn sync_mark_lease_revoked(
+    state: State<'_, AppState>,
+    lease_id: String,
+    reason: String,
+) -> Result<(), CommandError> {
+    with_db!(state, db, db.mark_lease_revoked(&lease_id, &reason))
+}
+
+#[tauri::command]
+fn sync_mark_lease_expired(
+    state: State<'_, AppState>,
+    lease_id: String,
+    expired_at: String,
+) -> Result<(), CommandError> {
+    with_db!(state, db, db.mark_lease_expired(&lease_id, &expired_at))
+}
+
+#[tauri::command]
+fn sync_enqueue_mutation(
+    state: State<'_, AppState>,
+    item: SyncOutboxItem,
+) -> Result<(), CommandError> {
+    with_db!(state, db, db.enqueue_sync_mutation(&item))
+}
+
+#[tauri::command]
+fn sync_next_local_sequence(state: State<'_, AppState>) -> Result<i64, CommandError> {
+    with_db!(state, db, db.next_local_sequence())
+}
+
+#[tauri::command]
+fn sync_list_pending(state: State<'_, AppState>) -> Result<Vec<SyncOutboxItem>, CommandError> {
+    with_db!(state, db, db.list_pending_sync())
+}
+
+#[tauri::command]
+fn sync_list_by_status(
+    state: State<'_, AppState>,
+    status: String,
+) -> Result<Vec<SyncOutboxItem>, CommandError> {
+    with_db!(state, db, db.list_sync_by_status(&status))
+}
+
+#[tauri::command]
+fn sync_update_mutation_state(
+    state: State<'_, AppState>,
+    client_mutation_id: String,
+    status: String,
+    last_error: Option<String>,
+    updated_at: String,
+) -> Result<(), CommandError> {
+    with_db!(
+        state,
+        db,
+        db.update_mutation_state(
+            &client_mutation_id,
+            &status,
+            last_error.as_deref(),
+            &updated_at,
+        )
+    )
+}
+
+#[tauri::command]
+fn sync_persist_ack(
+    state: State<'_, AppState>,
+    client_mutation_id: String,
+    receipt_json: String,
+    ack_persisted_at: String,
+) -> Result<(), CommandError> {
+    with_db!(
+        state,
+        db,
+        db.persist_sync_ack(&client_mutation_id, &receipt_json, &ack_persisted_at)
+    )
+}
+
+#[tauri::command]
+fn sync_get_counts(state: State<'_, AppState>) -> Result<SyncCounts, CommandError> {
+    with_db!(state, db, db.get_sync_counts())
+}
+
+#[tauri::command]
+fn sync_offline_state(
+    state: State<'_, AppState>,
+    section_id: Option<String>,
+) -> Result<OfflineState, CommandError> {
+    with_db!(
+        state,
+        db,
+        db.offline_state(section_id.as_deref(), Utc::now())
+    )
+}
+
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     let (db_key, key_source) = resolve_db_key().unwrap_or_else(|err| {
@@ -169,6 +308,19 @@ pub fn run() {
             open_lesson,
             save_lesson_position,
             get_resume_position,
+            sync_cache_lease,
+            sync_get_lease,
+            sync_list_leases,
+            sync_mark_lease_revoked,
+            sync_mark_lease_expired,
+            sync_enqueue_mutation,
+            sync_next_local_sequence,
+            sync_list_pending,
+            sync_list_by_status,
+            sync_update_mutation_state,
+            sync_persist_ack,
+            sync_get_counts,
+            sync_offline_state,
         ])
         .run(tauri::generate_context!())
         .expect("error while running WAIKE Learning OS");

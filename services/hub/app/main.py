@@ -148,8 +148,8 @@ def create_app(config: HubConfig | None = None, db_path: Path | None = None, see
         sections=sections,
         gradebook=gradebook,
     )
-    sync = SyncService(conn, blob_root=Path(path).parent / "blobs")
-    activities = ActivityEngine(conn)
+    sync = SyncService(conn, blob_root=Path(path).parent / "blobs", sections=sections)
+    activities = ActivityEngine(conn, sections=sections)
 
     should_seed = bool(seed) or _fixture_seeding_allowed_by_env()
     if should_seed:

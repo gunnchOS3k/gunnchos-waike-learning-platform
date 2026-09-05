@@ -1,7 +1,13 @@
-"""Gate A sync: offline leases, mutation ledger, receipts, conflict policy, attachments."""
+"""Gate A sync: offline leases, mutation ledger, receipts, conflict policy, attachments.
+
+Authorization here is object-level. Every entry point resolves the owning section and
+requires either an active learner enrollment or an assigned staff scope on *that*
+section; "same site" and ``is_instructor_side`` are never sufficient on their own.
+"""
 
 from __future__ import annotations
 
+import base64
 import hashlib
 import json
 import re
@@ -11,8 +17,10 @@ from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any
 
-from app.auth import Actor, Role
+from app.auth import Actor
+from app.modules import txn
 from app.modules.assessment_lifecycle import ServiceError
+from app.modules.sections import SectionService
 
 SYNC_STATUSES = frozenset(
     {
@@ -38,6 +46,36 @@ ALLOWED_MIME = frozenset(
 )
 MAX_BLOB_BYTES = 5 * 1024 * 1024
 SAFE_NAME_RE = re.compile(r"[^A-Za-z0-9._-]+")
+PATH_COMPONENT_RE = re.compile(r"^[A-Za-z0-9._-]+$")
+
+DEFAULT_CAPABILITIES = (
+    "lesson_progress",
+    "assignment_draft",
+    "quiz_attempt",
+    "discussion_draft",
+    "lab_local",
+    "attachment_queue",
+)
+
+CAPABILITY_FOR_ENTITY = {
+    "lesson_progress": "lesson_progress",
+    "assignment_draft": "assignment_draft",
+    "quiz_attempt": "quiz_attempt",
+    "discussion_draft": "discussion_draft",
+    "discussion_post": "discussion_draft",
+    "lab_run": "lab_local",
+    "attachment": "attachment_queue",
+}
+
+# Entity types only a learner may originate for themselves.
+LEARNER_OWNED_ENTITIES = frozenset(
+    {"assignment_draft", "quiz_attempt", "lab_run", "attachment", "discussion_draft"}
+)
+
+CONFLICT_CODES = frozenset({"CONFLICT", "DRAFT_CONFLICT"})
+QUARANTINE_CODES = frozenset(
+    {"QUARANTINED", "PATH_TRAVERSAL", "MIME_DENIED", "BLOB_TOO_LARGE", "INVALID_BLOB"}
+)
 
 
 def _now() -> str:
@@ -62,21 +100,53 @@ def _sha256_bytes(data: bytes) -> str:
     return hashlib.sha256(data).hexdigest()
 
 
+def _canonical(payload: dict[str, Any]) -> str:
+    return json.dumps(payload, sort_keys=True, separators=(",", ":"))
+
+
 def _safe_filename(name: str) -> str:
     base = Path(name).name  # path traversal defense
     cleaned = SAFE_NAME_RE.sub("_", base).strip("._") or "attachment.bin"
     return cleaned[:180]
 
 
+class ConflictWithSnapshot(ServiceError):
+    """Conflict that still wants the server's current state preserved for merge UI.
+
+    The snapshot is written *after* the failed attempt's domain writes are rolled back,
+    so a conflict never leaves a partially applied mutation behind.
+    """
+
+    def __init__(self, code: str, snapshot: dict[str, Any] | None = None) -> None:
+        super().__init__(code, 409)
+        self.snapshot = snapshot
+
+
 class SyncService:
     """Server-authoritative sync API with durable receipts and conflict policy."""
 
-    def __init__(self, conn: sqlite3.Connection, blob_root: Path | None = None) -> None:
+    # Replaying a mutation id from a different device is treated as reuse, not a retry.
+    device_scoped_idempotency = True
+
+    def __init__(
+        self,
+        conn: sqlite3.Connection,
+        blob_root: Path | None = None,
+        sections: SectionService | None = None,
+    ) -> None:
         self.conn = conn
+        self.sections = sections or SectionService(conn)
         self.blob_root = blob_root or Path(__file__).resolve().parents[2] / "data" / "blobs"
         self.blob_root.mkdir(parents=True, exist_ok=True)
 
     # --- offline leases -------------------------------------------------------
+
+    def _assert_user_enabled(self, actor: Actor) -> None:
+        user = self.conn.execute(
+            "SELECT disabled FROM users WHERE user_id=?", (actor.actor_id,)
+        ).fetchone()
+        if not user or int(user["disabled"] or 0) == 1:
+            raise ServiceError("USER_DISABLED", 403)
 
     def issue_lease(
         self,
@@ -86,47 +156,15 @@ class SyncService:
         ttl_hours: int = 72,
         capabilities: list[str] | None = None,
     ) -> dict[str, Any]:
-        if not actor.is_learner and not actor.is_instructor_side:
-            raise ServiceError("FORBIDDEN", 403)
-        user = self.conn.execute(
-            "SELECT disabled FROM users WHERE user_id=?", (actor.actor_id,)
-        ).fetchone()
-        if not user or int(user["disabled"] or 0) == 1:
-            raise ServiceError("USER_DISABLED", 403)
-        enr = self.conn.execute(
-            """
-            SELECT status FROM enrollments
-            WHERE section_id=? AND user_id=? AND status='active'
-            """,
-            (section_id, actor.actor_id),
-        ).fetchone()
-        staff = self.conn.execute(
-            """
-            SELECT 1 FROM section_instructors WHERE section_id=? AND user_id=?
-            UNION
-            SELECT 1 FROM section_graders WHERE section_id=? AND user_id=?
-            UNION
-            SELECT 1 FROM role_assignments
-            WHERE user_id=? AND role='site_admin' AND active=1
-            """,
-            (section_id, actor.actor_id, section_id, actor.actor_id, actor.actor_id),
-        ).fetchone()
-        if not enr and not staff and not actor.is_site_admin:
-            raise ServiceError("ENROLLMENT_REQUIRED", 403)
-        sec = self.conn.execute(
-            "SELECT site_id FROM sections WHERE section_id=?", (section_id,)
-        ).fetchone()
-        if not sec or sec["site_id"] != actor.site_id:
-            raise ServiceError("CROSS_SITE_DENIED", 403)
+        if not device_id or not device_id.strip():
+            raise ServiceError("DEVICE_ID_REQUIRED", 400)
+        if ttl_hours <= 0 or ttl_hours > 24 * 30:
+            raise ServiceError("INVALID_LEASE_TTL", 400)
+        self._assert_user_enabled(actor)
+        # Object-level: enrolled learner or assigned staff on this exact section.
+        self.sections.require_section_access(actor, section_id)
 
-        caps = capabilities or [
-            "lesson_progress",
-            "assignment_draft",
-            "quiz_attempt",
-            "discussion_draft",
-            "lab_local",
-            "attachment_queue",
-        ]
+        caps = list(capabilities or DEFAULT_CAPABILITIES)
         lease_id = _id("lease")
         now = datetime.now(tz=timezone.utc)
         expires = now + timedelta(hours=ttl_hours)
@@ -158,27 +196,42 @@ class SyncService:
             "issued_at": now.strftime("%Y-%m-%dT%H:%M:%SZ"),
             "expires_at": expires.strftime("%Y-%m-%dT%H:%M:%SZ"),
             "revoked": False,
+            "revoke_reason": None,
             "capabilities": caps,
         }
 
     def get_lease(self, lease_id: str) -> dict[str, Any] | None:
+        """Unauthorized raw read — internal callers only."""
         row = self.conn.execute(
             "SELECT * FROM offline_leases WHERE lease_id=?", (lease_id,)
         ).fetchone()
-        if not row:
-            return None
-        return self._lease_dict(row)
+        return self._lease_dict(row) if row else None
+
+    def read_lease(self, actor: Actor, lease_id: str) -> dict[str, Any]:
+        """Lease owner, or staff assigned to the lease's section. Not any same-site staff."""
+        lease = self.get_lease(lease_id)
+        if not lease:
+            raise ServiceError("LEASE_NOT_FOUND", 404)
+        self._require_lease_visibility(actor, lease)
+        return lease
+
+    def _require_lease_visibility(self, actor: Actor, lease: dict[str, Any]) -> None:
+        if lease["site_id"] != actor.site_id:
+            raise ServiceError("CROSS_SITE_DENIED", 403)
+        if lease["user_id"] == actor.actor_id:
+            return
+        if self.sections.has_staff_scope(actor, lease["section_id"]):
+            return
+        raise ServiceError("SECTION_NOT_ASSIGNED" if actor.is_instructor_side else "FORBIDDEN", 403)
 
     def revoke_lease(self, actor: Actor, lease_id: str, reason: str = "revoked") -> dict[str, Any]:
-        if not actor.is_instructor_side:
-            raise ServiceError("FORBIDDEN", 403)
-        row = self.conn.execute(
-            "SELECT * FROM offline_leases WHERE lease_id=?", (lease_id,)
-        ).fetchone()
-        if not row:
+        lease = self.get_lease(lease_id)
+        if not lease:
             raise ServiceError("LEASE_NOT_FOUND", 404)
-        if row["site_id"] != actor.site_id and not actor.is_site_admin:
+        if lease["site_id"] != actor.site_id:
             raise ServiceError("CROSS_SITE_DENIED", 403)
+        # Revocation is a staff action scoped to the lease's own section.
+        self.sections.require_staff_scope(actor, lease["section_id"])
         self.conn.execute(
             "UPDATE offline_leases SET revoked_at=?, revoke_reason=? WHERE lease_id=?",
             (_now(), reason, lease_id),
@@ -199,24 +252,12 @@ class SyncService:
             raise ServiceError("LEASE_ACTOR_MISMATCH", 403)
         if lease["section_id"] != section_id:
             raise ServiceError("LEASE_SCOPE_MISMATCH", 403)
+        if lease["site_id"] != actor.site_id:
+            raise ServiceError("CROSS_SITE_DENIED", 403)
         if lease["revoked"]:
             raise ServiceError("LEASE_REVOKED", 403)
         if _parse(lease["expires_at"]) < datetime.now(tz=timezone.utc):
             raise ServiceError("LEASE_EXPIRED", 403)
-        user = self.conn.execute(
-            "SELECT disabled FROM users WHERE user_id=?", (actor.actor_id,)
-        ).fetchone()
-        if not user or int(user["disabled"] or 0) == 1:
-            raise ServiceError("USER_DISABLED", 403)
-        enr = self.conn.execute(
-            """
-            SELECT status FROM enrollments
-            WHERE section_id=? AND user_id=? AND status='active'
-            """,
-            (section_id, actor.actor_id),
-        ).fetchone()
-        if not enr and not actor.is_instructor_side:
-            raise ServiceError("ENROLLMENT_REVOKED", 403)
         if capability not in lease["capabilities"]:
             raise ServiceError("LEASE_CAPABILITY_DENIED", 403)
         return lease
@@ -235,7 +276,58 @@ class SyncService:
             "capabilities": json.loads(row["capabilities_json"] or "[]"),
         }
 
+    # --- authorization --------------------------------------------------------
+
+    def authorize_mutation_scope(self, actor: Actor, entity_type: str, section_id: str) -> None:
+        """Authorize the section for this mutation, lease or no lease.
+
+        A lease is a capability token, not an authorization decision: enrollment can be
+        revoked while a lease is still unexpired, and a same-site instructor who was
+        never assigned to the section has no standing here at all.
+        """
+        self._assert_user_enabled(actor)
+        self.sections.require_section(actor, section_id)
+        if entity_type in LEARNER_OWNED_ENTITIES:
+            # Staff may act on their own assigned section (e.g. authoring demo evidence),
+            # but a learner must hold a live enrollment.
+            if actor.is_learner and self.sections.is_enrolled(actor.actor_id, section_id):
+                return
+            if self.sections.has_staff_scope(actor, section_id):
+                return
+            if actor.is_learner:
+                raise ServiceError("ENROLLMENT_REVOKED", 403)
+            raise ServiceError("SECTION_NOT_ASSIGNED", 403)
+        self.sections.require_section_access(actor, section_id)
+
     # --- mutations + receipts -------------------------------------------------
+
+    def _assert_idempotent_match(
+        self,
+        existing: sqlite3.Row,
+        *,
+        actor: Actor,
+        site_id: str,
+        section_id: str,
+        device_id: str,
+        entity_type: str,
+        entity_id: str,
+        operation: str,
+        payload_hash: str,
+    ) -> None:
+        """A retry must be the *same* mutation; anything else is id reuse, not a replay."""
+        expected = [
+            (existing["actor_id"], actor.actor_id),
+            (existing["site_id"], site_id),
+            (existing["section_id"], section_id),
+            (existing["entity_type"], entity_type),
+            (existing["entity_id"], entity_id),
+            (existing["operation"], operation),
+            (existing["payload_hash"], payload_hash),
+        ]
+        if self.device_scoped_idempotency:
+            expected.append((existing["device_id"], device_id))
+        if any(stored != incoming for stored, incoming in expected):
+            raise ServiceError("MUTATION_ID_REUSE_MISMATCH", 409)
 
     def apply_mutation(
         self,
@@ -258,16 +350,33 @@ class SyncService:
             raise ServiceError("CROSS_SITE_DENIED", 403)
         if not client_mutation_id or len(client_mutation_id) < 8:
             raise ServiceError("INVALID_MUTATION_ID", 400)
+        if not device_id:
+            raise ServiceError("DEVICE_ID_REQUIRED", 400)
+        if base_revision < 0:
+            raise ServiceError("INVALID_BASE_REVISION", 400)
+
+        payload_json = _canonical(payload)
+        payload_hash = _sha256_text(payload_json)
 
         existing = self.conn.execute(
             "SELECT * FROM sync_mutations WHERE client_mutation_id=?",
             (client_mutation_id,),
         ).fetchone()
         if existing:
-            # Idempotent retry — return prior receipt/result without duplicating.
+            self._assert_idempotent_match(
+                existing,
+                actor=actor,
+                site_id=site_id,
+                section_id=section_id,
+                device_id=device_id,
+                entity_type=entity_type,
+                entity_id=entity_id,
+                operation=operation,
+                payload_hash=payload_hash,
+            )
             receipt = self.conn.execute(
-                "SELECT * FROM sync_receipts WHERE client_mutation_id=?",
-                (client_mutation_id,),
+                "SELECT * FROM sync_receipts WHERE client_mutation_id=? AND actor_id=?",
+                (client_mutation_id, actor.actor_id),
             ).fetchone()
             return {
                 "client_mutation_id": client_mutation_id,
@@ -276,111 +385,119 @@ class SyncService:
                 "server_revision": existing["server_revision"],
                 "result": json.loads(existing["result_json"] or "{}"),
                 "receipt": self._receipt_dict(receipt) if receipt else None,
+                "ack_durable": receipt is not None and receipt["result"] == "ok",
             }
 
-        cap_map = {
-            "lesson_progress": "lesson_progress",
-            "assignment_draft": "assignment_draft",
-            "quiz_attempt": "quiz_attempt",
-            "discussion_draft": "discussion_draft",
-            "discussion_post": "discussion_draft",
-            "lab_run": "lab_local",
-            "attachment": "attachment_queue",
-        }
+        # Authorization happens before anything is written, with or without a lease.
+        self.authorize_mutation_scope(actor, entity_type, section_id)
         if lease_id:
             self.assert_lease_allows(
-                actor, lease_id, cap_map.get(entity_type, "lesson_progress"), section_id
-            )
-
-        payload_json = json.dumps(payload, sort_keys=True, separators=(",", ":"))
-        payload_hash = _sha256_text(payload_json)
-
-        self.conn.execute(
-            """
-            INSERT INTO sync_mutations(
-              client_mutation_id, actor_id, site_id, section_id, device_id,
-              entity_type, entity_id, base_revision, operation, payload_json,
-              payload_hash, local_sequence, created_at, sync_status
-            ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)
-            """,
-            (
-                client_mutation_id,
-                actor.actor_id,
-                site_id,
-                section_id,
-                device_id,
-                entity_type,
-                entity_id,
-                base_revision,
-                operation,
-                payload_json,
-                payload_hash,
-                local_sequence,
-                _now(),
-                "syncing",
-            ),
-        )
-
-        try:
-            result = self._dispatch(
                 actor,
-                entity_type=entity_type,
-                entity_id=entity_id,
-                base_revision=base_revision,
-                operation=operation,
-                payload=payload,
-                section_id=section_id,
-                activity_handler=activity_handler,
+                lease_id,
+                CAPABILITY_FOR_ENTITY.get(entity_type, "lesson_progress"),
+                section_id,
             )
-            status = result.get("sync_status", "acknowledged")
-            server_revision = int(result.get("revision", base_revision + 1))
-        except ServiceError as e:
-            status = "rejected" if e.status < 500 else "retryable_error"
-            if e.code in {"CONFLICT", "DRAFT_CONFLICT"}:
-                status = "conflict"
-            if e.code in {"QUARANTINED", "PATH_TRAVERSAL", "MIME_DENIED", "BLOB_TOO_LARGE"}:
-                status = "quarantined"
-            result = {"error": e.code, "status": e.status}
-            server_revision = base_revision
 
-        self.conn.execute(
-            """
-            UPDATE sync_mutations
-            SET sync_status=?, server_revision=?, result_json=?, acknowledged_at=?
-            WHERE client_mutation_id=?
-            """,
-            (
-                status,
-                server_revision,
-                json.dumps(result),
-                _now() if status == "acknowledged" else None,
-                client_mutation_id,
-            ),
-        )
+        txn.enter(self.conn, "sync_mutation")
+        try:
+            self.conn.execute(
+                """
+                INSERT INTO sync_mutations(
+                  client_mutation_id, actor_id, site_id, section_id, device_id,
+                  entity_type, entity_id, base_revision, operation, payload_json,
+                  payload_hash, local_sequence, created_at, sync_status
+                ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)
+                """,
+                (
+                    client_mutation_id,
+                    actor.actor_id,
+                    site_id,
+                    section_id,
+                    device_id,
+                    entity_type,
+                    entity_id,
+                    base_revision,
+                    operation,
+                    payload_json,
+                    payload_hash,
+                    local_sequence,
+                    _now(),
+                    "syncing",
+                ),
+            )
 
-        receipt = None
-        if status == "acknowledged":
-            receipt = self._write_receipt(
-                client_mutation_id=client_mutation_id,
-                actor_id=actor.actor_id,
-                entity_type=entity_type,
-                entity_id=result.get("entity_id", entity_id),
-                authoritative_revision=server_revision,
-                result="ok",
-                payload_hash=payload_hash,
-                detail=result,
+            snapshot: dict[str, Any] | None = None
+            # Inner savepoint isolates domain writes so a rejected/conflicted mutation
+            # leaves the ledger row but no partial domain state.
+            txn.enter(self.conn, "sync_domain")
+            try:
+                result = self._dispatch(
+                    actor,
+                    entity_type=entity_type,
+                    entity_id=entity_id,
+                    base_revision=base_revision,
+                    operation=operation,
+                    payload=payload,
+                    section_id=section_id,
+                    activity_handler=activity_handler,
+                )
+                status = result.get("sync_status", "acknowledged")
+                server_revision = int(result.get("revision", base_revision + 1))
+                txn.release(self.conn, "sync_domain")
+            except ServiceError as e:
+                txn.rollback(self.conn, "sync_domain")
+                status = self._status_for_error(e)
+                result = {"error": e.code, "status": e.status}
+                server_revision = base_revision
+                snapshot = getattr(e, "snapshot", None)
+
+            if snapshot:
+                # Intentional post-rollback write: preserve the authoritative version the
+                # client must merge against.
+                self._store_revision(
+                    snapshot["entity_type"],
+                    snapshot["entity_id"],
+                    snapshot["revision"],
+                    snapshot["actor_id"],
+                    snapshot["payload"],
+                )
+
+            self.conn.execute(
+                """
+                UPDATE sync_mutations
+                SET sync_status=?, server_revision=?, result_json=?, acknowledged_at=?
+                WHERE client_mutation_id=?
+                """,
+                (
+                    status,
+                    server_revision,
+                    json.dumps(result),
+                    _now() if status == "acknowledged" else None,
+                    client_mutation_id,
+                ),
             )
-        elif status in {"conflict", "rejected", "quarantined"}:
-            receipt = self._write_receipt(
-                client_mutation_id=client_mutation_id,
-                actor_id=actor.actor_id,
-                entity_type=entity_type,
-                entity_id=entity_id,
-                authoritative_revision=server_revision,
-                result=status,
-                payload_hash=payload_hash,
-                detail=result,
-            )
+
+            receipt = None
+            if status in {"acknowledged", "conflict", "rejected", "quarantined"}:
+                receipt = self._write_receipt(
+                    client_mutation_id=client_mutation_id,
+                    actor_id=actor.actor_id,
+                    site_id=site_id,
+                    section_id=section_id,
+                    entity_type=entity_type,
+                    entity_id=result.get("entity_id", entity_id)
+                    if status == "acknowledged"
+                    else entity_id,
+                    authoritative_revision=server_revision,
+                    result="ok" if status == "acknowledged" else status,
+                    payload_hash=payload_hash,
+                    detail=result,
+                )
+            txn.release(self.conn, "sync_mutation")
+        except Exception:
+            txn.rollback(self.conn, "sync_mutation")
+            self.conn.commit()
+            raise
 
         self.conn.commit()
         return {
@@ -391,8 +508,15 @@ class SyncService:
             "result": result,
             "receipt": receipt,
             # Client must persist ack before clearing pending — exposed explicitly.
-            "ack_durable": receipt is not None,
+            "ack_durable": status == "acknowledged" and receipt is not None,
         }
+
+    def _status_for_error(self, e: ServiceError) -> str:
+        if e.code in CONFLICT_CODES:
+            return "conflict"
+        if e.code in QUARANTINE_CODES:
+            return "quarantined"
+        return "rejected" if e.status < 500 else "retryable_error"
 
     def _write_receipt(self, **kwargs: Any) -> dict[str, Any]:
         receipt_id = _id("syncr")
@@ -401,6 +525,8 @@ class SyncService:
             "receipt_id": receipt_id,
             "client_mutation_id": kwargs["client_mutation_id"],
             "actor_id": kwargs["actor_id"],
+            "site_id": kwargs["site_id"],
+            "section_id": kwargs["section_id"],
             "entity_type": kwargs["entity_type"],
             "entity_id": kwargs["entity_id"],
             "authoritative_revision": kwargs["authoritative_revision"],
@@ -412,14 +538,16 @@ class SyncService:
         self.conn.execute(
             """
             INSERT INTO sync_receipts(
-              receipt_id, client_mutation_id, actor_id, entity_type, entity_id,
-              authoritative_revision, result, payload_hash, server_timestamp, detail_json
-            ) VALUES (?,?,?,?,?,?,?,?,?,?)
+              receipt_id, client_mutation_id, actor_id, site_id, section_id, entity_type,
+              entity_id, authoritative_revision, result, payload_hash, server_timestamp, detail_json
+            ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)
             """,
             (
                 row["receipt_id"],
                 row["client_mutation_id"],
                 row["actor_id"],
+                row["site_id"],
+                row["section_id"],
                 row["entity_type"],
                 row["entity_id"],
                 row["authoritative_revision"],
@@ -438,6 +566,8 @@ class SyncService:
             "receipt_id": row["receipt_id"],
             "client_mutation_id": row["client_mutation_id"],
             "actor_id": row["actor_id"],
+            "site_id": row["site_id"],
+            "section_id": row["section_id"],
             "entity_type": row["entity_type"],
             "entity_id": row["entity_id"],
             "authoritative_revision": row["authoritative_revision"],
@@ -449,15 +579,7 @@ class SyncService:
 
     def _receipt_dict_from_dict(self, row: dict[str, Any]) -> dict[str, Any]:
         return {
-            "receipt_id": row["receipt_id"],
-            "client_mutation_id": row["client_mutation_id"],
-            "actor_id": row["actor_id"],
-            "entity_type": row["entity_type"],
-            "entity_id": row["entity_id"],
-            "authoritative_revision": row["authoritative_revision"],
-            "result": row["result"],
-            "payload_hash": row["payload_hash"],
-            "server_timestamp": row["server_timestamp"],
+            **{k: v for k, v in row.items() if k != "detail_json"},
             "detail": json.loads(row["detail_json"] or "{}"),
         }
 
@@ -468,19 +590,21 @@ class SyncService:
         ).fetchone()
         if not row:
             raise ServiceError("RECEIPT_NOT_FOUND", 404)
-        if row["actor_id"] != actor.actor_id and not actor.is_instructor_side:
-            raise ServiceError("FORBIDDEN", 403)
+        if row["site_id"] != actor.site_id:
+            # Do not confirm existence of another tenant's receipt.
+            raise ServiceError("RECEIPT_NOT_FOUND", 404)
+        if row["actor_id"] != actor.actor_id:
+            if not self.sections.has_staff_scope(actor, row["section_id"]):
+                raise ServiceError("RECEIPT_NOT_FOUND", 404)
         return self._receipt_dict(row)  # type: ignore[return-value]
 
     def pull_changes(
         self, actor: Actor, section_id: str, since_revision: int = 0
     ) -> dict[str, Any]:
         """Cross-device pull of authoritative entity revisions + grades/feedback for section."""
-        sec = self.conn.execute(
-            "SELECT site_id FROM sections WHERE section_id=?", (section_id,)
-        ).fetchone()
-        if not sec or sec["site_id"] != actor.site_id:
-            raise ServiceError("CROSS_SITE_DENIED", 403)
+        self._assert_user_enabled(actor)
+        # Revoked learners and unassigned same-site staff cannot pull.
+        self.sections.require_section_access(actor, section_id)
 
         progress = self.conn.execute(
             """
@@ -579,8 +703,6 @@ class SyncService:
         payload: dict[str, Any],
         section_id: str,
     ) -> dict[str, Any]:
-        if not actor.is_learner and not actor.is_instructor_side:
-            raise ServiceError("FORBIDDEN", 403)
         pack_id = payload.get("pack_id") or "pack_dc"
         lesson_id = payload.get("lesson_id") or entity_id
         existing = self.conn.execute(
@@ -592,37 +714,32 @@ class SyncService:
         ).fetchone()
         current_rev = int(existing["revision"]) if existing else 0
         if existing and base_revision < current_rev and operation != "force_server":
-            # Preserve both versions via entity_revisions; report conflict for client merge UI.
-            self._store_revision(
-                "lesson_progress",
-                existing["progress_id"],
-                current_rev,
-                actor.actor_id,
-                {
-                    "pack_id": pack_id,
-                    "lesson_id": lesson_id,
-                    "path": existing["path"],
-                    "scroll_offset": existing["scroll_offset"],
-                    "percent_complete": existing["percent_complete"],
+            raise ConflictWithSnapshot(
+                "CONFLICT",
+                snapshot={
+                    "entity_type": "lesson_progress",
+                    "entity_id": existing["progress_id"],
+                    "revision": current_rev,
+                    "actor_id": actor.actor_id,
+                    "payload": {
+                        "pack_id": pack_id,
+                        "lesson_id": lesson_id,
+                        "path": existing["path"],
+                        "scroll_offset": existing["scroll_offset"],
+                        "percent_complete": existing["percent_complete"],
+                    },
                 },
             )
-            raise ServiceError("CONFLICT", 409)
+
+        percent = float(payload.get("percent_complete") or 0)
+        scroll = float(payload.get("scroll_offset") or 0)
+        if not 0 <= percent <= 100 or scroll < 0:
+            raise ServiceError("INVALID_PROGRESS_PAYLOAD", 400)
 
         progress_id = existing["progress_id"] if existing else _id("prog")
         new_rev = current_rev + 1
-        values = (
-            progress_id,
-            actor.actor_id,
-            actor.site_id,
-            section_id,
-            pack_id,
-            lesson_id,
-            str(payload.get("path") or ""),
-            float(payload.get("scroll_offset") or 0),
-            float(payload.get("percent_complete") or 0),
-            new_rev,
-            _now(),
-        )
+        path = str(payload.get("path") or "")
+        now = _now()
         if existing:
             self.conn.execute(
                 """
@@ -630,7 +747,7 @@ class SyncService:
                 SET path=?, scroll_offset=?, percent_complete=?, revision=?, updated_at=?
                 WHERE progress_id=?
                 """,
-                (values[6], values[7], values[8], new_rev, values[10], progress_id),
+                (path, scroll, percent, new_rev, now, progress_id),
             )
         else:
             self.conn.execute(
@@ -640,7 +757,19 @@ class SyncService:
                   path, scroll_offset, percent_complete, revision, updated_at
                 ) VALUES (?,?,?,?,?,?,?,?,?,?,?)
                 """,
-                values,
+                (
+                    progress_id,
+                    actor.actor_id,
+                    actor.site_id,
+                    section_id,
+                    pack_id,
+                    lesson_id,
+                    path,
+                    scroll,
+                    percent,
+                    new_rev,
+                    now,
+                ),
             )
         self._store_revision(
             "lesson_progress",
@@ -650,9 +779,9 @@ class SyncService:
             {
                 "pack_id": pack_id,
                 "lesson_id": lesson_id,
-                "path": values[6],
-                "scroll_offset": values[7],
-                "percent_complete": values[8],
+                "path": path,
+                "scroll_offset": scroll,
+                "percent_complete": percent,
             },
         )
         return {
@@ -672,14 +801,10 @@ class SyncService:
         payload: dict[str, Any],
         section_id: str,
     ) -> dict[str, Any]:
-        if not actor.is_learner:
-            raise ServiceError("LEARNER_REQUIRED", 403)
         draft_key = payload.get("draft_key") or entity_id
         latest = self.conn.execute(
-            """
-            SELECT MAX(revision) AS rev FROM draft_versions WHERE draft_key=?
-            """,
-            (draft_key,),
+            "SELECT MAX(revision) AS rev FROM draft_versions WHERE draft_key=? AND user_id=?",
+            (draft_key, actor.actor_id),
         ).fetchone()
         current_rev = int(latest["rev"] or 0)
         if current_rev and base_revision < current_rev:
@@ -687,8 +812,7 @@ class SyncService:
             raise ServiceError("DRAFT_CONFLICT", 409)
         new_rev = current_rev + 1
         version_id = _id("dver")
-        payload_json = json.dumps(payload, sort_keys=True)
-        payload_hash = _sha256_text(payload_json)
+        payload_json = _canonical(payload)
         self.conn.execute(
             """
             INSERT INTO draft_versions(
@@ -705,7 +829,7 @@ class SyncService:
                 section_id,
                 new_rev,
                 payload_json,
-                payload_hash,
+                _sha256_text(payload_json),
                 _now(),
             ),
         )
@@ -717,6 +841,21 @@ class SyncService:
             "preserved_prior": current_rev > 0,
         }
 
+    # --- attachments ----------------------------------------------------------
+
+    def _blob_path(self, site_id: str, section_id: str, content_hash: str, safe: str) -> Path:
+        """Resolve under blob_root using containment, not string prefixes."""
+        root = self.blob_root.resolve()
+        for component in (site_id, section_id):
+            if not PATH_COMPONENT_RE.match(component or ""):
+                raise ServiceError("PATH_TRAVERSAL", 400)
+        candidate = (root / site_id / section_id / f"{content_hash[:16]}_{safe}").resolve()
+        try:
+            candidate.relative_to(root)
+        except ValueError as e:
+            raise ServiceError("PATH_TRAVERSAL", 400) from e
+        return candidate
+
     def _apply_attachment(
         self,
         actor: Actor,
@@ -725,15 +864,18 @@ class SyncService:
         section_id: str,
     ) -> dict[str, Any]:
         filename = str(payload.get("filename") or "file.bin")
-        # Path traversal / absolute path rejection
-        if "/" in filename or "\\" in filename or ".." in filename or filename.startswith("~"):
+        if (
+            "/" in filename
+            or "\\" in filename
+            or ".." in filename
+            or filename.startswith("~")
+            or Path(filename).is_absolute()
+        ):
             raise ServiceError("PATH_TRAVERSAL", 400)
         mime = str(payload.get("mime_type") or "application/octet-stream")
         if mime not in ALLOWED_MIME:
             raise ServiceError("MIME_DENIED", 400)
         raw_b64 = payload.get("content_base64") or ""
-        import base64
-
         try:
             data = base64.b64decode(raw_b64, validate=True)
         except Exception as e:
@@ -745,33 +887,37 @@ class SyncService:
         if claimed and claimed != content_hash:
             raise ServiceError("HASH_MISMATCH", 400)
 
+        # Dedup is tenancy-scoped: another site's identical bytes are a different blob.
         existing = self.conn.execute(
-            "SELECT * FROM attachment_blobs WHERE content_hash=?", (content_hash,)
+            "SELECT * FROM attachment_blobs WHERE site_id=? AND content_hash=?",
+            (actor.site_id, content_hash),
         ).fetchone()
         if existing:
+            # Authorize the section the blob is actually persisted under before returning it.
+            persisted_section = existing["section_id"]
+            if persisted_section != section_id:
+                try:
+                    self.sections.require_section_access(actor, persisted_section)
+                except ServiceError as e:
+                    raise ServiceError("ATTACHMENT_SCOPE_DENIED", 403) from e
             return {
                 "sync_status": "acknowledged",
                 "entity_id": existing["blob_id"],
                 "revision": 1,
                 "content_hash": content_hash,
+                "site_id": existing["site_id"],
+                "section_id": persisted_section,
                 "deduplicated": True,
                 "quarantined": bool(existing["quarantined"]),
             }
 
         safe = _safe_filename(filename)
         blob_id = _id("blob")
-        storage = self.blob_root / actor.site_id / section_id / f"{content_hash[:16]}_{safe}"
+        storage = self._blob_path(actor.site_id, section_id, content_hash, safe)
         storage.parent.mkdir(parents=True, exist_ok=True)
-        # Ensure resolved path stays under blob_root
-        resolved = storage.resolve()
-        if not str(resolved).startswith(str(self.blob_root.resolve())):
-            raise ServiceError("PATH_TRAVERSAL", 400)
         storage.write_bytes(data)
-        quarantine = 0
-        reason = None
-        if payload.get("force_quarantine"):
-            quarantine = 1
-            reason = "policy"
+        quarantine = 1 if payload.get("force_quarantine") else 0
+        reason = "policy" if quarantine else None
         self.conn.execute(
             """
             INSERT INTO attachment_blobs(
@@ -787,7 +933,7 @@ class SyncService:
                 safe,
                 mime,
                 len(data),
-                str(resolved),
+                str(storage),
                 quarantine,
                 reason,
                 actor.actor_id,
@@ -796,13 +942,17 @@ class SyncService:
                 _now(),
             ),
         )
-        if quarantine:
-            raise ServiceError("QUARANTINED", 400)
         return {
-            "sync_status": "acknowledged",
+            # A quarantined blob is deliberately retained as evidence, so it returns a
+            # status rather than raising — raising would roll the record back.
+            "sync_status": "quarantined" if quarantine else "acknowledged",
+            "quarantined": bool(quarantine),
+            "quarantine_reason": reason,
             "entity_id": blob_id,
             "revision": 1,
             "content_hash": content_hash,
+            "site_id": actor.site_id,
+            "section_id": section_id,
             "byte_size": len(data),
             "safe_filename": safe,
             "deduplicated": False,
@@ -816,7 +966,7 @@ class SyncService:
         actor_id: str,
         payload: dict[str, Any],
     ) -> None:
-        payload_json = json.dumps(payload, sort_keys=True)
+        payload_json = _canonical(payload)
         self.conn.execute(
             """
             INSERT OR REPLACE INTO entity_revisions(

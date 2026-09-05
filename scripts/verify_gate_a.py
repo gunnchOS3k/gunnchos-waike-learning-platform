@@ -88,6 +88,12 @@ def main() -> int:
         results["blocked"].append("python_tests_failed")
         print(out[-4000:])
 
+    skipped = re.search(r"(\d+) skipped", out)
+    results["test_counts"]["python_skipped"] = int(skipped.group(1)) if skipped else 0
+    if results["test_counts"]["python_skipped"]:
+        # A skip is an unproven claim; Gate A evidence has to be executed.
+        results["blocked"].append("python_tests_skipped")
+
     gate_a = run(
         [str(pytest), "-q", str(ROOT / "tests/gate_a")],
         env=env,
@@ -100,6 +106,31 @@ def main() -> int:
     if gate_a.returncode != 0:
         results["blocked"].append("gate_a_tests_failed")
 
+    # Closure evidence: the native store and the client wired to a real hub.
+    rust = run(["cargo", "test", "offline"], cwd=ROOT / "apps/client/src-tauri")
+    results["exit_codes"]["rust_offline"] = rust.returncode
+    results["checks"]["native_offline_tests"] = rust.returncode == 0
+    rust_out = (rust.stdout or "") + (rust.stderr or "")
+    rm = re.search(r"(\d+) passed", rust_out)
+    results["test_counts"]["rust_passed"] = int(rm.group(1)) if rm else 0
+    if rust.returncode != 0:
+        results["blocked"].append("native_offline_tests_failed")
+        print(rust_out[-4000:])
+
+    live = run(
+        ["pnpm", "run", "test:live"],
+        cwd=ROOT / "apps/client",
+        env={"WAIKE_ROOT": str(waike)},
+    )
+    results["exit_codes"]["client_live"] = live.returncode
+    results["checks"]["client_live_tests"] = live.returncode == 0
+    live_out = (live.stdout or "") + (live.stderr or "")
+    lm = re.search(r"Tests\s+(\d+) passed", live_out)
+    results["test_counts"]["client_live_passed"] = int(lm.group(1)) if lm else 0
+    if live.returncode != 0:
+        results["blocked"].append("client_live_tests_failed")
+        print(live_out[-4000:])
+
     required_files = [
         "reports/GATE_A_SYNC_MATRIX.md",
         "reports/GATE_A_SYNC_MATRIX.json",
@@ -107,10 +138,17 @@ def main() -> int:
         "reports/GATE_A_ACTIVITY_MATRIX.json",
         "reports/GATE_A_ADVERSARIAL_REVIEW.md",
         "reports/GATE_A_PR_BODY.md",
+        "reports/GATE_A_CLOSURE_TRUTH.md",
+        "reports/GATE_A_CLOSURE_VERIFICATION.json",
         ".github/workflows/gate-a.yml",
         "services/hub/app/migrations/m004_offline_sync_activities.py",
         "services/hub/app/modules/sync.py",
         "services/hub/app/modules/activity_engine.py",
+        "services/hub/app/modules/lab_runner.py",
+        "apps/client/src-tauri/src/offline.rs",
+        "apps/client/src/lib/offline/syncCoordinator.ts",
+        "apps/client/src/components/activities/LearnerActivities.tsx",
+        "apps/client/src/components/activities/InstructorActivities.tsx",
     ]
     missing = [f for f in required_files if not (ROOT / f).is_file()]
     results["checks"]["required_reports_present"] = len(missing) == 0
@@ -124,6 +162,8 @@ def main() -> int:
         results["checks"]["provenance_match"]
         and results["checks"]["python_tests"]
         and results["checks"]["gate_a_tests"]
+        and results["checks"]["native_offline_tests"]
+        and results["checks"]["client_live_tests"]
         and results["checks"]["required_reports_present"]
         and not results["blocked"]
     )
@@ -144,7 +184,10 @@ def main() -> int:
         f"- declared_pinned_commit: `{results.get('declared_pinned_commit')}`",
         f"- observed_source_commit: `{results.get('observed_source_commit')}`",
         f"- python_passed: {results['test_counts'].get('python_passed')}",
+        f"- python_skipped: {results['test_counts'].get('python_skipped')}",
         f"- gate_a_passed: {results['test_counts'].get('gate_a_passed')}",
+        f"- rust_passed: {results['test_counts'].get('rust_passed')}",
+        f"- client_live_passed: {results['test_counts'].get('client_live_passed')}",
         "",
         "## Checks",
         "",

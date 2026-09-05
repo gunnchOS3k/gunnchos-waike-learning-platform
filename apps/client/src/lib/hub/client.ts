@@ -1,3 +1,10 @@
+import {
+  createActivityClient,
+  createInstructorActivityClient,
+  type ActivityClient,
+  type InstructorActivityClient,
+} from "./activities";
+
 export type ActorRole = "learner" | "instructor" | "grader" | "site_admin";
 
 export interface SessionUser {
@@ -146,6 +153,10 @@ export interface HubClient {
   portfolio(): Promise<Array<{ portfolio_id: string; title: string; evidence_hash: string; submission_id: string }>>;
   gradebook(): Promise<Array<{ assignment_id: string; points_earned: number; points_possible: number; status: string }>>;
   mastery(assignmentId: string): Promise<{ mastered?: number; gap_notes?: string; score?: number }>;
+  /** Quizzes, labs, discussions, groups, accommodations. */
+  activities: ActivityClient;
+  /** Staff-only calls; the server rejects them for learners regardless. */
+  instructorActivities: InstructorActivityClient;
 }
 
 function authHeaders(token: string | null, actor?: HubActor): HeadersInit {
@@ -261,5 +272,7 @@ export function createHttpHubClient(
     portfolio: () => req("/api/v1/portfolio"),
     gradebook: () => req("/api/v1/gradebook"),
     mastery: (assignmentId) => req(`/api/v1/assignments/${assignmentId}/mastery`),
+    activities: createActivityClient(req),
+    instructorActivities: createInstructorActivityClient(req),
   };
 }

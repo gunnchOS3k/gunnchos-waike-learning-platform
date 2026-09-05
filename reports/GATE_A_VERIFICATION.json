@@ -1,22 +1,29 @@
 {
-  "generated_utc": "2026-09-05T18:33:45Z",
+  "generated_utc": "2026-09-05T21:48:21Z",
   "status": "AUTOMATED_PIPELINE_PASS",
   "claim": "OFFLINE_AND_ACTIVITY_ENGINE_DIGITALLY_COMPLETE",
   "checks": {
     "provenance_match": true,
     "python_tests": true,
     "gate_a_tests": true,
+    "native_offline_tests": true,
+    "client_live_tests": true,
     "required_reports_present": true
   },
   "test_counts": {
-    "python_passed": 129,
-    "gate_a_passed": 24
+    "python_passed": 204,
+    "python_skipped": 0,
+    "gate_a_passed": 99,
+    "rust_passed": 6,
+    "client_live_passed": 19
   },
   "blocked": [],
   "exit_codes": {
     "waike_rev_parse": 0,
     "pytest": 0,
-    "gate_a": 0
+    "gate_a": 0,
+    "rust_offline": 0,
+    "client_live": 0
   },
   "claim_boundary": {
     "earned_only_with": [
@@ -34,5 +41,5 @@
   },
   "declared_pinned_commit": "e97e74fc9bfb44b1cdc26b272dc4848264f15fe0",
   "observed_source_commit": "e97e74fc9bfb44b1cdc26b272dc4848264f15fe0",
-  "report_generated_from_sha": "4e0afbe44bd595da6f44aebb465dea891ace629b"
+  "report_generated_from_sha": "d42406cb9163c18f5d4654551312398466b8e0bd"
 }
