@@ -99,6 +99,26 @@ impl EncryptedDb {
                 scroll_offset REAL NOT NULL DEFAULT 0,
                 updated_utc TEXT NOT NULL,
                 PRIMARY KEY(pack_id, lesson_id)
+             );
+             CREATE TABLE IF NOT EXISTS sync_outbox (
+                client_mutation_id TEXT PRIMARY KEY,
+                entity_type TEXT NOT NULL,
+                entity_id TEXT NOT NULL,
+                base_revision INTEGER NOT NULL DEFAULT 0,
+                operation TEXT NOT NULL,
+                payload_json TEXT NOT NULL,
+                local_sequence INTEGER NOT NULL,
+                sync_status TEXT NOT NULL,
+                created_at TEXT NOT NULL,
+                ack_receipt_json TEXT,
+                ack_persisted_at TEXT
+             );
+             CREATE TABLE IF NOT EXISTS offline_lease_cache (
+                lease_id TEXT PRIMARY KEY,
+                section_id TEXT NOT NULL,
+                expires_at TEXT NOT NULL,
+                capabilities_json TEXT NOT NULL,
+                revoked INTEGER NOT NULL DEFAULT 0
              );",
         )?;
         Ok(())
@@ -314,5 +334,126 @@ mod tests {
         assert_eq!(pack.module_id, "DIGITAL_CONFIDENCE");
         let pos = db2.get_position("p1", "L1").unwrap().unwrap();
         assert!((pos.scroll_offset - 12.5).abs() < f64::EPSILON);
+    }
+
+    #[test]
+    fn sync_outbox_ack_requires_receipt() {
+        let dir = tempdir().unwrap();
+        let key = [9u8; 32];
+        let db = EncryptedDb::open(dir.path(), key).unwrap();
+        db.enqueue_sync_mutation(&SyncOutboxItem {
+            client_mutation_id: "mut_rust_1".into(),
+            entity_type: "lesson_progress".into(),
+            entity_id: "L1".into(),
+            base_revision: 0,
+            operation: "upsert".into(),
+            payload_json: "{}".into(),
+            local_sequence: 1,
+            sync_status: "pending".into(),
+            created_at: "2024-01-01T00:00:00Z".into(),
+            ack_receipt_json: None,
+            ack_persisted_at: None,
+        })
+        .unwrap();
+        assert_eq!(db.list_pending_sync().unwrap().len(), 1);
+        assert!(db.persist_sync_ack("mut_rust_1", "", "2024-01-01T00:00:01Z").is_err());
+        db.persist_sync_ack("mut_rust_1", "{\"ok\":true}", "2024-01-01T00:00:01Z")
+            .unwrap();
+        assert_eq!(db.list_pending_sync().unwrap().len(), 0);
+    }
+}
+
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct SyncOutboxItem {
+    pub client_mutation_id: String,
+    pub entity_type: String,
+    pub entity_id: String,
+    pub base_revision: i64,
+    pub operation: String,
+    pub payload_json: String,
+    pub local_sequence: i64,
+    pub sync_status: String,
+    pub created_at: String,
+    pub ack_receipt_json: Option<String>,
+    pub ack_persisted_at: Option<String>,
+}
+
+impl EncryptedDb {
+    pub fn enqueue_sync_mutation(
+        &self,
+        item: &SyncOutboxItem,
+    ) -> Result<(), AppError> {
+        self.conn.execute(
+            "INSERT INTO sync_outbox(
+                client_mutation_id, entity_type, entity_id, base_revision, operation,
+                payload_json, local_sequence, sync_status, created_at, ack_receipt_json, ack_persisted_at
+             ) VALUES (?1,?2,?3,?4,?5,?6,?7,?8,?9,?10,?11)",
+            rusqlite::params![
+                item.client_mutation_id,
+                item.entity_type,
+                item.entity_id,
+                item.base_revision,
+                item.operation,
+                item.payload_json,
+                item.local_sequence,
+                item.sync_status,
+                item.created_at,
+                item.ack_receipt_json,
+                item.ack_persisted_at,
+            ],
+        )?;
+        self.persist_envelope()?;
+        Ok(())
+    }
+
+    pub fn list_pending_sync(&self) -> Result<Vec<SyncOutboxItem>, AppError> {
+        let mut stmt = self.conn.prepare(
+            "SELECT client_mutation_id, entity_type, entity_id, base_revision, operation,
+                    payload_json, local_sequence, sync_status, created_at, ack_receipt_json, ack_persisted_at
+             FROM sync_outbox
+             WHERE sync_status IN ('pending','syncing','retryable_error')
+             ORDER BY local_sequence ASC",
+        )?;
+        let rows = stmt.query_map([], |row| {
+            Ok(SyncOutboxItem {
+                client_mutation_id: row.get(0)?,
+                entity_type: row.get(1)?,
+                entity_id: row.get(2)?,
+                base_revision: row.get(3)?,
+                operation: row.get(4)?,
+                payload_json: row.get(5)?,
+                local_sequence: row.get(6)?,
+                sync_status: row.get(7)?,
+                created_at: row.get(8)?,
+                ack_receipt_json: row.get(9)?,
+                ack_persisted_at: row.get(10)?,
+            })
+        })?;
+        let mut out = Vec::new();
+        for r in rows {
+            out.push(r?);
+        }
+        Ok(out)
+    }
+
+    /// Persist durable ack before clearing pending — never mark acknowledged without receipt JSON.
+    pub fn persist_sync_ack(
+        &self,
+        client_mutation_id: &str,
+        receipt_json: &str,
+        ack_persisted_at: &str,
+    ) -> Result<(), AppError> {
+        if receipt_json.trim().is_empty() {
+            return Err(AppError::Db("ack requires durable receipt".into()));
+        }
+        self.conn.execute(
+            "UPDATE sync_outbox
+             SET sync_status='acknowledged', ack_receipt_json=?1, ack_persisted_at=?2
+             WHERE client_mutation_id=?3",
+            rusqlite::params![receipt_json, ack_persisted_at, client_mutation_id],
+        )?;
+        self.persist_envelope()?;
+        Ok(())
     }
 }

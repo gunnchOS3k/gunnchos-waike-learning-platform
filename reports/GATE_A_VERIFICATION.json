@@ -1,0 +1,38 @@
+{
+  "generated_utc": "2026-09-05T18:33:45Z",
+  "status": "AUTOMATED_PIPELINE_PASS",
+  "claim": "OFFLINE_AND_ACTIVITY_ENGINE_DIGITALLY_COMPLETE",
+  "checks": {
+    "provenance_match": true,
+    "python_tests": true,
+    "gate_a_tests": true,
+    "required_reports_present": true
+  },
+  "test_counts": {
+    "python_passed": 129,
+    "gate_a_passed": 24
+  },
+  "blocked": [],
+  "exit_codes": {
+    "waike_rev_parse": 0,
+    "pytest": 0,
+    "gate_a": 0
+  },
+  "claim_boundary": {
+    "earned_only_with": [
+      "Gate A sync + activity suites PASS",
+      "PR1\u2013PR3 foundation regression PASS",
+      "remote CI required jobs SUCCESS including verify-gate-a"
+    ],
+    "does_not_claim": [
+      "human/field validation",
+      "accessibility certification",
+      "security certification",
+      "hardware lab evidence",
+      "Gate B gunnchAI / 18 tracks"
+    ]
+  },
+  "declared_pinned_commit": "e97e74fc9bfb44b1cdc26b272dc4848264f15fe0",
+  "observed_source_commit": "e97e74fc9bfb44b1cdc26b272dc4848264f15fe0",
+  "report_generated_from_sha": "4e0afbe44bd595da6f44aebb465dea891ace629b"
+}
