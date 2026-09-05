@@ -6,12 +6,14 @@ from pathlib import Path
 from app.migrations.m001_assessment_lifecycle import SQL as M001
 from app.migrations.m002_receipt_immutability import SQL as M002
 from app.migrations.m003_identity_sections_gradebook import SQL as M003
+from app.migrations.m004_offline_sync_activities import SQL as M004
 
 
 MIGRATIONS: list[tuple[str, str]] = [
     ("001_assessment_lifecycle", M001),
     ("002_receipt_immutability", M002),
     ("003_identity_sections_gradebook", M003),
+    ("004_offline_sync_activities", M004),
 ]
 
 

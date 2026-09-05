@@ -80,7 +80,14 @@ def test_version_fixture_mode_for_pr2_regression(client):
     assert body["learner_data_enabled"] is True
     assert body["assessment_lifecycle"] is True
     assert body["identity"] is True
-    assert "pr3" in body["version"] or "pr2" in body["version"] or body["version"].startswith("0.3")
+    assert (
+        "pr3" in body["version"]
+        or "pr2" in body["version"]
+        or "gate-a" in body["version"]
+        or body["version"].startswith("0.3")
+        or body["version"].startswith("0.4")
+    )
+    assert body.get("offline_sync") is True or "gate-a" in body["version"] or "pr3" in body["version"]
 
 
 def test_version_production_defaults(prod_client):

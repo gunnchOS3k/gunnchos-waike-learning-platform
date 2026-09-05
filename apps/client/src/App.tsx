@@ -5,9 +5,11 @@ import { InstructorQueue } from "./components/assessment/InstructorQueue";
 import { CourseCard } from "./components/CourseCard";
 import { LessonReader } from "./components/LessonReader";
 import { TrustBanner } from "./components/TrustBanner";
+import { SyncStatusBanner } from "./components/sync/SyncStatusBanner";
 import type { AuthSession, HubActor, HubClient, SectionCard, SessionUser } from "./lib/hub/client";
 import { HubAuthError } from "./lib/hub/client";
 import { resolveHubClient } from "./lib/hub/resolveHub";
+import { deriveSyncUx, type SyncUxState } from "./lib/offline/syncUx";
 import { browseInstallPack, isTauri } from "./lib/tauriBridge";
 import type { LessonContent, LessonInfo, ModuleView, TrustStatus } from "./lib/types";
 import {
@@ -90,6 +92,29 @@ export default function App() {
   const [adminUsers, setAdminUsers] = useState<
     Array<{ user_id: string; username: string; display_name: string; disabled: number; roles: string[] }>
   >([]);
+  const [online, setOnline] = useState(
+    typeof navigator === "undefined" ? true : navigator.onLine,
+  );
+  const [pendingSyncCount] = useState(0);
+  const syncUx: SyncUxState = deriveSyncUx({
+    online,
+    pendingCount: pendingSyncCount,
+    syncing: false,
+    lastStatus: null,
+    ackPersisted: false,
+  });
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const on = () => setOnline(true);
+    const off = () => setOnline(false);
+    window.addEventListener("online", on);
+    window.addEventListener("offline", off);
+    return () => {
+      window.removeEventListener("online", on);
+      window.removeEventListener("offline", off);
+    };
+  }, []);
   const [loading, setLoading] = useState(false);
 
   const tokenRef = useCallback(() => session?.token ?? null, [session]);
@@ -519,6 +544,7 @@ export default function App() {
       </header>
 
       <TrustBanner trust={trust} />
+      <SyncStatusBanner state={syncUx} />
       {resumeHint ? (
         <p className="muted" data-testid="resume-hint">
           {resumeHint}

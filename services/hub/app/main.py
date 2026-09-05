@@ -1,4 +1,4 @@
-"""WAIKE Learning Hub — modular monolith (PR3 identity + assessment + gradebook)."""
+"""WAIKE Learning Hub — modular monolith (Gate A offline sync + activity engine)."""
 
 from __future__ import annotations
 
@@ -10,19 +10,21 @@ from pydantic import BaseModel, Field
 
 from app.api.routes import router as api_router
 from app.db import connect, migrate
+from app.modules.activity_engine import ActivityEngine
 from app.modules.assessment_lifecycle import AssessmentService
 from app.modules.gradebook_service import GradebookService
 from app.modules.identity import IdentityService
 from app.modules.sections import SectionService
+from app.modules.sync import SyncService
 
-APP_VERSION = "0.3.0-pr3"
+APP_VERSION = "0.4.0-gate-a"
 
 
 class DatabaseConfig(BaseModel):
     enabled: bool = True
     url: str | None = Field(default=None, description="sqlite path or postgresql URL")
     note: str = (
-        "PR3 uses SQLite hub persistence with forward migrations. "
+        "Gate A uses SQLite hub persistence with forward migrations (m001–m004). "
         "Production auth uses Argon2id sessions; fixture headers only when fixture_auth_enabled=true."
     )
 
@@ -122,10 +124,10 @@ def create_app(config: HubConfig | None = None, db_path: Path | None = None, see
         title="WAIKE Learning Hub",
         version=cfg.version,
         description=(
-            "PR3 multi-user LMS alpha. production_auth_enabled=true by default; "
-            "fixture X-Waike-Actor-* headers only when fixture_auth_enabled=true. "
-            "Synthetic test accounts are never seeded unless tests pass seed=True or "
-            "WAIKE_SEED_TEST_FIXTURES=true is set for a non-production path."
+            "Gate A offline-first sync + activity engine on PR3 multi-user LMS. "
+            "production_auth_enabled=true by default; fixture X-Waike-Actor-* headers only when "
+            "fixture_auth_enabled=true. Synthetic test accounts are never seeded unless tests "
+            "pass seed=True or WAIKE_SEED_TEST_FIXTURES=true is set for a non-production path."
         ),
     )
     app.state.config = cfg
@@ -146,6 +148,8 @@ def create_app(config: HubConfig | None = None, db_path: Path | None = None, see
         sections=sections,
         gradebook=gradebook,
     )
+    sync = SyncService(conn, blob_root=Path(path).parent / "blobs")
+    activities = ActivityEngine(conn)
 
     should_seed = bool(seed) or _fixture_seeding_allowed_by_env()
     if should_seed:
@@ -157,6 +161,17 @@ def create_app(config: HubConfig | None = None, db_path: Path | None = None, see
             assign = assessment.seed_digital_confidence_assignment()
             gradebook.seed_for_section("sec_alpha_dc_w01", assign.get("assignment_id"))
             gradebook.seed_for_section("sec_beta_dc_w01", assign.get("assignment_id"))
+        # Gate A synthetic activity fixtures (quizzes/labs) for enrolled Alpha section.
+        instructor_row = conn.execute(
+            "SELECT user_id FROM users WHERE username=? AND site_id=?",
+            ("instructor-alpha", "site-alpha"),
+        ).fetchone()
+        if instructor_row:
+            activities.seed_section_activities(
+                section_id="sec_alpha_dc_w01",
+                site_id="site-alpha",
+                instructor_id=instructor_row["user_id"],
+            )
 
     app.state.db = conn
     app.state.db_path = str(path)
@@ -164,6 +179,8 @@ def create_app(config: HubConfig | None = None, db_path: Path | None = None, see
     app.state.identity = identity
     app.state.sections = sections
     app.state.gradebook = gradebook
+    app.state.sync = sync
+    app.state.activities = activities
     app.state.waike_root = str(waike) if waike else None
     app.state.seeded_test_fixtures = should_seed
 
@@ -181,6 +198,8 @@ def create_app(config: HubConfig | None = None, db_path: Path | None = None, see
             "assessment_lifecycle": True,
             "identity": True,
             "gradebook": True,
+            "offline_sync": True,
+            "activity_engine": True,
             "seeded_test_fixtures": should_seed,
         }
 

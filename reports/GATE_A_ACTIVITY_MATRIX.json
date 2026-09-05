@@ -1,0 +1,38 @@
+{
+  "generated_utc": "2026-09-05T18:30:34Z",
+  "quiz": {
+    "types": [
+      "single_choice",
+      "multi_select",
+      "true_false",
+      "short_response",
+      "numeric",
+      "file_response"
+    ],
+    "answer_key_isolated": true
+  },
+  "lab_modes": [
+    "LOCAL_SOFTWARE",
+    "REPO_CONNECTED",
+    "DEVICE_HARDWARE_ASSISTED",
+    "MANUAL_EVIDENCE"
+  ],
+  "hardware_fabrication_forbidden": true,
+  "discussions": true,
+  "groups": true,
+  "accommodations": [
+    "time_multiplier",
+    "availability_extension",
+    "attempt_override",
+    "due_extension",
+    "alternate_modality"
+  ],
+  "grading_efficiency": [
+    "next_ungraded",
+    "progress",
+    "reusable_comments",
+    "batch_apply",
+    "regrade_queue",
+    "anonymous"
+  ]
+}
