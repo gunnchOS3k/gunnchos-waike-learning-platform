@@ -6,8 +6,8 @@
   "pr3_merged": true,
   "current_wave": "GATE_A_OFFLINE_ACTIVITIES",
   "current_branch": "cursor/waike-learning-gate-a-offline-activities",
-  "current_pr": null,
-  "status": "GATE_A_IN_PROGRESS",
+  "current_pr": 4,
+  "status": "GATE_A_DRAFT_PR_OPEN_AWAITING_REMOTE_CI",
   "waves": {
     "PR1_FOUNDATION": "MERGED",
     "PR2_ASSESSMENT_LIFECYCLE": "MERGED",
@@ -25,9 +25,13 @@
   "claims_pending_remote_ci": [
     "OFFLINE_AND_ACTIVITY_ENGINE_DIGITALLY_COMPLETE"
   ],
-  "digital_blockers": [],
+  "digital_blockers": [
+    "Remote Gate A CI in progress (run 33984542865); claim deferred until verify-gate-a green"
+  ],
   "owner_action": "NO_OWNER_ACTION_CURRENT_GATE_CONTINUES",
   "next_gate_after_owner_merge": "Gate B \u2014 gunnchAI + all 18 WAIKE tracks",
-  "last_verified_utc": "2026-09-05T18:30:34Z",
-  "evidence_note": "Gate A implementation on branch; claim requires green remote gate-a.yml including verify-gate-a."
+  "last_verified_utc": "2026-09-05T18:37:09Z",
+  "evidence_note": "Gate A implementation on branch; claim requires green remote gate-a.yml including verify-gate-a.",
+  "pr_url": "https://github.com/gunnchOS3k/gunnchos-waike-learning-platform/pull/4",
+  "verified_implementation_sha": "64ea2dab52db8c3b619f693813cf3876b24812f5"
 }
