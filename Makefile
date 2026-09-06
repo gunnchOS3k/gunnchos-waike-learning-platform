@@ -137,5 +137,5 @@ gate-c-test:
 
 verify-gate-c:
 	@mkdir -p reports
-	@WAIKE_ROOT=$(WAIKE_ROOT) DEVICE_OS_ROOT=$(CURDIR)/../gunnchos-device-os $(PYTHON) scripts/verify_gate_c.py
+	@WAIKE_ROOT=$(WAIKE_ROOT) DEVICE_OS_ROOT=$${DEVICE_OS_ROOT:-$(CURDIR)/../gunnchos-device-os} GUNNCHAI_ROOT=$${GUNNCHAI_ROOT:-$(CURDIR)/../gunnchAI3k} WAIKE_ALLOW_FAKE_AI=$${WAIKE_ALLOW_FAKE_AI:-1} $(PYTHON) scripts/verify_gate_c.py
 	@echo "verify-gate-c: see reports/GATE_C_VERIFICATION.md"
