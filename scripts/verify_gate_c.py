@@ -215,6 +215,8 @@ def main() -> int:
         rc = 1
 
     (REPORTS / "GATE_C_VERIFICATION.json").write_text(json.dumps(results, indent=2) + "\n")
+    claim_lines = [f"- `{c}`" for c in claims] or ["- (none)"]
+    blocked_lines = [f"- `{c}`" for c in blocked] or ["- (none)"]
     md = [
         "# Gate C Verification",
         "",
@@ -222,10 +224,10 @@ def main() -> int:
         f"Status: **{results['status']}**",
         "",
         "## Claims earned",
-        *[f"- `{c}`" for c in claims] or ["- (none)"],
+        *claim_lines,
         "",
         "## Claims blocked",
-        *[f"- `{c}`" for c in blocked] or ["- (none)"],
+        *blocked_lines,
         "",
         "## Test counts",
         f"- prior_regression: `{prior_counts}`",
