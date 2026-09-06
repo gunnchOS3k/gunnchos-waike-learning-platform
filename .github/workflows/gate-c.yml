@@ -18,7 +18,7 @@ env:
   # Exercise Device OS NativeLaunchAdapter via protocol-compatible fixture.
   LEARNING_OS_EXECUTABLE: ${{ github.workspace }}/gunnchos-device-os/fixtures/learning_os/waike-learning-os
   LEARNING_OS_APP_VERSION: "0.1.0-fixture"
-  LEARNING_OS_PLATFORM_SHA: "3b4def41be80022e827eb666c09a7bd65557bd86"
+  LEARNING_OS_PLATFORM_SHA: ${{ github.sha }}
 
 jobs:
 
