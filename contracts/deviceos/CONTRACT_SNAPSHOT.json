@@ -1,11 +1,16 @@
 {
-  "device_os_main": "28562a8456207540c205a1c8a6434a491b0a4771",
+  "device_os_main_baseline": "28562a8456207540c205a1c8a6434a491b0a4771",
+  "device_os_integration_pr_head": "13e291248519fde863d253c59890b4b1ba99cbfe",
+  "device_os_branch": "cursor/waike-learning-deviceos-integration",
+  "device_os_pr": "https://github.com/gunnchOS3k/gunnchos-device-os/pull/132",
+  "pin_policy": "Gate C deviceos jobs checkout Device OS PR head (not main) until integration merges",
   "hashes": {
-    "gunnchos_device_os/launcher.py": "0ac9fd4dd38794df6dfa6c73f817a1b2d2da0aa32ba929e92ee9d7dee62c3c51",
+    "gunnchos_device_os/launcher.py": "1a962884bdd68d6fca32987d7b581bcf312af576be2573a7c0547438d4cba674",
+    "gunnchos_device_os/learning_os_launcher.py": "7db6d67b81a20602a67794350a7c3f2f2149d855ed2fbc17014a0ef9464d7d13",
     "gunnchos_device_os/permissions_manager.py": "9af07e8a06594e4611b3912d37119825c6010746bb18e000e96bb05fd89c7b38",
     "gunnchos_device_os/shell/continuity_coordinator.py": "f326e97ae779266e999bb48835fcc6f3dbef0d539bec1da8d68814c73f6d1f4f",
-    "gunnchos_device_os/updater.py": "321aca9404758635c2d2f59446e6b507efc970a6649f3a51973593dd7b3d6d52",
-    "gunnchos_device_os/app_registry.py": "a70a13218f2693dcd8d460b58b563ccfe3c0c6e1866eefc1094f3c18b72d3073"
+    "gunnchos_device_os/updater.py": "9b8823eaaa4237730aabd6c64ec98bba260674b702341f7475becbf8a3ffb98d",
+    "gunnchos_device_os/app_registry.py": "31abd90a516d1d348a81c0b6c16fa6295fe6665d0c8469731b252bb7b68bde21"
   },
-  "policy": "platform consumes; does not copy Device OS authority"
+  "policy": "platform consumes; does not copy Device OS authority; thin_launcher_companion"
 }

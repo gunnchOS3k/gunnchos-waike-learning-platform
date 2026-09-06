@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from pathlib import Path
 from typing import Any
 
 from fastapi import APIRouter, Depends, HTTPException, Request
@@ -27,7 +28,12 @@ router = APIRouter(prefix="/api/v1")
 
 
 def _http(err: ServiceError) -> HTTPException:
-    return HTTPException(status_code=err.status, detail=err.code)
+    headers = {}
+    if err.status == 429:
+        retry = err.detail.get("retry_after")
+        if retry is not None:
+            headers["Retry-After"] = str(int(retry))
+    return HTTPException(status_code=err.status, detail=err.code, headers=headers or None)
 
 
 def _oneroster(request: Request) -> OneRosterService:
@@ -120,6 +126,10 @@ class PackageBody(BaseModel):
     package_version: str
     action: str
     detail: dict[str, Any] = Field(default_factory=dict)
+
+
+class RestoreBody(BaseModel):
+    path: str
 
 
 @router.get("/interop/oneroster/matrix")
@@ -287,7 +297,25 @@ def device_continuity(
 def admin_backup(request: Request, actor: Actor = Depends(require_actor)) -> dict[str, Any]:
     require_site_admin(actor)
     try:
+        _privacy(request).assert_export_allowed(actor.site_id, "backup")
         return _backup(request).create_backup(actor)
+    except ServiceError as e:
+        raise _http(e) from e
+
+
+@router.post("/admin/restore")
+def admin_restore(
+    body: RestoreBody, request: Request, actor: Actor = Depends(require_actor)
+) -> dict[str, Any]:
+    require_site_admin(actor)
+    try:
+        result = _backup(request).destructive_restore(actor, Path(body.path))
+        # Keep app.state.db aligned after destructive reopen.
+        request.app.state.db = request.app.state.backup.conn
+        request.app.state.lti.conn = request.app.state.backup.conn
+        request.app.state.packages.conn = request.app.state.backup.conn
+        request.app.state.rate_limiter.conn = request.app.state.backup.conn
+        return result
     except ServiceError as e:
         raise _http(e) from e
 
@@ -317,10 +345,43 @@ def privacy_controls(
         raise _http(e) from e
 
 
+@router.post("/privacy/deactivate/{user_id}")
+def privacy_deactivate(
+    user_id: str, request: Request, actor: Actor = Depends(require_actor)
+) -> dict[str, Any]:
+    require_site_admin(actor)
+    try:
+        return _privacy(request).deactivate_user(actor, user_id)
+    except ServiceError as e:
+        raise _http(e) from e
+
+
+@router.post("/privacy/retention")
+def privacy_retention(
+    request: Request, actor: Actor = Depends(require_actor), apply: bool = False
+) -> dict[str, Any]:
+    require_site_admin(actor)
+    try:
+        if apply:
+            return _privacy(request).retention_apply(actor, confirm=True)
+        return _privacy(request).retention_dry_run(actor)
+    except ServiceError as e:
+        raise _http(e) from e
+
+
 @router.get("/diagnostics")
 def diagnostics(request: Request, actor: Actor = Depends(require_actor)) -> dict[str, Any]:
     try:
         return _obs(request).diagnostics(actor)
+    except ServiceError as e:
+        raise _http(e) from e
+
+
+@router.get("/interop/oneroster/imports")
+def oneroster_imports(request: Request, actor: Actor = Depends(require_actor)) -> dict[str, Any]:
+    require_site_admin(actor)
+    try:
+        return _oneroster(request).import_status(actor)
     except ServiceError as e:
         raise _http(e) from e
 

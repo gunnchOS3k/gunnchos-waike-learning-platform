@@ -62,3 +62,46 @@ def test_lti_admin_role_capped(client):
     )
     assert launch.status_code == 200
     assert launch.json()["mapped_role"] != "site_admin"
+
+
+def test_lti_identity_reuse(client):
+    rid = _register(client)
+    lti = client.app.state.lti
+    users = []
+    for _ in range(2):
+        init = client.post(f"/api/v1/interop/lti/oidc/init/{rid}").json()["authorization_redirect"]
+        token = lti.mint_test_id_token(
+            registration_id=rid,
+            nonce=init["nonce"],
+            roles=["Learner"],
+            sub="stable-subject-42",
+        )
+        launch = client.post(
+            "/api/v1/interop/lti/launch",
+            json={"registration_id": rid, "id_token": token, "state": init["state"]},
+        )
+        assert launch.status_code == 200, launch.text
+        users.append(launch.json()["mapped_user_id"])
+    assert users[0] == users[1]
+
+
+def test_lti_production_jwks_via_fetch(client):
+    """Production path must call fetch_jwks — never silent ensure_test_keys fallback."""
+    rid = _register(client)
+    lti = client.app.state.lti
+    calls: list[str] = []
+    real = lti.fetch_jwks
+
+    def tracking_fetch(url: str):
+        calls.append(url)
+        return real(url)
+
+    lti.fetch_jwks = tracking_fetch
+    init = client.post(f"/api/v1/interop/lti/oidc/init/{rid}").json()["authorization_redirect"]
+    token = lti.mint_test_id_token(registration_id=rid, nonce=init["nonce"], roles=["Learner"])
+    r = client.post(
+        "/api/v1/interop/lti/launch",
+        json={"registration_id": rid, "id_token": token, "state": init["state"]},
+    )
+    assert r.status_code == 200, r.text
+    assert calls == ["https://lms.example.test/jwks"]

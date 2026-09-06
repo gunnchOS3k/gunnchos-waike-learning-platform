@@ -94,6 +94,7 @@ def responsive_behavior(profile_id: str) -> dict[str, Any]:
 def matrix() -> dict[str, Any]:
     return {
         "profiles": list(PROFILES.values()),
+        "fixture_label": "device_quartet_digital_fixture_only",
         "physical_validation": "EXTERNAL — not claimed by Gate C",
         "digital_tests": "synthetic capability profiles only",
     }

@@ -40,7 +40,7 @@ class DatabaseConfig(BaseModel):
     enabled: bool = True
     url: str | None = Field(default=None, description="sqlite path or postgresql URL")
     note: str = (
-        "Gate C uses SQLite hub persistence with forward migrations (m001–m006). "
+        "Gate C uses SQLite hub persistence with forward migrations (m001–m007). "
         "Production auth uses Argon2id sessions; fixture headers only when fixture_auth_enabled=true. "
         "AI defaults to LocalGunnchAIProvider when available, else unavailable; "
         "FakeGunnchAIProvider is tests-only (explicit injection or WAIKE_ALLOW_FAKE_AI=1). "
@@ -171,15 +171,25 @@ def create_app(config: HubConfig | None = None, db_path: Path | None = None, see
     activities = ActivityEngine(conn, sections=sections)
     ai_policy = AiPolicyService(conn, sections)
     ai = AiAssistService(conn, sections, ai_policy, adapter=GunnchAIAdapter())
-    oneroster = OneRosterService(conn, identity)
-    qti = QtiService(conn, activities)
+    privacy = PrivacyService(conn, sync=None)
+    oneroster = OneRosterService(conn, identity, sections=sections, sync=sync, privacy=privacy)
+    qti = QtiService(conn, activities, sections=sections, privacy=privacy)
     lti = LtiService(conn)
     deviceos = DeviceOsBridge(conn)
     backup = BackupService(conn, path)
-    privacy = PrivacyService(conn)
+    privacy.sync = sync
     admin = AdminConsole(conn)
-    observability = Observability(conn)
     packages = PackageLifecycle(conn)
+    observability = Observability(
+        conn,
+        db_path=path,
+        backup=backup,
+        deviceos=deviceos,
+        packages=packages,
+        waike_root=str(waike) if waike else None,
+        gunnchai_root=os.environ.get("GUNNCHAI_ROOT"),
+        app_version=cfg.version,
+    )
     rate_limiter = RateLimiter(conn)
 
     should_seed = bool(seed) or _fixture_seeding_allowed_by_env()

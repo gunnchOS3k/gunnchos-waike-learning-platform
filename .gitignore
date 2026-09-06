@@ -37,3 +37,5 @@ pack_out_18/
 /tmp/
 curriculum/imports/*/build/
 reports/verify_pr1_run.log
+.gunnchos_app_data/
+results/

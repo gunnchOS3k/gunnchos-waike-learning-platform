@@ -32,6 +32,15 @@ def client(tmp_path: Path):
         db_path=db,
         seed=True,
     )
+    # Inject JWKS fetch so launch validation never silently uses ensure_test_keys().
+    def _test_fetch_jwks(url: str):
+        from app.modules.lti import assert_safe_jwks_url
+
+        assert_safe_jwks_url(url, resolve_dns=False)
+        keys = app.state.lti.ensure_test_keys()
+        return {"keys": [keys["jwk"]]}
+
+    app.state.lti.fetch_jwks = _test_fetch_jwks
     # Keep backup service path aligned after restores in tests that reopen.
     with TestClient(app) as c:
         c.app.state.db_path = str(db)

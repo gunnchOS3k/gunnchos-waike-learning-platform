@@ -4,7 +4,6 @@ import hashlib
 import json
 import sqlite3
 import uuid
-from dataclasses import dataclass
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
@@ -58,10 +57,15 @@ def _audit(conn: sqlite3.Connection, actor_id: str, action: str, entity_type: st
     )
 
 
-@dataclass
 class ServiceError(Exception):
     code: str
     status: int = 400
+
+    def __init__(self, code: str, status: int = 400, detail: dict | None = None) -> None:
+        super().__init__(code)
+        self.code = code
+        self.status = status
+        self.detail = detail or {}
 
     def __str__(self) -> str:
         return self.code

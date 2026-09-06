@@ -349,6 +349,62 @@ export function createMockHubClient(actor: HubActor): HubClient {
     async mastery() {
       return STORE.mastery;
     },
+    async createBackup() {
+      if (actor.role !== "site_admin") throw new HubAuthError(403, "BACKUP_FORBIDDEN");
+      return {
+        backup_id: "bak_mock",
+        path: "/tmp/bak_mock.waikebak",
+        content_sha256: "c".repeat(64),
+        manifest_sha256: "d".repeat(64),
+      };
+    },
+    async restoreBackup(path: string) {
+      if (actor.role !== "site_admin") throw new HubAuthError(403, "BACKUP_FORBIDDEN");
+      return { status: "restored", backup_id: path.includes("bak") ? "bak_mock" : "unknown" };
+    },
+    async getPrivacyMatrix() {
+      return {
+        ferpa_claim: false,
+        controls: {
+          youth_mode: false,
+          data_minimization: true,
+          export_allowed: false,
+          retention_days: 365,
+        },
+      };
+    },
+    async upsertPrivacy(body) {
+      if (actor.role !== "site_admin") throw new HubAuthError(403, "PRIVACY_FORBIDDEN");
+      return { ferpa_claim: false, controls: { ...body } };
+    },
+    async diagnostics() {
+      return {
+        health: "ok",
+        schema_migrations: ["001_assessment_lifecycle", "006_gate_c", "007_gate_c_owner"],
+        subsystems: [{ name: "db_integrity", status: "healthy" }],
+      };
+    },
+    async onerosterMatrix() {
+      return { claim: "NOT_FULL_ONEROSTER", supported: { users: true, classes: true } };
+    },
+    async qtiMatrix() {
+      return {
+        claim: "NOT_FULL_QTI",
+        xmlns: "http://www.imsglobal.org/xsd/imsqtiasi_v3p0",
+      };
+    },
+    async ltiMatrix() {
+      return { claim: "NOT_LTI_CERTIFIED" };
+    },
+    async recordPackageLifecycle(body) {
+      return { event_id: "pkg_mock", action: body.action, track_id: body.track_id };
+    },
+    async onerosterImportStatus() {
+      return { imports: [] };
+    },
+    async deviceOsManifest() {
+      return { version: "mock", app_id: "waike_learning" };
+    },
     // The mock hub has no activity engine. Failing loudly beats rendering a fake
     // quiz that a learner could mistake for graded work.
     activities: unavailableActivities(),

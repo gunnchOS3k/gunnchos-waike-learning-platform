@@ -9,6 +9,9 @@ import { SyncStatusBanner } from "./components/sync/SyncStatusBanner";
 import { InstructorActivities } from "./components/activities/InstructorActivities";
 import { LearnerActivities } from "./components/activities/LearnerActivities";
 import { InstructorAiPanel, LearnerAiPanel } from "./components/ai/AiPanels";
+import { AdminHardeningPanel } from "./components/admin/AdminHardeningPanel";
+import { InteropStatusPanel } from "./components/interop/InteropPanels";
+import { DeviceProfilePanel } from "./components/device/DeviceProfilePanel";
 import type { AuthSession, HubActor, HubClient, SectionCard, SessionUser } from "./lib/hub/client";
 import { HubAuthError } from "./lib/hub/client";
 import { resolveHubClient } from "./lib/hub/resolveHub";
@@ -34,7 +37,23 @@ type Mode =
   | "instruct-ai"
   | "gradebook"
   | "admin"
-  | "roster";
+  | "roster"
+  | "interop";
+
+const ADMIN_WORKFLOWS = [
+  "backup_restore",
+  "privacy_controls",
+  "diagnostics",
+  "package_lifecycle",
+  "oneroster_import",
+];
+
+const DEVICE_PROFILES = [
+  { id: "student_14_5", name: 'Student 14.5"', research_role: "desk" },
+  { id: "pro_16", name: 'Pro 16"', research_role: "authoring" },
+  { id: "studio_display", name: "Studio Display", research_role: "review" },
+  { id: "edge_io_wearables", name: "Edge IO Wearables", research_role: "HUD", companion_only: true },
+];
 
 /** Stable per-install id so leases and mutations are attributable to this device. */
 const DEVICE_KEY = "waike_device_id";
@@ -648,6 +667,16 @@ export default function App() {
               Admin
             </button>
           ) : null}
+          {(primaryRole === "site_admin" || primaryRole === "instructor" || isMock) && (
+            <button
+              type="button"
+              className={mode === "interop" ? "mode-active" : "ghost"}
+              data-testid="mode-interop"
+              onClick={() => setMode("interop")}
+            >
+              Interop
+            </button>
+          )}
           {user ? (
             <span className="muted actor-chip" data-testid="session-chip">
               {primaryRole}:{user.username}
@@ -873,6 +902,7 @@ export default function App() {
           hub ? (
             <section className="panel" data-testid="admin-console">
               <h2>Site admin</h2>
+              <AdminHardeningPanel workflows={ADMIN_WORKFLOWS} hub={hub} />
               <ul>
                 {adminUsers.map((u) => (
                   <li key={u.user_id}>
@@ -894,6 +924,16 @@ export default function App() {
             </section>
           ) : (
             <HubUnavailablePanel title="Admin" />
+          )
+        ) : null}
+        {mode === "interop" ? (
+          hub ? (
+            <>
+              <InteropStatusPanel hub={hub} />
+              <DeviceProfilePanel profiles={DEVICE_PROFILES} />
+            </>
+          ) : (
+            <HubUnavailablePanel title="Interop" />
           )
         ) : null}
       </div>

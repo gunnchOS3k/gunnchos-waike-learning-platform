@@ -2,6 +2,10 @@
 
 from __future__ import annotations
 
+from datetime import datetime, timedelta, timezone
+
+from app.modules.assessment_lifecycle import ServiceError
+from app.modules.lti import assert_safe_jwks_url
 from helpers import auth_header, login
 
 
@@ -127,3 +131,68 @@ def test_cross_site_target(client):
     )
     assert r.status_code == 400
     assert r.json()["detail"] == "LTI_CROSS_SITE_TARGET"
+
+
+def test_ssrf_jwks_url_blocked(client):
+    for bad in (
+        "http://lms.example.test/jwks",
+        "file:///etc/passwd",
+        "https://127.0.0.1/jwks",
+        "https://localhost/jwks",
+        "https://169.254.169.254/latest/meta-data",
+    ):
+        try:
+            assert_safe_jwks_url(bad, resolve_dns=False)
+            assert False, bad
+        except ServiceError as e:
+            assert e.code == "LTI_JWKS_URL_BLOCKED"
+
+
+def test_missing_kid(client):
+    rid, init = _setup(client)
+    token = client.app.state.lti.mint_test_id_token(
+        registration_id=rid, nonce=init["nonce"], roles=["Learner"], kid=None
+    )
+    r = client.post(
+        "/api/v1/interop/lti/launch",
+        json={"registration_id": rid, "id_token": token, "state": init["state"]},
+    )
+    assert r.status_code == 400
+    assert r.json()["detail"] == "LTI_MISSING_KID"
+
+
+def test_expired_state(client):
+    rid, init = _setup(client)
+    stale = (datetime.now(tz=timezone.utc) - timedelta(minutes=11)).strftime("%Y-%m-%dT%H:%M:%SZ")
+    client.app.state.db.execute(
+        "UPDATE lti_states SET created_at=? WHERE state=?",
+        (stale, init["state"]),
+    )
+    client.app.state.db.commit()
+    token = client.app.state.lti.mint_test_id_token(
+        registration_id=rid, nonce=init["nonce"], roles=["Learner"]
+    )
+    r = client.post(
+        "/api/v1/interop/lti/launch",
+        json={"registration_id": rid, "id_token": token, "state": init["state"]},
+    )
+    assert r.status_code == 400
+    assert r.json()["detail"] == "LTI_STATE_EXPIRED"
+
+
+def test_no_silent_test_key_fallback(client):
+    """Without fetch_jwks / jwks arg, validation must not call ensure_test_keys."""
+    rid, init = _setup(client)
+    lti = client.app.state.lti
+
+    def boom(_url: str):
+        raise ServiceError("LTI_JWKS_FETCH_FAILED", 400)
+
+    lti.fetch_jwks = boom
+    token = lti.mint_test_id_token(registration_id=rid, nonce=init["nonce"], roles=["Learner"])
+    r = client.post(
+        "/api/v1/interop/lti/launch",
+        json={"registration_id": rid, "id_token": token, "state": init["state"]},
+    )
+    assert r.status_code == 400
+    assert r.json()["detail"] == "LTI_JWKS_FETCH_FAILED"
