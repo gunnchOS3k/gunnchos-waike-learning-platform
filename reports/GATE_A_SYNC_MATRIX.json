@@ -1,0 +1,52 @@
+{
+  "generated_utc": "2026-09-05T18:30:34Z",
+  "entities": {
+    "lesson_progress": {
+      "conflict": "preserve_prior_revision_signal_conflict",
+      "server_authoritative": false
+    },
+    "assignment_draft": {
+      "conflict": "preserve_versions_no_silent_overwrite",
+      "server_authoritative": false
+    },
+    "submissions": {
+      "conflict": "immutable_revisions",
+      "server_authoritative": true
+    },
+    "grades": {
+      "conflict": "server_authoritative",
+      "server_authoritative": true
+    },
+    "roles_enrollment": {
+      "conflict": "server_authoritative",
+      "server_authoritative": true
+    },
+    "attachments": {
+      "hashes": true,
+      "mime_policy": true,
+      "path_traversal_denied": true,
+      "quarantine": true
+    }
+  },
+  "mutation_statuses": [
+    "pending",
+    "syncing",
+    "acknowledged",
+    "conflict",
+    "rejected",
+    "retryable_error",
+    "quarantined"
+  ],
+  "lease": {
+    "scoped": [
+      "user",
+      "site",
+      "section"
+    ],
+    "expiry": true,
+    "revocation": true
+  },
+  "ack_before_clear_pending": true,
+  "cross_device_e2e": true,
+  "idempotency_sabotage": true
+}

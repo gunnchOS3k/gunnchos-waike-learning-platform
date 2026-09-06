@@ -1,4 +1,4 @@
-.PHONY: bootstrap lint test build verify-pr1 verify-pr2 verify-pr3 compile-dc rust-test frontend-test hub-test python-test assessment-test pr3-test clean
+.PHONY: bootstrap lint test build verify-pr1 verify-pr2 verify-pr3 verify-gate-a compile-dc rust-test frontend-test hub-test python-test assessment-test pr3-test gate-a-test clean
 
 export PATH := $(HOME)/.cargo/bin:$(PATH)
 export SOURCE_DATE_EPOCH ?= 1700000000
@@ -33,6 +33,9 @@ assessment-test:
 
 pr3-test:
 	WAIKE_ROOT=$(WAIKE_ROOT) PYTHONPATH=services/hub $(PYTHON) -m pytest -q services/hub/tests tests/assessment tests/pr3
+
+gate-a-test:
+	WAIKE_ROOT=$(WAIKE_ROOT) PYTHONPATH=services/hub $(PYTHON) -m pytest -q tests/gate_a
 
 hub-test:
 	WAIKE_ROOT=$(WAIKE_ROOT) PYTHONPATH=services/hub $(PYTHON) -m pytest -q services/hub/tests
@@ -86,6 +89,18 @@ verify-pr3: bootstrap
 	cd $(TAURI) && cargo check
 	@WAIKE_ROOT=$(WAIKE_ROOT) $(PYTHON) scripts/verify_pr3.py
 	@echo "verify-pr3: see reports/PR3_VERIFICATION.md"
+
+verify-gate-a: bootstrap
+	@mkdir -p reports
+	$(MAKE) gate-a-test
+	$(MAKE) pr3-test
+	$(MAKE) compile-dc
+	$(MAKE) rust-test
+	$(MAKE) frontend-test
+	cd $(CLIENT) && (command -v pnpm >/dev/null && pnpm run build || npm run build)
+	cd $(TAURI) && cargo check
+	@WAIKE_ROOT=$(WAIKE_ROOT) $(PYTHON) scripts/verify_gate_a.py
+	@echo "verify-gate-a: see reports/GATE_A_VERIFICATION.md"
 
 clean:
 	rm -rf pack_out $(CLIENT)/dist $(TAURI)/target services/hub/data

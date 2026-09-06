@@ -1,3 +1,4 @@
+import type { ActivityClient, InstructorActivityClient } from "./activities";
 import type {
   AssignmentDetail,
   AssignmentSummary,
@@ -347,5 +348,51 @@ export function createMockHubClient(actor: HubActor): HubClient {
     async mastery() {
       return STORE.mastery;
     },
+    // The mock hub has no activity engine. Failing loudly beats rendering a fake
+    // quiz that a learner could mistake for graded work.
+    activities: unavailableActivities(),
+    instructorActivities: unavailableInstructorActivities(),
+  };
+}
+
+const ACTIVITIES_UNAVAILABLE = "ACTIVITIES_REQUIRE_HUB";
+
+function reject(): never {
+  throw new Error(ACTIVITIES_UNAVAILABLE);
+}
+
+function unavailableActivities(): ActivityClient {
+  return {
+    sectionActivities: reject,
+    getQuiz: reject,
+    startQuizAttempt: reject,
+    submitQuizAttempt: reject,
+    myAttempt: reject,
+    getLab: reject,
+    completeLab: reject,
+    listLabRuns: reject,
+    listThreads: reject,
+    listPosts: reject,
+    createThread: reject,
+    postToThread: reject,
+    listGroups: reject,
+    listGroupSubmissions: reject,
+    groupSubmit: reject,
+    getAccommodation: reject,
+  };
+}
+
+function unavailableInstructorActivities(): InstructorActivityClient {
+  return {
+    answerKey: reject,
+    manualQueue: reject,
+    attemptDetail: reject,
+    manualGrade: reject,
+    nextUngraded: reject,
+    gradingProgress: reject,
+    moderatePost: reject,
+    createGroup: reject,
+    upsertAccommodation: reject,
+    regradeQueue: reject,
   };
 }

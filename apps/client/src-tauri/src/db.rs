@@ -38,7 +38,7 @@ pub struct EncryptedDb {
     enc_path: PathBuf,
     plain_path: PathBuf,
     key: [u8; 32],
-    conn: Connection,
+    pub(crate) conn: Connection,
 }
 
 impl EncryptedDb {
@@ -101,6 +101,8 @@ impl EncryptedDb {
                 PRIMARY KEY(pack_id, lesson_id)
              );",
         )?;
+        conn.execute_batch(crate::offline::MIGRATION_SQL)?;
+        crate::offline::upgrade_schema(conn)?;
         Ok(())
     }
 
@@ -315,4 +317,6 @@ mod tests {
         let pos = db2.get_position("p1", "L1").unwrap().unwrap();
         assert!((pos.scroll_offset - 12.5).abs() < f64::EPSILON);
     }
+
 }
+

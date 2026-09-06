@@ -1,0 +1,186 @@
+{
+  "schema": "gate_a_closure_verification_v1",
+  "status": "LOCAL_CLOSURE_COMPLETE_REMOTE_CI_PENDING",
+  "branch": "cursor/waike-learning-gate-a-offline-activities",
+  "base_main": "4e0afbe44bd595da6f44aebb465dea891ace629b",
+  "waike_pin_ref": "e97e74fc9bfb44b1cdc26b272dc4848264f15fe0",
+  "verified_implementation_sha": null,
+  "gaps": {
+    "native_offline_wiring": {
+      "closed": true,
+      "implementation": [
+        "apps/client/src-tauri/src/offline.rs",
+        "apps/client/src-tauri/src/lib.rs",
+        "apps/client/src/lib/tauriBridge.ts",
+        "apps/client/src/lib/offline/syncCoordinator.ts",
+        "apps/client/src/lib/offline/useOfflineSync.ts",
+        "apps/client/src/App.tsx"
+      ],
+      "tests": [
+        "apps/client/src-tauri/src/offline_tests.rs",
+        "apps/client/src/test/live/syncCoordinator.live.test.ts"
+      ],
+      "notes": "Python OfflineDevice retained as server-contract coverage; native path now covered independently."
+    },
+    "object_level_authorization": {
+      "closed": true,
+      "implementation": [
+        "services/hub/app/modules/sections.py",
+        "services/hub/app/modules/sync.py",
+        "services/hub/app/modules/activity_engine.py"
+      ],
+      "tests": [
+        "tests/gate_a/test_object_authz_closure.py",
+        "tests/gate_a/test_adversarial_sabotage.py"
+      ],
+      "notes": "Staff must be assigned to the section; learners must be actively enrolled. Unrelated same-site instructor denied."
+    },
+    "idempotency_actor_payload_scoped": {
+      "closed": true,
+      "implementation": [
+        "services/hub/app/modules/sync.py"
+      ],
+      "tests": [
+        "tests/gate_a/test_idempotency_closure.py",
+        "tests/gate_a/test_idempotency.py"
+      ],
+      "error_code": "MUTATION_ID_REUSE_MISMATCH",
+      "http_status": 409
+    },
+    "attachment_tenancy_and_path": {
+      "closed": true,
+      "implementation": [
+        "services/hub/app/modules/sync.py",
+        "services/hub/app/migrations/m004_offline_sync_activities.py"
+      ],
+      "tests": [
+        "tests/gate_a/test_attachment_tenancy_closure.py",
+        "tests/gate_a/test_attachment_security.py"
+      ],
+      "notes": "Path.resolve().relative_to(root) containment; unique (site_id, content_hash); quarantined blobs retained as evidence."
+    },
+    "quiz_timing": {
+      "closed": true,
+      "implementation": [
+        "services/hub/app/modules/activity_engine.py"
+      ],
+      "tests": [
+        "tests/gate_a/test_quiz_timing_closure.py"
+      ],
+      "trust_boundary": "High-integrity timed quizzes are not trusted offline without a signed deadline; late sync is recorded as timed_out and not auto-graded."
+    },
+    "manual_grading_integrity": {
+      "closed": true,
+      "implementation": [
+        "services/hub/app/modules/activity_engine.py"
+      ],
+      "tests": [
+        "tests/gate_a/test_manual_grading_closure.py"
+      ],
+      "notes": "Validate-before-mutate inside a savepoint; before/after audited."
+    },
+    "local_software_lab_runner": {
+      "closed": true,
+      "implementation": [
+        "services/hub/app/modules/lab_runner.py",
+        "services/hub/app/lab_fixtures/hash_fixture.py"
+      ],
+      "tests": [
+        "tests/gate_a/test_lab_runner_closure.py",
+        "tests/gate_a/test_labs.py"
+      ],
+      "trust_boundary": "Process-level confinement (fixed interpreter and command, temp workdir, scrubbed env, timeout, output cap). Not an OS sandbox. Hardware evidence remains external."
+    },
+    "production_activity_ux": {
+      "closed": true,
+      "implementation": [
+        "apps/client/src/components/activities/LearnerActivities.tsx",
+        "apps/client/src/components/activities/InstructorActivities.tsx",
+        "apps/client/src/lib/hub/activities.ts",
+        "apps/client/src/lib/hub/client.ts"
+      ],
+      "tests": [
+        "apps/client/src/test/live/activityUi.live.test.tsx"
+      ],
+      "notes": "PR3 session auth; no debug JSON screens; learner client has no answer-key call."
+    },
+    "migration_m004_strengthened": {
+      "closed": true,
+      "implementation": [
+        "services/hub/app/migrations/m004_offline_sync_activities.py"
+      ],
+      "tests": [
+        "tests/gate_a/test_migration_pr3_to_gate_a.py"
+      ],
+      "notes": "FKs, CHECKs, scoped uniqueness, receipt site/section, indexes. PR3 to Gate A migration test stays green."
+    },
+    "transaction_integrity": {
+      "closed": true,
+      "implementation": [
+        "services/hub/app/modules/txn.py",
+        "services/hub/app/modules/sync.py",
+        "services/hub/app/modules/activity_engine.py"
+      ],
+      "tests": [
+        "tests/gate_a/test_transaction_integrity_closure.py"
+      ],
+      "notes": "Savepoint depth tracked per connection so nested services cannot commit or roll back an outer transaction."
+    },
+    "adversarial_review": {
+      "closed": true,
+      "implementation": [
+        "reports/GATE_A_ADVERSARIAL_REVIEW.md"
+      ],
+      "merge_blocking_open": 0
+    },
+    "ci": {
+      "closed": true,
+      "implementation": [
+        ".github/workflows/gate-a.yml",
+        "scripts/verify_gate_a.py"
+      ],
+      "added_jobs": [
+        "native-offline-wiring",
+        "object-authz-sabotage",
+        "idempotency-tamper",
+        "attachment-tenancy",
+        "quiz-integrity",
+        "lab-runner",
+        "production-activity-ui",
+        "transaction-integrity"
+      ],
+      "aggregated_by": "verify-gate-a",
+      "continue_on_error_present": false
+    }
+  },
+  "local_evidence": {
+    "python_passed": 204,
+    "python_skipped": 0,
+    "gate_a_collected": 99,
+    "rust_passed": 11,
+    "rust_offline_subset_passed": 6,
+    "client_unit_passed": 30,
+    "client_live_passed": 19,
+    "typecheck": "pnpm run lint clean",
+    "verify_gate_a_status": "AUTOMATED_PIPELINE_PASS",
+    "verifier_note": "Generated from the closure working tree; the authoritative artifact is the reports/ bundle produced by the verify-gate-a job on the pushed head."
+  },
+  "preserved": [
+    "PR1 pack integrity and offline install",
+    "PR2 assessment, drafts and gradebook",
+    "PR3 identity, session auth and instructor tooling",
+    "existing Gate A acceptance behaviour"
+  ],
+  "not_claimed": [
+    "human or field validation",
+    "accessibility certification",
+    "security certification",
+    "hardware lab evidence",
+    "Gate B gunnchAI and the 18 WAIKE tracks"
+  ],
+  "remote_ci": {
+    "state": "PENDING",
+    "required_conclusion": "all Gate A jobs SUCCESS including verify-gate-a",
+    "verified_implementation_sha_recorded_in": "PR body metadata (not a follow-up evidence commit)"
+  }
+}

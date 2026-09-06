@@ -11,7 +11,8 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "lint": "tsc --noEmit",
-    "tauri": "tauri"
+    "tauri": "tauri",
+    "test:live": "vitest run --config vitest.live.config.ts"
   },
   "dependencies": {
     "@tauri-apps/api": "^2.1.1",

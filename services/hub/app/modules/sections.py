@@ -396,6 +396,79 @@ class SectionService:
             is not None
         )
 
+    # --- Gate A object-level authorization ------------------------------------
+    #
+    # ``is_instructor_side`` and "same site" are NOT authorization. Every Gate A
+    # object read/write resolves the owning section first and then requires either an
+    # active learner enrollment or an assigned staff scope on *that* section, so a
+    # same-site instructor with no assignment to the section is denied.
+
+    def require_section(self, actor: Actor, section_id: str) -> sqlite3.Row:
+        """Section exists and belongs to the actor's site."""
+        sec = _row(self.conn, "SELECT * FROM sections WHERE section_id=?", (section_id,))
+        if not sec:
+            raise ServiceError("SECTION_NOT_FOUND", 404)
+        if sec["site_id"] != actor.site_id:
+            raise ServiceError("CROSS_SITE_DENIED", 403)
+        return sec
+
+    def has_staff_scope(self, actor: Actor, section_id: str) -> bool:
+        """Assigned instructor/grader on this section, or a site admin of its site."""
+        sec = _row(self.conn, "SELECT site_id FROM sections WHERE section_id=?", (section_id,))
+        if not sec or sec["site_id"] != actor.site_id:
+            return False
+        if actor.is_site_admin:
+            return True
+        if not actor.is_instructor_side:
+            return False
+        return (
+            _row(
+                self.conn,
+                """
+                SELECT user_id FROM section_instructors WHERE section_id=? AND user_id=?
+                UNION
+                SELECT user_id FROM section_graders WHERE section_id=? AND user_id=?
+                """,
+                (section_id, actor.actor_id, section_id, actor.actor_id),
+            )
+            is not None
+        )
+
+    def require_staff_scope(self, actor: Actor, section_id: str) -> sqlite3.Row:
+        sec = self.require_section(actor, section_id)
+        if not actor.is_instructor_side:
+            raise ServiceError("STAFF_ONLY", 403)
+        if not self.has_staff_scope(actor, section_id):
+            raise ServiceError("SECTION_NOT_ASSIGNED", 403)
+        return sec
+
+    def require_learner_enrollment(self, actor: Actor, section_id: str) -> sqlite3.Row:
+        sec = self.require_section(actor, section_id)
+        if not actor.is_learner:
+            raise ServiceError("LEARNER_REQUIRED", 403)
+        if not self.is_enrolled(actor.actor_id, section_id):
+            raise ServiceError("ENROLLMENT_REQUIRED", 403)
+        return sec
+
+    def require_section_access(self, actor: Actor, section_id: str) -> sqlite3.Row:
+        """Either an enrolled learner or assigned staff on this specific section."""
+        sec = self.require_section(actor, section_id)
+        if self.has_staff_scope(actor, section_id):
+            return sec
+        if actor.is_learner and self.is_enrolled(actor.actor_id, section_id):
+            return sec
+        if actor.is_instructor_side:
+            raise ServiceError("SECTION_NOT_ASSIGNED", 403)
+        raise ServiceError("ENROLLMENT_REQUIRED", 403)
+
+    def require_learner_or_staff_for(
+        self, actor: Actor, section_id: str, learner_id: str
+    ) -> sqlite3.Row:
+        """Actor is the learner themself (and enrolled), or assigned staff on the section."""
+        if actor.actor_id == learner_id:
+            return self.require_learner_enrollment(actor, section_id)
+        return self.require_staff_scope(actor, section_id)
+
     def default_section_for_learner(self, actor: Actor) -> str | None:
         row = _row(
             self.conn,

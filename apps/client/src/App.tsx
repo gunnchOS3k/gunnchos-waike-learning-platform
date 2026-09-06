@@ -5,9 +5,14 @@ import { InstructorQueue } from "./components/assessment/InstructorQueue";
 import { CourseCard } from "./components/CourseCard";
 import { LessonReader } from "./components/LessonReader";
 import { TrustBanner } from "./components/TrustBanner";
+import { SyncStatusBanner } from "./components/sync/SyncStatusBanner";
+import { InstructorActivities } from "./components/activities/InstructorActivities";
+import { LearnerActivities } from "./components/activities/LearnerActivities";
 import type { AuthSession, HubActor, HubClient, SectionCard, SessionUser } from "./lib/hub/client";
 import { HubAuthError } from "./lib/hub/client";
 import { resolveHubClient } from "./lib/hub/resolveHub";
+import type { SyncTransport } from "./lib/offline/syncCoordinator";
+import { useOfflineSync } from "./lib/offline/useOfflineSync";
 import { browseInstallPack, isTauri } from "./lib/tauriBridge";
 import type { LessonContent, LessonInfo, ModuleView, TrustStatus } from "./lib/types";
 import {
@@ -17,7 +22,31 @@ import {
   simulateVerifiedInstall,
 } from "./lib/mockRuntime";
 
-type Mode = "lessons" | "home" | "assignments" | "instruct" | "gradebook" | "admin" | "roster";
+type Mode =
+  | "lessons"
+  | "home"
+  | "assignments"
+  | "activities"
+  | "instruct"
+  | "instruct-activities"
+  | "gradebook"
+  | "admin"
+  | "roster";
+
+/** Stable per-install id so leases and mutations are attributable to this device. */
+const DEVICE_KEY = "waike_device_id";
+
+function deviceId(): string {
+  try {
+    const existing = localStorage.getItem(DEVICE_KEY);
+    if (existing) return existing;
+    const fresh = `device_${crypto.randomUUID()}`;
+    localStorage.setItem(DEVICE_KEY, fresh);
+    return fresh;
+  } catch {
+    return "device_unknown";
+  }
+}
 
 const SESSION_KEY = "waike_hub_session";
 
@@ -52,6 +81,50 @@ function loadSession(): AuthSession | null {
   } catch {
     return null;
   }
+}
+
+/** Session-authenticated transport for the offline sync coordinator (PR3 auth). */
+function makeSyncTransport(baseUrl: string, getToken: () => string | null): SyncTransport {
+  async function req<T>(path: string, init?: RequestInit): Promise<T> {
+    const res = await fetch(`${baseUrl}${path}`, {
+      ...init,
+      headers: {
+        "Content-Type": "application/json",
+        ...(getToken() ? { Authorization: `Bearer ${getToken()}` } : {}),
+        ...(init?.headers || {}),
+      },
+    });
+    if (!res.ok) {
+      const text = await res.text();
+      let detail = text;
+      try {
+        detail = (JSON.parse(text) as { detail?: string }).detail || text;
+      } catch {
+        /* raw body */
+      }
+      throw new HubAuthError(res.status, String(detail));
+    }
+    return (await res.json()) as T;
+  }
+  return {
+    issueLease: (sectionId, deviceIdValue, ttlHours = 72) =>
+      req("/api/v1/sync/leases", {
+        method: "POST",
+        body: JSON.stringify({
+          section_id: sectionId,
+          device_id: deviceIdValue,
+          ttl_hours: ttlHours,
+        }),
+      }),
+    getLease: (leaseId) => req(`/api/v1/sync/leases/${leaseId}`),
+    applyMutation: (body) =>
+      req("/api/v1/sync/mutations", { method: "POST", body: JSON.stringify(body) }),
+    getReceipt: (id) => req(`/api/v1/sync/receipts/${id}`),
+    pullChanges: (sectionId, sinceRevision) =>
+      req(
+        `/api/v1/sync/pull?section_id=${encodeURIComponent(sectionId)}&since_revision=${sinceRevision}`,
+      ),
+  };
 }
 
 /** Match hub primary-role precedence: site_admin > instructor > grader > learner. */
@@ -90,6 +163,21 @@ export default function App() {
   const [adminUsers, setAdminUsers] = useState<
     Array<{ user_id: string; username: string; display_name: string; disabled: number; roles: string[] }>
   >([]);
+  const [online, setOnline] = useState(
+    typeof navigator === "undefined" ? true : navigator.onLine,
+  );
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const on = () => setOnline(true);
+    const off = () => setOnline(false);
+    window.addEventListener("online", on);
+    window.addEventListener("offline", off);
+    return () => {
+      window.removeEventListener("online", on);
+      window.removeEventListener("offline", off);
+    };
+  }, []);
   const [loading, setLoading] = useState(false);
 
   const tokenRef = useCallback(() => session?.token ?? null, [session]);
@@ -121,6 +209,24 @@ export default function App() {
     : null);
   const primaryRole = resolvePrimaryRole(user?.roles);
   const needsLogin = hubResolution.status === "http" && !session;
+  const isStaff =
+    primaryRole === "instructor" || primaryRole === "grader" || primaryRole === "site_admin";
+
+  const device = useMemo(() => deviceId(), []);
+  // Only a real HTTP hub can settle mutations; the mock hub has no sync ledger.
+  const syncTransport: SyncTransport | null = useMemo(() => {
+    if (hubResolution.status !== "http" || !session) return null;
+    return makeSyncTransport(hubResolution.baseUrl, () => session.token);
+  }, [hubResolution, session]);
+
+  const sync = useOfflineSync({
+    transport: syncTransport,
+    sectionId,
+    deviceId: device,
+    siteId: user?.site_id ?? null,
+    online,
+  });
+  const syncUx = sync.ux;
 
   useEffect(() => {
     if (!isTauri()) return;
@@ -449,6 +555,17 @@ export default function App() {
               >
                 Assignments
               </button>
+              <button
+                type="button"
+                className={mode === "activities" ? "mode-active" : "ghost"}
+                data-testid="mode-activities"
+                onClick={() => {
+                  if (isMock) setMockActor({ actorId: "learner-a", role: "learner" });
+                  setMode("activities");
+                }}
+              >
+                Activities
+              </button>
             </>
           )}
           {(primaryRole === "instructor" ||
@@ -474,6 +591,17 @@ export default function App() {
                 onClick={() => setMode("roster")}
               >
                 Roster
+              </button>
+              <button
+                type="button"
+                className={mode === "instruct-activities" ? "mode-active" : "ghost"}
+                data-testid="mode-instruct-activities"
+                onClick={() => {
+                  if (isMock) setMockActor({ actorId: "instructor-1", role: "instructor" });
+                  setMode("instruct-activities");
+                }}
+              >
+                Activity grading
               </button>
             </>
           )}
@@ -519,6 +647,7 @@ export default function App() {
       </header>
 
       <TrustBanner trust={trust} />
+      <SyncStatusBanner state={syncUx} />
       {resumeHint ? (
         <p className="muted" data-testid="resume-hint">
           {resumeHint}
@@ -559,6 +688,40 @@ export default function App() {
               </section>
             )}
           </>
+        ) : null}
+        {mode === "activities" ? (
+          hub ? (
+            <section className="panel" data-testid="learner-activities">
+              <h2>Activities</h2>
+              {sync.state && sync.state.needsAttention > 0 ? (
+                <p role="alert" data-testid="sync-attention">
+                  {sync.state.needsAttention} item(s) need your attention before your work is
+                  fully submitted.
+                </p>
+              ) : null}
+              <LearnerActivities activities={hub.activities} sectionId={sectionId} />
+            </section>
+          ) : (
+            <section className="panel">
+              <p className="muted">{hubUnavailable}</p>
+            </section>
+          )
+        ) : null}
+        {mode === "instruct-activities" ? (
+          hub && isStaff ? (
+            <section className="panel" data-testid="instructor-activities">
+              <h2>Activity grading</h2>
+              <InstructorActivities
+                activities={hub.activities}
+                staff={hub.instructorActivities}
+                sectionId={sectionId}
+              />
+            </section>
+          ) : (
+            <section className="panel">
+              <p className="muted">{hubUnavailable ?? "Staff access required."}</p>
+            </section>
+          )
         ) : null}
         {mode === "home" ? (
           hub ? (
