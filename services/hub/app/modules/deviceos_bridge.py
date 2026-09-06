@@ -48,7 +48,7 @@ APP_MANIFEST = {
     ),
 }
 
-DEVICE_OS_PIN_DEFAULT = "13e291248519fde863d253c59890b4b1ba99cbfe"
+DEVICE_OS_PIN_DEFAULT = "67cf98255e41d953e56eb142af063940e05c8dbb"
 
 # Least-privilege map from platform roles → Device OS permission names (fixture fallback).
 ROLE_PERMISSIONS = {
@@ -269,8 +269,17 @@ class DeviceOsBridge:
                 "handoff": result.get("handoff"),
                 "companion_seed": result.get("companion_seed"),
                 "device_os_result": {
+                    "registered": result.get("registered"),
+                    "available": result.get("available"),
+                    "handoff_created": result.get("handoff_created"),
+                    "launch_attempted": result.get("launch_attempted"),
+                    "process_started": result.get("process_started"),
+                    "deep_link_delivered": result.get("deep_link_delivered"),
+                    "acknowledged": result.get("acknowledged"),
                     "launched": result.get("launched"),
+                    "reason": result.get("reason"),
                     "mock": result.get("mock"),
+                    "provenance": result.get("provenance"),
                 },
                 "claim_boundary": APP_MANIFEST["claim_boundary"],
             }
@@ -442,10 +451,11 @@ class DeviceOsBridge:
                 "channel": los.get("channel", "gate-c-digital"),
                 "signed": bool(los.get("signed")),
                 "signing_truth": upd.get("signing_truth", "UNSIGNED_DIGITAL_FIXTURE"),
-                "rollback_supported": upd.get("rollback_supported", True),
+                "rollback_supported": bool(upd.get("rollback_supported")),
                 "authority": "device_os_updater",
                 "device_os_updater": upd.get("device_os_updater"),
                 "rollback_probe": upd.get("rollback"),
+                "claim_boundary": upd.get("claim_boundary"),
             }
 
         latest = APP_MANIFEST["version"]
@@ -456,8 +466,9 @@ class DeviceOsBridge:
             "channel": "gate-c-digital",
             "signed": False,
             "signing_truth": "UNSIGNED_DIGITAL_FIXTURE",
-            "rollback_supported": True,
+            "rollback_supported": False,
             "authority": "device_os_update_contract_shape",
+            "claim_boundary": "Fixture path only — no package lifecycle prior version.",
         }
 
     def rollback(self, actor: Actor, to_version: str) -> dict[str, Any]:

@@ -1,0 +1,83 @@
+{
+  "generated_utc": "2026-09-06T22:26:01Z",
+  "status": "REVIEW_CROSS_REPO_PR_DEPENDENCY_ORDER",
+  "claims": [],
+  "claims_blocked": [
+    "INTEROPERABILITY_AND_DEVICEOS_DIGITAL_INTEGRATION_COMPLETE",
+    "PLATFORM_HARDENING_DIGITALLY_COMPLETE"
+  ],
+  "checks": {
+    "prior_regression": true,
+    "gate_c": true,
+    "GATE_C_DISCOVERY.json": true,
+    "GATE_C_DEVICEOS_CONTRACT_DISCOVERY.json": true,
+    "owner_blockers_all_pass": true,
+    "macos_dmg_meta": true
+  },
+  "test_counts": {
+    "prior_regression": {
+      "passed": 405,
+      "failed": 0,
+      "skipped": 0,
+      "xfailed": 0,
+      "error": 0
+    },
+    "gate_c": {
+      "passed": 74,
+      "failed": 0,
+      "skipped": 0,
+      "xfailed": 0,
+      "error": 0
+    }
+  },
+  "blocked": [],
+  "owner_blockers": {
+    "C-OWNER-01": "PASS",
+    "C-OWNER-02": "PASS",
+    "C-OWNER-03": "PASS",
+    "C-OWNER-04": "PASS",
+    "C-OWNER-05": "PASS",
+    "C-OWNER-06": "PASS",
+    "C-OWNER-07": "PASS",
+    "C-OWNER-08": "PASS",
+    "C-OWNER-09": "PASS",
+    "C-OWNER-10": "PASS",
+    "C-OWNER-11": "PASS",
+    "C-OWNER-12": "PASS",
+    "C-OWNER-13": "PASS",
+    "C-OWNER-14": "PASS"
+  },
+  "GATE_C_REQUIRED_TESTS_SKIPPED": 0,
+  "claim_boundary": {
+    "does_not_claim": [
+      "OneRoster/QTI/LTI certification",
+      "physical Device Quartet",
+      "FERPA certification",
+      "security/accessibility certification",
+      "production signing/notarization",
+      "Gate D full-system acceptance"
+    ]
+  },
+  "pins": {
+    "waike": "fbf7685bc5686201ccaa0128ee83346d59b3d584",
+    "gunnchai": "4b4f411710e8cdb8102a7e11502f8497f68156b1",
+    "device_os": "67cf98255e41d953e56eb142af063940e05c8dbb",
+    "device_os_accepted_main": "28562a8456207540c205a1c8a6434a491b0a4771"
+  },
+  "device_os_pr_required": true,
+  "tested_against": "device_os_pr_head:67cf98255e41d953e56eb142af063940e05c8dbb",
+  "exit_codes": {
+    "prior_regression": 0,
+    "prior_a": 0,
+    "prior_b": 0,
+    "gate_c": 0
+  },
+  "macos_dmg": {
+    "checked": true,
+    "ok": true,
+    "notes": [
+      "DMG verification ok:true"
+    ]
+  },
+  "owner_action": "REVIEW_CROSS_REPO_PR_DEPENDENCY_ORDER"
+}

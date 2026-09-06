@@ -69,6 +69,24 @@ def test_launcher_permissions(client):
     assert body["seed_is_system_of_record"] is False
     assert body["system_of_record"] == "platform_tauri_learning_os"
     assert body["handoff"]["bundle_id"] == "com.gunnchos.waike.learning"
+    dos = body["device_os_result"]
+    assert dos["registered"] is True
+    assert "launched" in dos
+    assert dos["mock"] is False
+    # When LEARNING_OS_EXECUTABLE / install root is configured, native adapter must succeed.
+    import os
+    from pathlib import Path
+
+    exe = os.environ.get("LEARNING_OS_EXECUTABLE")
+    if exe and Path(exe).is_file():
+        assert dos["available"] is True
+        assert dos["process_started"] is True
+        assert dos["acknowledged"] is True
+        assert dos["launched"] is True
+    else:
+        # Absent native artifact → honest fail-closed
+        assert dos["launched"] is False
+        assert dos.get("reason") == "learning_os_not_installed"
     p = client.get("/api/v1/deviceos/permissions", headers=h)
     assert p.status_code == 200
     perms = p.json()
@@ -77,6 +95,40 @@ def test_launcher_permissions(client):
     assert perms["authority"] == "device_os_permissions_manager"
     assert perms["device_os_role"] == "student"
     assert perms["device_os_sample_grant"]["decision"] == "allow"
+
+
+def test_update_continuity_no_secrets(client):
+    h = auth_header(login(client, "admin-alpha")["token"])
+    u = client.get("/api/v1/deviceos/update", headers=h)
+    assert u.status_code == 200
+    assert u.json()["signing_truth"] == "UNSIGNED_DIGITAL_FIXTURE"
+    assert u.json()["authority"] == "device_os_updater"
+    # Honest: mock rollback is not reported as supported without package prior version.
+    assert u.json()["rollback_supported"] is False
+    assert u.json()["rollback_probe"]["mock"] is False
+    assert u.json()["rollback_probe"]["success"] is False
+    c = client.post(
+        "/api/v1/deviceos/continuity",
+        headers=h,
+        json={
+            "from_profile": "handheld_hybrid",
+            "to_profile": "student_14_5",
+            "lesson_progress": {"lesson_id": "w01", "pct": 40},
+        },
+    )
+    assert c.status_code == 200
+    assert c.json()["contains_secrets"] is False
+    assert c.json().get("continuity_owner") == "device_os_continuity_coordinator"
+    bad = client.post(
+        "/api/v1/deviceos/continuity",
+        headers=h,
+        json={
+            "from_profile": "a",
+            "to_profile": "b",
+            "lesson_progress": {"password": "nope"},
+        },
+    )
+    assert bad.status_code == 400
 
 
 def test_deep_link_requires_auth_and_rejects_bypass(client):
@@ -105,34 +157,3 @@ def test_device_quartet_profiles(client):
     assert edge["profile"]["standalone_full_lms"] is False
     coder = client.get("/api/v1/deviceos/profiles/ds_xl_coder", headers=h).json()
     assert coder["profile"]["strongest_learn_to_build"] is True
-
-
-def test_update_continuity_no_secrets(client):
-    h = auth_header(login(client, "admin-alpha")["token"])
-    u = client.get("/api/v1/deviceos/update", headers=h)
-    assert u.status_code == 200
-    assert u.json()["signing_truth"] == "UNSIGNED_DIGITAL_FIXTURE"
-    assert u.json()["authority"] == "device_os_updater"
-    assert u.json()["rollback_probe"]["success"] is True
-    c = client.post(
-        "/api/v1/deviceos/continuity",
-        headers=h,
-        json={
-            "from_profile": "handheld_hybrid",
-            "to_profile": "student_14_5",
-            "lesson_progress": {"lesson": "w01", "pct": 40},
-        },
-    )
-    assert c.status_code == 200
-    assert c.json()["contains_secrets"] is False
-    assert c.json().get("continuity_owner") == "device_os_continuity_coordinator"
-    bad = client.post(
-        "/api/v1/deviceos/continuity",
-        headers=h,
-        json={
-            "from_profile": "a",
-            "to_profile": "b",
-            "lesson_progress": {"password": "nope"},
-        },
-    )
-    assert bad.status_code == 400

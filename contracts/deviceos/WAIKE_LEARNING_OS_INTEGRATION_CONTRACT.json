@@ -6,7 +6,7 @@
   "platform_version": "0.6.0-gate-c",
   "tauri_bundle_id": "com.gunnchos.waike.learning",
   "device_os_repo": "gunnchOS3k/gunnchos-device-os",
-  "device_os_sha": "13e291248519fde863d253c59890b4b1ba99cbfe",
+  "device_os_sha": "67cf98255e41d953e56eb142af063940e05c8dbb",
   "device_os_branch": "cursor/waike-learning-deviceos-integration",
   "device_os_pr": "https://github.com/gunnchOS3k/gunnchos-device-os/pull/132",
   "registry_id": "waike_learning_os",
@@ -29,7 +29,7 @@
   "update_owner": "platform_tauri_bundle",
   "continuity_owner": "device_os_continuity_coordinator",
   "compatibility_range": {
-    "device_os_min_sha": "13e291248519fde863d253c59890b4b1ba99cbfe",
+    "device_os_min_sha": "67cf98255e41d953e56eb142af063940e05c8dbb",
     "platform_min_version": "0.6.0-gate-c",
     "sdk_api_version": "1.0.0"
   },
@@ -46,13 +46,11 @@
       ]
     },
     "grader": {
-      "device_os_role": "student",
+      "device_os_role": "grader",
       "permissions": [
         "files_read",
-        "files_write",
         "network",
         "notifications",
-        "sensors",
         "identity_read"
       ]
     },
