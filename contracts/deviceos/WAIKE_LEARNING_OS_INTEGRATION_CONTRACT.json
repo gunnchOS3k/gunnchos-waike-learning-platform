@@ -1,0 +1,92 @@
+{
+  "schema": "waike.learning_os.deviceos_integration_contract.v1",
+  "contract_id": "WAIKE_LEARNING_OS_INTEGRATION_CONTRACT",
+  "generated_for": "gate_c_c_owner_02",
+  "platform_repo": "gunnchOS3k/gunnchos-waike-learning-platform",
+  "platform_version": "0.6.0-gate-c",
+  "tauri_bundle_id": "com.gunnchos.waike.learning",
+  "device_os_repo": "gunnchOS3k/gunnchos-device-os",
+  "device_os_sha": "4f02a48780d300a5d3a7758937b20e3bf9364d0d",
+  "device_os_branch": "main",
+  "device_os_pr": "https://github.com/gunnchOS3k/gunnchos-device-os/pull/132",
+  "device_os_pr_merged": true,
+  "registry_id": "waike_learning_os",
+  "compatibility_alias": "waike_offline",
+  "sdk_app_id": "gunnchos.waike_learning",
+  "runtime_id": "waike",
+  "launcher_wrapper_relationship": "thin_launcher_companion",
+  "system_of_record": "platform_tauri_learning_os",
+  "companion_seed_entry": "apps/waike_learning/index.html",
+  "companion_role": "discovery_lab_seed_only",
+  "deep_link_scheme": "waike://",
+  "deep_link_kinds": [
+    "learn",
+    "section",
+    "quiz",
+    "assignment",
+    "sync",
+    "device"
+  ],
+  "update_owner": "platform_tauri_bundle",
+  "continuity_owner": "device_os_continuity_coordinator",
+  "compatibility_range": {
+    "device_os_min_sha": "4f02a48780d300a5d3a7758937b20e3bf9364d0d",
+    "platform_min_version": "0.6.0-gate-c",
+    "sdk_api_version": "1.0.0"
+  },
+  "permissions_mapping": {
+    "learner": {
+      "device_os_role": "student",
+      "permissions": [
+        "files_read",
+        "files_write",
+        "network",
+        "notifications",
+        "sensors",
+        "identity_read"
+      ]
+    },
+    "grader": {
+      "device_os_role": "grader",
+      "permissions": [
+        "files_read",
+        "network",
+        "notifications",
+        "identity_read"
+      ]
+    },
+    "instructor": {
+      "device_os_role": "educator",
+      "permissions": [
+        "files_read",
+        "files_write",
+        "network",
+        "notifications",
+        "camera",
+        "microphone",
+        "sensors",
+        "identity_read"
+      ]
+    },
+    "site_admin": {
+      "device_os_role": "admin",
+      "permissions": [
+        "camera",
+        "microphone",
+        "location",
+        "files_read",
+        "files_write",
+        "network",
+        "bluetooth",
+        "sensors",
+        "notifications",
+        "ai_cloud_export",
+        "identity_read",
+        "screen_capture",
+        "ring_input"
+      ]
+    }
+  },
+  "ipc_protocol": "gunnchos.learning_os.ipc.v1",
+  "claim_boundary": "Platform consumes Device OS launcher/permissions/continuity/updater modules when DEVICE_OS_ROOT is set. Seed HTML is not LMS SoR. Digital integration only."
+}

@@ -1,0 +1,63 @@
+{
+  "generated_utc": "2026-09-06T21:00:00Z",
+  "phase": "gate0_live_truth",
+  "platform_pr": 6,
+  "platform_branch": "cursor/waike-learning-gate-c-interop-hardening",
+  "platform_head": "68fec7829305a8ba4b12f73526114206e43725dc",
+  "platform_base": "797f5f4b50ff844eecdd068736ac660561910bb4",
+  "pins": {
+    "waike": "fbf7685bc5686201ccaa0128ee83346d59b3d584",
+    "gunnchai": "4b4f411710e8cdb8102a7e11502f8497f68156b1",
+    "device_os_accepted_main": "4f02a48780d300a5d3a7758937b20e3bf9364d0d"
+  },
+  "prior_ci_run_id": 34057327622,
+  "prior_ci_conclusion": "success",
+  "prior_claims_honesty": "WEAK_VERIFIER_DOES_NOT_PROVE_OWNER_BLOCKERS",
+  "macos_artifact_pre_closure": {
+    "name": "waike-learning-os-gate-c-macos-2e1cf64c96eb736d5f497f649d40488bc6b45e36",
+    "id": 9996443016,
+    "size_in_bytes": 2010,
+    "actions_zip_digest": "sha256:3163c599e965829ad3f353c880d99761b99f5bc8ec202e00e8d2ec0c38e72461",
+    "contains_real_dmg": false,
+    "note": "Metadata-only upload; NOT an inner DMG. Do not confuse Actions ZIP digest with DMG SHA-256."
+  },
+  "linux_artifact_pre_closure": {
+    "name": "waike-learning-os-gate-c-linux-2e1cf64c96eb736d5f497f649d40488bc6b45e36",
+    "id": 9996449418,
+    "size_in_bytes": 3239398,
+    "actions_zip_digest": "sha256:161217ae140385b68612adb412886744dfa823f09f876a4b57a63e8d9768e1fb"
+  },
+  "gate_d_started": false,
+  "device_os_audit": {
+    "registry_id": "waike_offline",
+    "runtime_id": "waike",
+    "sdk_app_id": "gunnchos.waike_learning",
+    "launches_full_learning_os": false,
+    "seed_browser_only": true,
+    "platform_bridge_mode_pre_closure": "contract_hash_and_shape_mirror",
+    "device_os_pr_required": true
+  },
+  "owner_blockers_pre_fix": {
+    "C-OWNER-01": "FAIL",
+    "C-OWNER-02": "FAIL",
+    "C-OWNER-03": "FAIL",
+    "C-OWNER-04": "PARTIAL",
+    "C-OWNER-05": "PARTIAL",
+    "C-OWNER-06": "FAIL",
+    "C-OWNER-07": "FAIL",
+    "C-OWNER-08": "PARTIAL",
+    "C-OWNER-09": "PARTIAL",
+    "C-OWNER-10": "PARTIAL",
+    "C-OWNER-11": "FAIL",
+    "C-OWNER-12": "FAIL",
+    "C-OWNER-13": "FAIL",
+    "C-OWNER-14": "PARTIAL"
+  },
+  "closure_status": "IN_PROGRESS",
+  "claims": [],
+  "claims_blocked": [
+    "INTEROPERABILITY_AND_DEVICEOS_DIGITAL_INTEGRATION_COMPLETE",
+    "PLATFORM_HARDENING_DIGITALLY_COMPLETE"
+  ],
+  "owner_action_candidate": "GATE_C_NOT_READY"
+}

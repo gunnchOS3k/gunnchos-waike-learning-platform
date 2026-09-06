@@ -1,0 +1,11 @@
+{
+  "generated_utc": "2026-09-06T19:57:24Z",
+  "ladder": [
+    "PR3",
+    "Gate A",
+    "Gate B",
+    "Gate C m006"
+  ],
+  "forward_only": true,
+  "receipt_preservation": true
+}

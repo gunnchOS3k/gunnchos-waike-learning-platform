@@ -78,23 +78,53 @@ def main() -> int:
                 result["signing_posture"] = "signed"
             else:
                 result["signing_posture"] = "unsigned_or_undetermined"
-            result["notarization"] = "not_claimed_for_pr1"
+            # Gate C CI builds are unsigned — never claim notarization unless genuine.
+            notarized = False
+            spctl = run(["spctl", "-a", "-vv", "-t", "install", str(app_path)])
+            result["spctl_exit"] = spctl.returncode
+            result["spctl_out"] = ((spctl.stderr or "") + (spctl.stdout or ""))[-1500:]
+            if "accepted" in result["spctl_out"].lower() and "notarized" in result["spctl_out"].lower():
+                notarized = True
+            if notarized:
+                result["notarization"] = "NOTARIZED"
+                result["signing_notarization"] = "NOTARIZED"
+            else:
+                result["notarization"] = "NOT_NOTARIZED"
+                result["signing_notarization"] = "UNSIGNED_CI_BUILD"
+            # Inner app tree fingerprint for Gate C artifact provenance
+            result["inner_app_sha256"] = None
+            try:
+                # Hash Info.plist as a stable inner artifact marker
+                if info_plist.is_file():
+                    result["inner_app_sha256"] = sha256(info_plist)
+            except OSError:
+                pass
         run(["hdiutil", "detach", mnt])
 
     sums = REPORTS / "MACOS_SHA256SUMS.txt"
-    sums.write_text(f"{result['dmg_sha256']}  {dmg.name}\n")
+    sums.write_text(
+        f"{result['dmg_sha256']}  {dmg.name}\n"
+        + (
+            f"{result.get('inner_app_sha256')}  Info.plist\n"
+            if result.get("inner_app_sha256")
+            else ""
+        )
+    )
+    result["gate"] = "Gate C"
     result["ok"] = bool(
         result.get("hdiutil_verify_ok") and result.get("mount_ok") and result.get("app_present")
     )
 
     (REPORTS / "MACOS_DMG_VERIFICATION.json").write_text(json.dumps(result, indent=2) + "\n")
     md = [
-        "# macOS DMG verification",
+        "# macOS DMG verification (Gate C)",
         "",
+        f"- gate: `Gate C`",
         f"- recovery_status: `{result['recovery_status']}`",
         f"- source_commit: `{result['source_commit']}`",
         f"- dmg_sha256: `{result['dmg_sha256']}`",
         f"- dmg_bytes: `{result['dmg_bytes']}`",
+        f"- inner_app_sha256: `{result.get('inner_app_sha256')}`",
         f"- hdiutil_verify_ok: `{result.get('hdiutil_verify_ok')}`",
         f"- mount_ok: `{result.get('mount_ok')}`",
         f"- app_present: `{result.get('app_present')}`",
@@ -102,14 +132,14 @@ def main() -> int:
         f"- app_version: `{result.get('app_version')}`",
         f"- signing_posture: `{result.get('signing_posture')}`",
         f"- notarization: `{result.get('notarization')}`",
+        f"- signing_notarization: `{result.get('signing_notarization')}`",
         f"- ok: `{result['ok']}`",
         "",
-        "PR1 development artifact only — not production signing/notarization.",
+        "Gate C CI artifact — UNSIGNED_CI_BUILD / NOT_NOTARIZED unless genuine notarization is detected.",
         "",
     ]
     (REPORTS / "MACOS_DMG_VERIFICATION.md").write_text("\n".join(md))
     return 0 if result["ok"] else 1
-
 
 if __name__ == "__main__":
     raise SystemExit(main())

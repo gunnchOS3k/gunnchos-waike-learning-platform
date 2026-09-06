@@ -1,0 +1,6 @@
+{
+  "generated_utc": "2026-09-06T19:57:24Z",
+  "destructive_restore": true,
+  "tamper_detection": true,
+  "secrets_in_backup_audit": false
+}

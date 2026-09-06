@@ -1,4 +1,5 @@
 mod db;
+mod deviceos_launch;
 mod error;
 mod keyring_store;
 mod offline;
@@ -7,6 +8,10 @@ mod offline_tests;
 mod pack;
 
 use chrono::Utc;
+use deviceos_launch::{
+    parse_cli_args, prepare_deviceos_launch, write_success_ack, DeviceOsLaunchContext,
+    LaunchPrepError, PreparedLaunch,
+};
 use error::{ui_code, AppError};
 use keyring_store::{resolve_db_key, KeySource};
 use offline::{CachedLease, OfflineState, SyncCounts, SyncOutboxItem};
@@ -20,6 +25,10 @@ use tauri::State;
 pub struct AppState {
     pub service: Mutex<PackService>,
     pub key_source: KeySource,
+}
+
+pub struct DeviceOsLaunchState {
+    pub intent: Mutex<Option<DeviceOsLaunchContext>>,
 }
 
 #[derive(Serialize)]
@@ -276,28 +285,113 @@ fn sync_offline_state(
     )
 }
 
+/// One-shot Device OS launch context. Returns `null` when absent or already consumed.
+#[tauri::command]
+fn get_initial_deviceos_launch_context(
+    state: State<'_, DeviceOsLaunchState>,
+) -> Result<Option<DeviceOsLaunchContext>, CommandError> {
+    let mut guard = state
+        .intent
+        .lock()
+        .map_err(|e| AppError::Db(e.to_string()))?;
+    match guard.as_mut() {
+        Some(intent) if !intent.consumed => {
+            intent.consumed = true;
+            Ok(Some(intent.clone()))
+        }
+        _ => Ok(None),
+    }
+}
+
+fn deviceos_prepare_or_exit() -> Option<PreparedLaunch> {
+    let cli = parse_cli_args(std::env::args());
+    match prepare_deviceos_launch(&cli) {
+        Ok(prepared) => prepared,
+        Err(LaunchPrepError::Nack { reason, .. }) => {
+            eprintln!("WAIKE Learning OS Device OS launch NACK: {reason}");
+            std::process::exit(1);
+        }
+        Err(LaunchPrepError::Fatal(reason)) => {
+            eprintln!("WAIKE Learning OS Device OS launch fatal: {reason}");
+            std::process::exit(1);
+        }
+    }
+}
+
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
+    let prepared = deviceos_prepare_or_exit();
+
     let (db_key, key_source) = resolve_db_key().unwrap_or_else(|err| {
         eprintln!("WAIKE Learning OS key error: {err}");
         eprintln!("Set WAIKE_DEV_DB_KEY to a 64-hex-char key for local development.");
+        if let Some(p) = &prepared {
+            let _ = deviceos_launch::write_nack(&p.ipc_dir, &p.request_id, "process_init_failure");
+        }
         std::process::exit(1);
     });
     let verify_key = load_verify_key().unwrap_or_else(|err| {
         eprintln!("WAIKE Learning OS verify key error: {err}");
+        if let Some(p) = &prepared {
+            let _ = deviceos_launch::write_nack(&p.ipc_dir, &p.request_id, "process_init_failure");
+        }
         std::process::exit(1);
     });
     let data_dir = default_data_dir();
     let service = PackService::new(data_dir, &verify_key, db_key).unwrap_or_else(|err| {
         eprintln!("WAIKE Learning OS storage error: {err}");
+        if let Some(p) = &prepared {
+            let _ = deviceos_launch::write_nack(&p.ipc_dir, &p.request_id, "process_init_failure");
+        }
         std::process::exit(1);
     });
+
+    // Headless CI path: same validation + backend init + ACK, skip webview.
+    if let Some(p) = &prepared {
+        if p.headless_ui {
+            if let Err(e) = write_success_ack(p) {
+                eprintln!("WAIKE Learning OS ACK write failed: {e}");
+                let _ = deviceos_launch::write_nack(&p.ipc_dir, &p.request_id, "ack_write_failed");
+                std::process::exit(1);
+            }
+            // Evidence for cross-repo E2E without needing invoke() into a GUI.
+            let evidence = serde_json::json!({
+                "protocol": deviceos_launch::PROTOCOL_ID,
+                "request_id": p.request_id,
+                "bundle_id": deviceos_launch::BUNDLE_ID,
+                "deep_link": p.intent.deep_link,
+                "context_keys": p.intent.context.keys().cloned().collect::<Vec<_>>(),
+                "app_version": p.intent.app_version,
+                "ci_headless_ui": true,
+            });
+            let _ = std::fs::write(
+                p.ipc_dir
+                    .join(format!("launch-context-{}.json", p.request_id)),
+                serde_json::to_vec_pretty(&evidence).unwrap_or_default(),
+            );
+            return;
+        }
+    }
+
+    let launch_intent = prepared.as_ref().map(|p| p.intent.clone());
+    let prepared_for_setup = prepared.clone();
 
     tauri::Builder::default()
         .plugin(tauri_plugin_dialog::init())
         .manage(AppState {
             service: Mutex::new(service),
             key_source,
+        })
+        .manage(DeviceOsLaunchState {
+            intent: Mutex::new(launch_intent),
+        })
+        .setup(move |_app| {
+            if let Some(p) = prepared_for_setup {
+                if let Err(e) = write_success_ack(&p) {
+                    eprintln!("WAIKE Learning OS ACK write failed: {e}");
+                }
+            }
+            Ok(())
         })
         .invoke_handler(tauri::generate_handler![
             get_key_source,
@@ -321,6 +415,7 @@ pub fn run() {
             sync_persist_ack,
             sync_get_counts,
             sync_offline_state,
+            get_initial_deviceos_launch_context,
         ])
         .run(tauri::generate_context!())
         .expect("error while running WAIKE Learning OS");

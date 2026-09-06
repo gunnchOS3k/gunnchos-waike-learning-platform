@@ -1,0 +1,18 @@
+{
+  "device_os_main_baseline": "4f02a48780d300a5d3a7758937b20e3bf9364d0d",
+  "device_os_accepted_main": "4f02a48780d300a5d3a7758937b20e3bf9364d0d",
+  "device_os_merged_pr": 132,
+  "device_os_merged_pr_tip": "5afc126ef1ce0fe917f78d1a3434c1de801535fb",
+  "device_os_branch": "main",
+  "device_os_pr": "https://github.com/gunnchOS3k/gunnchos-device-os/pull/132",
+  "pin_policy": "Gate C deviceos jobs checkout accepted Device OS origin/main after PR #132 merge",
+  "hashes": {
+    "gunnchos_device_os/launcher.py": "db737a260a652056be4432ab3242cf0146c62cb029ef9f7c497894cd7009d8a7",
+    "gunnchos_device_os/learning_os_launcher.py": "fe9b63f021c1c12bfe22e22e7472a371d95fa27e26fdc9a496b6ab36bdf2a9d1",
+    "gunnchos_device_os/permissions_manager.py": "1545dcf1d2fe267ad233bba33af051b66a5906682589788596fe9ddd3e699ca5",
+    "gunnchos_device_os/shell/continuity_coordinator.py": "f326e97ae779266e999bb48835fcc6f3dbef0d539bec1da8d68814c73f6d1f4f",
+    "gunnchos_device_os/updater.py": "0feb828677e3d40bee71de8bfb44984b95ffaa87127e4f40b6bd066c402dd2d2",
+    "gunnchos_device_os/app_registry.py": "31abd90a516d1d348a81c0b6c16fa6295fe6665d0c8469731b252bb7b68bde21"
+  },
+  "policy": "platform consumes; does not copy Device OS authority; thin_launcher_companion"
+}

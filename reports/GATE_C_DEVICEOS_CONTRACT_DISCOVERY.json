@@ -1,0 +1,84 @@
+{
+  "generated_utc": "2026-09-06T19:41:40Z",
+  "device_os_main": "4f02a48780d300a5d3a7758937b20e3bf9364d0d",
+  "tested_against": "accepted_device_os_main",
+  "contracts": {
+    "app_registry": {
+      "path": "gunnchos_device_os/app_registry.py",
+      "waike_app_id": "waike_offline",
+      "runtime_alias": "waike"
+    },
+    "app_runtime": {
+      "path": "gunnchos_device_os/app_runtime.py",
+      "waike_entry": "apps/waike_learning/index.html",
+      "permissions": [
+        "files_read",
+        "network",
+        "identity_read"
+      ]
+    },
+    "launcher": {
+      "path": "gunnchos_device_os/launcher.py",
+      "policy_gated": true
+    },
+    "permissions": {
+      "path": "gunnchos_device_os/permissions_manager.py",
+      "model": "role_allowlist_least_privilege",
+      "roles": [
+        "student",
+        "educator",
+        "guardian",
+        "admin",
+        "child",
+        "minor",
+        "guest",
+        "ai_local",
+        "ai_cloud"
+      ]
+    },
+    "continuity": {
+      "path": "gunnchos_device_os/shell/continuity_coordinator.py",
+      "claim": "Local-first session checkpoint; no secrets/keys in handoff payloads"
+    },
+    "update": {
+      "path": "gunnchos_device_os/updater.py",
+      "schema": "shared_contracts/update_contract.schema.json",
+      "note": "Digital mock signed update model; not production signing"
+    },
+    "capability_descriptors": {
+      "path": "config/dock/capability_descriptors.json"
+    },
+    "device_profile_schema": {
+      "path": "shared_contracts/hardware_os_device_profile.schema.json"
+    },
+    "storage_path_contract": "local_json under continuity storage_root; platform must not invent alternate Device OS authority"
+  },
+  "platform_adapter_policy": {
+    "do_not_copy_device_os_authority": true,
+    "consume_via": "services/hub/app/modules/deviceos_bridge.py + contracts/deviceos/",
+    "deep_links": "platform validates session before any deep-link target; never bypass auth"
+  },
+  "device_quartet_digital_profiles": [
+    {
+      "id": "student_14_5",
+      "name": "Student 14.5\"",
+      "role": "full-session desk learning"
+    },
+    {
+      "id": "handheld_hybrid",
+      "name": "Handheld Hybrid",
+      "role": "mobile/docked continuity"
+    },
+    {
+      "id": "ds_xl_coder",
+      "name": "DS-XL Coder",
+      "role": "creation/build/test/deploy"
+    },
+    {
+      "id": "edge_io_wearables",
+      "name": "Edge IO Wearables",
+      "role": "low-latency sensing/haptics/HUD companion"
+    }
+  ],
+  "physical_validation": "EXTERNAL \u2014 not claimed by Gate C"
+}

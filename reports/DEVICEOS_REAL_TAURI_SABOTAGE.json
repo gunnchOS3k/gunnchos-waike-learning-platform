@@ -1,0 +1,119 @@
+{
+  "cases": [
+    {
+      "name": "missing_request_file",
+      "launched": false,
+      "reason": "missing_request_file",
+      "ack": {
+        "message_type": "nack",
+        "protocol": "gunnchos.learning_os.ipc.v1",
+        "reason": "missing_request_file",
+        "request_id": "6fe26987-9bc6-4540-9e26-4bc5202170e2"
+      }
+    },
+    {
+      "name": "malformed_json",
+      "launched": false,
+      "reason": "bad_payload",
+      "ack": {
+        "message_type": "nack",
+        "protocol": "gunnchos.learning_os.ipc.v1",
+        "reason": "bad_payload",
+        "request_id": "1c0f6044-a7d5-4d91-a38c-0d26b7edbd8e"
+      }
+    },
+    {
+      "name": "wrong_protocol",
+      "launched": false,
+      "reason": "wrong_protocol_version",
+      "ack": {
+        "message_type": "nack",
+        "protocol": "gunnchos.learning_os.ipc.v1",
+        "reason": "wrong_protocol_version",
+        "request_id": "1c657c82-7c35-452a-b647-d8a753e3a0c7"
+      }
+    },
+    {
+      "name": "wrong_bundle_id",
+      "launched": false,
+      "reason": "wrong_bundle_id",
+      "ack": {
+        "message_type": "nack",
+        "protocol": "gunnchos.learning_os.ipc.v1",
+        "reason": "wrong_bundle_id",
+        "request_id": "8a405a08-f13d-4e17-9e81-696536273edb"
+      }
+    },
+    {
+      "name": "wrong_request_id",
+      "launched": false,
+      "reason": "request_id_mismatch",
+      "ack": {
+        "message_type": "nack",
+        "protocol": "gunnchos.learning_os.ipc.v1",
+        "reason": "request_id_mismatch",
+        "request_id": "d5b8c638-ec3f-4d4e-9e3c-df0c02e8909f"
+      }
+    },
+    {
+      "name": "deep_link_traversal",
+      "launched": false,
+      "reason": "path_traversal_rejected",
+      "ack": {
+        "message_type": "nack",
+        "protocol": "gunnchos.learning_os.ipc.v1",
+        "reason": "path_traversal_rejected",
+        "request_id": "877ec9b5-5204-43f7-980e-40729552cb26"
+      }
+    },
+    {
+      "name": "encoded_traversal",
+      "launched": false,
+      "reason": "path_traversal_rejected",
+      "ack": {
+        "message_type": "nack",
+        "protocol": "gunnchos.learning_os.ipc.v1",
+        "reason": "path_traversal_rejected",
+        "request_id": "6ae41b01-25ba-464e-aea7-0f3fd0f62fc8"
+      }
+    },
+    {
+      "name": "unknown_context_field",
+      "launched": false,
+      "reason": "unknown_context_field:evil_field",
+      "ack": {
+        "message_type": "nack",
+        "protocol": "gunnchos.learning_os.ipc.v1",
+        "reason": "unknown_context_field:evil_field",
+        "request_id": "d82810ab-7b86-46c6-ae6f-7c01285ab799"
+      }
+    },
+    {
+      "name": "secret_field",
+      "launched": false,
+      "reason": "secret_context_field:password",
+      "ack": {
+        "message_type": "nack",
+        "protocol": "gunnchos.learning_os.ipc.v1",
+        "reason": "secret_context_field:password",
+        "request_id": "dfa7462e-bbc9-4765-85bf-94e0c11402e1"
+      }
+    },
+    {
+      "name": "cli_request_deep_link_mismatch",
+      "launched": false,
+      "reason": "deep_link_mismatch",
+      "ack": {
+        "message_type": "nack",
+        "protocol": "gunnchos.learning_os.ipc.v1",
+        "reason": "deep_link_mismatch",
+        "request_id": "57d00099-2f14-4926-8184-6ae3a6037423"
+      }
+    },
+    {
+      "name": "device_os_timeout",
+      "launched": false,
+      "reason": "timeout"
+    }
+  ]
+}

@@ -160,6 +160,48 @@ export interface HubClient {
   instructorActivities: InstructorActivityClient;
   /** Gate B gunnchAI — learner/instructor assist + policy. */
   ai: AiClient;
+  /** Gate C interop + hardening (admin / staff). */
+  createBackup(): Promise<{ backup_id: string; path: string; content_sha256: string; manifest_sha256?: string }>;
+  restoreBackup(path: string): Promise<{ status: string; backup_id?: string }>;
+  getPrivacyMatrix(): Promise<{
+    ferpa_claim: boolean;
+    controls: {
+      youth_mode: boolean;
+      data_minimization: boolean;
+      export_allowed: boolean;
+      retention_days: number;
+    };
+  }>;
+  upsertPrivacy(body: {
+    youth_mode: boolean;
+    data_minimization: boolean;
+    export_allowed: boolean;
+    retention_days: number;
+  }): Promise<{
+    ferpa_claim: boolean;
+    controls: {
+      youth_mode: boolean;
+      data_minimization: boolean;
+      export_allowed: boolean;
+      retention_days: number;
+    };
+  }>;
+  diagnostics(): Promise<{
+    health: string;
+    schema_migrations: string[];
+    subsystems?: Array<{ name: string; status: string }>;
+  }>;
+  onerosterMatrix(): Promise<{ claim: string; supported?: Record<string, boolean> }>;
+  qtiMatrix(): Promise<{ claim: string; xmlns?: string; supported_item_types?: string[] }>;
+  ltiMatrix(): Promise<{ claim: string }>;
+  recordPackageLifecycle(body: {
+    track_id: string;
+    package_version: string;
+    action: string;
+    detail?: Record<string, unknown>;
+  }): Promise<{ event_id: string; action: string; track_id: string }>;
+  onerosterImportStatus(): Promise<{ imports: Array<Record<string, unknown>> }>;
+  deviceOsManifest(): Promise<Record<string, unknown>>;
 }
 
 function authHeaders(token: string | null, actor?: HubActor): HeadersInit {
@@ -278,5 +320,19 @@ export function createHttpHubClient(
     activities: createActivityClient(req),
     instructorActivities: createInstructorActivityClient(req),
     ai: createAiClient(req),
+    createBackup: () => req("/api/v1/admin/backup", { method: "POST" }),
+    restoreBackup: (path) =>
+      req("/api/v1/admin/restore", { method: "POST", body: JSON.stringify({ path }) }),
+    getPrivacyMatrix: () => req("/api/v1/privacy/matrix"),
+    upsertPrivacy: (body) =>
+      req("/api/v1/privacy/controls", { method: "PUT", body: JSON.stringify(body) }),
+    diagnostics: () => req("/api/v1/diagnostics"),
+    onerosterMatrix: () => req("/api/v1/interop/oneroster/matrix"),
+    qtiMatrix: () => req("/api/v1/interop/qti/matrix"),
+    ltiMatrix: () => req("/api/v1/interop/lti/matrix"),
+    recordPackageLifecycle: (body) =>
+      req("/api/v1/packages/lifecycle", { method: "POST", body: JSON.stringify(body) }),
+    onerosterImportStatus: () => req("/api/v1/interop/oneroster/imports"),
+    deviceOsManifest: () => req("/api/v1/deviceos/manifest"),
   };
 }

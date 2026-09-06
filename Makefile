@@ -1,4 +1,4 @@
-.PHONY: bootstrap lint test build verify-pr1 verify-pr2 verify-pr3 verify-gate-a verify-gate-b compile-dc compile-18 rust-test frontend-test hub-test python-test assessment-test pr3-test gate-a-test gate-b-test gate-b-ai-test clean
+.PHONY: bootstrap lint test build verify-pr1 verify-pr2 verify-pr3 verify-gate-a verify-gate-b verify-gate-c gate-c-test compile-dc compile-18 rust-test frontend-test hub-test python-test assessment-test pr3-test gate-a-test gate-b-test gate-b-ai-test clean
 
 export PATH := $(HOME)/.cargo/bin:$(PATH)
 export SOURCE_DATE_EPOCH ?= 1700000000
@@ -14,7 +14,7 @@ bootstrap:
 	@command -v uv >/dev/null || (echo "uv required" && exit 1)
 	@test -d .venv || uv venv .venv
 	uv pip install -e tools/course_compiler --python $(PYTHON)
-	uv pip install pytest httpx jsonschema pyyaml cryptography PyNaCl argon2-cffi fastapi uvicorn pydantic --python $(PYTHON)
+	uv pip install pytest httpx jsonschema pyyaml cryptography PyNaCl argon2-cffi fastapi uvicorn pydantic PyJWT --python $(PYTHON)
 	cd $(CLIENT) && (command -v pnpm >/dev/null && corepack enable && corepack prepare pnpm@9.15.9 --activate && pnpm install || npm install)
 	@mkdir -p reports
 	@echo "Bootstrap complete. WAIKE_DEV_DB_KEY is set for local/CI encrypted DB."
@@ -130,3 +130,12 @@ verify-gate-a: bootstrap
 
 clean:
 	rm -rf pack_out $(CLIENT)/dist $(TAURI)/target services/hub/data
+
+
+gate-c-test:
+	WAIKE_ROOT=$(WAIKE_ROOT) DEVICE_OS_ROOT=$(CURDIR)/../gunnchos-device-os PYTHONPATH=services/hub $(PYTHON) -m pytest -q tests/gate_c
+
+verify-gate-c:
+	@mkdir -p reports
+	@WAIKE_ROOT=$(WAIKE_ROOT) DEVICE_OS_ROOT=$${DEVICE_OS_ROOT:-$(CURDIR)/../gunnchos-device-os} GUNNCHAI_ROOT=$${GUNNCHAI_ROOT:-$(CURDIR)/../gunnchAI3k} WAIKE_ALLOW_FAKE_AI=$${WAIKE_ALLOW_FAKE_AI:-1} $(PYTHON) scripts/verify_gate_c.py
+	@echo "verify-gate-c: see reports/GATE_C_VERIFICATION.md"
