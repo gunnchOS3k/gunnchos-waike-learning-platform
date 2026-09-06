@@ -29,7 +29,7 @@ DIGITAL_RC_PACKAGE: dict[str, str | None] = {
     "IT_SUPPORT_HARDWARE": "GENERAL_IT",
     "NETWORKING_INFRA": "COMPUTER_NETWORKING",
     "CYBER_SOC": "CYBERSECURITY",
-    "SEVEN_GC_APPRENTICESHIP": None,  # apprenticeship inventory, not digital_rc
+    # SEVEN_GC_APPRENTICESHIP uses folder name == track_id (default); omit override.
 }
 
 PACKAGE_VERSION = "1.0.0"

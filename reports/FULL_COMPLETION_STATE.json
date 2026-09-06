@@ -1,6 +1,6 @@
 {
   "platform_main_sha": "43e770772b97a0d6900893ea7428df91f2acdb93",
-  "waike_main_sha": "e97e74fc9bfb44b1cdc26b272dc4848264f15fe0",
+  "waike_main_sha": "fbf7685bc5686201ccaa0128ee83346d59b3d584",
   "device_os_main_sha": "28562a8456207540c205a1c8a6434a491b0a4771",
   "gunnchai_repo": "https://github.com/gunnchOS3k/gunnchAI3k",
   "gunnchai_discovered_sha": "4b4f411710e8cdb8102a7e11502f8497f68156b1",
@@ -8,16 +8,18 @@
   "pr3_merged": true,
   "gate_a_merged": true,
   "gate_a_merge_commit": "43e770772b97a0d6900893ea7428df91f2acdb93",
+  "waike_seven_gc_digital_pr": 57,
+  "waike_seven_gc_digital_merge_commit": "fbf7685bc5686201ccaa0128ee83346d59b3d584",
   "current_wave": "GATE_B_AI_18_TRACKS",
   "current_branch": "cursor/waike-learning-gate-b-ai-18-tracks",
   "current_pr": 5,
-  "status": "GATE_B_NOT_READY",
+  "status": "GATE_B_CLAIMS_EARNED_AWAITING_REMOTE_CI_AND_OWNER_MERGE",
   "waves": {
     "PR1_FOUNDATION": "MERGED",
     "PR2_ASSESSMENT_LIFECYCLE": "MERGED",
     "PR3_IDENTITY_INSTRUCTOR": "MERGED",
     "GATE_A_OFFLINE_ACTIVITIES": "MERGED",
-    "GATE_B_AI_18_TRACKS": "SURGICAL_CLOSURE_AWAITING_REMOTE_CI",
+    "GATE_B_AI_18_TRACKS": "CLAIMS_EARNED_LOCAL_VERIFY_AWAITING_REMOTE_CI",
     "GATE_C_INTEROP_DEVICE_HARDENING": "PENDING",
     "GATE_D_FULL_ACCEPTANCE": "PENDING"
   },
@@ -25,27 +27,26 @@
     "DIGITALLY_IMPLEMENTED_AND_AUTOMATICALLY_TESTED_FOR_PR1_SCOPE",
     "ASSESSMENT_LIFECYCLE_DIGITALLY_COMPLETE",
     "MULTI_USER_LMS_ALPHA_DIGITALLY_COMPLETE",
-    "OFFLINE_AND_ACTIVITY_ENGINE_DIGITALLY_COMPLETE"
-  ],
-  "claims_pending_remote_ci": [
-    "GUNNCHAI_PLATFORM_INTEGRATION_DIGITALLY_COMPLETE"
-  ],
-  "claims_blocked_by_authentic_source": [
+    "OFFLINE_AND_ACTIVITY_ENGINE_DIGITALLY_COMPLETE",
+    "GUNNCHAI_PLATFORM_INTEGRATION_DIGITALLY_COMPLETE",
     "ALL_18_WAIKE_TRACKS_DIGITALLY_AVAILABLE",
     "18_TRACK_PLATFORM_DELIVERY_DIGITALLY_COMPLETE"
   ],
-  "digital_blockers": [
-    "SEVEN_GC_SOURCE_BLOCKS_18_OF_18"
-  ],
-  "owner_action": "GATE_B_NOT_READY",
-  "owner_action_reason": "ALL_18 / 18_TRACK_PLATFORM_DELIVERY claims cannot be earned while SEVEN_GC remains research-overlay / shell-only without inventing COURSE_DIGITAL_RC. Platform blockers B1–B10 closed in code; remote Gate B CI must still go green for GUNNCHAI claim.",
+  "claims_pending_remote_ci": [],
+  "claims_blocked_by_authentic_source": [],
+  "digital_blockers": [],
+  "owner_action": "MERGE_GATE_B_THEN_RERUN_ACCELERATED_MASTER_PROMPT",
+  "owner_action_reason": "Local verify-gate-b earned all three Gate B claims after WAIKE PR #57 merge + Platform pin/rebuild. Do not merge until remote Gate B CI is green on the pushed head. Do not start Gate C.",
   "next_gate_after_honest_gate_b": "Gate C — interoperability + Device OS + hardening (do not start)",
-  "last_verified_utc": "2026-09-06T17:50:00Z",
-  "evidence_note": "Surgical closure: no fake AI default; canonical gunnchAI CI checkout; server grounding; structural isolation; SEVEN_GC BLOCKED; pack-sourced per-track E2E; no PENDING_SUITE; required skips 0; Gate A/PR3 workflow_dispatch; full-prior-regression on Gate B. No WAIKE PR (invention forbidden).",
-  "waike_prerequisite_pr": null,
+  "last_verified_utc": "2026-09-06T19:15:00Z",
+  "evidence_note": "Re-pin to WAIKE main fbf7685 (PR #57). SEVEN_GC COURSE_DIGITAL_RC compiles/imports/tests PASS (10/10/10/10). Matrix 18/18 PASS; acceptance e2e 18/18; GATE_B_REQUIRED_TESTS_SKIPPED=0; no PENDING_SUITE; prior-gate regression 204 passed; gate_b 201 passed. Preserved: no fake AI default; canonical gunnchAI pin; server grounding; pack-sourced activities. WAIKE artifacts/taxonomy export on merged main was stale (program_shell_only); Platform regenerated export from v1 registry for consumers; matrix honesty uses activity counts not stale export.",
+  "waike_prerequisite_pr": "https://github.com/gunnchOS3k/waike-research-ops/pull/57",
   "pr_url": "https://github.com/gunnchOS3k/gunnchos-waike-learning-platform/pull/5",
   "verified_implementation_sha": null,
   "remote_ci_run_id": null,
   "remote_ci_conclusion": null,
-  "full_18_course_digital_rc": false
+  "full_18_course_digital_rc": true,
+  "local_verify_gate_b_status": "AUTOMATED_PIPELINE_PASS",
+  "local_gate_b_pytest": {"passed": 201, "failed": 0, "skipped": 0},
+  "local_prior_regression_pytest": {"passed": 204, "failed": 0, "skipped": 0}
 }

@@ -29,7 +29,8 @@ def test_pin_allows_all_18():
     pin = load_pin()
     allowed = set(pin["module_ids_allowed"])
     assert allowed == set(CANONICAL_TRACK_IDS)
-    assert pin["pinned_commit"] == "e97e74fc9bfb44b1cdc26b272dc4848264f15fe0"
+    assert pin["pinned_commit"] == "fbf7685bc5686201ccaa0128ee83346d59b3d584"
+    assert pin.get("seven_gc_digital_merge_commit") == pin["pinned_commit"]
 
 
 def test_aliases_map_package_ids():

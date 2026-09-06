@@ -1,15 +1,15 @@
 # DATA_DASHBOARDS Import Report
 
 - module_id: `DATA_DASHBOARDS`
-- declared_pinned_commit: `e97e74fc9bfb44b1cdc26b272dc4848264f15fe0`
-- observed_source_commit: `e97e74fc9bfb44b1cdc26b272dc4848264f15fe0`
+- declared_pinned_commit: `fbf7685bc5686201ccaa0128ee83346d59b3d584`
+- observed_source_commit: `fbf7685bc5686201ccaa0128ee83346d59b3d584`
 - provenance_match: `true`
 - package_version: `1.0.0`
 - learner files: **77**
 - instructor files: **14**
-- learner zip sha256: `71aff3355ffd6db2b6041d249d4102be22bbb8eee78047d9fa9acc149c094a1a`
-- instructor plaintext sha256: `775db43ff42386d8dc765c7062cedab0eff911a96637e03879131349fb383b4c`
-- instructor ciphertext sha256 (non-reproducible): `8d825a38067076c670858048b5c10c0ea340f88a0c9b040dfb5cfe1010cc21ea`
+- learner zip sha256: `158b689de08e7964862cea436205cb3df25133e07b163ab3aaf6f6dfba08167a`
+- instructor plaintext sha256: `d1b2c0113a29edc6186d8e2352388cf5842b6c125209c66cf19c4e7ec3da562e`
+- instructor ciphertext sha256 (non-reproducible): `e6613113321eeb6d7337d2a0942f0db979ea5c602e03a3822b129a77d2ead3d8`
 - lessons indexed: 10
 - activity inventory: `{"assignments": 10, "discussions": 0, "groups": 1, "labs": 10, "lessons": 10, "outcomes": 4, "portfolio": 2, "quizzes": 10, "rubrics": 8}`
 

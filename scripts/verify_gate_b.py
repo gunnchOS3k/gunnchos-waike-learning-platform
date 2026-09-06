@@ -80,7 +80,7 @@ def main() -> int:
                 "Gate B CI required jobs SUCCESS including verify-gate-b",
                 "AI policy + context isolation + prompt injection + grade safety PASS",
                 "adversarial AI sabotage suite PASS",
-                "ALL_18 claims additionally require SEVEN_GC digital_rc (not shell-only)",
+                "ALL_18 claims require all 18 matrix rows PASS with SEVEN_GC COURSE_DIGITAL_RC (not shell-only)",
             ],
             "does_not_claim": [
                 "human/field validation",
@@ -89,7 +89,7 @@ def main() -> int:
                 "local GGUF/llama inference availability",
                 "Gate C interop / Device OS",
                 "pedagogical learning effectiveness",
-                "ALL_18_WAIKE_TRACKS_DIGITALLY_AVAILABLE while SEVEN_GC is research overlay",
+                "EXTERNAL physical/mentor/field gates for SEVEN_GC apprenticeship",
             ],
         },
     }
@@ -160,6 +160,7 @@ def main() -> int:
     all_pass = False
     seven_gc_blocks = False
     digital_17_pass = False
+    seven_gc_row = None
     if matrix_path.is_file():
         matrix = json.loads(matrix_path.read_text(encoding="utf-8"))
         rows = matrix.get("rows") or []
@@ -171,34 +172,53 @@ def main() -> int:
             matrix_ok = tracks == set(CANONICAL_TRACK_IDS) and len(rows) == 18
             all_pass = matrix_ok and all(r.get("final_status") == "PASS" for r in rows)
             seven_gc_blocks = _seven_gc_blocks_18(matrix)
+            seven_gc_row = next(
+                (r for r in rows if r.get("track") == "SEVEN_GC_APPRENTICESHIP"), None
+            )
             other_pass = all(
                 r.get("final_status") == "PASS"
                 for r in rows
                 if r.get("track") != "SEVEN_GC_APPRENTICESHIP"
             )
             digital_17_pass = matrix_ok and seven_gc_blocks and other_pass
+            seven_gc_digital = bool(
+                seven_gc_row
+                and seven_gc_row.get("final_status") == "PASS"
+                and int(seven_gc_row.get("lessons") or 0) > 0
+                and int(seven_gc_row.get("assignments") or 0) > 0
+                and int(seven_gc_row.get("quizzes") or 0) > 0
+                and int(seven_gc_row.get("labs") or 0) > 0
+            )
             results["matrix_summary"] = {
                 "track_count": len(rows),
                 "pass_count": sum(1 for r in rows if r.get("final_status") == "PASS"),
                 "blocked_count": sum(1 for r in rows if r.get("final_status") == "BLOCKED"),
                 "source_sha": matrix.get("source_sha"),
                 "SEVEN_GC_SOURCE_BLOCKS_18_OF_18": seven_gc_blocks,
-                "full_18_course_digital_rc": False,
+                "full_18_course_digital_rc": bool(all_pass and seven_gc_digital),
+                "SEVEN_GC_DIGITAL_RC_PRESENT": seven_gc_digital,
             }
         except Exception as exc:  # noqa: BLE001
             results["blocked"].append(f"matrix_import_error:{exc}")
+            seven_gc_digital = False
+    else:
+        seven_gc_digital = False
     results["checks"]["matrix_18_complete"] = matrix_ok
     results["checks"]["matrix_all_tracks_pass"] = all_pass
     results["checks"]["matrix_digital_17_pass_seven_gc_blocked"] = digital_17_pass
     results["checks"]["SEVEN_GC_SOURCE_BLOCKS_18_OF_18"] = seven_gc_blocks
+    results["checks"]["SEVEN_GC_DIGITAL_RC_PRESENT"] = seven_gc_digital
+    results["checks"]["matrix_honest_18_or_legacy_17"] = bool(
+        (all_pass and seven_gc_digital and not seven_gc_blocks) or digital_17_pass
+    )
     if not matrix_ok:
         results["blocked"].append("matrix_18_incomplete_or_missing")
-    elif all_pass:
+    elif all_pass and not seven_gc_digital:
         # Dishonest: SEVEN_GC shell must not be PASS for all-18 digital delivery.
         results["blocked"].append("matrix_marks_all_18_pass_including_SEVEN_GC_shell")
-    elif not digital_17_pass:
-        results["blocked"].append("matrix_not_honest_17_pass_plus_SEVEN_GC_blocked")
-    else:
+    elif not results["checks"]["matrix_honest_18_or_legacy_17"]:
+        results["blocked"].append("matrix_not_honest_18_pass_or_legacy_17_blocked")
+    elif seven_gc_blocks:
         results["source_blockers"].append("SEVEN_GC_SOURCE_BLOCKS_18_OF_18")
 
     acceptance = REPORTS / "GATE_B_TRACK_ACCEPTANCE.json"
@@ -214,8 +234,14 @@ def main() -> int:
         if "PENDING_SUITE" in blob:
             acceptance_ok = False
             results["blocked"].append("track_acceptance_contains_PENDING_SUITE")
-        if summary.get("ALL_18_WAIKE_TRACKS_DIGITALLY_AVAILABLE") is True:
+        if summary.get("ALL_18_WAIKE_TRACKS_DIGITALLY_AVAILABLE") is True and (
+            seven_gc_blocks or not all_pass or not seven_gc_digital
+        ):
             results["blocked"].append("acceptance_falsely_claims_ALL_18")
+        if summary.get("ALL_18_WAIKE_TRACKS_DIGITALLY_AVAILABLE") is False and (
+            all_pass and seven_gc_digital and not seven_gc_blocks
+        ):
+            results["blocked"].append("acceptance_withholds_earned_ALL_18")
     results["checks"]["track_acceptance"] = acceptance_ok
     if not acceptance_ok:
         results["blocked"].append("track_acceptance_missing_or_incomplete")
@@ -352,7 +378,7 @@ def main() -> int:
         and bool(results["checks"].get("gate_b_yml_no_continue_on_error"))
         and bool(results["checks"].get("gate_b_yml_no_or_true"))
         and bool(results["checks"].get("matrix_18_complete"))
-        and bool(results["checks"].get("matrix_digital_17_pass_seven_gc_blocked"))
+        and bool(results["checks"].get("matrix_honest_18_or_legacy_17"))
         and bool(results["checks"].get("track_acceptance"))
         and bool(results["checks"].get("GATE_B_REQUIRED_TESTS_SKIPPED_eq_0"))
         and bool(results["checks"].get("DEFAULT_RUNTIME_HAS_NO_FAKE_AI"))
@@ -377,10 +403,10 @@ def main() -> int:
     else:
         claims_blocked.append(CLAIM_GUNNCHAI)
 
-    # NEVER auto-earn ALL_18 / 18_TRACK when SEVEN_GC is blocked by authentic source.
-    if seven_gc_blocks or not all_pass:
+    # ALL_18 / 18_TRACK only when SEVEN_GC has real COURSE_DIGITAL_RC and all 18 PASS.
+    if seven_gc_blocks or not all_pass or not seven_gc_digital:
         claims_blocked.extend(list(ALL_18_CLAIMS))
-    elif platform_ok and all_pass:
+    elif platform_ok and all_pass and seven_gc_digital:
         claims.extend(list(ALL_18_CLAIMS))
     else:
         claims_blocked.extend(list(ALL_18_CLAIMS))
@@ -423,13 +449,12 @@ def main() -> int:
             "",
             "## Claim boundary",
             "",
-            "Earn `GUNNCHAI_PLATFORM_INTEGRATION_DIGITALLY_COMPLETE` only when AI gates pass. "
-            "Do **not** claim `ALL_18_WAIKE_TRACKS_DIGITALLY_AVAILABLE` or "
-            "`18_TRACK_PLATFORM_DELIVERY_DIGITALLY_COMPLETE` while SEVEN_GC remains a "
-            "research overlay / HUMAN_PENDING without COURSE_DIGITAL_RC "
-            "(`SEVEN_GC_SOURCE_BLOCKS_18_OF_18`). "
+            "Earn `GUNNCHAI_PLATFORM_INTEGRATION_DIGITALLY_COMPLETE` when AI gates pass. "
+            "Earn `ALL_18_WAIKE_TRACKS_DIGITALLY_AVAILABLE` and "
+            "`18_TRACK_PLATFORM_DELIVERY_DIGITALLY_COMPLETE` only when all 18 matrix rows "
+            "PASS with SEVEN_GC COURSE_DIGITAL_RC present (not shell-only). "
             "Does not claim human/field/a11y/security certification, fabricated local-model "
-            "inference, or Gate C.",
+            "inference, EXTERNAL apprenticeship mentor/field gates, or Gate C.",
             "",
         ]
     )

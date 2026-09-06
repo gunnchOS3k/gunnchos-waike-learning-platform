@@ -1,15 +1,15 @@
 # GUNNCHOS_PRODUCT_LAB Import Report
 
 - module_id: `GUNNCHOS_PRODUCT_LAB`
-- declared_pinned_commit: `e97e74fc9bfb44b1cdc26b272dc4848264f15fe0`
-- observed_source_commit: `e97e74fc9bfb44b1cdc26b272dc4848264f15fe0`
+- declared_pinned_commit: `fbf7685bc5686201ccaa0128ee83346d59b3d584`
+- observed_source_commit: `fbf7685bc5686201ccaa0128ee83346d59b3d584`
 - provenance_match: `true`
 - package_version: `1.0.0`
 - learner files: **76**
 - instructor files: **12**
-- learner zip sha256: `9b9ed80164b1d31d8195aae2f2df3f46eef138a7aeb1713d487bc321fba55cd4`
-- instructor plaintext sha256: `31c062c02831070fd6742b7c642691a2f5491768d373fccffb37fd5874a94477`
-- instructor ciphertext sha256 (non-reproducible): `d1a4fe0eab87cd5e802d457c2e4aef5e9c1ff02cd69fba723504de4a46dd75f3`
+- learner zip sha256: `38c2a6833a4405cd7847da6651708344999ca4af902fed518534bd9589e3fecb`
+- instructor plaintext sha256: `dc176e9ed5d68ebbd19864150523d611815066963cdaae63a0261c873c645e0c`
+- instructor ciphertext sha256 (non-reproducible): `62cae4a19b606dfb44ef30b6e692c092940cb653b609cf5f06244f36316d3b37`
 - lessons indexed: 10
 - activity inventory: `{"assignments": 10, "discussions": 0, "groups": 1, "labs": 10, "lessons": 10, "outcomes": 4, "portfolio": 2, "quizzes": 10, "rubrics": 8}`
 

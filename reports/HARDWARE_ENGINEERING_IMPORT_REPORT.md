@@ -1,15 +1,15 @@
 # HARDWARE_ENGINEERING Import Report
 
 - module_id: `HARDWARE_ENGINEERING`
-- declared_pinned_commit: `e97e74fc9bfb44b1cdc26b272dc4848264f15fe0`
-- observed_source_commit: `e97e74fc9bfb44b1cdc26b272dc4848264f15fe0`
+- declared_pinned_commit: `fbf7685bc5686201ccaa0128ee83346d59b3d584`
+- observed_source_commit: `fbf7685bc5686201ccaa0128ee83346d59b3d584`
 - provenance_match: `true`
 - package_version: `1.0.0`
 - learner files: **76**
 - instructor files: **12**
-- learner zip sha256: `28c9fbfcd5aa6a02ceb9b26a158367fedc43891d1ee7c68e891806c2301635b6`
-- instructor plaintext sha256: `ca7248a6ae9306201d9bfeb35f11f52fb8a45444e2ba0048bce9bf70c7df37d3`
-- instructor ciphertext sha256 (non-reproducible): `4efc5a7ec397ca6cbdf8e7807504993c5dd0a0d27aea042b755ad46911cf1908`
+- learner zip sha256: `c0aa03df01657b9d9cca7ed71464bcf0a99957df6c43755f37c0ce56639b6c2e`
+- instructor plaintext sha256: `daf2427d2219989fa52c8003f0a5ab3f8a8d96220c9ddc4675d1538a371cb468`
+- instructor ciphertext sha256 (non-reproducible): `02fd4bfcbbb5b812c16dbf0086ac7c6211627c4ff3b8471145754bd8bc46e3c1`
 - lessons indexed: 10
 - activity inventory: `{"assignments": 10, "discussions": 0, "groups": 1, "labs": 10, "lessons": 10, "outcomes": 4, "portfolio": 2, "quizzes": 10, "rubrics": 8}`
 

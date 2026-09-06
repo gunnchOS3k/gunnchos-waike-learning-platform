@@ -1,15 +1,15 @@
 # EMBEDDED_PROTOTYPING Import Report
 
 - module_id: `EMBEDDED_PROTOTYPING`
-- declared_pinned_commit: `e97e74fc9bfb44b1cdc26b272dc4848264f15fe0`
-- observed_source_commit: `e97e74fc9bfb44b1cdc26b272dc4848264f15fe0`
+- declared_pinned_commit: `fbf7685bc5686201ccaa0128ee83346d59b3d584`
+- observed_source_commit: `fbf7685bc5686201ccaa0128ee83346d59b3d584`
 - provenance_match: `true`
 - package_version: `1.0.0`
 - learner files: **76**
 - instructor files: **12**
-- learner zip sha256: `9e4e7a8e89b1b7a51b20f7f9c1f7869f68665c4994e065fd5299d2cf7b297b1e`
-- instructor plaintext sha256: `9a61fb2614a0cf336671ec9391d7d3706458f56f4766189fec8e0da3f48ed8b1`
-- instructor ciphertext sha256 (non-reproducible): `ff359f63bdb046e38228be35dd05d8e5784a9a14529d6adb9ab5a5250ba23aef`
+- learner zip sha256: `a1adbf1a2e55092eb10ef250511762d7a74f4a28020ed424a6f3d8b5d8b26d3d`
+- instructor plaintext sha256: `bb84136cbe9d18800f9442dc601240b2935b3c115fa5ceca441192555d95d608`
+- instructor ciphertext sha256 (non-reproducible): `31b62afa7ee5b8a61cc4216049d7ae587dc31fb713e3efe798da72680c56cf05`
 - lessons indexed: 10
 - activity inventory: `{"assignments": 10, "discussions": 0, "groups": 1, "labs": 10, "lessons": 10, "outcomes": 4, "portfolio": 2, "quizzes": 10, "rubrics": 8}`
 

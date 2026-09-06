@@ -1,13 +1,10 @@
 {
-  "generated_utc": "2026-09-06T17:50:00Z",
-  "passed": 202,
+  "passed": 201,
   "failed": 0,
   "skipped": 0,
+  "errors": 0,
+  "tests": 201,
   "ai_ok": true,
-  "suites": {
-    "ai_and_runtime_import": {"passed": 57, "skipped": 0},
-    "e2e_compiler_coverage": {"passed": 145, "skipped": 0}
-  },
-  "GATE_B_REQUIRED_TESTS_SKIPPED": 0,
-  "note": "Local surgical-closure evidence prior to push; remote CI is authoritative."
+  "source": "reports/GATE_B_PYTEST_JUNIT.xml",
+  "note": "Full tests/gate_b local run after SEVEN_GC digital pin"
 }

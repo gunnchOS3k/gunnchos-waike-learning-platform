@@ -1,15 +1,15 @@
 # CLOUD_DEVOPS Import Report
 
 - module_id: `CLOUD_DEVOPS`
-- declared_pinned_commit: `e97e74fc9bfb44b1cdc26b272dc4848264f15fe0`
-- observed_source_commit: `e97e74fc9bfb44b1cdc26b272dc4848264f15fe0`
+- declared_pinned_commit: `fbf7685bc5686201ccaa0128ee83346d59b3d584`
+- observed_source_commit: `fbf7685bc5686201ccaa0128ee83346d59b3d584`
 - provenance_match: `true`
 - package_version: `1.0.0`
 - learner files: **76**
 - instructor files: **12**
-- learner zip sha256: `880065f761fc3928630ba00e6897ae287efeba76346be619e44cda0a422ba52d`
-- instructor plaintext sha256: `b235420af94508373209de1174803de45b156da30394ad84bc45572cacf50dba`
-- instructor ciphertext sha256 (non-reproducible): `583ca75e1748042547c6e052a6f3211a28f7fe60ff8a10e38a1a1f9db4c8edf0`
+- learner zip sha256: `836573f79be6d62dfc1d43b5a19e75bb80c93c085a7dc6c61a81013ecfa8c43d`
+- instructor plaintext sha256: `b14d8c6bbac6b4a82562e06d067b4a564c40dbb562138856e1f34acb7fc296b9`
+- instructor ciphertext sha256 (non-reproducible): `6b8eb97ff9e185a7d9de8933143f5225ece9e4c81a715532f77478780f1d7b71`
 - lessons indexed: 10
 - activity inventory: `{"assignments": 10, "discussions": 0, "groups": 1, "labs": 10, "lessons": 10, "outcomes": 4, "portfolio": 2, "quizzes": 10, "rubrics": 8}`
 

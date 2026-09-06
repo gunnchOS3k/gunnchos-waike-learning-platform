@@ -163,8 +163,8 @@ def _row_for_track(
         and int(counts.get("quizzes") or 0) == 0
         and int(counts.get("labs") or 0) == 0
     )
-    # Authentic WAIKE policy: SEVEN_GC is research overlay / HUMAN_PENDING — no
-    # COURSE_DIGITAL_RC. Shell compile+verify must not be special-cased as digital PASS.
+    # SEVEN_GC shell-only (pre–PR #57) must stay BLOCKED. With COURSE_DIGITAL_RC
+    # present on pinned WAIKE main, SEVEN_GC follows the normal digital PASS path.
     seven_gc_source_block = track_id == "SEVEN_GC_APPRENTICESHIP" and shell_only
 
     if decision.ok and decrypt.startswith("PASS"):
@@ -303,6 +303,7 @@ def main() -> int:
         and "SEVEN_GC_SOURCE_BLOCKS_18_OF_18" in str(r.get("blocker") or "")
         for r in rows
     )
+    all_18_pass = fail_n == 0 and blocked_n == 0 and pass_n == 18 and not seven_gc_blocks
     payload = {
         "source_sha": source_sha,
         "package_version_default": PACKAGE_VERSION,
@@ -313,14 +314,15 @@ def main() -> int:
             "blocked": blocked_n,
             "fail": fail_n,
             "tracks": len(rows),
-            "full_18_course_digital_rc": False,
+            "full_18_course_digital_rc": all_18_pass,
             "SEVEN_GC_SOURCE_BLOCKS_18_OF_18": seven_gc_blocks,
-            "ALL_18_WAIKE_TRACKS_DIGITALLY_AVAILABLE": False,
+            "ALL_18_WAIKE_TRACKS_DIGITALLY_AVAILABLE": all_18_pass,
         },
     }
     json_path.write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
-    # Honest matrix: 17 digital PASS + SEVEN_GC BLOCKED is expected; not an all-18 PASS.
-    honest_ok = fail_n == 0 and seven_gc_blocks and pass_n == 17
+    # Post–PR #57 honest matrix: all 18 digital PASS with SEVEN_GC COURSE_DIGITAL_RC.
+    # Pre–PR #57 fallback: 17 PASS + SEVEN_GC BLOCKED remains acceptable if shell-only.
+    honest_ok = (all_18_pass) or (fail_n == 0 and seven_gc_blocks and pass_n == 17)
     print(
         json.dumps(
             {

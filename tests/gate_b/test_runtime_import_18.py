@@ -32,20 +32,22 @@ def test_runtime_import_registers_pack_module_ids(client, packs_18):
             assert row.get("module_id") == track_id, (track_id, key, row)
 
 
-def test_runtime_import_seven_gc_shell_is_not_applicable(client, packs_18):
+def test_runtime_import_seven_gc_registers_pack_activities(client, packs_18):
     track_id = "SEVEN_GC_APPRENTICESHIP"
     pack_dir = resolve_pack_dir(track_id, packs_18)
     counts = activity_counts_from_pack(pack_dir)
-    assert counts["lessons"] == 0
-    assert counts["assignments"] == 0
-    assert counts["quizzes"] == 0
-    assert counts["labs"] == 0
+    assert counts["lessons"] >= 8
+    assert counts["assignments"] >= 8
+    assert counts["quizzes"] >= 8
+    assert counts["labs"] >= 5
     installed = install_track_into_hub(client, track_id, pack_dir)
     registered = installed.get("registered_activities") or {}
+    assert registered.get("module_id") == track_id
     status = registered.get("status") or {}
-    assert status.get("assignments") == "NOT_APPLICABLE"
-    assert status.get("quizzes") == "NOT_APPLICABLE"
-    assert status.get("labs") == "NOT_APPLICABLE"
-    assert registered.get("assignment") is None
-    assert registered.get("quiz") is None
-    assert registered.get("lab") is None
+    assert status.get("assignments") == "REGISTERED"
+    assert status.get("quizzes") == "REGISTERED"
+    assert status.get("labs") == "REGISTERED"
+    for key in ("assignment", "quiz", "lab"):
+        row = registered.get(key)
+        assert row is not None, key
+        assert row.get("module_id") == track_id

@@ -79,22 +79,24 @@ def test_matrix_script_columns_and_counts(tmp_path, monkeypatch):
         assert report["activity_inventory"] == counts
 
 
-def test_seven_gc_thin_but_honest():
+def test_seven_gc_digital_rc_present():
     pin = load_pin()
     waike = resolve_waike_root(pin)
     spec = json.loads((ROOT / "curriculum/imports/SEVEN_GC_APPRENTICESHIP.import.json").read_text())
     inv = inventory_track(waike, "SEVEN_GC_APPRENTICESHIP", spec)
-    assert inv["digital_rc_package"] is None
-    assert inv["learner_file_count"] > 0  # program + apprenticeship docs exist
-    # No fabricated digital_rc week lessons
-    assert inv["activity_counts"]["lessons"] == 0
-    assert inv["activity_counts"]["assignments"] == 0
-    assert inv["activity_counts"]["quizzes"] == 0
-    assert inv["activity_counts"]["labs"] == 0
+    assert inv["digital_rc_package"] == "SEVEN_GC_APPRENTICESHIP"
+    assert inv["digital_rc_package_exists"] is True
+    assert inv["learner_file_count"] > 0
+    assert inv["activity_counts"]["lessons"] >= 8
+    assert inv["activity_counts"]["assignments"] >= 8
+    assert inv["activity_counts"]["quizzes"] >= 8
+    assert inv["activity_counts"]["labs"] >= 5
     matrix = json.loads((ROOT / "reports/WAIKE_18_TRACK_PACKAGE_MATRIX.json").read_text())
     row = next(r for r in matrix["rows"] if r["track"] == "SEVEN_GC_APPRENTICESHIP")
-    assert row["final_status"] == "BLOCKED"
-    assert "SEVEN_GC_SOURCE_BLOCKS_18_OF_18" in row["blocker"]
+    assert row["final_status"] == "PASS"
+    assert not row.get("blocker")
+    assert matrix["summary"]["SEVEN_GC_SOURCE_BLOCKS_18_OF_18"] is False
+    assert matrix["summary"]["ALL_18_WAIKE_TRACKS_DIGITALLY_AVAILABLE"] is True
 
 
 def test_all_18_import_specs_present():

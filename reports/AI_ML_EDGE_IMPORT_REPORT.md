@@ -1,15 +1,15 @@
 # AI_ML_EDGE Import Report
 
 - module_id: `AI_ML_EDGE`
-- declared_pinned_commit: `e97e74fc9bfb44b1cdc26b272dc4848264f15fe0`
-- observed_source_commit: `e97e74fc9bfb44b1cdc26b272dc4848264f15fe0`
+- declared_pinned_commit: `fbf7685bc5686201ccaa0128ee83346d59b3d584`
+- observed_source_commit: `fbf7685bc5686201ccaa0128ee83346d59b3d584`
 - provenance_match: `true`
 - package_version: `1.0.0`
 - learner files: **78**
 - instructor files: **12**
-- learner zip sha256: `0276c675dffee778118e231d99275f33cde352d2c841fcd407a48a515a5223bd`
-- instructor plaintext sha256: `cfe01a8ff3decd5aa33b38404c75cbdc434b1482ad9724fb81ac8c1f795c89c5`
-- instructor ciphertext sha256 (non-reproducible): `b5ea8e2a75fa85c84d6d3525fd51e8a8adcd4dc4626d7a210d7220522e2ee4d2`
+- learner zip sha256: `495ea8eb617576c80cb1e691fa8242c804ac1591b3ffafb2f0d30a959d50bb93`
+- instructor plaintext sha256: `b2805b4e4af2ac1c0a326d304dd541a2dc9a52ebdab2125e570bce636a230fd5`
+- instructor ciphertext sha256 (non-reproducible): `43a9f581bc4734c9567a9ab1c8d4b768112391a55974b12f4ca226fac5d558fa`
 - lessons indexed: 10
 - activity inventory: `{"assignments": 10, "discussions": 0, "groups": 1, "labs": 10, "lessons": 10, "outcomes": 4, "portfolio": 2, "quizzes": 10, "rubrics": 8}`
 

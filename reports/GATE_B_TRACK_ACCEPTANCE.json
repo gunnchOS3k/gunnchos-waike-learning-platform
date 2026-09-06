@@ -323,31 +323,31 @@
     },
     {
       "track": "SEVEN_GC_APPRENTICESHIP",
-      "matrix_final_status": "BLOCKED",
+      "matrix_final_status": "PASS",
       "matrix_install": "PASS",
       "matrix_learner_visible": "PASS",
-      "matrix_instructor_visible": "EMPTY",
-      "matrix_offline": "NO",
+      "matrix_instructor_visible": "PASS",
+      "matrix_offline": "YES",
       "compile_verify_ok": true,
       "activity_counts": {
-        "lessons": 0,
-        "assignments": 0,
-        "quizzes": 0,
-        "labs": 0,
-        "rubrics": 0
+        "lessons": 10,
+        "assignments": 10,
+        "quizzes": 10,
+        "labs": 10,
+        "rubrics": 8
       },
       "e2e": {
-        "install": "BLOCKED",
-        "learner": "BLOCKED",
-        "instructor": "BLOCKED",
-        "offline": "BLOCKED"
+        "install": "PASS",
+        "learner": "PASS",
+        "instructor": "PASS",
+        "offline": "PASS"
       },
-      "blocker": "SEVEN_GC_SOURCE_BLOCKS_18_OF_18",
+      "blocker": "",
       "registered_activity_status": {
-        "lessons": "NOT_APPLICABLE",
-        "assignments": "NOT_APPLICABLE",
-        "quizzes": "NOT_APPLICABLE",
-        "labs": "NOT_APPLICABLE"
+        "lessons": "REGISTERED",
+        "assignments": "REGISTERED",
+        "quizzes": "REGISTERED",
+        "labs": "REGISTERED"
       }
     },
     {
@@ -527,18 +527,19 @@
   ],
   "summary": {
     "track_count": 18,
-    "matrix_pass": 17,
-    "matrix_blocked": 1,
+    "matrix_pass": 18,
+    "matrix_blocked": 0,
     "matrix_fail": 0,
-    "e2e_pass": 17,
-    "SEVEN_GC_SOURCE_BLOCKS_18_OF_18": true,
-    "ALL_18_WAIKE_TRACKS_DIGITALLY_AVAILABLE": false,
+    "e2e_pass": 18,
+    "SEVEN_GC_SOURCE_BLOCKS_18_OF_18": false,
+    "ALL_18_WAIKE_TRACKS_DIGITALLY_AVAILABLE": true,
     "GATE_B_REQUIRED_TESTS_SKIPPED": 0
   },
   "notes": [
     "Statuses generated from executed install/learner/instructor/offline evidence.",
     "Allowed statuses only: PASS / NOT_APPLICABLE / BLOCKED / FAIL / EXTERNAL_PHYSICAL_GATE.",
-    "SEVEN_GC_APPRENTICESHIP remains BLOCKED (research overlay; no COURSE_DIGITAL_RC).",
-    "Per-track activities registered from that track's packaged inventory only."
+    "SEVEN_GC_APPRENTICESHIP is COURSE_DIGITAL_RC on pinned WAIKE main after PR #57.",
+    "Per-track activities registered from that track's packaged inventory only.",
+    "EXTERNAL human/physical/field apprenticeship gates remain open (not claimed)."
   ]
 }

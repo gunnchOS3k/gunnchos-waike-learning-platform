@@ -1,6 +1,6 @@
 {
-  "observed_source_commit": "e97e74fc9bfb44b1cdc26b272dc4848264f15fe0",
-  "pinned_commit": "e97e74fc9bfb44b1cdc26b272dc4848264f15fe0",
+  "observed_source_commit": "fbf7685bc5686201ccaa0128ee83346d59b3d584",
+  "pinned_commit": "fbf7685bc5686201ccaa0128ee83346d59b3d584",
   "tracks": [
     {
       "activity_counts": {
@@ -554,43 +554,52 @@
     },
     {
       "activity_counts": {
-        "assignments": 0,
+        "assignments": 10,
         "discussions": 0,
-        "groups": 0,
-        "labs": 0,
-        "lessons": 0,
-        "outcomes": 1,
-        "portfolio": 1,
-        "quizzes": 0,
-        "rubrics": 0
+        "groups": 1,
+        "labs": 10,
+        "lessons": 10,
+        "outcomes": 4,
+        "portfolio": 2,
+        "quizzes": 10,
+        "rubrics": 8
       },
-      "digital_rc_package": null,
-      "digital_rc_package_exists": false,
-      "has_ai_policy": false,
-      "has_offline_pack": false,
-      "instructor_file_count": 0,
-      "learner_file_count": 47,
+      "digital_rc_package": "SEVEN_GC_APPRENTICESHIP",
+      "digital_rc_package_exists": true,
+      "has_ai_policy": true,
+      "has_offline_pack": true,
+      "instructor_file_count": 12,
+      "learner_file_count": 77,
       "rubric_outcome_coverage": {
         "has_outcomes": true,
         "has_portfolio": true,
-        "has_rubrics": false
+        "has_rubrics": true
       },
-      "sample_instructor_paths": [],
-      "sample_learner_paths": [
-        "apprenticeships/tracks/7gc_digital_twin_research.md",
-        "apprenticeships/tracks/ai_ran_research.md",
-        "apprenticeships/tracks/beam_selection.md",
-        "apprenticeships/tracks/device_os_lab.md",
-        "apprenticeships/tracks/edge_io_measurement.md",
-        "apprenticeships/tracks/hardware_device_lab.md",
-        "apprenticeships/tracks/ntn_resilience.md",
-        "apprenticeships/tracks/reproducible_research.md",
-        "capstones/by_track/ai_ran_digital_twin_research.md",
-        "capstones/by_track/reproducible_research.md",
-        "curriculum/7GC_ASSESSMENT_POLICY.md",
-        "curriculum/7GC_CAPSTONE_GUIDE.md"
+      "sample_instructor_paths": [
+        "curriculum/digital_rc/SEVEN_GC_APPRENTICESHIP/instructor/INSTRUCTOR_PACKET.md",
+        "curriculum/digital_rc/SEVEN_GC_APPRENTICESHIP/instructor/answer_keys.json",
+        "curriculum/digital_rc/SEVEN_GC_APPRENTICESHIP/instructor/week_01_notes.md",
+        "curriculum/digital_rc/SEVEN_GC_APPRENTICESHIP/instructor/week_02_notes.md",
+        "curriculum/digital_rc/SEVEN_GC_APPRENTICESHIP/instructor/week_03_notes.md",
+        "curriculum/digital_rc/SEVEN_GC_APPRENTICESHIP/instructor/week_04_notes.md",
+        "curriculum/digital_rc/SEVEN_GC_APPRENTICESHIP/instructor/week_05_notes.md",
+        "curriculum/digital_rc/SEVEN_GC_APPRENTICESHIP/instructor/week_06_notes.md"
       ],
-      "source_kind": "apprenticeship_inventory",
+      "sample_learner_paths": [
+        "curriculum/digital_rc/SEVEN_GC_APPRENTICESHIP/ai_use_policy.json",
+        "curriculum/digital_rc/SEVEN_GC_APPRENTICESHIP/assessments/final_knowledge.json",
+        "curriculum/digital_rc/SEVEN_GC_APPRENTICESHIP/assessments/final_practical.json",
+        "curriculum/digital_rc/SEVEN_GC_APPRENTICESHIP/assessments/mid_course.json",
+        "curriculum/digital_rc/SEVEN_GC_APPRENTICESHIP/assignments/a01.md",
+        "curriculum/digital_rc/SEVEN_GC_APPRENTICESHIP/assignments/a02.md",
+        "curriculum/digital_rc/SEVEN_GC_APPRENTICESHIP/assignments/a03.md",
+        "curriculum/digital_rc/SEVEN_GC_APPRENTICESHIP/assignments/a04.md",
+        "curriculum/digital_rc/SEVEN_GC_APPRENTICESHIP/assignments/a05.md",
+        "curriculum/digital_rc/SEVEN_GC_APPRENTICESHIP/assignments/a06.md",
+        "curriculum/digital_rc/SEVEN_GC_APPRENTICESHIP/assignments/a07.md",
+        "curriculum/digital_rc/SEVEN_GC_APPRENTICESHIP/assignments/a08.md"
+      ],
+      "source_kind": "digital_rc",
       "track": "SEVEN_GC_APPRENTICESHIP"
     },
     {

@@ -220,10 +220,14 @@ def test_matrix_final_status_matches_compile_results(packs_18):
                 f"{track_id}: final_status={row.get('final_status')} expected={expected_final}"
             )
         if track_id == "SEVEN_GC_APPRENTICESHIP":
-            if row.get("final_status") == "PASS":
-                inconsistencies.append("SEVEN_GC must not be PASS for digital delivery")
-            if "SEVEN_GC_SOURCE_BLOCKS_18_OF_18" not in str(row.get("blocker") or ""):
-                inconsistencies.append("SEVEN_GC missing SEVEN_GC_SOURCE_BLOCKS_18_OF_18 blocker")
+            if row.get("final_status") != "PASS":
+                inconsistencies.append(
+                    f"SEVEN_GC expected PASS with COURSE_DIGITAL_RC, got {row.get('final_status')}"
+                )
+            if "SEVEN_GC_SOURCE_BLOCKS_18_OF_18" in str(row.get("blocker") or ""):
+                inconsistencies.append("SEVEN_GC still carrying cleared source blocker")
+            if int(row.get("lessons") or 0) < 1:
+                inconsistencies.append("SEVEN_GC missing digital lessons")
 
         if row.get("install") == "PASS":
             assert verify_ok, track_id
@@ -283,8 +287,12 @@ def test_acceptance_from_executed_evidence(client, packs_18, tmp_path):
         )
 
     seven = next(t for t in tracks if t["track"] == "SEVEN_GC_APPRENTICESHIP")
-    assert seven["matrix_final_status"] == "BLOCKED"
-    assert "SEVEN_GC_SOURCE_BLOCKS_18_OF_18" in seven["blocker"]
+    assert seven["matrix_final_status"] == "PASS"
+    assert "SEVEN_GC_SOURCE_BLOCKS_18_OF_18" not in seven["blocker"]
+    assert all(v == "PASS" for v in seven["e2e"].values())
+
+    all_matrix_pass = all(t["matrix_final_status"] == "PASS" for t in tracks)
+    all_e2e_pass = all(all(v == "PASS" for v in t["e2e"].values()) for t in tracks)
 
     payload = {
         "schema": "waike.gate_b.track_acceptance.v1",
@@ -300,15 +308,16 @@ def test_acceptance_from_executed_evidence(client, packs_18, tmp_path):
                 for t in tracks
                 if all(v == "PASS" for v in t["e2e"].values())
             ),
-            "SEVEN_GC_SOURCE_BLOCKS_18_OF_18": True,
-            "ALL_18_WAIKE_TRACKS_DIGITALLY_AVAILABLE": False,
+            "SEVEN_GC_SOURCE_BLOCKS_18_OF_18": False,
+            "ALL_18_WAIKE_TRACKS_DIGITALLY_AVAILABLE": bool(all_matrix_pass and all_e2e_pass),
             "GATE_B_REQUIRED_TESTS_SKIPPED": required_skips,
         },
         "notes": [
             "Statuses generated from executed install/learner/instructor/offline evidence.",
             "Allowed statuses only: PASS / NOT_APPLICABLE / BLOCKED / FAIL / EXTERNAL_PHYSICAL_GATE.",
-            "SEVEN_GC_APPRENTICESHIP remains BLOCKED (research overlay; no COURSE_DIGITAL_RC).",
+            "SEVEN_GC_APPRENTICESHIP is COURSE_DIGITAL_RC on pinned WAIKE main after PR #57.",
             "Per-track activities registered from that track's packaged inventory only.",
+            "EXTERNAL human/physical/field apprenticeship gates remain open (not claimed).",
         ],
     }
     ACCEPTANCE_PATH.parent.mkdir(parents=True, exist_ok=True)
@@ -316,4 +325,5 @@ def test_acceptance_from_executed_evidence(client, packs_18, tmp_path):
     assert ACCEPTANCE_PATH.is_file()
     assert payload["summary"]["track_count"] == 18
     assert payload["summary"]["GATE_B_REQUIRED_TESTS_SKIPPED"] == 0
+    assert payload["summary"]["ALL_18_WAIKE_TRACKS_DIGITALLY_AVAILABLE"] is True
     assert "PENDING_SUITE" not in ACCEPTANCE_PATH.read_text(encoding="utf-8")

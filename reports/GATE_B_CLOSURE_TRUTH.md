@@ -1,52 +1,52 @@
-# Gate B Closure — Truth Report
+# Gate B Closure Truth — SEVEN_GC digital pin refresh
 
-## Live anchors (Gate 0 verified)
+**Branch:** `cursor/waike-learning-gate-b-ai-18-tracks`  
+**Platform PR:** #5 (do not merge until remote CI green)  
+**WAIKE pin:** `fbf7685bc5686201ccaa0128ee83346d59b3d584` (PR #57 merge)  
+**Platform main:** `43e770772b97a0d6900893ea7428df91f2acdb93`  
+**gunnchAI pin:** `4b4f411710e8cdb8102a7e11502f8497f68156b1`
 
-| Field | Value |
-| --- | --- |
-| Platform PR | [#5](https://github.com/gunnchOS3k/gunnchos-waike-learning-platform/pull/5) (only open platform PR) |
-| Branch | `cursor/waike-learning-gate-b-ai-18-tracks` |
-| Pre-closure head | `348145b5d9e1f126ca26dc16449f2456d8330f5a` |
-| Platform main (base) | `43e770772b97a0d6900893ea7428df91f2acdb93` |
-| WAIKE main / pin | `e97e74fc9bfb44b1cdc26b272dc4848264f15fe0` |
-| gunnchAI pin | `4b4f411710e8cdb8102a7e11502f8497f68156b1` |
-| Gate C | **not started** |
-| WAIKE prerequisite PR | **none** (normalization would require invention) |
+## What changed in this closure pass
 
-## Pre-closure remote CI
+1. Discovered live WAIKE `origin/main` after owner merge of PR #57.
+2. Verified `curriculum/digital_rc/SEVEN_GC_APPRENTICESHIP/` on merged main;
+   taxonomy `content_maturity.state = digital_rc_present`.
+3. Updated Platform `PIN.json` + all workflow `WAIKE_PIN_REF` values to the new SHA.
+4. Rewired SEVEN_GC import/compiler mapping from apprenticeship inventory → `digital_rc`.
+5. Rebuilt 18-track packs/matrix: **18 PASS / 0 BLOCKED**.
+6. Updated honesty/verifier/tests so ALL_18 claims are earnable when SEVEN_GC has real activities.
+7. Local Gate B suites + prior-gate regression + `verify-gate-b` PASS.
 
-| Workflow | Observation |
-| --- | --- |
-| Gate B | Green on pre-closure head (pre-expansion) |
-| Gate A | Red — brittle `/version` assert rejected `0.5.0-gate-b` |
-| PR3 | Red — same brittle version assert |
+## Claims (local verify-gate-b)
 
-## Closure implementation status (local)
+| Claim | Status |
+|---|---|
+| `GUNNCHAI_PLATFORM_INTEGRATION_DIGITALLY_COMPLETE` | Earned (local) |
+| `ALL_18_WAIKE_TRACKS_DIGITALLY_AVAILABLE` | Earned (local) |
+| `18_TRACK_PLATFORM_DELIVERY_DIGITALLY_COMPLETE` | Earned (local) |
 
-| ID | Gap | Status |
-| --- | --- | --- |
-| B1 | Fake AI production default | **Code closed** — `DEFAULT_RUNTIME_HAS_NO_FAKE_AI` |
-| B2 | Canonical gunnchAI CI checkout | **Code closed** — snapshot + drift fail |
-| B3 | Client-supplied grounding | **Code closed** — server-resolved + hashed citations |
-| B4 | Structural AI isolation | **Code closed** — EchoTestProvider proofs |
-| B5 | SEVEN_GC shell as all-18 PASS | **Honest** — matrix `BLOCKED`; `SEVEN_GC_SOURCE_BLOCKS_18_OF_18` |
-| B6 | Per-track activity stand-ins | **Code closed** — pack→runtime import |
-| B7 | PENDING_SUITE | **Code closed** |
-| B8 | Required skips | **Code closed** — `GATE_B_REQUIRED_TESTS_SKIPPED=0` |
-| B9 | Real provider truth | **Code closed** — contract vs real-available flags |
-| B10 | Historical red workflows | **Code closed** — Gate A/PR3 `workflow_dispatch`; full-prior-regression |
-| §15/§16 | Expanded CI + verifier rejects | **Code closed** — awaiting remote green |
+Remote CI must still prove green on the pushed head before owner merge.
 
-## Claims
+## Preserved prior Gate B fixes
 
-- Pending remote CI: `GUNNCHAI_PLATFORM_INTEGRATION_DIGITALLY_COMPLETE`
-- Blocked by authentic source: `ALL_18_*`, `18_TRACK_PLATFORM_DELIVERY_*`
-- Owner action: `GATE_B_NOT_READY` until remote CI green **and** ALL_18 remains uneatable without SEVEN_GC digital_rc
+- No fake AI in production defaults
+- Canonical gunnchAI checkout / contract snapshot
+- Server grounding + structural isolation
+- Pack-sourced per-track activities
+- Zero `PENDING_SUITE`
+- Zero required skips
 
-## Not claimed
+## Cross-repo hygiene (non-blocking for Gate B digital claims)
 
-- Zero merge blockers remaining (remote CI pending)
-- Gate C readiness
-- Local GGUF/llama inference
-- 18/18 digitally complete curriculum delivery
-- Pedagogical / field / a11y / security certification
+WAIKE `artifacts/taxonomy/CANONICAL_TRACK_REGISTRY.export.json` on the merge commit
+still carried pre–PR #57 `program_shell_only` for SEVEN_GC. Authoritative
+`curriculum/taxonomy/canonical_track_registry.v1.json` is correct
+(`digital_rc_present`). Platform regenerated the consumer export from v1 for
+`curriculum/registry/`. Recommend a follow-up WAIKE export refresh commit; does
+not block Gate B matrix honesty (counts come from compiled packs).
+
+## Owner action
+
+`MERGE_GATE_B_THEN_RERUN_ACCELERATED_MASTER_PROMPT` when remote Gate B CI is green.
+
+**Next gate name only:** Gate C — do not start.

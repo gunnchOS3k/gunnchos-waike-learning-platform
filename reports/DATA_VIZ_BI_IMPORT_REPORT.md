@@ -1,15 +1,15 @@
 # DATA_VIZ_BI Import Report
 
 - module_id: `DATA_VIZ_BI`
-- declared_pinned_commit: `e97e74fc9bfb44b1cdc26b272dc4848264f15fe0`
-- observed_source_commit: `e97e74fc9bfb44b1cdc26b272dc4848264f15fe0`
+- declared_pinned_commit: `fbf7685bc5686201ccaa0128ee83346d59b3d584`
+- observed_source_commit: `fbf7685bc5686201ccaa0128ee83346d59b3d584`
 - provenance_match: `true`
 - package_version: `1.0.0`
 - learner files: **76**
 - instructor files: **12**
-- learner zip sha256: `85c1b56df0d8e6a6dc96751742c0b1983d20d7826ea757ceadb57ba0915790b9`
-- instructor plaintext sha256: `7efde907f874834e78e84875a194a86957a64e6edc705ed75dfcfa545d4ec17e`
-- instructor ciphertext sha256 (non-reproducible): `238624b6745fdef7c100baa440a3c7719e0d72fe45cbf388e86225544c52a031`
+- learner zip sha256: `290a5c45cf8f50d77ba930ccb548c0690f27e53690f412fbc7f035126946d1c8`
+- instructor plaintext sha256: `78164e96625fc2604ce8ee4c641f8ab3d75ad59369ecff556024e5cc39ee2adf`
+- instructor ciphertext sha256 (non-reproducible): `f5de65697bcd474ff5fb2ee7e2ae4ca43860e02acf39d0c7ca21c4fc1c1d2b57`
 - lessons indexed: 10
 - activity inventory: `{"assignments": 10, "discussions": 0, "groups": 1, "labs": 10, "lessons": 10, "outcomes": 4, "portfolio": 2, "quizzes": 10, "rubrics": 8}`
 

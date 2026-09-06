@@ -1,15 +1,15 @@
 # DIGITAL_CONFIDENCE Import Report
 
 - module_id: `DIGITAL_CONFIDENCE`
-- declared_pinned_commit: `e97e74fc9bfb44b1cdc26b272dc4848264f15fe0`
-- observed_source_commit: `e97e74fc9bfb44b1cdc26b272dc4848264f15fe0`
+- declared_pinned_commit: `fbf7685bc5686201ccaa0128ee83346d59b3d584`
+- observed_source_commit: `fbf7685bc5686201ccaa0128ee83346d59b3d584`
 - provenance_match: `true`
 - package_version: `1.0.0`
 - learner files: **196**
 - instructor files: **37**
-- learner zip sha256: `67f017f312dff3e20104d0ed3e8dca4321d285cd28105ba48d6e9fe4205bc2af`
-- instructor plaintext sha256: `a98ea28b073a326d69efc517cbefe7a6b43e1cb053615b2204c7a9014e77ace9`
-- instructor ciphertext sha256 (non-reproducible): `ac6c2dc812b2c00784804f322865fc2a95cacf374c40bb57f9a75ae070c5c5bd`
+- learner zip sha256: `6ba21cc1c2069e884546bc42ec48b32db8bed9d726f5d4659fd70f77cbeb3687`
+- instructor plaintext sha256: `1a4832d82c8c464daac57784d3f48c28b753ed08c6e1e34a85998031c4109492`
+- instructor ciphertext sha256 (non-reproducible): `fe56f7fb0eb69e20f3a3f4a563b8bfe5b9a942d468b3fa5b181008e9252a8178`
 - lessons indexed: 8
 - activity inventory: `{"assignments": 16, "discussions": 1, "groups": 24, "labs": 8, "lessons": 8, "outcomes": 0, "portfolio": 1, "quizzes": 0, "rubrics": 0}`
 

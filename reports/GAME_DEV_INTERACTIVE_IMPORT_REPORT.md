@@ -1,15 +1,15 @@
 # GAME_DEV_INTERACTIVE Import Report
 
 - module_id: `GAME_DEV_INTERACTIVE`
-- declared_pinned_commit: `e97e74fc9bfb44b1cdc26b272dc4848264f15fe0`
-- observed_source_commit: `e97e74fc9bfb44b1cdc26b272dc4848264f15fe0`
+- declared_pinned_commit: `fbf7685bc5686201ccaa0128ee83346d59b3d584`
+- observed_source_commit: `fbf7685bc5686201ccaa0128ee83346d59b3d584`
 - provenance_match: `true`
 - package_version: `1.0.0`
 - learner files: **76**
 - instructor files: **12**
-- learner zip sha256: `fa88d3f557b9adc5abd19cd58059586c2ea716a71f05a0d3721b1f54f228b885`
-- instructor plaintext sha256: `290dc7f1926134171422d5b430119a326ad569f9f73a66c4fc9fd9fde1223442`
-- instructor ciphertext sha256 (non-reproducible): `e21481e0ca90a682780b81b8e500be7d25a779a000ca1336db7f86bec8745778`
+- learner zip sha256: `364803b20783ff322d192cb642e27985eb1d9459d00ce64d3043d297696c1843`
+- instructor plaintext sha256: `f35b5dda3d760e9b963d41044ffd075282cf21c5ad70a9a292a33c662e386384`
+- instructor ciphertext sha256 (non-reproducible): `5946ecc41b034471d6a71d72efb310a87447260c75d541d1c248aa31ed0156ae`
 - lessons indexed: 10
 - activity inventory: `{"assignments": 10, "discussions": 0, "groups": 1, "labs": 10, "lessons": 10, "outcomes": 4, "portfolio": 2, "quizzes": 10, "rubrics": 8}`
 
