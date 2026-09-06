@@ -64,12 +64,13 @@ describe("Gate B AI panel accessibility smoke (not certification)", () => {
   });
 
   it("learner disabled policy uses status role", async () => {
+    const disabledPolicy: EffectiveAiPolicy = {
+      ...learnerPolicy,
+      policy: "AI_DISABLED",
+      allowed_learner_capabilities: [],
+    };
     const ai = mockAi({
-      getPolicy: vi.fn(async () => ({
-        ...learnerPolicy,
-        policy: "AI_DISABLED",
-        allowed_learner_capabilities: [],
-      })),
+      getPolicy: vi.fn(async () => disabledPolicy),
     });
     render(<LearnerAiPanel ai={ai} sectionId="sec_alpha_dc_w01" />);
     await waitFor(() => {
