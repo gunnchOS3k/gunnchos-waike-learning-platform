@@ -20,7 +20,7 @@
     "claim_boundary": "Digital integration only; Device OS remains install/launcher authority. Seed HTML is companion/discovery only \u2014 Learning OS Tauri app is SoR.",
     "device_os_root_present": true,
     "device_os_live_imports": true,
-    "device_os_pin": "67cf98255e41d953e56eb142af063940e05c8dbb",
+    "device_os_pin": "5afc126ef1ce0fe917f78d1a3434c1de801535fb",
     "device_os_registry_name": "WAIKE Learning OS",
     "device_os_relationship": "thin_launcher_companion",
     "system_of_record": "platform_tauri_learning_os"
@@ -87,6 +87,6 @@
     }
   },
   "device_os_pr_required": true,
-  "tested_against": "device_os_pr_head:67cf98255e41d953e56eb142af063940e05c8dbb",
-  "device_os_pin": "67cf98255e41d953e56eb142af063940e05c8dbb"
+  "tested_against": "device_os_pr_head:5afc126ef1ce0fe917f78d1a3434c1de801535fb",
+  "device_os_pin": "5afc126ef1ce0fe917f78d1a3434c1de801535fb"
 }

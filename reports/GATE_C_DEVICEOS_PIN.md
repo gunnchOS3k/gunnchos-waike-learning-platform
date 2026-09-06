@@ -5,7 +5,7 @@
 | Field | Value |
 |-------|-------|
 | Previous (main baseline) | `28562a8456207540c205a1c8a6434a491b0a4771` |
-| **Current DEVICE_OS_PIN_REF** | `67cf98255e41d953e56eb142af063940e05c8dbb` |
+| **Current DEVICE_OS_PIN_REF** | `5afc126ef1ce0fe917f78d1a3434c1de801535fb` |
 | Branch | `cursor/waike-learning-deviceos-integration` |
 | PR (draft) | https://github.com/gunnchOS3k/gunnchos-device-os/pull/132 |
 

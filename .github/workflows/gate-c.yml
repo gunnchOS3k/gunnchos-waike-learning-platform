@@ -14,7 +14,7 @@ env:
   CARGO_TERM_COLOR: always
   WAIKE_PIN_REF: "fbf7685bc5686201ccaa0128ee83346d59b3d584"
   GUNNCHAI_PIN_REF: "4b4f411710e8cdb8102a7e11502f8497f68156b1"
-  DEVICE_OS_PIN_REF: "67cf98255e41d953e56eb142af063940e05c8dbb"
+  DEVICE_OS_PIN_REF: "5afc126ef1ce0fe917f78d1a3434c1de801535fb"
   # Exercise Device OS NativeLaunchAdapter via protocol-compatible fixture.
   LEARNING_OS_EXECUTABLE: ${{ github.workspace }}/gunnchos-device-os/fixtures/learning_os/waike-learning-os
   LEARNING_OS_APP_VERSION: "0.1.0-fixture"
@@ -2220,9 +2220,72 @@ jobs:
           test -f reports/GATE_C_ADVERSARIAL_REVIEW.md || \
             echo "# Gate C Adversarial Review\n\nAutomated sabotage suites executed in CI.\n" > reports/GATE_C_ADVERSARIAL_REVIEW.md
 
+  deviceos-real-tauri-runtime-e2e:
+    name: deviceos-real-tauri-runtime-e2e
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+        with:
+          repository: gunnchOS3k/gunnchos-device-os
+          path: gunnchos-device-os
+          ref: ${{ env.DEVICE_OS_PIN_REF }}
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9.15.9
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: pnpm
+          cache-dependency-path: apps/client/pnpm-lock.yaml
+      - name: Install linux deps + xvfb
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            libwebkit2gtk-4.1-dev libgtk-3-dev libayatana-appindicator3-dev \
+            librsvg2-dev patchelf pkg-config libglib2.0-dev xvfb
+      - name: Build actual Platform Linux Tauri binary
+        env:
+          SOURCE_DATE_EPOCH: "1700000000"
+          WAIKE_DEV_DB_KEY: ${{ env.WAIKE_DEV_DB_KEY }}
+        run: |
+          cd apps/client && pnpm install --frozen-lockfile && pnpm run build
+          cd src-tauri && cargo build --release
+          test -x target/release/waike-learning-client
+          # Guard: never substitute the Device OS protocol fixture for this job.
+          ! test -ef "${{ github.workspace }}/gunnchos-device-os/fixtures/learning_os/waike-learning-os" \
+            target/release/waike-learning-client
+      - name: Real Device OS ↔ Tauri runtime E2E + sabotage
+        env:
+          DEVICE_OS_ROOT: ${{ github.workspace }}/gunnchos-device-os
+          LEARNING_OS_REAL_BINARY: ${{ github.workspace }}/apps/client/src-tauri/target/release/waike-learning-client
+          LEARNING_OS_APP_VERSION: "0.1.0"
+          LEARNING_OS_PLATFORM_SHA: ${{ github.sha }}
+          DEVICE_OS_PIN_REF: ${{ env.DEVICE_OS_PIN_REF }}
+          WAIKE_CI_HEADLESS_UI: "1"
+          CI_HEADLESS_UI: "1"
+          LEARNING_OS_CLEANUP_AFTER_ACK: "1"
+          WAIKE_DEV_DB_KEY: ${{ env.WAIKE_DEV_DB_KEY }}
+          # Do not point NativeLaunchAdapter at the protocol fixture for this job.
+          LEARNING_OS_EXECUTABLE: ""
+        run: |
+          unset LEARNING_OS_EXECUTABLE
+          python3 scripts/deviceos_real_tauri_e2e.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: deviceos-real-tauri-e2e-evidence
+          path: |
+            reports/DEVICEOS_REAL_TAURI_E2E.json
+            reports/DEVICEOS_REAL_TAURI_E2E.md
+            reports/DEVICEOS_REAL_TAURI_SABOTAGE.json
+          retention-days: 14
+          if-no-files-found: warn
+
   verify-gate-c:
     name: verify-gate-c
-    needs: [discovery-contracts, full-prior-regression, oneroster, oneroster-security, oneroster-local-mapping, oneroster-revocation, qti, qti-security, qti3-subset, qti-section-authz, lti, lti-production-jwks, lti-security, deviceos-contract, deviceos-integration, deep-links, device-profiles, install-update-rollback, continuity, backup-restore, backup-db-integrity, destructive-restore-real, backup-security, migration-upgrade, package-lifecycle, package-lifecycle-enforcement, admin, privacy-controls, privacy-behavior, authorization-sabotage, archive-security, session-security, rate-limits, rate-limit-window, ai-security-regression, accessibility, keyboard-e2e, keyboard-real-e2e, observability, diagnostics, diagnostics-truth, performance, concurrency, pilot-performance, mutation-concurrency, frontend, production-admin-ui, rust, native-linux, macos-native, adversarial-review]
+    needs: [discovery-contracts, full-prior-regression, oneroster, oneroster-security, oneroster-local-mapping, oneroster-revocation, qti, qti-security, qti3-subset, qti-section-authz, lti, lti-production-jwks, lti-security, deviceos-contract, deviceos-integration, deep-links, device-profiles, install-update-rollback, continuity, backup-restore, backup-db-integrity, destructive-restore-real, backup-security, migration-upgrade, package-lifecycle, package-lifecycle-enforcement, admin, privacy-controls, privacy-behavior, authorization-sabotage, archive-security, session-security, rate-limits, rate-limit-window, ai-security-regression, accessibility, keyboard-e2e, keyboard-real-e2e, observability, diagnostics, diagnostics-truth, performance, concurrency, pilot-performance, mutation-concurrency, frontend, production-admin-ui, rust, native-linux, macos-native, adversarial-review, deviceos-real-tauri-runtime-e2e]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4

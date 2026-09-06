@@ -126,3 +126,49 @@ export const nativeOfflineStore: NativeOfflineStore = {
 export function getOfflineStore(): NativeOfflineStore | null {
   return isTauri() ? nativeOfflineStore : null;
 }
+
+/** Device OS deep-link navigation intent (one-shot; never authenticates). */
+export interface DeviceOsDeepLink {
+  uri: string;
+  canonical: string;
+  kind: string;
+  path: string;
+  segments: string[];
+  valid: boolean;
+}
+
+export interface DeviceOsLaunchContext {
+  protocol: string;
+  request_id: string;
+  bundle_id: string;
+  deep_link: DeviceOsDeepLink;
+  context: Record<string, unknown>;
+  app_version: string;
+  consumed: boolean;
+}
+
+export async function getInitialDeviceOsLaunchContext(): Promise<DeviceOsLaunchContext | null> {
+  if (!isTauri()) return null;
+  try {
+    return await invoke<DeviceOsLaunchContext | null>("get_initial_deviceos_launch_context");
+  } catch {
+    return null;
+  }
+}
+
+/** Map Device OS deep-link kinds onto existing authenticated UI modes. */
+export function modeForDeviceOsDeepLink(kind: string): string | null {
+  switch (kind) {
+    case "learn":
+    case "section":
+    case "sync":
+      return "home";
+    case "quiz":
+    case "assignment":
+      return "assignments";
+    case "device":
+      return "interop";
+    default:
+      return null;
+  }
+}

@@ -17,7 +17,7 @@ import { HubAuthError } from "./lib/hub/client";
 import { resolveHubClient } from "./lib/hub/resolveHub";
 import type { SyncTransport } from "./lib/offline/syncCoordinator";
 import { useOfflineSync } from "./lib/offline/useOfflineSync";
-import { browseInstallPack, isTauri } from "./lib/tauriBridge";
+import { browseInstallPack, getInitialDeviceOsLaunchContext, isTauri, modeForDeviceOsDeepLink } from "./lib/tauriBridge";
 import type { LessonContent, LessonInfo, ModuleView, TrustStatus } from "./lib/types";
 import {
   mockModule,
@@ -201,6 +201,8 @@ export default function App() {
     };
   }, []);
   const [loading, setLoading] = useState(false);
+  const [pendingDeviceOsNav, setPendingDeviceOsNav] = useState<string | null>(null);
+  const [deviceOsNavApplied, setDeviceOsNavApplied] = useState(false);
 
   const tokenRef = useCallback(() => session?.token ?? null, [session]);
 
@@ -249,6 +251,31 @@ export default function App() {
     online,
   });
   const syncUx = sync.ux;
+
+  useEffect(() => {
+    if (!isTauri() || deviceOsNavApplied) return;
+    (async () => {
+      const ctx = await getInitialDeviceOsLaunchContext();
+      if (!ctx?.deep_link?.valid) return;
+      const next = modeForDeviceOsDeepLink(ctx.deep_link.kind);
+      if (!next) return;
+      // Never bypass auth: queue until a normal session (or mock) exists.
+      if (needsLogin) {
+        setPendingDeviceOsNav(next);
+        return;
+      }
+      setMode(next as Mode);
+      setDeviceOsNavApplied(true);
+      setPendingDeviceOsNav(null);
+    })();
+  }, [needsLogin, deviceOsNavApplied, session, isMock]);
+
+  useEffect(() => {
+    if (!pendingDeviceOsNav || needsLogin || deviceOsNavApplied) return;
+    setMode(pendingDeviceOsNav as Mode);
+    setDeviceOsNavApplied(true);
+    setPendingDeviceOsNav(null);
+  }, [pendingDeviceOsNav, needsLogin, deviceOsNavApplied, session]);
 
   useEffect(() => {
     if (!isTauri()) return;
@@ -382,7 +409,14 @@ export default function App() {
       setSession(s);
       sessionStorage.setItem(SESSION_KEY, JSON.stringify(s));
       const role = resolvePrimaryRole(s.user.roles);
-      setMode(role === "learner" ? "home" : "instruct");
+      // Prefer queued Device OS navigation after normal auth — never skip login.
+      if (pendingDeviceOsNav) {
+        setMode(pendingDeviceOsNav as Mode);
+        setDeviceOsNavApplied(true);
+        setPendingDeviceOsNav(null);
+      } else {
+        setMode(role === "learner" ? "home" : "instruct");
+      }
     } catch (err) {
       setError(err instanceof HubAuthError ? err.detail : String(err));
     } finally {

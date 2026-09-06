@@ -29,7 +29,7 @@
     "PLATFORM_HARDENING_DIGITALLY_COMPLETE"
   ],
   "device_os_pr": 132,
-  "device_os_pr_head": "67cf98255e41d953e56eb142af063940e05c8dbb",
+  "device_os_pr_head": "5afc126ef1ce0fe917f78d1a3434c1de801535fb",
   "device_os_accepted_main": "28562a8456207540c205a1c8a6434a491b0a4771",
   "owner_action": "REVIEW_CROSS_REPO_PR_DEPENDENCY_ORDER",
   "next_gate_after_honest_gate_c": "Gate D — full-system acceptance (do not start)",

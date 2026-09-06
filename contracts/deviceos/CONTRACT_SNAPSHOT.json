@@ -1,6 +1,6 @@
 {
   "device_os_main_baseline": "28562a8456207540c205a1c8a6434a491b0a4771",
-  "device_os_integration_pr_head": "67cf98255e41d953e56eb142af063940e05c8dbb",
+  "device_os_integration_pr_head": "5afc126ef1ce0fe917f78d1a3434c1de801535fb",
   "device_os_branch": "cursor/waike-learning-deviceos-integration",
   "device_os_pr": "https://github.com/gunnchOS3k/gunnchos-device-os/pull/132",
   "pin_policy": "Gate C deviceos jobs checkout Device OS PR head (not main) until integration merges",

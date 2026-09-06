@@ -61,11 +61,11 @@
   "pins": {
     "waike": "fbf7685bc5686201ccaa0128ee83346d59b3d584",
     "gunnchai": "4b4f411710e8cdb8102a7e11502f8497f68156b1",
-    "device_os": "67cf98255e41d953e56eb142af063940e05c8dbb",
+    "device_os": "5afc126ef1ce0fe917f78d1a3434c1de801535fb",
     "device_os_accepted_main": "28562a8456207540c205a1c8a6434a491b0a4771"
   },
   "device_os_pr_required": true,
-  "tested_against": "device_os_pr_head:67cf98255e41d953e56eb142af063940e05c8dbb",
+  "tested_against": "device_os_pr_head:5afc126ef1ce0fe917f78d1a3434c1de801535fb",
   "exit_codes": {
     "prior_regression": 0,
     "prior_a": 0,

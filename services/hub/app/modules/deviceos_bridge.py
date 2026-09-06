@@ -48,7 +48,7 @@ APP_MANIFEST = {
     ),
 }
 
-DEVICE_OS_PIN_DEFAULT = "67cf98255e41d953e56eb142af063940e05c8dbb"
+DEVICE_OS_PIN_DEFAULT = "5afc126ef1ce0fe917f78d1a3434c1de801535fb"
 
 # Least-privilege map from platform roles → Device OS permission names (fixture fallback).
 ROLE_PERMISSIONS = {
