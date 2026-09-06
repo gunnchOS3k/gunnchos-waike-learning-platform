@@ -1,0 +1,111 @@
+# GATE_C_DEVICE_QUARTET_DIGITAL_PROFILE
+
+Generated: 2026-09-06T19:57:42Z
+
+```json
+{
+  "generated_utc": "2026-09-06T19:57:42Z",
+  "profiles": [
+    {
+      "id": "student_14_5",
+      "name": "Student 14.5\"",
+      "research_role": "full-session desk learning/work",
+      "viewport": {
+        "width": 1920,
+        "height": 1200,
+        "touch": false
+      },
+      "input": [
+        "keyboard",
+        "pointer"
+      ],
+      "compute": "sustained_local",
+      "labs": true,
+      "offline_cache": true,
+      "workflows": [
+        "learner_full",
+        "instructor_full"
+      ],
+      "companion_only": false
+    },
+    {
+      "id": "handheld_hybrid",
+      "name": "Handheld Hybrid",
+      "research_role": "mobile/docked continuity",
+      "viewport": {
+        "width": 1280,
+        "height": 800,
+        "touch": true
+      },
+      "input": [
+        "touch",
+        "gamepad_like",
+        "dock_keyboard"
+      ],
+      "compute": "mobile",
+      "labs": true,
+      "offline_cache": true,
+      "workflows": [
+        "learner_full",
+        "dock_extend"
+      ],
+      "companion_only": false,
+      "not_gaming_only": true
+    },
+    {
+      "id": "ds_xl_coder",
+      "name": "DS-XL Coder",
+      "research_role": "creation/build/test/deploy",
+      "viewport": {
+        "width": 2560,
+        "height": 1600,
+        "touch": false,
+        "dual_display": true
+      },
+      "input": [
+        "keyboard",
+        "pointer"
+      ],
+      "compute": "strong_local_dev",
+      "labs": true,
+      "offline_cache": true,
+      "workflows": [
+        "learner_full",
+        "instructor_full",
+        "local_dev_runtime",
+        "terminal_editor"
+      ],
+      "companion_only": false,
+      "strongest_learn_to_build": true
+    },
+    {
+      "id": "edge_io_wearables",
+      "name": "Edge IO Wearables",
+      "research_role": "low-latency sensing/haptics/HUD",
+      "viewport": {
+        "width": 480,
+        "height": 480,
+        "touch": true,
+        "hud": true
+      },
+      "input": [
+        "sensors",
+        "haptics",
+        "companion_deep_link"
+      ],
+      "compute": "constrained",
+      "labs": false,
+      "offline_cache": true,
+      "workflows": [
+        "companion",
+        "deep_link",
+        "sensor_haptic"
+      ],
+      "companion_only": true,
+      "standalone_full_lms": false
+    }
+  ],
+  "physical_validation": "EXTERNAL \u2014 not claimed by Gate C",
+  "digital_tests": "synthetic capability profiles only"
+}
+```

@@ -1,0 +1,68 @@
+# GATE_C_DEVICEOS_MATRIX
+
+Generated: 2026-09-06T19:57:42Z
+
+```json
+{
+  "generated_utc": "2026-09-06T19:57:42Z",
+  "manifest": {
+    "app_id": "com.gunnchos.waike.learning",
+    "device_os_registry_id": "waike_offline",
+    "device_os_runtime_id": "waike",
+    "name": "WAIKE Learning OS",
+    "version": "0.6.0-gate-c",
+    "entry": "apps/waike_learning/index.html",
+    "permissions_requested": [
+      "files_read",
+      "network",
+      "identity_read"
+    ],
+    "authority": "device_os_accepted_main",
+    "claim_boundary": "Digital integration only; Device OS remains install/launcher authority",
+    "device_os_root_present": true,
+    "device_os_pin": "28562a8456207540c205a1c8a6434a491b0a4771"
+  },
+  "contracts": {
+    "tested_against": "accepted_device_os_main",
+    "paths": {
+      "launcher": {
+        "path": "gunnchos_device_os/launcher.py",
+        "exists": true,
+        "sha256": "0ac9fd4dd38794df6dfa6c73f817a1b2d2da0aa32ba929e92ee9d7dee62c3c51"
+      },
+      "permissions": {
+        "path": "gunnchos_device_os/permissions_manager.py",
+        "exists": true,
+        "sha256": "9af07e8a06594e4611b3912d37119825c6010746bb18e000e96bb05fd89c7b38"
+      },
+      "continuity": {
+        "path": "gunnchos_device_os/shell/continuity_coordinator.py",
+        "exists": true,
+        "sha256": "f326e97ae779266e999bb48835fcc6f3dbef0d539bec1da8d68814c73f6d1f4f"
+      },
+      "updater": {
+        "path": "gunnchos_device_os/updater.py",
+        "exists": true,
+        "sha256": "321aca9404758635c2d2f59446e6b507efc970a6649f3a51973593dd7b3d6d52"
+      },
+      "app_registry": {
+        "path": "gunnchos_device_os/app_registry.py",
+        "exists": true,
+        "sha256": "a70a13218f2693dcd8d460b58b563ccfe3c0c6e1866eefc1094f3c18b72d3073"
+      },
+      "capability_descriptors": {
+        "path": "config/dock/capability_descriptors.json",
+        "exists": true,
+        "sha256": "7218ded699019f643bf42d529ac0f106813d063712fa67d86d9659917e9de36a"
+      },
+      "update_schema": {
+        "path": "shared_contracts/update_contract.schema.json",
+        "exists": true,
+        "sha256": "de0848b61972a896682ae941ed87ca9f95dff75d54567be68b6b58fb4cc045bd"
+      }
+    }
+  },
+  "device_os_pr_required": false,
+  "tested_against": "accepted_device_os_main"
+}
+```

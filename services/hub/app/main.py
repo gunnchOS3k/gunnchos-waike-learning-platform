@@ -1,4 +1,4 @@
-"""WAIKE Learning Hub — modular monolith (Gate A sync + Gate B gunnchAI)."""
+"""WAIKE Learning Hub — modular monolith (Gate C interop + Device OS + hardening)."""
 
 from __future__ import annotations
 
@@ -9,28 +9,42 @@ from fastapi import FastAPI
 from pydantic import BaseModel, Field
 
 from app.api.routes import router as api_router
+from app.api.routes_gate_c import router as gate_c_router
 from app.db import connect, migrate
 from app.modules.activity_engine import ActivityEngine
 from app.modules.ai_assist import AiAssistService
 from app.modules.ai_policy import AiPolicyService
 from app.modules.assessment_lifecycle import AssessmentService
+from app.modules.backup_restore import BackupService
+from app.modules.deviceos_bridge import DeviceOsBridge
 from app.modules.gradebook_service import GradebookService
 from app.modules.gunnchai_adapter import GunnchAIAdapter
+from app.modules.hardening import (
+    AdminConsole,
+    Observability,
+    PackageLifecycle,
+    PrivacyService,
+    RateLimiter,
+)
 from app.modules.identity import IdentityService
+from app.modules.lti import LtiService
+from app.modules.oneroster import OneRosterService
+from app.modules.qti import QtiService
 from app.modules.sections import SectionService
 from app.modules.sync import SyncService
 
-APP_VERSION = "0.5.0-gate-b"
+APP_VERSION = "0.6.0-gate-c"
 
 
 class DatabaseConfig(BaseModel):
     enabled: bool = True
     url: str | None = Field(default=None, description="sqlite path or postgresql URL")
     note: str = (
-        "Gate B uses SQLite hub persistence with forward migrations (m001–m005). "
+        "Gate C uses SQLite hub persistence with forward migrations (m001–m006). "
         "Production auth uses Argon2id sessions; fixture headers only when fixture_auth_enabled=true. "
         "AI defaults to LocalGunnchAIProvider when available, else unavailable; "
-        "FakeGunnchAIProvider is tests-only (explicit injection or WAIKE_ALLOW_FAKE_AI=1)."
+        "FakeGunnchAIProvider is tests-only (explicit injection or WAIKE_ALLOW_FAKE_AI=1). "
+        "Interop (OneRoster/QTI/LTI) and Device OS bridge are digital foundations — not certifications."
     )
 
 
@@ -129,7 +143,7 @@ def create_app(config: HubConfig | None = None, db_path: Path | None = None, see
         title="WAIKE Learning Hub",
         version=cfg.version,
         description=(
-            "Gate B gunnchAI + Gate A offline-first sync/activity engine on PR3 multi-user LMS. "
+            "Gate C interoperability + Device OS digital integration + hardening on Gate B. "
             "production_auth_enabled=true by default; fixture X-Waike-Actor-* headers only when "
             "fixture_auth_enabled=true. Synthetic test accounts are never seeded unless tests "
             "pass seed=True or WAIKE_SEED_TEST_FIXTURES=true is set for a non-production path."
@@ -157,6 +171,16 @@ def create_app(config: HubConfig | None = None, db_path: Path | None = None, see
     activities = ActivityEngine(conn, sections=sections)
     ai_policy = AiPolicyService(conn, sections)
     ai = AiAssistService(conn, sections, ai_policy, adapter=GunnchAIAdapter())
+    oneroster = OneRosterService(conn, identity)
+    qti = QtiService(conn, activities)
+    lti = LtiService(conn)
+    deviceos = DeviceOsBridge(conn)
+    backup = BackupService(conn, path)
+    privacy = PrivacyService(conn)
+    admin = AdminConsole(conn)
+    observability = Observability(conn)
+    packages = PackageLifecycle(conn)
+    rate_limiter = RateLimiter(conn)
 
     should_seed = bool(seed) or _fixture_seeding_allowed_by_env()
     if should_seed:
@@ -190,6 +214,16 @@ def create_app(config: HubConfig | None = None, db_path: Path | None = None, see
     app.state.activities = activities
     app.state.ai_policy = ai_policy
     app.state.ai = ai
+    app.state.oneroster = oneroster
+    app.state.qti = qti
+    app.state.lti = lti
+    app.state.deviceos = deviceos
+    app.state.backup = backup
+    app.state.privacy = privacy
+    app.state.admin = admin
+    app.state.observability = observability
+    app.state.packages = packages
+    app.state.rate_limiter = rate_limiter
     app.state.waike_root = str(waike) if waike else None
     app.state.seeded_test_fixtures = should_seed
 
@@ -211,6 +245,11 @@ def create_app(config: HubConfig | None = None, db_path: Path | None = None, see
             "activity_engine": True,
             "gunnchai": True,
             "ai_policy": True,
+            "oneroster": True,
+            "qti": True,
+            "lti": True,
+            "deviceos_bridge": True,
+            "hardening": True,
             "seeded_test_fixtures": should_seed,
         }
 
@@ -219,6 +258,7 @@ def create_app(config: HubConfig | None = None, db_path: Path | None = None, see
         return cfg
 
     app.include_router(api_router)
+    app.include_router(gate_c_router)
     return app
 
 

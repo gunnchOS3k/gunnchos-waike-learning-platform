@@ -1,0 +1,30 @@
+{
+  "generated_utc": "2026-09-06T19:57:42Z",
+  "standard": "OneRoster pilot subset",
+  "claim": "NOT_FULL_ONEROSTER",
+  "supported": {
+    "orgs": true,
+    "users": true,
+    "courses": true,
+    "classes": true,
+    "enrollments": true
+  },
+  "unsupported": [
+    "demographics",
+    "academicSessions",
+    "lineItems",
+    "results",
+    "resources",
+    "full REST sync"
+  ],
+  "fields": {
+    "sourcedId": true,
+    "status": true,
+    "dateLastModified": true,
+    "role_mapping": true,
+    "org_relationship": true,
+    "course_class_relationship": true,
+    "enrollment_relationship": true
+  },
+  "auth": "site_admin / operator only; no password import; no auth bypass"
+}

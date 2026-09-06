@@ -1,0 +1,76 @@
+{
+  "generated_utc": "2026-09-06T19:41:40Z",
+  "gate": "GATE_C",
+  "title": "Interoperability + Device OS + Hardening",
+  "live_truth": {
+    "platform_main": "797f5f4b50ff844eecdd068736ac660561910bb4",
+    "platform_main_note": "Gate B merge PR #5; parent 02ee27c\u2026",
+    "waike_main": "fbf7685bc5686201ccaa0128ee83346d59b3d584",
+    "gunnchai_main": "4b4f411710e8cdb8102a7e11502f8497f68156b1",
+    "device_os_main": "28562a8456207540c205a1c8a6434a491b0a4771",
+    "gate_b_ancestor_ok": true,
+    "open_gate_c_prs": [],
+    "duplicate_gate_c": false
+  },
+  "branch": "cursor/waike-learning-gate-c-interop-hardening",
+  "workstreams": {
+    "C1_interop": "OneRoster pilot + QTI subset + LTI 1.3 foundation",
+    "C2_deviceos": "Consume Device OS accepted-main contracts; digital Device Quartet profiles",
+    "C3_hardening": "Backup/restore, migration ladder, admin, privacy, sabotage, a11y, observability",
+    "integration_lead": "schemas/migrations/API/CI/evidence owned by Gate C integration lead"
+  },
+  "existing_platform_surfaces": {
+    "auth_roles": [
+      "learner",
+      "instructor",
+      "grader",
+      "site_admin"
+    ],
+    "quiz_item_types": [
+      "single_choice",
+      "multi_select",
+      "true_false",
+      "short_response",
+      "numeric",
+      "file_response"
+    ],
+    "migrations": [
+      "001",
+      "002",
+      "003",
+      "004",
+      "005"
+    ],
+    "tauri_identifier": "com.gunnchos.waike.learning",
+    "preserved_claims": [
+      "DIGITALLY_IMPLEMENTED_AND_AUTOMATICALLY_TESTED_FOR_PR1_SCOPE",
+      "ASSESSMENT_LIFECYCLE_DIGITALLY_COMPLETE",
+      "MULTI_USER_LMS_ALPHA_DIGITALLY_COMPLETE",
+      "OFFLINE_AND_ACTIVITY_ENGINE_DIGITALLY_COMPLETE",
+      "GUNNCHAI_PLATFORM_INTEGRATION_DIGITALLY_COMPLETE",
+      "ALL_18_WAIKE_TRACKS_DIGITALLY_AVAILABLE",
+      "18_TRACK_PLATFORM_DELIVERY_DIGITALLY_COMPLETE"
+    ]
+  },
+  "device_os_decision": {
+    "strategy": "platform_consumes_accepted_main",
+    "device_os_pr_required": false,
+    "reason": "Device OS main already exposes launcher, permissions, continuity, update contracts and waike_offline/waike runtime catalog entries. Platform adapts without copying Device OS authority."
+  },
+  "waike_decision": {
+    "maintenance_pr_required": false,
+    "reason": "Gate C interop/hardening does not consume a stale WAIKE export that blocks integration; pin remains fbf7685."
+  },
+  "claim_boundary": {
+    "will_not_claim": [
+      "OneRoster full certification",
+      "QTI full certification",
+      "LTI 1.3 external LMS certification",
+      "physical Device Quartet validation",
+      "production signing/notarization",
+      "FERPA certification",
+      "security/accessibility certification",
+      "Gate D full-system acceptance"
+    ]
+  }
+}
