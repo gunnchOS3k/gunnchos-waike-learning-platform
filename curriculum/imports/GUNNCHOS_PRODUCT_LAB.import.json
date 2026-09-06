@@ -1,0 +1,51 @@
+{
+  "module_id": "GUNNCHOS_PRODUCT_LAB",
+  "source_commit": "e97e74fc9bfb44b1cdc26b272dc4848264f15fe0",
+  "package_version": "1.0.0",
+  "source_kind": "digital_rc",
+  "digital_rc_package": "GUNNCHOS_PRODUCT_LAB",
+  "migration": {
+    "from": "digital_confidence_only",
+    "to": "registry_18_tracks",
+    "content_schema": "waike.course_package.v1"
+  },
+  "learner_globs": [
+    "curriculum/digital_rc/GUNNCHOS_PRODUCT_LAB/student/**",
+    "curriculum/digital_rc/GUNNCHOS_PRODUCT_LAB/weeks/**",
+    "curriculum/digital_rc/GUNNCHOS_PRODUCT_LAB/labs/**",
+    "curriculum/digital_rc/GUNNCHOS_PRODUCT_LAB/assignments/**",
+    "curriculum/digital_rc/GUNNCHOS_PRODUCT_LAB/quizzes/**",
+    "curriculum/digital_rc/GUNNCHOS_PRODUCT_LAB/portfolio/**",
+    "curriculum/digital_rc/GUNNCHOS_PRODUCT_LAB/projects/**",
+    "curriculum/digital_rc/GUNNCHOS_PRODUCT_LAB/assessments/**",
+    "curriculum/digital_rc/GUNNCHOS_PRODUCT_LAB/rubrics/**",
+    "curriculum/digital_rc/GUNNCHOS_PRODUCT_LAB/syllabus.md",
+    "curriculum/digital_rc/GUNNCHOS_PRODUCT_LAB/course.json",
+    "curriculum/digital_rc/GUNNCHOS_PRODUCT_LAB/prerequisites.json",
+    "curriculum/digital_rc/GUNNCHOS_PRODUCT_LAB/career_mapping.json",
+    "curriculum/digital_rc/GUNNCHOS_PRODUCT_LAB/offline_pack/**",
+    "curriculum/digital_rc/GUNNCHOS_PRODUCT_LAB/presentation/**",
+    "curriculum/digital_rc/GUNNCHOS_PRODUCT_LAB/ai_use_policy.json",
+    "curriculum/digital_rc/GUNNCHOS_PRODUCT_LAB/guides/**",
+    "programs/gunnchos_device_os_and_product_lab.md"
+  ],
+  "instructor_only_globs": [
+    "curriculum/digital_rc/GUNNCHOS_PRODUCT_LAB/instructor/**"
+  ],
+  "instructor_path_markers": [
+    "instructor_solution",
+    "instructor_solution_guide",
+    "instructor_solution_guides/",
+    "solution_guide",
+    "solution_notes_for_instructors",
+    "instructor_notes",
+    "answer_key",
+    "answer_keys/",
+    "answer_keys.json",
+    "/instructor/",
+    "instructor_packet",
+    "deep_instructor",
+    "teaching_notes.md",
+    "demo_plan.md"
+  ]
+}

@@ -56,13 +56,14 @@ def discover_files(waike_root: Path, spec: dict[str, Any]) -> ImportPlan:
     learner_globs = spec.get("learner_globs") or []
     instructor_globs = spec.get("instructor_only_globs") or []
 
-    # Prefer explicit lesson tree existence
+    # Prefer explicit lesson tree existence for legacy DIGITAL_CONFIDENCE
     lesson_root = waike_root / "lessons" / "by_course" / "digital_confidence"
     if module_id == "DIGITAL_CONFIDENCE" and not lesson_root.is_dir():
         raise RegistryError(
             RejectionReason.UNKNOWN_MODULE,
             f"DIGITAL_CONFIDENCE lessons missing at {lesson_root}",
         )
+    # digital_rc weeks (when present) are discovered via learner_globs below
 
     candidates: set[Path] = set()
     for pat in learner_globs + instructor_globs:

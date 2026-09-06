@@ -1,0 +1,52 @@
+{
+  "module_id": "COMM_PD_ETHICS",
+  "source_commit": "e97e74fc9bfb44b1cdc26b272dc4848264f15fe0",
+  "package_version": "1.0.0",
+  "source_kind": "digital_rc",
+  "digital_rc_package": "COMM_PD_ETHICS",
+  "migration": {
+    "from": "digital_confidence_only",
+    "to": "registry_18_tracks",
+    "content_schema": "waike.course_package.v1"
+  },
+  "learner_globs": [
+    "curriculum/digital_rc/COMM_PD_ETHICS/student/**",
+    "curriculum/digital_rc/COMM_PD_ETHICS/weeks/**",
+    "curriculum/digital_rc/COMM_PD_ETHICS/labs/**",
+    "curriculum/digital_rc/COMM_PD_ETHICS/assignments/**",
+    "curriculum/digital_rc/COMM_PD_ETHICS/quizzes/**",
+    "curriculum/digital_rc/COMM_PD_ETHICS/portfolio/**",
+    "curriculum/digital_rc/COMM_PD_ETHICS/projects/**",
+    "curriculum/digital_rc/COMM_PD_ETHICS/assessments/**",
+    "curriculum/digital_rc/COMM_PD_ETHICS/rubrics/**",
+    "curriculum/digital_rc/COMM_PD_ETHICS/syllabus.md",
+    "curriculum/digital_rc/COMM_PD_ETHICS/course.json",
+    "curriculum/digital_rc/COMM_PD_ETHICS/prerequisites.json",
+    "curriculum/digital_rc/COMM_PD_ETHICS/career_mapping.json",
+    "curriculum/digital_rc/COMM_PD_ETHICS/offline_pack/**",
+    "curriculum/digital_rc/COMM_PD_ETHICS/presentation/**",
+    "curriculum/digital_rc/COMM_PD_ETHICS/ai_use_policy.json",
+    "curriculum/digital_rc/COMM_PD_ETHICS/guides/**",
+    "programs/communication_professional_development_and_ethics.md",
+    "programs/professional_development.md"
+  ],
+  "instructor_only_globs": [
+    "curriculum/digital_rc/COMM_PD_ETHICS/instructor/**"
+  ],
+  "instructor_path_markers": [
+    "instructor_solution",
+    "instructor_solution_guide",
+    "instructor_solution_guides/",
+    "solution_guide",
+    "solution_notes_for_instructors",
+    "instructor_notes",
+    "answer_key",
+    "answer_keys/",
+    "answer_keys.json",
+    "/instructor/",
+    "instructor_packet",
+    "deep_instructor",
+    "teaching_notes.md",
+    "demo_plan.md"
+  ]
+}

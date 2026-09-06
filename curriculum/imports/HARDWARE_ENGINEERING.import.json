@@ -1,0 +1,51 @@
+{
+  "module_id": "HARDWARE_ENGINEERING",
+  "source_commit": "e97e74fc9bfb44b1cdc26b272dc4848264f15fe0",
+  "package_version": "1.0.0",
+  "source_kind": "digital_rc",
+  "digital_rc_package": "HARDWARE_ENGINEERING",
+  "migration": {
+    "from": "digital_confidence_only",
+    "to": "registry_18_tracks",
+    "content_schema": "waike.course_package.v1"
+  },
+  "learner_globs": [
+    "curriculum/digital_rc/HARDWARE_ENGINEERING/student/**",
+    "curriculum/digital_rc/HARDWARE_ENGINEERING/weeks/**",
+    "curriculum/digital_rc/HARDWARE_ENGINEERING/labs/**",
+    "curriculum/digital_rc/HARDWARE_ENGINEERING/assignments/**",
+    "curriculum/digital_rc/HARDWARE_ENGINEERING/quizzes/**",
+    "curriculum/digital_rc/HARDWARE_ENGINEERING/portfolio/**",
+    "curriculum/digital_rc/HARDWARE_ENGINEERING/projects/**",
+    "curriculum/digital_rc/HARDWARE_ENGINEERING/assessments/**",
+    "curriculum/digital_rc/HARDWARE_ENGINEERING/rubrics/**",
+    "curriculum/digital_rc/HARDWARE_ENGINEERING/syllabus.md",
+    "curriculum/digital_rc/HARDWARE_ENGINEERING/course.json",
+    "curriculum/digital_rc/HARDWARE_ENGINEERING/prerequisites.json",
+    "curriculum/digital_rc/HARDWARE_ENGINEERING/career_mapping.json",
+    "curriculum/digital_rc/HARDWARE_ENGINEERING/offline_pack/**",
+    "curriculum/digital_rc/HARDWARE_ENGINEERING/presentation/**",
+    "curriculum/digital_rc/HARDWARE_ENGINEERING/ai_use_policy.json",
+    "curriculum/digital_rc/HARDWARE_ENGINEERING/guides/**",
+    "programs/hardware_engineering.md"
+  ],
+  "instructor_only_globs": [
+    "curriculum/digital_rc/HARDWARE_ENGINEERING/instructor/**"
+  ],
+  "instructor_path_markers": [
+    "instructor_solution",
+    "instructor_solution_guide",
+    "instructor_solution_guides/",
+    "solution_guide",
+    "solution_notes_for_instructors",
+    "instructor_notes",
+    "answer_key",
+    "answer_keys/",
+    "answer_keys.json",
+    "/instructor/",
+    "instructor_packet",
+    "deep_instructor",
+    "teaching_notes.md",
+    "demo_plan.md"
+  ]
+}

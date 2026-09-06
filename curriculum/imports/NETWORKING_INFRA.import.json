@@ -1,0 +1,52 @@
+{
+  "module_id": "NETWORKING_INFRA",
+  "source_commit": "e97e74fc9bfb44b1cdc26b272dc4848264f15fe0",
+  "package_version": "1.0.0",
+  "source_kind": "digital_rc",
+  "digital_rc_package": "COMPUTER_NETWORKING",
+  "migration": {
+    "from": "digital_confidence_only",
+    "to": "registry_18_tracks",
+    "content_schema": "waike.course_package.v1"
+  },
+  "learner_globs": [
+    "curriculum/digital_rc/COMPUTER_NETWORKING/student/**",
+    "curriculum/digital_rc/COMPUTER_NETWORKING/weeks/**",
+    "curriculum/digital_rc/COMPUTER_NETWORKING/labs/**",
+    "curriculum/digital_rc/COMPUTER_NETWORKING/assignments/**",
+    "curriculum/digital_rc/COMPUTER_NETWORKING/quizzes/**",
+    "curriculum/digital_rc/COMPUTER_NETWORKING/portfolio/**",
+    "curriculum/digital_rc/COMPUTER_NETWORKING/projects/**",
+    "curriculum/digital_rc/COMPUTER_NETWORKING/assessments/**",
+    "curriculum/digital_rc/COMPUTER_NETWORKING/rubrics/**",
+    "curriculum/digital_rc/COMPUTER_NETWORKING/syllabus.md",
+    "curriculum/digital_rc/COMPUTER_NETWORKING/course.json",
+    "curriculum/digital_rc/COMPUTER_NETWORKING/prerequisites.json",
+    "curriculum/digital_rc/COMPUTER_NETWORKING/career_mapping.json",
+    "curriculum/digital_rc/COMPUTER_NETWORKING/offline_pack/**",
+    "curriculum/digital_rc/COMPUTER_NETWORKING/presentation/**",
+    "curriculum/digital_rc/COMPUTER_NETWORKING/ai_use_policy.json",
+    "curriculum/digital_rc/COMPUTER_NETWORKING/guides/**",
+    "programs/networking_infrastructure.md",
+    "programs/networking.md"
+  ],
+  "instructor_only_globs": [
+    "curriculum/digital_rc/COMPUTER_NETWORKING/instructor/**"
+  ],
+  "instructor_path_markers": [
+    "instructor_solution",
+    "instructor_solution_guide",
+    "instructor_solution_guides/",
+    "solution_guide",
+    "solution_notes_for_instructors",
+    "instructor_notes",
+    "answer_key",
+    "answer_keys/",
+    "answer_keys.json",
+    "/instructor/",
+    "instructor_packet",
+    "deep_instructor",
+    "teaching_notes.md",
+    "demo_plan.md"
+  ]
+}

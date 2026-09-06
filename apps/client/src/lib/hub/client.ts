@@ -4,6 +4,7 @@ import {
   type ActivityClient,
   type InstructorActivityClient,
 } from "./activities";
+import { createAiClient, type AiClient } from "../../components/ai/AiPanels";
 
 export type ActorRole = "learner" | "instructor" | "grader" | "site_admin";
 
@@ -157,6 +158,8 @@ export interface HubClient {
   activities: ActivityClient;
   /** Staff-only calls; the server rejects them for learners regardless. */
   instructorActivities: InstructorActivityClient;
+  /** Gate B gunnchAI — learner/instructor assist + policy. */
+  ai: AiClient;
 }
 
 function authHeaders(token: string | null, actor?: HubActor): HeadersInit {
@@ -274,5 +277,6 @@ export function createHttpHubClient(
     mastery: (assignmentId) => req(`/api/v1/assignments/${assignmentId}/mastery`),
     activities: createActivityClient(req),
     instructorActivities: createInstructorActivityClient(req),
+    ai: createAiClient(req),
   };
 }

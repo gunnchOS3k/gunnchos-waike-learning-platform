@@ -1,0 +1,55 @@
+{
+  "gate": "B",
+  "title": "AI security matrix",
+  "gunnchai_sha": "4b4f411710e8cdb8102a7e11502f8497f68156b1",
+  "section_32_threats": [
+    {
+      "id": "answer_key",
+      "code": "AI_INTEGRITY_REFUSED",
+      "tests": ["tests/gate_b/test_ai_context_isolation.py", "tests/gate_b/test_adversarial_ai_sabotage.py"]
+    },
+    {
+      "id": "prompt_injection_query",
+      "code": "AI_PROMPT_INJECTION",
+      "tests": ["tests/gate_b/test_ai_prompt_injection.py"]
+    },
+    {
+      "id": "prompt_injection_submission",
+      "code": "AI_PROMPT_INJECTION",
+      "tests": ["tests/gate_b/test_ai_prompt_injection.py", "tests/gate_b/test_adversarial_ai_sabotage.py"]
+    },
+    {
+      "id": "cross_learner",
+      "code": "AI_CROSS_LEARNER_FORBIDDEN",
+      "tests": ["tests/gate_b/test_ai_context_isolation.py", "tests/gate_b/test_adversarial_ai_sabotage.py"]
+    },
+    {
+      "id": "system_prompt_exfil",
+      "code": "AI_SYSTEM_PROMPT_EXFIL",
+      "tests": ["tests/gate_b/test_ai_context_isolation.py", "tests/gate_b/test_adversarial_ai_sabotage.py"]
+    },
+    {
+      "id": "instructor_context_exfil",
+      "code": "AI_INSTRUCTOR_CONTEXT_LEAK",
+      "tests": ["tests/gate_b/test_ai_context_isolation.py", "tests/gate_b/test_adversarial_ai_sabotage.py"]
+    },
+    {
+      "id": "provider_errors",
+      "code": "AI_PROVIDER_ERROR",
+      "tests": ["tests/gate_b/test_adversarial_ai_sabotage.py"]
+    },
+    {
+      "id": "offline_fallback",
+      "code": "AI_PROVIDER_UNAVAILABLE",
+      "tests": ["tests/gate_b/test_adversarial_ai_sabotage.py", "tests/gate_b/test_gunnchai_contract.py"]
+    },
+    {
+      "id": "silent_grade_change",
+      "code": "AI_SILENT_GRADE_FORBIDDEN",
+      "tests": ["tests/gate_b/test_ai_grade_safety.py", "tests/gate_b/test_adversarial_ai_sabotage.py"]
+    }
+  ],
+  "ci_provider": "FakeGunnchAIProvider",
+  "production_keys_in_ci": false,
+  "local_gguf_fabricated": false
+}

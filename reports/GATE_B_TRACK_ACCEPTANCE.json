@@ -1,0 +1,430 @@
+{
+  "schema": "waike.gate_b.track_acceptance.v1",
+  "source_matrix": "reports/WAIKE_18_TRACK_PACKAGE_MATRIX.json",
+  "tracks": [
+    {
+      "track": "DIGITAL_CONFIDENCE",
+      "matrix_final_status": "PASS",
+      "matrix_install": "PASS",
+      "matrix_learner_visible": "PASS",
+      "matrix_instructor_visible": "PASS",
+      "matrix_offline": "NO",
+      "compile_verify_ok": true,
+      "activity_counts": {
+        "lessons": 8,
+        "assignments": 16,
+        "quizzes": 0,
+        "labs": 8,
+        "rubrics": 0
+      },
+      "e2e": {
+        "install": "PENDING_SUITE",
+        "learner": "PENDING_SUITE",
+        "instructor": "PENDING_SUITE",
+        "offline": "PENDING_SUITE"
+      },
+      "blocker": ""
+    },
+    {
+      "track": "IT_SUPPORT_HARDWARE",
+      "matrix_final_status": "PASS",
+      "matrix_install": "PASS",
+      "matrix_learner_visible": "PASS",
+      "matrix_instructor_visible": "PASS",
+      "matrix_offline": "YES",
+      "compile_verify_ok": true,
+      "activity_counts": {
+        "lessons": 10,
+        "assignments": 10,
+        "quizzes": 10,
+        "labs": 7,
+        "rubrics": 8
+      },
+      "e2e": {
+        "install": "PENDING_SUITE",
+        "learner": "PENDING_SUITE",
+        "instructor": "PENDING_SUITE",
+        "offline": "PENDING_SUITE"
+      },
+      "blocker": ""
+    },
+    {
+      "track": "SOFTWARE_BUILDER",
+      "matrix_final_status": "PASS",
+      "matrix_install": "PASS",
+      "matrix_learner_visible": "PASS",
+      "matrix_instructor_visible": "PASS",
+      "matrix_offline": "YES",
+      "compile_verify_ok": true,
+      "activity_counts": {
+        "lessons": 10,
+        "assignments": 10,
+        "quizzes": 10,
+        "labs": 10,
+        "rubrics": 8
+      },
+      "e2e": {
+        "install": "PENDING_SUITE",
+        "learner": "PENDING_SUITE",
+        "instructor": "PENDING_SUITE",
+        "offline": "PENDING_SUITE"
+      },
+      "blocker": ""
+    },
+    {
+      "track": "NETWORKING_INFRA",
+      "matrix_final_status": "PASS",
+      "matrix_install": "PASS",
+      "matrix_learner_visible": "PASS",
+      "matrix_instructor_visible": "PASS",
+      "matrix_offline": "YES",
+      "compile_verify_ok": true,
+      "activity_counts": {
+        "lessons": 10,
+        "assignments": 10,
+        "quizzes": 10,
+        "labs": 6,
+        "rubrics": 8
+      },
+      "e2e": {
+        "install": "PENDING_SUITE",
+        "learner": "PENDING_SUITE",
+        "instructor": "PENDING_SUITE",
+        "offline": "PENDING_SUITE"
+      },
+      "blocker": ""
+    },
+    {
+      "track": "CYBER_SOC",
+      "matrix_final_status": "PASS",
+      "matrix_install": "PASS",
+      "matrix_learner_visible": "PASS",
+      "matrix_instructor_visible": "PASS",
+      "matrix_offline": "YES",
+      "compile_verify_ok": true,
+      "activity_counts": {
+        "lessons": 10,
+        "assignments": 10,
+        "quizzes": 10,
+        "labs": 7,
+        "rubrics": 8
+      },
+      "e2e": {
+        "install": "PENDING_SUITE",
+        "learner": "PENDING_SUITE",
+        "instructor": "PENDING_SUITE",
+        "offline": "PENDING_SUITE"
+      },
+      "blocker": ""
+    },
+    {
+      "track": "DATA_DASHBOARDS",
+      "matrix_final_status": "PASS",
+      "matrix_install": "PASS",
+      "matrix_learner_visible": "PASS",
+      "matrix_instructor_visible": "PASS",
+      "matrix_offline": "YES",
+      "compile_verify_ok": true,
+      "activity_counts": {
+        "lessons": 10,
+        "assignments": 10,
+        "quizzes": 10,
+        "labs": 10,
+        "rubrics": 8
+      },
+      "e2e": {
+        "install": "PENDING_SUITE",
+        "learner": "PENDING_SUITE",
+        "instructor": "PENDING_SUITE",
+        "offline": "PENDING_SUITE"
+      },
+      "blocker": ""
+    },
+    {
+      "track": "AI_ML_EDGE",
+      "matrix_final_status": "PASS",
+      "matrix_install": "PASS",
+      "matrix_learner_visible": "PASS",
+      "matrix_instructor_visible": "PASS",
+      "matrix_offline": "YES",
+      "compile_verify_ok": true,
+      "activity_counts": {
+        "lessons": 10,
+        "assignments": 10,
+        "quizzes": 10,
+        "labs": 10,
+        "rubrics": 8
+      },
+      "e2e": {
+        "install": "PENDING_SUITE",
+        "learner": "PENDING_SUITE",
+        "instructor": "PENDING_SUITE",
+        "offline": "PENDING_SUITE"
+      },
+      "blocker": ""
+    },
+    {
+      "track": "EMBEDDED_PROTOTYPING",
+      "matrix_final_status": "PASS",
+      "matrix_install": "PASS",
+      "matrix_learner_visible": "PASS",
+      "matrix_instructor_visible": "PASS",
+      "matrix_offline": "YES",
+      "compile_verify_ok": true,
+      "activity_counts": {
+        "lessons": 10,
+        "assignments": 10,
+        "quizzes": 10,
+        "labs": 10,
+        "rubrics": 8
+      },
+      "e2e": {
+        "install": "PENDING_SUITE",
+        "learner": "PENDING_SUITE",
+        "instructor": "PENDING_SUITE",
+        "offline": "PENDING_SUITE"
+      },
+      "blocker": ""
+    },
+    {
+      "track": "WIRELESS_6G",
+      "matrix_final_status": "PASS",
+      "matrix_install": "PASS",
+      "matrix_learner_visible": "PASS",
+      "matrix_instructor_visible": "PASS",
+      "matrix_offline": "YES",
+      "compile_verify_ok": true,
+      "activity_counts": {
+        "lessons": 10,
+        "assignments": 10,
+        "quizzes": 10,
+        "labs": 10,
+        "rubrics": 8
+      },
+      "e2e": {
+        "install": "PENDING_SUITE",
+        "learner": "PENDING_SUITE",
+        "instructor": "PENDING_SUITE",
+        "offline": "PENDING_SUITE"
+      },
+      "blocker": ""
+    },
+    {
+      "track": "PM_AGILE_LSS",
+      "matrix_final_status": "PASS",
+      "matrix_install": "PASS",
+      "matrix_learner_visible": "PASS",
+      "matrix_instructor_visible": "PASS",
+      "matrix_offline": "YES",
+      "compile_verify_ok": true,
+      "activity_counts": {
+        "lessons": 10,
+        "assignments": 10,
+        "quizzes": 10,
+        "labs": 10,
+        "rubrics": 8
+      },
+      "e2e": {
+        "install": "PENDING_SUITE",
+        "learner": "PENDING_SUITE",
+        "instructor": "PENDING_SUITE",
+        "offline": "PENDING_SUITE"
+      },
+      "blocker": ""
+    },
+    {
+      "track": "GAME_DEV_INTERACTIVE",
+      "matrix_final_status": "PASS",
+      "matrix_install": "PASS",
+      "matrix_learner_visible": "PASS",
+      "matrix_instructor_visible": "PASS",
+      "matrix_offline": "YES",
+      "compile_verify_ok": true,
+      "activity_counts": {
+        "lessons": 10,
+        "assignments": 10,
+        "quizzes": 10,
+        "labs": 10,
+        "rubrics": 8
+      },
+      "e2e": {
+        "install": "PENDING_SUITE",
+        "learner": "PENDING_SUITE",
+        "instructor": "PENDING_SUITE",
+        "offline": "PENDING_SUITE"
+      },
+      "blocker": ""
+    },
+    {
+      "track": "SEVEN_GC_APPRENTICESHIP",
+      "matrix_final_status": "PASS",
+      "matrix_install": "PASS",
+      "matrix_learner_visible": "PASS",
+      "matrix_instructor_visible": "EMPTY",
+      "matrix_offline": "NO",
+      "compile_verify_ok": true,
+      "activity_counts": {
+        "lessons": 0,
+        "assignments": 0,
+        "quizzes": 0,
+        "labs": 0,
+        "rubrics": 0
+      },
+      "e2e": {
+        "install": "PENDING_SUITE",
+        "learner": "PENDING_SUITE",
+        "instructor": "PENDING_SUITE",
+        "offline": "PENDING_SUITE"
+      },
+      "blocker": "thin_source_inventory_no_digital_rc_weeks"
+    },
+    {
+      "track": "CLOUD_DEVOPS",
+      "matrix_final_status": "PASS",
+      "matrix_install": "PASS",
+      "matrix_learner_visible": "PASS",
+      "matrix_instructor_visible": "PASS",
+      "matrix_offline": "YES",
+      "compile_verify_ok": true,
+      "activity_counts": {
+        "lessons": 10,
+        "assignments": 10,
+        "quizzes": 10,
+        "labs": 10,
+        "rubrics": 8
+      },
+      "e2e": {
+        "install": "PENDING_SUITE",
+        "learner": "PENDING_SUITE",
+        "instructor": "PENDING_SUITE",
+        "offline": "PENDING_SUITE"
+      },
+      "blocker": ""
+    },
+    {
+      "track": "COMM_PD_ETHICS",
+      "matrix_final_status": "PASS",
+      "matrix_install": "PASS",
+      "matrix_learner_visible": "PASS",
+      "matrix_instructor_visible": "PASS",
+      "matrix_offline": "YES",
+      "compile_verify_ok": true,
+      "activity_counts": {
+        "lessons": 10,
+        "assignments": 10,
+        "quizzes": 10,
+        "labs": 10,
+        "rubrics": 8
+      },
+      "e2e": {
+        "install": "PENDING_SUITE",
+        "learner": "PENDING_SUITE",
+        "instructor": "PENDING_SUITE",
+        "offline": "PENDING_SUITE"
+      },
+      "blocker": ""
+    },
+    {
+      "track": "ROBOTICS_CONTROL",
+      "matrix_final_status": "PASS",
+      "matrix_install": "PASS",
+      "matrix_learner_visible": "PASS",
+      "matrix_instructor_visible": "PASS",
+      "matrix_offline": "YES",
+      "compile_verify_ok": true,
+      "activity_counts": {
+        "lessons": 10,
+        "assignments": 10,
+        "quizzes": 10,
+        "labs": 10,
+        "rubrics": 8
+      },
+      "e2e": {
+        "install": "PENDING_SUITE",
+        "learner": "PENDING_SUITE",
+        "instructor": "PENDING_SUITE",
+        "offline": "PENDING_SUITE"
+      },
+      "blocker": ""
+    },
+    {
+      "track": "GUNNCHOS_PRODUCT_LAB",
+      "matrix_final_status": "PASS",
+      "matrix_install": "PASS",
+      "matrix_learner_visible": "PASS",
+      "matrix_instructor_visible": "PASS",
+      "matrix_offline": "YES",
+      "compile_verify_ok": true,
+      "activity_counts": {
+        "lessons": 10,
+        "assignments": 10,
+        "quizzes": 10,
+        "labs": 10,
+        "rubrics": 8
+      },
+      "e2e": {
+        "install": "PENDING_SUITE",
+        "learner": "PENDING_SUITE",
+        "instructor": "PENDING_SUITE",
+        "offline": "PENDING_SUITE"
+      },
+      "blocker": ""
+    },
+    {
+      "track": "HARDWARE_ENGINEERING",
+      "matrix_final_status": "PASS",
+      "matrix_install": "PASS",
+      "matrix_learner_visible": "PASS",
+      "matrix_instructor_visible": "PASS",
+      "matrix_offline": "YES",
+      "compile_verify_ok": true,
+      "activity_counts": {
+        "lessons": 10,
+        "assignments": 10,
+        "quizzes": 10,
+        "labs": 10,
+        "rubrics": 8
+      },
+      "e2e": {
+        "install": "PENDING_SUITE",
+        "learner": "PENDING_SUITE",
+        "instructor": "PENDING_SUITE",
+        "offline": "PENDING_SUITE"
+      },
+      "blocker": ""
+    },
+    {
+      "track": "DATA_VIZ_BI",
+      "matrix_final_status": "PASS",
+      "matrix_install": "PASS",
+      "matrix_learner_visible": "PASS",
+      "matrix_instructor_visible": "PASS",
+      "matrix_offline": "YES",
+      "compile_verify_ok": true,
+      "activity_counts": {
+        "lessons": 10,
+        "assignments": 10,
+        "quizzes": 10,
+        "labs": 10,
+        "rubrics": 8
+      },
+      "e2e": {
+        "install": "PENDING_SUITE",
+        "learner": "PENDING_SUITE",
+        "instructor": "PENDING_SUITE",
+        "offline": "PENDING_SUITE"
+      },
+      "blocker": ""
+    }
+  ],
+  "summary": {
+    "track_count": 18,
+    "matrix_pass": 18,
+    "matrix_fail": 0
+  },
+  "notes": [
+    "Skeleton populated from WAIKE_18_TRACK_PACKAGE_MATRIX.json.",
+    "E2E suite statuses are asserted live by test_install/learner/instructor/offline_18.",
+    "SEVEN_GC_APPRENTICESHIP may be thin (zero digital_rc weeks) without inventing content."
+  ]
+}

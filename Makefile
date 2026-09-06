@@ -1,4 +1,4 @@
-.PHONY: bootstrap lint test build verify-pr1 verify-pr2 verify-pr3 verify-gate-a compile-dc rust-test frontend-test hub-test python-test assessment-test pr3-test gate-a-test clean
+.PHONY: bootstrap lint test build verify-pr1 verify-pr2 verify-pr3 verify-gate-a verify-gate-b compile-dc compile-18 rust-test frontend-test hub-test python-test assessment-test pr3-test gate-a-test gate-b-test gate-b-ai-test clean
 
 export PATH := $(HOME)/.cargo/bin:$(PATH)
 export SOURCE_DATE_EPOCH ?= 1700000000
@@ -37,6 +37,15 @@ pr3-test:
 gate-a-test:
 	WAIKE_ROOT=$(WAIKE_ROOT) PYTHONPATH=services/hub $(PYTHON) -m pytest -q tests/gate_a
 
+gate-b-ai-test:
+	WAIKE_ROOT=$(WAIKE_ROOT) PYTHONPATH=services/hub $(PYTHON) -m pytest -q \
+	  tests/gate_b/test_ai_policy.py \
+	  tests/gate_b/test_ai_context_isolation.py \
+	  tests/gate_b/test_ai_prompt_injection.py \
+	  tests/gate_b/test_ai_grade_safety.py \
+	  tests/gate_b/test_gunnchai_contract.py \
+	  tests/gate_b/test_adversarial_ai_sabotage.py
+
 hub-test:
 	WAIKE_ROOT=$(WAIKE_ROOT) PYTHONPATH=services/hub $(PYTHON) -m pytest -q services/hub/tests
 
@@ -52,6 +61,23 @@ compile-dc:
 	@mkdir -p pack_out reports
 	$(PYTHON) -m course_compiler.cli compile DIGITAL_CONFIDENCE --out pack_out || \
 	  .venv/bin/course-compiler compile DIGITAL_CONFIDENCE --out pack_out
+
+compile-18:
+	@mkdir -p pack_out_18 reports
+	$(PYTHON) -m course_compiler.cli compile-all --out pack_out_18
+	WAIKE_ROOT=$(WAIKE_ROOT) $(PYTHON) scripts/inventory_18_tracks.py
+	WAIKE_ROOT=$(WAIKE_ROOT) $(PYTHON) scripts/build_18_track_matrix.py
+
+gate-b-test:
+	WAIKE_ROOT=$(WAIKE_ROOT) PYTHONPATH=tools/course_compiler:services/hub $(PYTHON) -m pytest -q \
+	  tests/gate_b/test_compiler_18.py \
+	  tests/gate_b/test_package_security_18.py \
+	  tests/gate_b/test_activity_coverage_18.py
+
+verify-gate-b:
+	@mkdir -p reports
+	@WAIKE_ROOT=$(WAIKE_ROOT) $(PYTHON) scripts/verify_gate_b.py
+	@echo "verify-gate-b: see reports/GATE_B_VERIFICATION.md"
 
 build: compile-dc
 	cd $(CLIENT) && (command -v pnpm >/dev/null && pnpm run build || npm run build)

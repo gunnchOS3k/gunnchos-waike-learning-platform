@@ -1,0 +1,51 @@
+{
+  "module_id": "GAME_DEV_INTERACTIVE",
+  "source_commit": "e97e74fc9bfb44b1cdc26b272dc4848264f15fe0",
+  "package_version": "1.0.0",
+  "source_kind": "digital_rc",
+  "digital_rc_package": "GAME_DEV_INTERACTIVE",
+  "migration": {
+    "from": "digital_confidence_only",
+    "to": "registry_18_tracks",
+    "content_schema": "waike.course_package.v1"
+  },
+  "learner_globs": [
+    "curriculum/digital_rc/GAME_DEV_INTERACTIVE/student/**",
+    "curriculum/digital_rc/GAME_DEV_INTERACTIVE/weeks/**",
+    "curriculum/digital_rc/GAME_DEV_INTERACTIVE/labs/**",
+    "curriculum/digital_rc/GAME_DEV_INTERACTIVE/assignments/**",
+    "curriculum/digital_rc/GAME_DEV_INTERACTIVE/quizzes/**",
+    "curriculum/digital_rc/GAME_DEV_INTERACTIVE/portfolio/**",
+    "curriculum/digital_rc/GAME_DEV_INTERACTIVE/projects/**",
+    "curriculum/digital_rc/GAME_DEV_INTERACTIVE/assessments/**",
+    "curriculum/digital_rc/GAME_DEV_INTERACTIVE/rubrics/**",
+    "curriculum/digital_rc/GAME_DEV_INTERACTIVE/syllabus.md",
+    "curriculum/digital_rc/GAME_DEV_INTERACTIVE/course.json",
+    "curriculum/digital_rc/GAME_DEV_INTERACTIVE/prerequisites.json",
+    "curriculum/digital_rc/GAME_DEV_INTERACTIVE/career_mapping.json",
+    "curriculum/digital_rc/GAME_DEV_INTERACTIVE/offline_pack/**",
+    "curriculum/digital_rc/GAME_DEV_INTERACTIVE/presentation/**",
+    "curriculum/digital_rc/GAME_DEV_INTERACTIVE/ai_use_policy.json",
+    "curriculum/digital_rc/GAME_DEV_INTERACTIVE/guides/**",
+    "programs/game_dev_interactive.md"
+  ],
+  "instructor_only_globs": [
+    "curriculum/digital_rc/GAME_DEV_INTERACTIVE/instructor/**"
+  ],
+  "instructor_path_markers": [
+    "instructor_solution",
+    "instructor_solution_guide",
+    "instructor_solution_guides/",
+    "solution_guide",
+    "solution_notes_for_instructors",
+    "instructor_notes",
+    "answer_key",
+    "answer_keys/",
+    "answer_keys.json",
+    "/instructor/",
+    "instructor_packet",
+    "deep_instructor",
+    "teaching_notes.md",
+    "demo_plan.md"
+  ]
+}

@@ -1,0 +1,52 @@
+{
+  "module_id": "WIRELESS_6G",
+  "source_commit": "e97e74fc9bfb44b1cdc26b272dc4848264f15fe0",
+  "package_version": "1.0.0",
+  "source_kind": "digital_rc",
+  "digital_rc_package": "WIRELESS_6G",
+  "migration": {
+    "from": "digital_confidence_only",
+    "to": "registry_18_tracks",
+    "content_schema": "waike.course_package.v1"
+  },
+  "learner_globs": [
+    "curriculum/digital_rc/WIRELESS_6G/student/**",
+    "curriculum/digital_rc/WIRELESS_6G/weeks/**",
+    "curriculum/digital_rc/WIRELESS_6G/labs/**",
+    "curriculum/digital_rc/WIRELESS_6G/assignments/**",
+    "curriculum/digital_rc/WIRELESS_6G/quizzes/**",
+    "curriculum/digital_rc/WIRELESS_6G/portfolio/**",
+    "curriculum/digital_rc/WIRELESS_6G/projects/**",
+    "curriculum/digital_rc/WIRELESS_6G/assessments/**",
+    "curriculum/digital_rc/WIRELESS_6G/rubrics/**",
+    "curriculum/digital_rc/WIRELESS_6G/syllabus.md",
+    "curriculum/digital_rc/WIRELESS_6G/course.json",
+    "curriculum/digital_rc/WIRELESS_6G/prerequisites.json",
+    "curriculum/digital_rc/WIRELESS_6G/career_mapping.json",
+    "curriculum/digital_rc/WIRELESS_6G/offline_pack/**",
+    "curriculum/digital_rc/WIRELESS_6G/presentation/**",
+    "curriculum/digital_rc/WIRELESS_6G/ai_use_policy.json",
+    "curriculum/digital_rc/WIRELESS_6G/guides/**",
+    "programs/wireless_6g_foundations.md",
+    "programs/wireless_5g_6g_and_dsp.md"
+  ],
+  "instructor_only_globs": [
+    "curriculum/digital_rc/WIRELESS_6G/instructor/**"
+  ],
+  "instructor_path_markers": [
+    "instructor_solution",
+    "instructor_solution_guide",
+    "instructor_solution_guides/",
+    "solution_guide",
+    "solution_notes_for_instructors",
+    "instructor_notes",
+    "answer_key",
+    "answer_keys/",
+    "answer_keys.json",
+    "/instructor/",
+    "instructor_packet",
+    "deep_instructor",
+    "teaching_notes.md",
+    "demo_plan.md"
+  ]
+}

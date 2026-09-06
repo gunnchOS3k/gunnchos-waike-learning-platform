@@ -1,0 +1,51 @@
+{
+  "module_id": "CLOUD_DEVOPS",
+  "source_commit": "e97e74fc9bfb44b1cdc26b272dc4848264f15fe0",
+  "package_version": "1.0.0",
+  "source_kind": "digital_rc",
+  "digital_rc_package": "CLOUD_DEVOPS",
+  "migration": {
+    "from": "digital_confidence_only",
+    "to": "registry_18_tracks",
+    "content_schema": "waike.course_package.v1"
+  },
+  "learner_globs": [
+    "curriculum/digital_rc/CLOUD_DEVOPS/student/**",
+    "curriculum/digital_rc/CLOUD_DEVOPS/weeks/**",
+    "curriculum/digital_rc/CLOUD_DEVOPS/labs/**",
+    "curriculum/digital_rc/CLOUD_DEVOPS/assignments/**",
+    "curriculum/digital_rc/CLOUD_DEVOPS/quizzes/**",
+    "curriculum/digital_rc/CLOUD_DEVOPS/portfolio/**",
+    "curriculum/digital_rc/CLOUD_DEVOPS/projects/**",
+    "curriculum/digital_rc/CLOUD_DEVOPS/assessments/**",
+    "curriculum/digital_rc/CLOUD_DEVOPS/rubrics/**",
+    "curriculum/digital_rc/CLOUD_DEVOPS/syllabus.md",
+    "curriculum/digital_rc/CLOUD_DEVOPS/course.json",
+    "curriculum/digital_rc/CLOUD_DEVOPS/prerequisites.json",
+    "curriculum/digital_rc/CLOUD_DEVOPS/career_mapping.json",
+    "curriculum/digital_rc/CLOUD_DEVOPS/offline_pack/**",
+    "curriculum/digital_rc/CLOUD_DEVOPS/presentation/**",
+    "curriculum/digital_rc/CLOUD_DEVOPS/ai_use_policy.json",
+    "curriculum/digital_rc/CLOUD_DEVOPS/guides/**",
+    "programs/cloud_and_devops.md"
+  ],
+  "instructor_only_globs": [
+    "curriculum/digital_rc/CLOUD_DEVOPS/instructor/**"
+  ],
+  "instructor_path_markers": [
+    "instructor_solution",
+    "instructor_solution_guide",
+    "instructor_solution_guides/",
+    "solution_guide",
+    "solution_notes_for_instructors",
+    "instructor_notes",
+    "answer_key",
+    "answer_keys/",
+    "answer_keys.json",
+    "/instructor/",
+    "instructor_packet",
+    "deep_instructor",
+    "teaching_notes.md",
+    "demo_plan.md"
+  ]
+}

@@ -1,0 +1,53 @@
+{
+  "generated_utc": "2026-09-06T16:49:36Z",
+  "status": "AUTOMATED_PIPELINE_PASS",
+  "claims": [
+    "GUNNCHAI_PLATFORM_INTEGRATION_DIGITALLY_COMPLETE",
+    "ALL_18_WAIKE_TRACKS_DIGITALLY_AVAILABLE",
+    "18_TRACK_PLATFORM_DELIVERY_DIGITALLY_COMPLETE"
+  ],
+  "checks": {
+    "provenance_match": true,
+    "pin_allows_18": true,
+    "required_artifacts_present": true,
+    "gate_b_yml_no_continue_on_error": true,
+    "gate_b_yml_no_or_true": true,
+    "matrix_18_complete": true,
+    "matrix_all_tracks_pass": true,
+    "track_acceptance": true
+  },
+  "test_counts": {},
+  "blocked": [],
+  "exit_codes": {
+    "waike_rev_parse": 0
+  },
+  "gunnchai": {
+    "repo": "https://github.com/gunnchOS3k/gunnchAI3k",
+    "discovered_sha": "4b4f411710e8cdb8102a7e11502f8497f68156b1",
+    "ci_provider": "FakeGunnchAIProvider"
+  },
+  "claim_boundary": {
+    "earned_only_with": [
+      "Gate B CI required jobs SUCCESS including verify-gate-b",
+      "18-track compile/verify/decrypt + install/learner/instructor/offline suites",
+      "AI policy + context isolation + prompt injection + grade safety PASS",
+      "adversarial AI sabotage suite PASS"
+    ],
+    "does_not_claim": [
+      "human/field validation",
+      "accessibility certification",
+      "security certification",
+      "local GGUF/llama inference availability",
+      "Gate C interop / Device OS",
+      "pedagogical learning effectiveness"
+    ]
+  },
+  "declared_pinned_commit": "e97e74fc9bfb44b1cdc26b272dc4848264f15fe0",
+  "observed_source_commit": "e97e74fc9bfb44b1cdc26b272dc4848264f15fe0",
+  "matrix_summary": {
+    "track_count": 18,
+    "pass_count": 18,
+    "source_sha": "e97e74fc9bfb44b1cdc26b272dc4848264f15fe0"
+  },
+  "report_generated_from_sha": "43e770772b97a0d6900893ea7428df91f2acdb93"
+}

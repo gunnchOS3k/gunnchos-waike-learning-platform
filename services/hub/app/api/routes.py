@@ -8,6 +8,7 @@ from pydantic import BaseModel, Field
 
 from app.auth import Actor, require_actor, require_instructor_side, require_learner, require_site_admin
 from app.modules.activity_engine import ActivityEngine
+from app.modules.ai_assist import AiAssistService
 from app.modules.assessment_lifecycle import AssessmentService, ServiceError
 from app.modules.gradebook_service import GradebookService
 from app.modules.identity import IdentityService
@@ -40,6 +41,10 @@ def _sync(request: Request) -> SyncService:
 
 def _activities(request: Request) -> ActivityEngine:
     return request.app.state.activities
+
+
+def _ai(request: Request) -> AiAssistService:
+    return request.app.state.ai
 
 
 def _http(err: ServiceError) -> HTTPException:
@@ -1063,5 +1068,153 @@ def regrade_queue(
 ) -> dict[str, Any]:
     try:
         return _activities(request).enqueue_regrade(actor, body.submission_id, body.reason)
+    except ServiceError as e:
+        raise _http(e) from e
+
+
+# --- Gate B: gunnchAI ---------------------------------------------------------
+
+
+class AiPolicyBody(BaseModel):
+    section_id: str = Field(min_length=1)
+    policy: str = Field(min_length=1)
+    scope: str = "section"
+    assessment_id: str | None = None
+    activity_id: str | None = None
+    instructor_defined: dict[str, Any] | None = None
+
+
+class LearnerAiBody(BaseModel):
+    section_id: str = Field(min_length=1)
+    capability: str = Field(min_length=1)
+    query: str = Field(min_length=1, max_length=8000)
+    assessment_id: str | None = None
+    activity_id: str | None = None
+    course_materials: list[dict[str, str]] = Field(default_factory=list)
+    cloud_consent: bool = False
+    processing_mode: str = "local-only"
+
+
+class InstructorAiBody(BaseModel):
+    section_id: str = Field(min_length=1)
+    capability: str = Field(min_length=1)
+    query: str = Field(min_length=1, max_length=8000)
+    assessment_id: str | None = None
+    activity_id: str | None = None
+    instructor_context: dict[str, Any] | None = None
+    target_learner_id: str | None = None
+    cloud_consent: bool = False
+    processing_mode: str = "local-only"
+
+
+class AiGradeMutateBody(BaseModel):
+    section_id: str | None = None
+    submission_id: str | None = None
+    points: float | None = None
+    explicit_confirm: bool = False
+
+
+@router.get("/ai/provider")
+def ai_provider(request: Request, actor: Actor = Depends(require_actor)) -> dict[str, Any]:
+    return _ai(request).provider_status()
+
+
+@router.get("/ai/courses")
+def ai_courses(request: Request, actor: Actor = Depends(require_actor)) -> dict[str, Any]:
+    return _ai(request).discover_courses()
+
+
+@router.get("/ai/policy")
+def get_ai_policy(
+    section_id: str,
+    request: Request,
+    assessment_id: str | None = None,
+    activity_id: str | None = None,
+    actor: Actor = Depends(require_actor),
+) -> dict[str, Any]:
+    try:
+        return _ai(request).get_effective_policy(
+            actor, section_id, assessment_id=assessment_id, activity_id=activity_id
+        )
+    except ServiceError as e:
+        raise _http(e) from e
+
+
+@router.post("/ai/policy")
+def set_ai_policy(
+    body: AiPolicyBody, request: Request, actor: Actor = Depends(require_actor)
+) -> dict[str, Any]:
+    require_instructor_side(actor)
+    try:
+        return _ai(request).set_policy(
+            actor,
+            section_id=body.section_id,
+            policy=body.policy,
+            scope=body.scope,
+            assessment_id=body.assessment_id,
+            activity_id=body.activity_id,
+            instructor_defined=body.instructor_defined,
+        )
+    except ServiceError as e:
+        raise _http(e) from e
+
+
+@router.post("/ai/learner/assist")
+def learner_ai_assist(
+    body: LearnerAiBody, request: Request, actor: Actor = Depends(require_actor)
+) -> dict[str, Any]:
+    require_learner(actor)
+    try:
+        return _ai(request).learner_assist(
+            actor,
+            section_id=body.section_id,
+            capability=body.capability,
+            query=body.query,
+            assessment_id=body.assessment_id,
+            activity_id=body.activity_id,
+            course_materials=body.course_materials,
+            cloud_consent=body.cloud_consent,
+            processing_mode=body.processing_mode,
+        )
+    except ServiceError as e:
+        raise _http(e) from e
+
+
+@router.post("/ai/instructor/assist")
+def instructor_ai_assist(
+    body: InstructorAiBody, request: Request, actor: Actor = Depends(require_actor)
+) -> dict[str, Any]:
+    require_instructor_side(actor)
+    try:
+        return _ai(request).instructor_assist(
+            actor,
+            section_id=body.section_id,
+            capability=body.capability,
+            query=body.query,
+            assessment_id=body.assessment_id,
+            activity_id=body.activity_id,
+            instructor_context=body.instructor_context,
+            target_learner_id=body.target_learner_id,
+            cloud_consent=body.cloud_consent,
+            processing_mode=body.processing_mode,
+        )
+    except ServiceError as e:
+        raise _http(e) from e
+
+
+@router.post("/ai/instructor/apply-grade")
+def ai_apply_grade(
+    body: AiGradeMutateBody, request: Request, actor: Actor = Depends(require_actor)
+) -> dict[str, Any]:
+    """Always refused — AI never mutates grades (even with explicit_confirm)."""
+    require_instructor_side(actor)
+    try:
+        return _ai(request).refuse_grade_mutation(
+            actor,
+            section_id=body.section_id,
+            submission_id=body.submission_id,
+            points=body.points,
+            explicit_confirm=body.explicit_confirm,
+        )
     except ServiceError as e:
         raise _http(e) from e

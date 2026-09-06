@@ -1,15 +1,18 @@
-"""Compile DIGITAL_CONFIDENCE (and allow-listed modules) into learner/instructor packs."""
+"""Compile allow-listed WAIKE tracks into learner/instructor packs."""
 
 from __future__ import annotations
 
+import base64
 import fnmatch
 import json
+import re
 import shutil
 import zipfile
 from pathlib import Path
 from typing import Any, Iterable
 
 from . import crypto
+from .activity import inventory_from_paths, rubric_outcome_coverage
 from .compat import DEFAULT_COMPAT
 from .jsonutil import dump_canonical, dumps_canonical, source_date_epoch_utc, zip_write_file
 from .registry import (
@@ -22,24 +25,26 @@ from .registry import (
     resolve_waike_root,
     verify_waike_provenance,
 )
-
-INSTRUCTOR_NAME_HINTS = (
-    "instructor_solution",
-    "instructor_solution_guide",
-    "instructor_solution_guides",
-    "solution_guide",
-    "solution_notes_for_instructors",
-    "instructor_notes",
-    "answer_key",
-    "answer_keys",
-    "/instructor/",
-    "instructor_packet",
-    "deep_instructor",
-    "teaching_notes.md",
-    "demo_plan.md",
+from .tracks import (
+    CANONICAL_TRACK_IDS,
+    DEFAULT_INSTRUCTOR_MARKERS,
+    MIGRATION_METADATA,
+    PACKAGE_VERSION,
 )
 
+INSTRUCTOR_NAME_HINTS = tuple(DEFAULT_INSTRUCTOR_MARKERS)
+
 PRIVATE_KEY_HINTS = (".pem", ".key", "private_key", "PRIVATE", "TEST_ONLY_ed25519_private")
+
+_WEEK_LEGACY_PLAN = re.compile(
+    r"lessons/by_course/[^/]+/week_(\d+)/lesson_plan\.md$"
+)
+_WEEK_LEGACY_PRACTICE = re.compile(
+    r"lessons/by_course/[^/]+/week_(\d+)/guided_practice\.md$"
+)
+_WEEK_RC_LESSON = re.compile(
+    r"curriculum/digital_rc/[^/]+/weeks/w(\d+)/lesson\.md$"
+)
 
 
 def _match_any(rel: str, patterns: Iterable[str]) -> bool:
@@ -75,43 +80,94 @@ def collect_files(waike_root: Path, patterns: list[str]) -> list[Path]:
     return sorted(found, key=lambda p: str(p.relative_to(waike_root)).replace("\\", "/"))
 
 
-def build_lessons(learner_rels: list[str]) -> list[dict[str, Any]]:
-    lessons = []
+def build_lessons(learner_rels: list[str], module_id: str = "DIGITAL_CONFIDENCE") -> list[dict[str, Any]]:
+    """Index lessons from legacy digital_confidence week plans and digital_rc weeks/wNN."""
+    lessons: list[dict[str, Any]] = []
+    title_prefix = module_id.replace("_", " ").title()
+
     for rel in learner_rels:
-        if "/lessons/by_course/digital_confidence/week_" in rel and rel.endswith("lesson_plan.md"):
-            week = rel.split("week_")[1].split("/")[0]
-            try:
-                week_n = int(week)
-            except ValueError:
-                week_n = 0
+        rel_n = rel.replace("\\", "/")
+        m = _WEEK_LEGACY_PLAN.search(rel_n)
+        if m:
+            week_n = int(m.group(1))
             lessons.append(
                 {
-                    "lesson_id": f"DIGITAL_CONFIDENCE.W{week_n:02d}",
-                    "title": f"Digital Confidence — Week {week_n}",
-                    "path": rel,
+                    "lesson_id": f"{module_id}.W{week_n:02d}",
+                    "title": f"{title_prefix} — Week {week_n}",
+                    "path": rel_n,
                     "week": week_n,
                     "order": week_n,
                 }
             )
-        elif rel.endswith("guided_practice.md") and "digital_confidence/week_" in rel:
-            week = rel.split("week_")[1].split("/")[0]
-            try:
-                week_n = int(week)
-            except ValueError:
-                continue
+            continue
+        m = _WEEK_LEGACY_PRACTICE.search(rel_n)
+        if m:
+            week_n = int(m.group(1))
             lessons.append(
                 {
-                    "lesson_id": f"DIGITAL_CONFIDENCE.W{week_n:02d}.practice",
+                    "lesson_id": f"{module_id}.W{week_n:02d}.practice",
                     "title": f"Guided practice — Week {week_n}",
-                    "path": rel,
+                    "path": rel_n,
                     "week": week_n,
                     "order": week_n * 10 + 1,
                 }
             )
+            continue
+        m = _WEEK_RC_LESSON.search(rel_n)
+        if m:
+            week_n = int(m.group(1))
+            lessons.append(
+                {
+                    "lesson_id": f"{module_id}.W{week_n:02d}",
+                    "title": f"{title_prefix} — Week {week_n}",
+                    "path": rel_n,
+                    "week": week_n,
+                    "order": week_n,
+                }
+            )
+
     lessons.sort(key=lambda x: (x.get("order", 0), x["lesson_id"]))
-    # Prefer one primary lesson_plan per week for UI navigation
+    # Prefer one primary lesson per week for UI navigation
     primary = [L for L in lessons if L["lesson_id"].count(".") == 1]
     return primary or lessons
+
+
+def _write_import_report(root: Path, module_id: str, report: dict[str, Any], lessons: list[dict[str, Any]]) -> None:
+    reports = root / "reports"
+    reports.mkdir(exist_ok=True)
+    json_name = f"{module_id}_IMPORT_REPORT.json"
+    md_name = f"{module_id}_IMPORT_REPORT.md"
+    dump_canonical(reports / json_name, report)
+    # Preserve legacy DIGITAL_CONFIDENCE report filenames used by Gate A verifiers
+    if module_id == "DIGITAL_CONFIDENCE":
+        dump_canonical(reports / "DIGITAL_CONFIDENCE_IMPORT_REPORT.json", report)
+    md = [
+        f"# {module_id} Import Report",
+        "",
+        f"- module_id: `{module_id}`",
+        f"- declared_pinned_commit: `{report['declared_pinned_commit']}`",
+        f"- observed_source_commit: `{report['observed_source_commit']}`",
+        f"- provenance_match: `true`",
+        f"- package_version: `{report.get('package_version')}`",
+        f"- learner files: **{report['learner_file_count']}**",
+        f"- instructor files: **{report['instructor_file_count']}**",
+        f"- learner zip sha256: `{report['learner_zip_sha256']}`",
+        f"- instructor plaintext sha256: `{report['instructor_plaintext_sha256']}`",
+        f"- instructor ciphertext sha256 (non-reproducible): `{report['instructor_blob_sha256']}`",
+        f"- lessons indexed: {len(lessons)}",
+        f"- activity inventory: `{json.dumps(report.get('activity_inventory') or {}, sort_keys=True)}`",
+        "",
+        "## Lessons",
+        "",
+    ]
+    for L in lessons:
+        md.append(f"- `{L['lesson_id']}` — {L['title']} (`{L['path']}`)")
+    md.append("")
+    md.append("Keys used are TEST_ONLY fixtures. Not for production.")
+    md.append("")
+    (reports / md_name).write_text("\n".join(md), encoding="utf-8")
+    if module_id == "DIGITAL_CONFIDENCE":
+        (reports / "DIGITAL_CONFIDENCE_IMPORT_REPORT.md").write_text("\n".join(md), encoding="utf-8")
 
 
 def compile_module(
@@ -131,6 +187,8 @@ def compile_module(
 
     import_path = root / "curriculum" / "imports" / f"{module_id}.import.json"
     import_spec = json.loads(import_path.read_text(encoding="utf-8"))
+    pkg_version = str(import_spec.get("package_version") or PACKAGE_VERSION)
+    migration = import_spec.get("migration") or dict(MIGRATION_METADATA)
 
     learner_globs = import_spec.get("learner_globs") or []
     instructor_globs = import_spec.get("instructor_only_globs") or []
@@ -182,7 +240,9 @@ def compile_module(
 
     created = source_date_epoch_utc()
     learner_rels = [e["path"] for e in learner_entries]
-    lessons = build_lessons(learner_rels)
+    lessons = build_lessons(learner_rels, module_id=module_id)
+    activity_inventory = inventory_from_paths(learner_rels + [e["path"] for e in instructor_entries])
+    coverage = rubric_outcome_coverage(activity_inventory)
 
     module_doc = {
         "schema_version": "1.0.0",
@@ -190,7 +250,10 @@ def compile_module(
         "track_id": track.get("track_id", module_id),
         "title": track.get("title", module_id),
         "description": "Compiled from pinned WAIKE research-ops sources.",
+        "package_version": pkg_version,
+        "migration": migration,
         "lessons": lessons,
+        "activity_inventory": activity_inventory,
         "materials": [
             {"path": e["path"], "sha256": e["sha256"], "role": "learner", "media_type": "text/markdown"}
             for e in learner_entries
@@ -208,6 +271,7 @@ def compile_module(
         "owner_program_file": track.get("owner_program_file"),
         "aliases": [k for k, v in (pin.get("aliases") or {}).items() if v == module_id],
         "source_commit": pin.get("pinned_commit"),
+        "package_version": pkg_version,
     }
     dump_canonical(learner_root / "canonical_track_reference.json", track_ref)
     dump_canonical(learner_root / "compatibility.json", DEFAULT_COMPAT)
@@ -232,9 +296,12 @@ def compile_module(
         "title": track.get("title", module_id),
         "created_utc": created,
         "source_commit": pin.get("pinned_commit"),
+        "package_version": pkg_version,
+        "migration": migration,
         "files": learner_entries,
         "compatibility": DEFAULT_COMPAT,
         "content_root_sha256": content_hash,
+        "activity_inventory": activity_inventory,
     }
     dump_canonical(out / "learner_pack_manifest.json", learner_manifest)
 
@@ -265,6 +332,8 @@ def compile_module(
         "title": f"{track.get('title', module_id)} (instructor)",
         "created_utc": created,
         "source_commit": pin.get("pinned_commit"),
+        "package_version": pkg_version,
+        "migration": migration,
         "files": instructor_entries,
         "compatibility": DEFAULT_COMPAT,
     }
@@ -291,7 +360,7 @@ def compile_module(
     enc_path.write_bytes(ciphertext)
     instructor_manifest["encryption"] = {
         "alg": "AES-256-GCM",
-        "nonce_b64": __import__("base64").b64encode(nonce).decode("ascii"),
+        "nonce_b64": base64.b64encode(nonce).decode("ascii"),
         "ciphertext_sha256": crypto.sha256_bytes(ciphertext),
         "plaintext_sha256": instructor_plaintext_sha256,
         "manifest_sha256": instructor_manifest_sha256,
@@ -311,6 +380,8 @@ def compile_module(
         "observed_source_commit": provenance["observed_source_commit"],
         "source_commit": provenance["observed_source_commit"],
         "provenance_match": True,
+        "package_version": pkg_version,
+        "migration": migration,
         "waike_root": str(waike),
         "learner_file_count": len(learner_entries),
         "instructor_file_count": len(instructor_entries),
@@ -321,34 +392,53 @@ def compile_module(
         "instructor_plaintext_sha256": instructor_plaintext_sha256,
         "instructor_manifest_sha256": instructor_manifest_sha256,
         "lessons": lessons,
+        "activity_inventory": activity_inventory,
+        "rubric_outcome_coverage": coverage,
         "verify_key_path": _rel(vk_path),
         "signing_key_warning": "TEST_ONLY",
     }
-    reports = root / "reports"
-    reports.mkdir(exist_ok=True)
-    dump_canonical(reports / "DIGITAL_CONFIDENCE_IMPORT_REPORT.json", report)
-    md = [
-        f"# DIGITAL_CONFIDENCE Import Report",
-        "",
-        f"- module_id: `{module_id}`",
-        f"- declared_pinned_commit: `{provenance['declared_pinned_commit']}`",
-        f"- observed_source_commit: `{provenance['observed_source_commit']}`",
-        f"- provenance_match: `true`",
-        f"- learner files: **{len(learner_entries)}**",
-        f"- instructor files: **{len(instructor_entries)}**",
-        f"- learner zip sha256: `{report['learner_zip_sha256']}`",
-        f"- instructor plaintext sha256: `{instructor_plaintext_sha256}`",
-        f"- instructor ciphertext sha256 (non-reproducible): `{report['instructor_blob_sha256']}`",
-        f"- lessons indexed: {len(lessons)}",
-        "",
-        "## Lessons",
-        "",
-    ]
-    for L in lessons:
-        md.append(f"- `{L['lesson_id']}` — {L['title']} (`{L['path']}`)")
-    md.append("")
-    md.append("Keys used are TEST_ONLY fixtures. Not for production.")
-    md.append("")
-    (reports / "DIGITAL_CONFIDENCE_IMPORT_REPORT.md").write_text("\n".join(md), encoding="utf-8")
+    _write_import_report(root, module_id, report, lessons)
     report["out_dir"] = str(out)
     return report
+
+
+def compile_all(
+    tracks: Iterable[str] | None = None,
+    out_root: Path | None = None,
+    signing_key_path: Path | None = None,
+    instructor_key_path: Path | None = None,
+) -> dict[str, Any]:
+    """Compile each allow-listed track into out_root/<TRACK_ID>/."""
+    root = repo_root()
+    pin = load_pin()
+    allowed = list(pin.get("module_ids_allowed") or list(CANONICAL_TRACK_IDS))
+    selected = list(tracks) if tracks else allowed
+    out_root = out_root or (root / "pack_out_18")
+    results: dict[str, Any] = {"ok": True, "tracks": {}, "failures": []}
+    for raw in selected:
+        module_id = resolve_module_id(raw, pin)
+        track_out = out_root / module_id
+        try:
+            report = compile_module(
+                module_id,
+                out_dir=track_out,
+                signing_key_path=signing_key_path,
+                instructor_key_path=instructor_key_path,
+            )
+            results["tracks"][module_id] = {"ok": True, "report": report}
+        except Exception as exc:  # noqa: BLE001 — surface per-track status to CLI/matrix
+            results["ok"] = False
+            results["failures"].append({"track": module_id, "error": str(exc)})
+            results["tracks"][module_id] = {"ok": False, "error": str(exc)}
+    dump_canonical(
+        root / "reports" / "COMPILE_ALL_18_REPORT.json",
+        {
+            "ok": results["ok"],
+            "failures": results["failures"],
+            "track_ids": list(results["tracks"].keys()),
+            "statuses": {
+                k: {"ok": v.get("ok"), "error": v.get("error")} for k, v in results["tracks"].items()
+            },
+        },
+    )
+    return results

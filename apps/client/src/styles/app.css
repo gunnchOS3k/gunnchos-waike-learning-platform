@@ -113,7 +113,7 @@ button:focus-visible, .lesson-link:focus-visible, .lesson-body:focus-visible {
 }
 .assignment-body pre { white-space: pre-wrap; margin: 0; font: inherit; }
 .field-label { display: block; margin: 0.75rem 0 0.35rem; color: var(--muted); }
-textarea, input[type="number"] {
+textarea, input[type="number"], input[type="text"], input[type="password"], select {
   width: 100%;
   font: inherit;
   color: var(--ink);
@@ -122,6 +122,14 @@ textarea, input[type="number"] {
   border-radius: 10px;
   padding: 0.7rem 0.8rem;
 }
+.ai-panel .ai-result {
+  margin-top: 1rem;
+  padding: 0.85rem 1rem;
+  border-radius: 10px;
+  background: rgba(0,0,0,0.28);
+  border: 1px solid rgba(255,255,255,0.08);
+}
+.activity-error { color: var(--danger); }
 .file-btn { display: inline-flex; align-items: center; }
 .side-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 1rem; }
 @media (max-width: 860px) { .side-grid { grid-template-columns: 1fr; } }
