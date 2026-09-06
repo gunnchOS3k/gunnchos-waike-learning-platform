@@ -103,7 +103,7 @@ jobs:
           uv venv .venv
           uv pip install --python .venv/bin/python fastapi uvicorn pydantic httpx pytest pyyaml jsonschema argon2-cffi cryptography PyNaCl PyJWT
 
-      - name: Run PR1+PR2+PR3+Gate A+Gate B regression
+      - name: Run PR1+PR2+PR3+Gate A regression
         env:
           WAIKE_ROOT: ${{ github.workspace }}/waike-research-ops
           DEVICE_OS_ROOT: ${{ github.workspace }}/gunnchos-device-os
@@ -113,8 +113,18 @@ jobs:
         run: |
           .venv/bin/pytest -q \
             tests/compatibility tests/security tests/integration \
-            tests/assessment tests/pr3 tests/gate_a tests/gate_b services/hub/tests \
+            tests/assessment tests/pr3 tests/gate_a services/hub/tests \
             --tb=short
+      - name: Run Gate B regression (isolated helpers path)
+        env:
+          WAIKE_ROOT: ${{ github.workspace }}/waike-research-ops
+          DEVICE_OS_ROOT: ${{ github.workspace }}/gunnchos-device-os
+          GUNNCHAI_ROOT: ${{ github.workspace }}/gunnchAI3k
+          PYTHONPATH: tools/course_compiler:services/hub
+          WAIKE_ALLOW_FAKE_AI: "1"
+        run: |
+          uv pip install --python .venv/bin/python -e tools/course_compiler
+          .venv/bin/pytest -q tests/gate_b --tb=short
 
   oneroster:
     name: oneroster
@@ -1372,10 +1382,27 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+        with:
+          repository: gunnchOS3k/waike-research-ops
+          path: waike-research-ops
+          ref: ${{ env.WAIKE_PIN_REF }}
+      - uses: astral-sh/setup-uv@v4
       - uses: dtolnay/rust-toolchain@stable
-      - name: Cargo test
-        working-directory: apps/client/src-tauri
-        run: cargo test
+      - name: Install webkit/gtk deps
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            libwebkit2gtk-4.1-dev libgtk-3-dev libayatana-appindicator3-dev \
+            librsvg2-dev patchelf pkg-config libglib2.0-dev
+      - name: Prepare pack + cargo test
+        env:
+          WAIKE_ROOT: ${{ github.workspace }}/waike-research-ops
+        run: |
+          uv venv .venv
+          uv pip install --python .venv/bin/python -e tools/course_compiler cryptography PyNaCl jsonschema pyyaml
+          .venv/bin/course-compiler compile DIGITAL_CONFIDENCE --out pack_out
+          cd apps/client/src-tauri && cargo test
 
   native-linux:
     name: native-linux
@@ -1394,7 +1421,7 @@ jobs:
       - name: Install linux deps
         run: |
           sudo apt-get update
-          sudo apt-get install -y libwebkit2gtk-4.1-dev libayatana-appindicator3-dev librsvg2-dev patchelf
+          sudo apt-get install -y libwebkit2gtk-4.1-dev libgtk-3-dev libayatana-appindicator3-dev librsvg2-dev patchelf pkg-config libglib2.0-dev
       - name: Build frontend + tauri
         env:
           SOURCE_DATE_EPOCH: "1700000000"

@@ -97,7 +97,7 @@ def main() -> int:
     }
 
     # Prior regression (PR1–Gate B)
-    prior = run(
+    prior_a = run(
         [
             py,
             "-m",
@@ -109,19 +109,29 @@ def main() -> int:
             "tests/assessment",
             "tests/pr3",
             "tests/gate_a",
-            "tests/gate_b",
             "services/hub/tests",
             "--tb=line",
         ],
         env=env,
     )
-    prior_out = plain(prior)
-    prior_counts = _parse_pytest_counts(prior_out)
+    env_b = dict(env)
+    env_b["PYTHONPATH"] = "tools/course_compiler:services/hub"
+    prior_b = run([py, "-m", "pytest", "-q", "tests/gate_b", "--tb=line"], env=env_b)
+    prior_out = plain(prior_a) + "\n" + plain(prior_b)
+    prior_counts = _parse_pytest_counts(plain(prior_a))
+    prior_b_counts = _parse_pytest_counts(plain(prior_b))
+    for k, v in prior_b_counts.items():
+        prior_counts[k] = prior_counts.get(k, 0) + v
+    prior_rc = 0 if prior_a.returncode == 0 and prior_b.returncode == 0 else 1
     results["test_counts"]["prior_regression"] = prior_counts
-    results["exit_codes"] = {"prior_regression": prior.returncode}
-    results["checks"]["prior_regression"] = prior.returncode == 0 and prior_counts["failed"] == 0
+    results["exit_codes"] = {"prior_regression": prior_rc, "prior_a": prior_a.returncode, "prior_b": prior_b.returncode}
+    results["checks"]["prior_regression"] = prior_rc == 0 and prior_counts["failed"] == 0
     if prior_counts.get("skipped", 0):
         results["GATE_C_REQUIRED_TESTS_SKIPPED"] = prior_counts["skipped"]
+    # alias for later status checks
+    class _Prior:
+        returncode = prior_rc
+    prior = _Prior()
 
     # Gate C suite
     gate_c = run([py, "-m", "pytest", "-q", "tests/gate_c", "--tb=line"], env=env)
