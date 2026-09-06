@@ -18,12 +18,18 @@
         "rubrics": 0
       },
       "e2e": {
-        "install": "PENDING_SUITE",
-        "learner": "PENDING_SUITE",
-        "instructor": "PENDING_SUITE",
-        "offline": "PENDING_SUITE"
+        "install": "PASS",
+        "learner": "PASS",
+        "instructor": "PASS",
+        "offline": "PASS"
       },
-      "blocker": ""
+      "blocker": "",
+      "registered_activity_status": {
+        "lessons": "REGISTERED",
+        "assignments": "REGISTERED",
+        "quizzes": "NOT_APPLICABLE",
+        "labs": "REGISTERED"
+      }
     },
     {
       "track": "IT_SUPPORT_HARDWARE",
@@ -41,12 +47,18 @@
         "rubrics": 8
       },
       "e2e": {
-        "install": "PENDING_SUITE",
-        "learner": "PENDING_SUITE",
-        "instructor": "PENDING_SUITE",
-        "offline": "PENDING_SUITE"
+        "install": "PASS",
+        "learner": "PASS",
+        "instructor": "PASS",
+        "offline": "PASS"
       },
-      "blocker": ""
+      "blocker": "",
+      "registered_activity_status": {
+        "lessons": "REGISTERED",
+        "assignments": "REGISTERED",
+        "quizzes": "REGISTERED",
+        "labs": "REGISTERED"
+      }
     },
     {
       "track": "SOFTWARE_BUILDER",
@@ -64,12 +76,18 @@
         "rubrics": 8
       },
       "e2e": {
-        "install": "PENDING_SUITE",
-        "learner": "PENDING_SUITE",
-        "instructor": "PENDING_SUITE",
-        "offline": "PENDING_SUITE"
+        "install": "PASS",
+        "learner": "PASS",
+        "instructor": "PASS",
+        "offline": "PASS"
       },
-      "blocker": ""
+      "blocker": "",
+      "registered_activity_status": {
+        "lessons": "REGISTERED",
+        "assignments": "REGISTERED",
+        "quizzes": "REGISTERED",
+        "labs": "REGISTERED"
+      }
     },
     {
       "track": "NETWORKING_INFRA",
@@ -87,12 +105,18 @@
         "rubrics": 8
       },
       "e2e": {
-        "install": "PENDING_SUITE",
-        "learner": "PENDING_SUITE",
-        "instructor": "PENDING_SUITE",
-        "offline": "PENDING_SUITE"
+        "install": "PASS",
+        "learner": "PASS",
+        "instructor": "PASS",
+        "offline": "PASS"
       },
-      "blocker": ""
+      "blocker": "",
+      "registered_activity_status": {
+        "lessons": "REGISTERED",
+        "assignments": "REGISTERED",
+        "quizzes": "REGISTERED",
+        "labs": "REGISTERED"
+      }
     },
     {
       "track": "CYBER_SOC",
@@ -110,12 +134,18 @@
         "rubrics": 8
       },
       "e2e": {
-        "install": "PENDING_SUITE",
-        "learner": "PENDING_SUITE",
-        "instructor": "PENDING_SUITE",
-        "offline": "PENDING_SUITE"
+        "install": "PASS",
+        "learner": "PASS",
+        "instructor": "PASS",
+        "offline": "PASS"
       },
-      "blocker": ""
+      "blocker": "",
+      "registered_activity_status": {
+        "lessons": "REGISTERED",
+        "assignments": "REGISTERED",
+        "quizzes": "REGISTERED",
+        "labs": "REGISTERED"
+      }
     },
     {
       "track": "DATA_DASHBOARDS",
@@ -133,12 +163,18 @@
         "rubrics": 8
       },
       "e2e": {
-        "install": "PENDING_SUITE",
-        "learner": "PENDING_SUITE",
-        "instructor": "PENDING_SUITE",
-        "offline": "PENDING_SUITE"
+        "install": "PASS",
+        "learner": "PASS",
+        "instructor": "PASS",
+        "offline": "PASS"
       },
-      "blocker": ""
+      "blocker": "",
+      "registered_activity_status": {
+        "lessons": "REGISTERED",
+        "assignments": "REGISTERED",
+        "quizzes": "REGISTERED",
+        "labs": "REGISTERED"
+      }
     },
     {
       "track": "AI_ML_EDGE",
@@ -156,12 +192,18 @@
         "rubrics": 8
       },
       "e2e": {
-        "install": "PENDING_SUITE",
-        "learner": "PENDING_SUITE",
-        "instructor": "PENDING_SUITE",
-        "offline": "PENDING_SUITE"
+        "install": "PASS",
+        "learner": "PASS",
+        "instructor": "PASS",
+        "offline": "PASS"
       },
-      "blocker": ""
+      "blocker": "",
+      "registered_activity_status": {
+        "lessons": "REGISTERED",
+        "assignments": "REGISTERED",
+        "quizzes": "REGISTERED",
+        "labs": "REGISTERED"
+      }
     },
     {
       "track": "EMBEDDED_PROTOTYPING",
@@ -179,12 +221,18 @@
         "rubrics": 8
       },
       "e2e": {
-        "install": "PENDING_SUITE",
-        "learner": "PENDING_SUITE",
-        "instructor": "PENDING_SUITE",
-        "offline": "PENDING_SUITE"
+        "install": "PASS",
+        "learner": "PASS",
+        "instructor": "PASS",
+        "offline": "PASS"
       },
-      "blocker": ""
+      "blocker": "",
+      "registered_activity_status": {
+        "lessons": "REGISTERED",
+        "assignments": "REGISTERED",
+        "quizzes": "REGISTERED",
+        "labs": "REGISTERED"
+      }
     },
     {
       "track": "WIRELESS_6G",
@@ -202,12 +250,18 @@
         "rubrics": 8
       },
       "e2e": {
-        "install": "PENDING_SUITE",
-        "learner": "PENDING_SUITE",
-        "instructor": "PENDING_SUITE",
-        "offline": "PENDING_SUITE"
+        "install": "PASS",
+        "learner": "PASS",
+        "instructor": "PASS",
+        "offline": "PASS"
       },
-      "blocker": ""
+      "blocker": "",
+      "registered_activity_status": {
+        "lessons": "REGISTERED",
+        "assignments": "REGISTERED",
+        "quizzes": "REGISTERED",
+        "labs": "REGISTERED"
+      }
     },
     {
       "track": "PM_AGILE_LSS",
@@ -225,12 +279,18 @@
         "rubrics": 8
       },
       "e2e": {
-        "install": "PENDING_SUITE",
-        "learner": "PENDING_SUITE",
-        "instructor": "PENDING_SUITE",
-        "offline": "PENDING_SUITE"
+        "install": "PASS",
+        "learner": "PASS",
+        "instructor": "PASS",
+        "offline": "PASS"
       },
-      "blocker": ""
+      "blocker": "",
+      "registered_activity_status": {
+        "lessons": "REGISTERED",
+        "assignments": "REGISTERED",
+        "quizzes": "REGISTERED",
+        "labs": "REGISTERED"
+      }
     },
     {
       "track": "GAME_DEV_INTERACTIVE",
@@ -248,16 +308,22 @@
         "rubrics": 8
       },
       "e2e": {
-        "install": "PENDING_SUITE",
-        "learner": "PENDING_SUITE",
-        "instructor": "PENDING_SUITE",
-        "offline": "PENDING_SUITE"
+        "install": "PASS",
+        "learner": "PASS",
+        "instructor": "PASS",
+        "offline": "PASS"
       },
-      "blocker": ""
+      "blocker": "",
+      "registered_activity_status": {
+        "lessons": "REGISTERED",
+        "assignments": "REGISTERED",
+        "quizzes": "REGISTERED",
+        "labs": "REGISTERED"
+      }
     },
     {
       "track": "SEVEN_GC_APPRENTICESHIP",
-      "matrix_final_status": "PASS",
+      "matrix_final_status": "BLOCKED",
       "matrix_install": "PASS",
       "matrix_learner_visible": "PASS",
       "matrix_instructor_visible": "EMPTY",
@@ -271,12 +337,18 @@
         "rubrics": 0
       },
       "e2e": {
-        "install": "PENDING_SUITE",
-        "learner": "PENDING_SUITE",
-        "instructor": "PENDING_SUITE",
-        "offline": "PENDING_SUITE"
+        "install": "BLOCKED",
+        "learner": "BLOCKED",
+        "instructor": "BLOCKED",
+        "offline": "BLOCKED"
       },
-      "blocker": "thin_source_inventory_no_digital_rc_weeks"
+      "blocker": "SEVEN_GC_SOURCE_BLOCKS_18_OF_18",
+      "registered_activity_status": {
+        "lessons": "NOT_APPLICABLE",
+        "assignments": "NOT_APPLICABLE",
+        "quizzes": "NOT_APPLICABLE",
+        "labs": "NOT_APPLICABLE"
+      }
     },
     {
       "track": "CLOUD_DEVOPS",
@@ -294,12 +366,18 @@
         "rubrics": 8
       },
       "e2e": {
-        "install": "PENDING_SUITE",
-        "learner": "PENDING_SUITE",
-        "instructor": "PENDING_SUITE",
-        "offline": "PENDING_SUITE"
+        "install": "PASS",
+        "learner": "PASS",
+        "instructor": "PASS",
+        "offline": "PASS"
       },
-      "blocker": ""
+      "blocker": "",
+      "registered_activity_status": {
+        "lessons": "REGISTERED",
+        "assignments": "REGISTERED",
+        "quizzes": "REGISTERED",
+        "labs": "REGISTERED"
+      }
     },
     {
       "track": "COMM_PD_ETHICS",
@@ -317,12 +395,18 @@
         "rubrics": 8
       },
       "e2e": {
-        "install": "PENDING_SUITE",
-        "learner": "PENDING_SUITE",
-        "instructor": "PENDING_SUITE",
-        "offline": "PENDING_SUITE"
+        "install": "PASS",
+        "learner": "PASS",
+        "instructor": "PASS",
+        "offline": "PASS"
       },
-      "blocker": ""
+      "blocker": "",
+      "registered_activity_status": {
+        "lessons": "REGISTERED",
+        "assignments": "REGISTERED",
+        "quizzes": "REGISTERED",
+        "labs": "REGISTERED"
+      }
     },
     {
       "track": "ROBOTICS_CONTROL",
@@ -340,12 +424,18 @@
         "rubrics": 8
       },
       "e2e": {
-        "install": "PENDING_SUITE",
-        "learner": "PENDING_SUITE",
-        "instructor": "PENDING_SUITE",
-        "offline": "PENDING_SUITE"
+        "install": "PASS",
+        "learner": "PASS",
+        "instructor": "PASS",
+        "offline": "PASS"
       },
-      "blocker": ""
+      "blocker": "",
+      "registered_activity_status": {
+        "lessons": "REGISTERED",
+        "assignments": "REGISTERED",
+        "quizzes": "REGISTERED",
+        "labs": "REGISTERED"
+      }
     },
     {
       "track": "GUNNCHOS_PRODUCT_LAB",
@@ -363,12 +453,18 @@
         "rubrics": 8
       },
       "e2e": {
-        "install": "PENDING_SUITE",
-        "learner": "PENDING_SUITE",
-        "instructor": "PENDING_SUITE",
-        "offline": "PENDING_SUITE"
+        "install": "PASS",
+        "learner": "PASS",
+        "instructor": "PASS",
+        "offline": "PASS"
       },
-      "blocker": ""
+      "blocker": "",
+      "registered_activity_status": {
+        "lessons": "REGISTERED",
+        "assignments": "REGISTERED",
+        "quizzes": "REGISTERED",
+        "labs": "REGISTERED"
+      }
     },
     {
       "track": "HARDWARE_ENGINEERING",
@@ -386,12 +482,18 @@
         "rubrics": 8
       },
       "e2e": {
-        "install": "PENDING_SUITE",
-        "learner": "PENDING_SUITE",
-        "instructor": "PENDING_SUITE",
-        "offline": "PENDING_SUITE"
+        "install": "PASS",
+        "learner": "PASS",
+        "instructor": "PASS",
+        "offline": "PASS"
       },
-      "blocker": ""
+      "blocker": "",
+      "registered_activity_status": {
+        "lessons": "REGISTERED",
+        "assignments": "REGISTERED",
+        "quizzes": "REGISTERED",
+        "labs": "REGISTERED"
+      }
     },
     {
       "track": "DATA_VIZ_BI",
@@ -409,22 +511,34 @@
         "rubrics": 8
       },
       "e2e": {
-        "install": "PENDING_SUITE",
-        "learner": "PENDING_SUITE",
-        "instructor": "PENDING_SUITE",
-        "offline": "PENDING_SUITE"
+        "install": "PASS",
+        "learner": "PASS",
+        "instructor": "PASS",
+        "offline": "PASS"
       },
-      "blocker": ""
+      "blocker": "",
+      "registered_activity_status": {
+        "lessons": "REGISTERED",
+        "assignments": "REGISTERED",
+        "quizzes": "REGISTERED",
+        "labs": "REGISTERED"
+      }
     }
   ],
   "summary": {
     "track_count": 18,
-    "matrix_pass": 18,
-    "matrix_fail": 0
+    "matrix_pass": 17,
+    "matrix_blocked": 1,
+    "matrix_fail": 0,
+    "e2e_pass": 17,
+    "SEVEN_GC_SOURCE_BLOCKS_18_OF_18": true,
+    "ALL_18_WAIKE_TRACKS_DIGITALLY_AVAILABLE": false,
+    "GATE_B_REQUIRED_TESTS_SKIPPED": 0
   },
   "notes": [
-    "Skeleton populated from WAIKE_18_TRACK_PACKAGE_MATRIX.json.",
-    "E2E suite statuses are asserted live by test_install/learner/instructor/offline_18.",
-    "SEVEN_GC_APPRENTICESHIP may be thin (zero digital_rc weeks) without inventing content."
+    "Statuses generated from executed install/learner/instructor/offline evidence.",
+    "Allowed statuses only: PASS / NOT_APPLICABLE / BLOCKED / FAIL / EXTERNAL_PHYSICAL_GATE.",
+    "SEVEN_GC_APPRENTICESHIP remains BLOCKED (research overlay; no COURSE_DIGITAL_RC).",
+    "Per-track activities registered from that track's packaged inventory only."
   ]
 }

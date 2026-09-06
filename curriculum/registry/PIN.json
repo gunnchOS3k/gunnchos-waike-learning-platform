@@ -84,6 +84,7 @@
     "IT_SUPPORT_HARDWARE compiles from curriculum/digital_rc/GENERAL_IT with track-scoped import globs.",
     "NETWORKING_INFRA maps from digital_rc/COMPUTER_NETWORKING; CYBER_SOC from digital_rc/CYBERSECURITY.",
     "SEVEN_GC_APPRENTICESHIP has no digital_rc package — apprenticeship/program inventory only.",
+    "SEVEN_GC_SOURCE_BLOCKS_18_OF_18: never claim ALL_18 digital delivery; full_18_course_digital_rc stays false.",
     "Authoritative WAIKE truth is merged main e97e74fc9bfb44b1cdc26b272dc4848264f15fe0 (includes former PR #56 contract)."
   ],
   "taxonomy_pr": "https://github.com/gunnchOS3k/waike-research-ops/pull/56",

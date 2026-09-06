@@ -1,8 +1,10 @@
 {
-  "generated_utc": "2026-09-06T16:49:36Z",
+  "generated_utc": "2026-09-06T17:48:10Z",
   "status": "AUTOMATED_PIPELINE_PASS",
   "claims": [
-    "GUNNCHAI_PLATFORM_INTEGRATION_DIGITALLY_COMPLETE",
+    "GUNNCHAI_PLATFORM_INTEGRATION_DIGITALLY_COMPLETE"
+  ],
+  "claims_blocked": [
     "ALL_18_WAIKE_TRACKS_DIGITALLY_AVAILABLE",
     "18_TRACK_PLATFORM_DELIVERY_DIGITALLY_COMPLETE"
   ],
@@ -13,14 +15,24 @@
     "gate_b_yml_no_continue_on_error": true,
     "gate_b_yml_no_or_true": true,
     "matrix_18_complete": true,
-    "matrix_all_tracks_pass": true,
-    "track_acceptance": true
+    "matrix_all_tracks_pass": false,
+    "matrix_digital_17_pass_seven_gc_blocked": true,
+    "SEVEN_GC_SOURCE_BLOCKS_18_OF_18": true,
+    "track_acceptance": true,
+    "DEFAULT_RUNTIME_HAS_NO_FAKE_AI": true,
+    "gunnchai_contract_snapshot_pass": true,
+    "GATE_B_REQUIRED_TESTS_SKIPPED_eq_0": true,
+    "ai_gates_pass": true
   },
   "test_counts": {},
   "blocked": [],
+  "source_blockers": [
+    "SEVEN_GC_SOURCE_BLOCKS_18_OF_18"
+  ],
   "exit_codes": {
     "waike_rev_parse": 0
   },
+  "GATE_B_REQUIRED_TESTS_SKIPPED": 0,
   "gunnchai": {
     "repo": "https://github.com/gunnchOS3k/gunnchAI3k",
     "discovered_sha": "4b4f411710e8cdb8102a7e11502f8497f68156b1",
@@ -29,9 +41,9 @@
   "claim_boundary": {
     "earned_only_with": [
       "Gate B CI required jobs SUCCESS including verify-gate-b",
-      "18-track compile/verify/decrypt + install/learner/instructor/offline suites",
       "AI policy + context isolation + prompt injection + grade safety PASS",
-      "adversarial AI sabotage suite PASS"
+      "adversarial AI sabotage suite PASS",
+      "ALL_18 claims additionally require SEVEN_GC digital_rc (not shell-only)"
     ],
     "does_not_claim": [
       "human/field validation",
@@ -39,15 +51,19 @@
       "security certification",
       "local GGUF/llama inference availability",
       "Gate C interop / Device OS",
-      "pedagogical learning effectiveness"
+      "pedagogical learning effectiveness",
+      "ALL_18_WAIKE_TRACKS_DIGITALLY_AVAILABLE while SEVEN_GC is research overlay"
     ]
   },
   "declared_pinned_commit": "e97e74fc9bfb44b1cdc26b272dc4848264f15fe0",
   "observed_source_commit": "e97e74fc9bfb44b1cdc26b272dc4848264f15fe0",
   "matrix_summary": {
     "track_count": 18,
-    "pass_count": 18,
-    "source_sha": "e97e74fc9bfb44b1cdc26b272dc4848264f15fe0"
+    "pass_count": 17,
+    "blocked_count": 1,
+    "source_sha": "e97e74fc9bfb44b1cdc26b272dc4848264f15fe0",
+    "SEVEN_GC_SOURCE_BLOCKS_18_OF_18": true,
+    "full_18_course_digital_rc": false
   },
-  "report_generated_from_sha": "43e770772b97a0d6900893ea7428df91f2acdb93"
+  "report_generated_from_sha": "348145b5d9e1f126ca26dc16449f2456d8330f5a"
 }

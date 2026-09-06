@@ -1090,7 +1090,7 @@ class LearnerAiBody(BaseModel):
     query: str = Field(min_length=1, max_length=8000)
     assessment_id: str | None = None
     activity_id: str | None = None
-    course_materials: list[dict[str, str]] = Field(default_factory=list)
+    # course_materials intentionally omitted — grounding is server-resolved only.
     cloud_consent: bool = False
     processing_mode: str = "local-only"
 
@@ -1172,7 +1172,6 @@ def learner_ai_assist(
             query=body.query,
             assessment_id=body.assessment_id,
             activity_id=body.activity_id,
-            course_materials=body.course_materials,
             cloud_consent=body.cloud_consent,
             processing_mode=body.processing_mode,
         )

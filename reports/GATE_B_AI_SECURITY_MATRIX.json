@@ -49,7 +49,10 @@
       "tests": ["tests/gate_b/test_ai_grade_safety.py", "tests/gate_b/test_adversarial_ai_sabotage.py"]
     }
   ],
-  "ci_provider": "FakeGunnchAIProvider",
+  "ci_provider": "FakeGunnchAIProvider via explicit test injection only (WAIKE_ALLOW_FAKE_AI=1 or constructor)",
+  "DEFAULT_RUNTIME_HAS_NO_FAKE_AI": true,
   "production_keys_in_ci": false,
-  "local_gguf_fabricated": false
+  "local_gguf_fabricated": false,
+  "server_resolved_grounding": true,
+  "structural_isolation": true
 }

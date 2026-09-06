@@ -10,14 +10,14 @@
   "gate_a_merge_commit": "43e770772b97a0d6900893ea7428df91f2acdb93",
   "current_wave": "GATE_B_AI_18_TRACKS",
   "current_branch": "cursor/waike-learning-gate-b-ai-18-tracks",
-  "current_pr": null,
-  "status": "GATE_B_IMPLEMENTATION_READY_FOR_PUSH",
+  "current_pr": 5,
+  "status": "GATE_B_NOT_READY",
   "waves": {
     "PR1_FOUNDATION": "MERGED",
     "PR2_ASSESSMENT_LIFECYCLE": "MERGED",
     "PR3_IDENTITY_INSTRUCTOR": "MERGED",
     "GATE_A_OFFLINE_ACTIVITIES": "MERGED",
-    "GATE_B_AI_18_TRACKS": "IN_PROGRESS",
+    "GATE_B_AI_18_TRACKS": "SURGICAL_CLOSURE_AWAITING_REMOTE_CI",
     "GATE_C_INTEROP_DEVICE_HARDENING": "PENDING",
     "GATE_D_FULL_ACCEPTANCE": "PENDING"
   },
@@ -28,17 +28,24 @@
     "OFFLINE_AND_ACTIVITY_ENGINE_DIGITALLY_COMPLETE"
   ],
   "claims_pending_remote_ci": [
-    "GUNNCHAI_PLATFORM_INTEGRATION_DIGITALLY_COMPLETE",
+    "GUNNCHAI_PLATFORM_INTEGRATION_DIGITALLY_COMPLETE"
+  ],
+  "claims_blocked_by_authentic_source": [
     "ALL_18_WAIKE_TRACKS_DIGITALLY_AVAILABLE",
     "18_TRACK_PLATFORM_DELIVERY_DIGITALLY_COMPLETE"
   ],
   "digital_blockers": [
-    "Remote Gate B CI not yet green on draft PR head; claims deferred until verify-gate-b SUCCESS"
+    "SEVEN_GC_SOURCE_BLOCKS_18_OF_18"
   ],
-  "owner_action": "NO_OWNER_ACTION_CURRENT_GATE_CONTINUES",
-  "next_gate_after_owner_merge": "Gate C \u2014 interoperability + Device OS + hardening",
-  "last_verified_utc": "2026-09-06T16:49:36Z",
-  "evidence_note": "Gate B implementation on branch; claims require green remote gate-b.yml including verify-gate-b.",
+  "owner_action": "GATE_B_NOT_READY",
+  "owner_action_reason": "ALL_18 / 18_TRACK_PLATFORM_DELIVERY claims cannot be earned while SEVEN_GC remains research-overlay / shell-only without inventing COURSE_DIGITAL_RC. Platform blockers B1–B10 closed in code; remote Gate B CI must still go green for GUNNCHAI claim.",
+  "next_gate_after_honest_gate_b": "Gate C — interoperability + Device OS + hardening (do not start)",
+  "last_verified_utc": "2026-09-06T17:50:00Z",
+  "evidence_note": "Surgical closure: no fake AI default; canonical gunnchAI CI checkout; server grounding; structural isolation; SEVEN_GC BLOCKED; pack-sourced per-track E2E; no PENDING_SUITE; required skips 0; Gate A/PR3 workflow_dispatch; full-prior-regression on Gate B. No WAIKE PR (invention forbidden).",
   "waike_prerequisite_pr": null,
-  "pr_url": null
+  "pr_url": "https://github.com/gunnchOS3k/gunnchos-waike-learning-platform/pull/5",
+  "verified_implementation_sha": null,
+  "remote_ci_run_id": null,
+  "remote_ci_conclusion": null,
+  "full_18_course_digital_rc": false
 }

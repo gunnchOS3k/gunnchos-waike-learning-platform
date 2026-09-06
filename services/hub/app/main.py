@@ -29,7 +29,8 @@ class DatabaseConfig(BaseModel):
     note: str = (
         "Gate B uses SQLite hub persistence with forward migrations (m001–m005). "
         "Production auth uses Argon2id sessions; fixture headers only when fixture_auth_enabled=true. "
-        "AI uses FakeGunnchAIProvider in CI; no production keys."
+        "AI defaults to LocalGunnchAIProvider when available, else unavailable; "
+        "FakeGunnchAIProvider is tests-only (explicit injection or WAIKE_ALLOW_FAKE_AI=1)."
     )
 
 

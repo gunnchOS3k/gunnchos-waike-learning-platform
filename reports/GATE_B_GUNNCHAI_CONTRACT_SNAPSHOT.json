@@ -1,0 +1,163 @@
+{
+  "schema": "gate_b_gunnchai_contract_snapshot_v1",
+  "generated_utc": "2026-09-06T17:47:23Z",
+  "status": "PASS",
+  "expected_sha": "4b4f411710e8cdb8102a7e11502f8497f68156b1",
+  "observed_sha": "4b4f411710e8cdb8102a7e11502f8497f68156b1",
+  "gunnchai_root": "/Users/gunnchos/dev/waike-learning-os-workspace/gunnchAI3k",
+  "repo": "https://github.com/gunnchOS3k/gunnchAI3k",
+  "package": "gunnchai3k",
+  "key_file_sha256": {
+    "src/waike-mastery/modes.ts": "42cf9332df57e8a4280f9965cbc09fadf4cee2ce5dbbc4bb379c3365c50b0ec6",
+    "src/tutor/academicIntegrityPolicy.ts": "d2a4f3c2430ac803a2e8b6a199cd3b6c24c9014de5cfcc339deaada9848bf587",
+    "src/system-layer/privacy_policy.ts": "1d475ddde4da6b7838f091a7e5eccf0bc6f50d3c303757d17719e388435cb71c",
+    "src/local-runtime/providers/cloudProvider.ts": "39ed54726b766970df56f91d61071f6636c9fe0f821217a3f31459fe0525875d",
+    "src/system-layer/product_service/cli.ts": "1f8d2c56d2cf66fc6268197f5b08e2281e156b7116f7c821db6ec688366057dd",
+    "src/waike-mastery/contract.ts": "1d98138b8a74af6caacabe61b91a140dc594ea40680cae8cb8dd79f008ae1607"
+  },
+  "source_mode_permissions": {
+    "MASTERY_BENCHMARK": {
+      "mayReadStudentMaterials": true,
+      "mayReadInstructorKeys": false,
+      "maySelfGrade": false,
+      "mayPublishGradesWithoutHuman": false,
+      "hitlGradingRequired": false,
+      "mayDiscloseFinalAnswersToLearner": false,
+      "gradingAgent": "isolated_after_submission"
+    },
+    "LEARNER_TUTOR": {
+      "mayReadStudentMaterials": true,
+      "mayReadInstructorKeys": false,
+      "maySelfGrade": false,
+      "mayPublishGradesWithoutHuman": false,
+      "hitlGradingRequired": false,
+      "mayDiscloseFinalAnswersToLearner": false,
+      "gradingAgent": "none"
+    },
+    "EDUCATOR_COPILOT": {
+      "mayReadStudentMaterials": true,
+      "mayReadInstructorKeys": true,
+      "maySelfGrade": false,
+      "mayPublishGradesWithoutHuman": false,
+      "hitlGradingRequired": true,
+      "mayDiscloseFinalAnswersToLearner": false,
+      "gradingAgent": "hitl"
+    }
+  },
+  "adapter_mode_permissions": {
+    "MASTERY_BENCHMARK": {
+      "mayReadStudentMaterials": true,
+      "mayReadInstructorKeys": false,
+      "maySelfGrade": false,
+      "mayPublishGradesWithoutHuman": false,
+      "hitlGradingRequired": false,
+      "mayDiscloseFinalAnswersToLearner": false,
+      "gradingAgent": "isolated_after_submission"
+    },
+    "LEARNER_TUTOR": {
+      "mayReadStudentMaterials": true,
+      "mayReadInstructorKeys": false,
+      "maySelfGrade": false,
+      "mayPublishGradesWithoutHuman": false,
+      "hitlGradingRequired": false,
+      "mayDiscloseFinalAnswersToLearner": false,
+      "gradingAgent": "none"
+    },
+    "EDUCATOR_COPILOT": {
+      "mayReadStudentMaterials": true,
+      "mayReadInstructorKeys": true,
+      "maySelfGrade": false,
+      "mayPublishGradesWithoutHuman": false,
+      "hitlGradingRequired": true,
+      "mayDiscloseFinalAnswersToLearner": false,
+      "gradingAgent": "hitl"
+    }
+  },
+  "source_cheat_patterns": [
+    "answer\\s+key",
+    "current\\s+exam",
+    "take\\s+my\\s+test",
+    "submit\\s+this\\s+for\\s+me",
+    "homework\\s+due\\s+today.*solution",
+    "proctored\\s+exam.*answer"
+  ],
+  "adapter_cheat_pattern_count": 8,
+  "provider_status": {
+    "repo": "https://github.com/gunnchOS3k/gunnchAI3k",
+    "sha": "4b4f411710e8cdb8102a7e11502f8497f68156b1",
+    "package": "gunnchai3k",
+    "modes": [
+      "EDUCATOR_COPILOT",
+      "LEARNER_TUTOR",
+      "MASTERY_BENCHMARK"
+    ],
+    "mode_permissions": {
+      "MASTERY_BENCHMARK": {
+        "mayReadStudentMaterials": true,
+        "mayReadInstructorKeys": false,
+        "maySelfGrade": false,
+        "mayPublishGradesWithoutHuman": false,
+        "hitlGradingRequired": false,
+        "mayDiscloseFinalAnswersToLearner": false,
+        "gradingAgent": "isolated_after_submission"
+      },
+      "LEARNER_TUTOR": {
+        "mayReadStudentMaterials": true,
+        "mayReadInstructorKeys": false,
+        "maySelfGrade": false,
+        "mayPublishGradesWithoutHuman": false,
+        "hitlGradingRequired": false,
+        "mayDiscloseFinalAnswersToLearner": false,
+        "gradingAgent": "none"
+      },
+      "EDUCATOR_COPILOT": {
+        "mayReadStudentMaterials": true,
+        "mayReadInstructorKeys": true,
+        "maySelfGrade": false,
+        "mayPublishGradesWithoutHuman": false,
+        "hitlGradingRequired": true,
+        "mayDiscloseFinalAnswersToLearner": false,
+        "gradingAgent": "hitl"
+      }
+    },
+    "DEFAULT_RUNTIME_HAS_NO_FAKE_AI": true,
+    "GUNNCHAI_CONTRACT_INTEGRATION_COMPLETE": true,
+    "GUNNCHAI_REAL_PROVIDER_AVAILABLE": true,
+    "provider": {
+      "active": "local-product-service",
+      "available": true,
+      "local": {
+        "provider_id": "local-product-service",
+        "available": true,
+        "gunnchai_root": "/Users/gunnchos/dev/waike-learning-os-workspace/gunnchAI3k",
+        "cli": "/Users/gunnchos/dev/waike-learning-os-workspace/gunnchAI3k/src/system-layer/product_service/cli.ts",
+        "probe": {
+          "cli_present": true,
+          "cli": "/Users/gunnchos/dev/waike-learning-os-workspace/gunnchAI3k/src/system-layer/product_service/cli.ts",
+          "gunnchai_root": "/Users/gunnchos/dev/waike-learning-os-workspace/gunnchAI3k",
+          "gunnchai_sha_expected": "4b4f411710e8cdb8102a7e11502f8497f68156b1",
+          "assist_executed": false,
+          "claims_local_inference": false
+        },
+        "note": "Local product-service CLI present (weights not claimed)"
+      },
+      "cloud_stub_available": false,
+      "claims": {
+        "contract_integration_complete": true,
+        "real_provider_available": true,
+        "local_inference_executed": false,
+        "default_runtime_has_no_fake_ai": true
+      }
+    },
+    "probe": {
+      "cli_present": true,
+      "cli": "/Users/gunnchos/dev/waike-learning-os-workspace/gunnchAI3k/src/system-layer/product_service/cli.ts",
+      "gunnchai_root": "/Users/gunnchos/dev/waike-learning-os-workspace/gunnchAI3k",
+      "gunnchai_sha_expected": "4b4f411710e8cdb8102a7e11502f8497f68156b1",
+      "assist_executed": false,
+      "claims_local_inference": false
+    }
+  },
+  "DEFAULT_RUNTIME_HAS_NO_FAKE_AI": true,
+  "drift": []
+}

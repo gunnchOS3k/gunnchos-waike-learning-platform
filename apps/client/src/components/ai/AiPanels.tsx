@@ -36,7 +36,6 @@ export interface AiClient {
     query: string;
     assessment_id?: string;
     activity_id?: string;
-    course_materials?: Array<{ id?: string; path?: string; text?: string }>;
   }): Promise<AiAssistResult>;
   instructorAssist(body: {
     section_id: string;
@@ -128,13 +127,6 @@ export function LearnerAiPanel({
         section_id: sectionId,
         capability,
         query,
-        course_materials: [
-          {
-            id: "section-lesson",
-            path: "learner/lessons/current",
-            text: "Course materials for this section (learner pack only).",
-          },
-        ],
       });
       setResult(r);
     } catch (e) {

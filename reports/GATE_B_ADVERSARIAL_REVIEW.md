@@ -1,46 +1,55 @@
-# Gate B Adversarial Review
+# Gate B Adversarial Review — Surgical Closure
 
 Structured adversarial pass for Gate B AI isolation + 18-track package security.
-Automated sabotage suite exists; **human review pending**.
+**Do not claim zero blockers** until remote Gate B (§15 matrix) is green on the final head.
+**Do not claim ALL_18** while `SEVEN_GC_SOURCE_BLOCKS_18_OF_18` holds.
 
-## Scope reviewed
+## Closure findings (§14)
 
-| Area | Evidence |
-|------|----------|
-| AI policy enforcement | `tests/gate_b/test_ai_policy.py`, `services/hub/app/modules/ai_policy.py` |
-| Context isolation | `tests/gate_b/test_ai_context_isolation.py`, `ai_assist.py` |
-| Prompt injection | `tests/gate_b/test_ai_prompt_injection.py` |
-| Grade safety | `tests/gate_b/test_ai_grade_safety.py` (apply-grade hard-refused) |
-| GunnchAI contract | `tests/gate_b/test_gunnchai_contract.py` + discovery report |
-| Automated sabotage | `tests/gate_b/test_adversarial_ai_sabotage.py` (§32 suite) |
-| Compiler / pack security | `tests/gate_b/test_package_security_18.py`, `test_compiler_18.py` |
+| ID | Severity | Finding | Status |
+|----|----------|---------|--------|
+| GB-C1 | merge-blocking | Fake AI production default | **Fixed (B1)** — `DEFAULT_RUNTIME_HAS_NO_FAKE_AI`; fake via injection / allow-flag only |
+| GB-C2 | merge-blocking | No canonical gunnchAI checkout | **Fixed (B2)** — CI checkout + `GATE_B_GUNNCHAI_CONTRACT_SNAPSHOT`; drift fails |
+| GB-C3 | merge-blocking | Client-supplied grounding citations | **Fixed (B3)** — server-resolved learner pack materials; hashed citations |
+| GB-C4 | merge-blocking | SEVEN_GC shell PASS for all-18 | **Honest (B5)** — matrix `BLOCKED`; ALL_18 claims withheld; no invented digital_rc |
+| GB-C5 | merge-blocking | DC / Gate A activity stand-ins | **Fixed (B6)** — pack→hub import; `module_id == track_id` |
+| GB-C6 | merge-blocking | PENDING_SUITE acceptance | **Fixed (B7)** |
+| GB-C7 | merge-blocking | Required test skips | **Fixed (B8)** — `GATE_B_REQUIRED_TESTS_SKIPPED=0` |
+| GB-C8 | merge-blocking | Red historical Gate A / PR3 workflows | **Fixed (B10)** — `workflow_dispatch`; Gate B `full-prior-regression` |
+| GB-C9 | merge-blocking | Structural isolation / audit redaction / real-provider honesty | **Fixed (B4/B9 + authz/audit)** |
 
-## Findings (code-reading pass)
+## Remaining honesty / process blockers
 
-| ID | Severity | Area | Finding | Status |
-|----|----------|------|---------|--------|
-| GB-A1 | merge-blocking if unfixed | integrity | Learner AI must refuse answer-key / instructor-packet exfil | Covered by isolation + sabotage tests (automated) |
-| GB-A2 | merge-blocking if unfixed | integrity | Prompt injection in uploaded materials must refuse or strip keys | Covered by `AI_PROMPT_INJECTION` / citation strip tests |
-| GB-A3 | merge-blocking if unfixed | authz | Cross-learner and cross-section AI context must fail closed | Covered by context isolation suite |
-| GB-A4 | merge-blocking if unfixed | grading | AI must never mutate grades (`apply-grade` refused) | Covered by grade-safety + instructor panel UX |
-| GB-A5 | merge-blocking if unfixed | packages | Learner packs must verify Ed25519; instructor AES decrypt path-contained | Covered by package-security-18 |
-| GB-A6 | honesty | content | `SEVEN_GC_APPRENTICESHIP` has no digital_rc weeks (0 lessons/quizzes/labs) | Honest thin inventory; E2E skips zero-count activity types |
-| GB-A7 | non-blocking | a11y | AI panel a11y is smoke-only, not certification | `a11y.gate-b.test.tsx` |
-| GB-A8 | non-blocking | process | Human adversarial review of live gunnchAI provider behavior not completed | **Pending** — automated Fake provider + contract discovery only |
+| ID | Severity | Finding | Status |
+|----|----------|---------|--------|
+| GB-R1 | claim | ALL_18 / 18_TRACK delivery claims | **Blocked by authentic source** — `SEVEN_GC_SOURCE_BLOCKS_18_OF_18` |
+| GB-R2 | process | Remote expanded Gate B CI on final head | **Pending push / CI self-heal** |
+| GB-R3 | non-blocking | Human live-provider adversarial review | Pending |
+| GB-R4 | non-blocking | A11y / security certification | Not claimed |
 
-## Accepted trust boundaries
+## Provider posture
 
-- Fake / stub GunnchAI provider is authoritative in CI; live provider contract is discovery-documented, not field-certified.
-- Compiler security proves signature + decrypt + path containment on fixtures keys — not production key ceremony.
-- Track E2E uses hub activity seeds for quiz/lab when inventory counts > 0; it does not invent missing curriculum files for thin tracks.
-- Offline column in the 18-track matrix reflects `offline_pack` presence in the learner pack, not a claim of full offline curriculum mirroring for every track.
+- Production default: Local if CLI present, else Unavailable → `AI_PROVIDER_UNAVAILABLE` 503
+- Fake: constructor injection or `GUNNCHAI_PROVIDER=fake` + `WAIKE_ALLOW_FAKE_AI=1` only
+- Contract vs real: `GUNNCHAI_CONTRACT_INTEGRATION_COMPLETE` ≠ `GUNNCHAI_REAL_PROVIDER_AVAILABLE`
+- No fabricated GGUF/llama claim
 
-## Merge-blocking open (human)
+## Grounding posture
 
-Human review of production GunnchAI wiring and red-team of live prompts remains **pending**. Automated sabotage suite is the current gate.
+- Learner `course_materials` removed from API body / client
+- Citations only from enrolled section's installed learner-visible pack content
+- `grounded=true` only with validated `content_hash` citations
 
 ## Test honesty
 
-- Zero-count activity types are skipped, not fabricated.
-- Matrix `instructor_visible=EMPTY` for thin instructor packs is preserved.
-- Remote Gate B claim withheld until required `gate-b.yml` jobs (including `verify-gate-b`) are green on the final head.
+- Zero-count activities → `NOT_APPLICABLE` (not skip)
+- SEVEN_GC shell → `BLOCKED` (not PASS)
+- Matrix: 17 PASS + 1 BLOCKED
+- Verifier rejects fake-default, contract drift, PENDING_SUITE, required skips, false ALL_18
+
+## Evidence
+
+- Adapter / assist: `services/hub/app/modules/gunnchai_adapter.py`, `ai_assist.py`
+- Verifier: `scripts/verify_gate_b.py`, `scripts/verify_gunnchai_contract.py`
+- Suites: `tests/gate_b/*`
+- CI: `.github/workflows/gate-b.yml`

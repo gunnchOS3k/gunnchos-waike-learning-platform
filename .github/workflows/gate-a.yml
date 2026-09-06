@@ -4,9 +4,8 @@ name: Gate A
 # Do not mask claimed capabilities with continue-on-error / || true.
 
 on:
-  pull_request:
-  push:
-    branches: [main, "cursor/**"]
+  workflow_dispatch:
+  # Historical gate — manual only. Gate B (.github/workflows/gate-b.yml) is authoritative.
 
 env:
   SOURCE_DATE_EPOCH: "1700000000"

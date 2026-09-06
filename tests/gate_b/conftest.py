@@ -70,15 +70,25 @@ def packs_18(tmp_path_factory):
 @pytest.fixture()
 def prod_app(tmp_path, monkeypatch):
     monkeypatch.setenv("WAIKE_ROOT", str(waike_root()))
-    monkeypatch.setenv("GUNNCHAI_PROVIDER", "fake")
+    # Do NOT set GUNNCHAI_PROVIDER=fake as the production default path.
+    # Inject Fake explicitly for gate_b assist tests that need responses.
+    monkeypatch.delenv("GUNNCHAI_PROVIDER", raising=False)
+    monkeypatch.delenv("WAIKE_ALLOW_FAKE_AI", raising=False)
     monkeypatch.delenv("WAIKE_SEED_TEST_FIXTURES", raising=False)
     monkeypatch.delenv("GUNNCHAI_ROOT", raising=False)
+    # Point grounding resolver at compiled pack_out_18 when present.
+    pack_out = ROOT / "pack_out_18"
+    if pack_out.is_dir():
+        monkeypatch.setenv("WAIKE_PACK_OUT", str(pack_out))
     db = tmp_path / "gate_b_ai.sqlite3"
     app = create_app(
         HubConfig(production_auth_enabled=True, fixture_auth_enabled=False),
         db_path=db,
         seed=True,
     )
+    from app.modules.gunnchai_adapter import FakeGunnchAIProvider, GunnchAIAdapter
+
+    app.state.ai.adapter = GunnchAIAdapter(provider=FakeGunnchAIProvider())
     return app
 
 

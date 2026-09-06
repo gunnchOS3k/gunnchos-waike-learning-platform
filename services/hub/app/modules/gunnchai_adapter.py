@@ -8,8 +8,10 @@ Adapts canonical contracts from gunnchAI3k @ 4b4f411710e8cdb8102a7e11502f8497f68
 - product-service assist CLI (src/system-layer/product_service/cli.ts)
 - course discovery (src/waike-mastery/contract.ts)
 
-CI uses FakeGunnchAIProvider. LocalGunnchAIProvider only when GUNNCHAI_ROOT is set
-and the product-service CLI is present — otherwise reports unavailable honestly.
+Default runtime never selects FakeGunnchAIProvider. Fake is tests-only via explicit
+constructor injection or GUNNCHAI_PROVIDER=fake with WAIKE_ALLOW_FAKE_AI=1.
+LocalGunnchAIProvider only when GUNNCHAI_ROOT points at a checkout with the
+product-service CLI — otherwise reports unavailable honestly.
 Never fabricates a local GGUF/llama runtime.
 """
 
@@ -29,6 +31,10 @@ from app.modules.assessment_lifecycle import ServiceError
 GUNNCHAI_REPO = "https://github.com/gunnchOS3k/gunnchAI3k"
 GUNNCHAI_SHA = "4b4f411710e8cdb8102a7e11502f8497f68156b1"
 GUNNCHAI_PACKAGE = "gunnchai3k"
+
+# CI / contract label: default production runtime path must not select Fake.
+DEFAULT_RUNTIME_HAS_NO_FAKE_AI = True
+GUNNCHAI_CONTRACT_INTEGRATION_COMPLETE = True
 
 MasteryMode = str  # MASTERY_BENCHMARK | LEARNER_TUTOR | EDUCATOR_COPILOT
 
@@ -114,6 +120,12 @@ SYSTEM_EXFIL_PATTERNS = [
 
 ANSWER_KEY_MARKERS = re.compile(
     r"(ANSWER_KEY|INSTRUCTOR_KEY|SOLUTION_KEY|PRIVATE_RUBRIC|INSTRUCTOR_PACKET)",
+    re.I,
+)
+
+FORBIDDEN_MATERIAL_PATH = re.compile(
+    r"(instructor|answer[_-]?key|solution[_-]?key|private[_-]?rubric|"
+    r"peer|other[_-]?learner|submission|/keys?/)",
     re.I,
 )
 
@@ -223,7 +235,7 @@ def screen_request(req: AssistRequest) -> IntegrityDecision:
         )
     if req.learner_facing and any(p.search(text) for p in CHEAT_PATTERNS):
         return check_academic_integrity(text)
-    # Injection may also arrive via submitted content attached as materials
+    # Defense-in-depth: injection may also arrive via server-resolved materials
     for mat in req.course_materials:
         body = mat.get("text") or mat.get("body") or ""
         if any(p.search(body) for p in INJECTION_PATTERNS):
@@ -276,6 +288,20 @@ def strip_answer_keys(text: str) -> str:
     return text
 
 
+def content_hash(text: str) -> str:
+    return hashlib.sha256(text.encode("utf-8")).hexdigest()
+
+
+def material_path_allowed(path: str) -> bool:
+    if not path:
+        return False
+    if FORBIDDEN_MATERIAL_PATH.search(path):
+        return False
+    if "instructor" in path.lower():
+        return False
+    return True
+
+
 def resolve_waike_root(cwd: Path | None = None) -> Path | None:
     """Port of gunnchAI resolveWaikeRoot (contract.ts)."""
     env = os.environ.get("WAIKE_REPO_ROOT") or os.environ.get("WAIKE_ROOT")
@@ -322,22 +348,123 @@ def discover_courses_from_contract(waike_root: Path) -> dict[str, Any]:
     return {"course_count": len(courses), "hardcoded_course_names": False, "courses": courses}
 
 
+def _allow_fake_ai() -> bool:
+    return os.environ.get("WAIKE_ALLOW_FAKE_AI", "").strip() == "1"
+
+
+def _select_provider_from_env() -> GunnchAIProvider:
+    """Production-safe provider selection. Never defaults to Fake."""
+    prefer = (os.environ.get("GUNNCHAI_PROVIDER") or "").strip().lower()
+    if prefer == "fake":
+        if _allow_fake_ai():
+            return FakeGunnchAIProvider()
+        return ForbiddenFakeProvider()
+    if prefer in {"", "auto", "local"}:
+        local = LocalGunnchAIProvider()
+        return local if local.available() else UnavailableProvider()
+    if prefer in {"unavailable", "none", "off"}:
+        return UnavailableProvider()
+    local = LocalGunnchAIProvider()
+    return local if local.available() else UnavailableProvider()
+
+
+class UnavailableProvider:
+    """Honest unavailable provider — available() is False."""
+
+    provider_id = "unavailable"
+    forbidden_fake = False
+
+    def available(self) -> bool:
+        return False
+
+    def assist(self, req: AssistRequest) -> AssistResponse:
+        raise ServiceError("AI_PROVIDER_UNAVAILABLE", 503)
+
+
+class ForbiddenFakeProvider:
+    """Selected when GUNNCHAI_PROVIDER=fake without WAIKE_ALLOW_FAKE_AI=1."""
+
+    provider_id = "fake-forbidden"
+    forbidden_fake = True
+
+    def available(self) -> bool:
+        return False
+
+    def assist(self, req: AssistRequest) -> AssistResponse:
+        raise ServiceError("AI_FAKE_PROVIDER_FORBIDDEN", 403)
+
+
+class EchoTestProvider:
+    """Test provider that echoes the AssistRequest structure for isolation asserts."""
+
+    provider_id = "echo-test"
+    last_request: AssistRequest | None = None
+
+    def available(self) -> bool:
+        return True
+
+    def assist(self, req: AssistRequest) -> AssistResponse:
+        self.last_request = req
+        # Field names avoid ANSWER_KEY / INSTRUCTOR_KEY substrings so learner
+        # strip_answer_keys does not false-positive on the echo payload.
+        echo = {
+            "mode": req.mode,
+            "capability": req.capability,
+            "learner_facing": req.learner_facing,
+            "staff_context_present": req.instructor_context is not None,
+            "target_learner_id": req.target_learner_id,
+            "material_paths": [m.get("path") or m.get("id") or "" for m in req.course_materials],
+            "material_ids": [m.get("id") or "" for m in req.course_materials],
+            "forbidden_material_path_present": any(
+                FORBIDDEN_MATERIAL_PATH.search(m.get("path") or m.get("id") or "")
+                for m in req.course_materials
+            ),
+            "peer_path_present": any(
+                "peer" in (m.get("path") or m.get("id") or "").lower()
+                for m in req.course_materials
+            ),
+        }
+        return AssistResponse(
+            ok=True,
+            text=json.dumps(echo, sort_keys=True),
+            grounded=False,
+            citations=[],
+            provider_id=self.provider_id,
+            mode=req.mode,
+            capability=req.capability,
+            disclosure=evaluate_cloud_disclosure(req)["userVisibleDisclosure"],
+            suggestion_only=True,
+            mutates_grades=False,
+            detail={"echo": echo, "query_hash": content_hash(req.query)[:12]},
+        )
+
+
 class FakeGunnchAIProvider:
-    """Deterministic CI provider — no network, no keys."""
+    """Deterministic CI provider — no network, no keys. Tests only."""
 
     provider_id = "fake-gunnchai"
+    forbidden_fake = False
 
     def available(self) -> bool:
         return True
 
     def assist(self, req: AssistRequest) -> AssistResponse:
         disclosure = evaluate_cloud_disclosure(req)
-        qh = hashlib.sha256(req.query.encode("utf-8")).hexdigest()[:12]
-        citations = [
-            {"source": m.get("id") or m.get("path") or "course", "snippet": (m.get("text") or "")[:120]}
-            for m in req.course_materials[:3]
-            if m.get("text") or m.get("path")
-        ]
+        qh = content_hash(req.query)[:12]
+        citations: list[dict[str, str]] = []
+        for m in req.course_materials[:3]:
+            text = m.get("text") or ""
+            path = m.get("path") or m.get("id") or "course"
+            if not text or not material_path_allowed(path):
+                continue
+            ch = m.get("content_hash") or content_hash(text)
+            citations.append(
+                {
+                    "source": path,
+                    "snippet": text[:120],
+                    "content_hash": ch,
+                }
+            )
         if req.capability == "hint":
             text = (
                 f"[fake:{qh}] Hint: revisit the course materials for this section "
@@ -354,13 +481,12 @@ class FakeGunnchAIProvider:
                 "HITL required; grades are not changed by this response."
             )
         elif req.capability == "citation":
-            text = f"[fake:{qh}] Citations are limited to provided course materials."
+            text = f"[fake:{qh}] Citations are limited to server-resolved course materials."
         else:
             text = f"[fake:{qh}] Assist for capability={req.capability} (deterministic mock)."
         text = strip_answer_keys(text)
         if req.learner_facing:
             text = strip_answer_keys(text)
-            # Never embed instructor context even if mistakenly passed.
             if req.instructor_context:
                 text = strip_answer_keys(
                     "Learner tutor mode cannot use instructor keys or private rubric guidance."
@@ -368,7 +494,7 @@ class FakeGunnchAIProvider:
         return AssistResponse(
             ok=True,
             text=text,
-            grounded=bool(citations) or req.capability != "citation",
+            grounded=bool(citations),
             citations=citations,
             provider_id=self.provider_id,
             mode=req.mode,
@@ -403,10 +529,13 @@ class LocalGunnchAIProvider:
     """
 
     provider_id = "local-product-service"
+    forbidden_fake = False
+    _assist_executed = False
 
     def __init__(self, root: Path | None = None) -> None:
         env = os.environ.get("GUNNCHAI_ROOT")
         self.root = Path(root) if root else (Path(env) if env else None)
+        self._assist_executed = False
 
     def cli_path(self) -> Path | None:
         if not self.root:
@@ -417,15 +546,29 @@ class LocalGunnchAIProvider:
     def available(self) -> bool:
         return self.cli_path() is not None
 
+    def probe_cli(self) -> dict[str, Any]:
+        """Non-destructive status: CLI presence only (no model weights required)."""
+        cli = self.cli_path()
+        return {
+            "cli_present": cli is not None,
+            "cli": str(cli) if cli else None,
+            "gunnchai_root": str(self.root) if self.root else None,
+            "gunnchai_sha_expected": GUNNCHAI_SHA,
+            "assist_executed": self._assist_executed,
+            "claims_local_inference": self._assist_executed,
+        }
+
     def status(self) -> dict[str, Any]:
+        probe = self.probe_cli()
         cli = self.cli_path()
         return {
             "provider_id": self.provider_id,
             "available": cli is not None,
             "gunnchai_root": str(self.root) if self.root else None,
             "cli": str(cli) if cli else None,
+            "probe": probe,
             "note": (
-                "Local product-service assist available"
+                "Local product-service CLI present (weights not claimed)"
                 if cli
                 else "GUNNCHAI_ROOT unset or product-service CLI missing — unavailable (honest)"
             ),
@@ -436,7 +579,6 @@ class LocalGunnchAIProvider:
         if cli is None:
             raise ServiceError("AI_PROVIDER_UNAVAILABLE", 503)
         disclosure = evaluate_cloud_disclosure(req)
-        # Never send instructor keys to cloud; product-service is local loopback only.
         cmd = [
             "npx",
             "tsx",
@@ -464,21 +606,40 @@ class LocalGunnchAIProvider:
             payload = json.loads(proc.stdout.strip() or "{}")
         except json.JSONDecodeError as e:
             raise ServiceError("AI_PROVIDER_ERROR", 502) from e
+        self._assist_executed = True
         text = str(payload.get("text") or payload.get("message") or payload)
         if req.learner_facing:
             text = strip_answer_keys(text)
+        citations = list(payload.get("citations") or [])
+        # Prefer server materials with hashes when provider returns bare cites
+        if not citations and req.course_materials:
+            for m in req.course_materials[:3]:
+                t = m.get("text") or ""
+                path = m.get("path") or m.get("id") or "course"
+                if t and material_path_allowed(path):
+                    citations.append(
+                        {
+                            "source": path,
+                            "snippet": t[:120],
+                            "content_hash": m.get("content_hash") or content_hash(t),
+                        }
+                    )
         return AssistResponse(
             ok=bool(payload.get("ok", True)),
             text=text,
-            grounded=bool(payload.get("grounded", False)),
-            citations=list(payload.get("citations") or []),
+            grounded=bool(citations),
+            citations=citations,
             provider_id=self.provider_id,
             mode=req.mode,
             capability=req.capability,
             disclosure=disclosure["userVisibleDisclosure"],
             suggestion_only=True,
             mutates_grades=False,
-            detail={"raw_ok": payload.get("ok"), "cloud": disclosure},
+            detail={
+                "raw_ok": payload.get("ok"),
+                "cloud": disclosure,
+                "local_inference_executed": True,
+            },
         )
 
 
@@ -486,59 +647,83 @@ class GunnchAIAdapter:
     """Hub-facing adapter: enforces modes, integrity, and provider selection."""
 
     def __init__(self, provider: GunnchAIProvider | None = None) -> None:
-        prefer_local = os.environ.get("GUNNCHAI_PROVIDER", "fake").lower()
         if provider is not None:
             self.provider = provider
-        elif prefer_local == "local":
-            local = LocalGunnchAIProvider()
-            self.provider = local if local.available() else FakeGunnchAIProvider()
         else:
-            # CI / default: deterministic fake. Never use production keys.
-            self.provider = FakeGunnchAIProvider()
+            self.provider = _select_provider_from_env()
         self.local = LocalGunnchAIProvider()
         self.cloud_stub = CloudProviderStub()
 
     def contract_meta(self) -> dict[str, Any]:
+        real_available = self.local.available()
+        active_id = getattr(self.provider, "provider_id", "unknown")
+        local_inference_executed = bool(
+            getattr(self.provider, "_assist_executed", False)
+            if active_id == "local-product-service"
+            else False
+        )
         return {
             "repo": GUNNCHAI_REPO,
             "sha": GUNNCHAI_SHA,
             "package": GUNNCHAI_PACKAGE,
             "modes": sorted(MODE_PERMISSIONS.keys()),
             "mode_permissions": MODE_PERMISSIONS,
+            "DEFAULT_RUNTIME_HAS_NO_FAKE_AI": DEFAULT_RUNTIME_HAS_NO_FAKE_AI,
+            "GUNNCHAI_CONTRACT_INTEGRATION_COMPLETE": GUNNCHAI_CONTRACT_INTEGRATION_COMPLETE,
+            "GUNNCHAI_REAL_PROVIDER_AVAILABLE": real_available,
             "provider": {
-                "active": getattr(self.provider, "provider_id", "unknown"),
+                "active": active_id,
                 "available": self.provider.available(),
                 "local": self.local.status(),
                 "cloud_stub_available": self.cloud_stub.available(),
+                "claims": {
+                    "contract_integration_complete": GUNNCHAI_CONTRACT_INTEGRATION_COMPLETE,
+                    "real_provider_available": real_available,
+                    "local_inference_executed": local_inference_executed,
+                    "default_runtime_has_no_fake_ai": DEFAULT_RUNTIME_HAS_NO_FAKE_AI,
+                },
             },
         }
+
+    def provider_status(self) -> dict[str, Any]:
+        meta = self.contract_meta()
+        meta["probe"] = self.local.probe_cli()
+        return meta
 
     def assist(self, req: AssistRequest) -> AssistResponse:
         if req.mode not in MODE_PERMISSIONS:
             raise ServiceError("AI_MODE_UNKNOWN", 400)
         perms = MODE_PERMISSIONS[req.mode]
 
-        # Mode permission gates — assert only when the attempted action is forbidden.
+        # Structural isolation for learner path: zero instructor/peer/key context.
         if req.learner_facing:
-            if req.instructor_context:
-                # Strip — never feed keys into learner path
-                req = AssistRequest(**{**req.__dict__, "instructor_context": None})
+            safe_mats = [
+                m
+                for m in req.course_materials
+                if material_path_allowed(m.get("path") or m.get("id") or "")
+                and not ANSWER_KEY_MARKERS.search(m.get("text") or "")
+            ]
+            req = AssistRequest(
+                **{
+                    **req.__dict__,
+                    "instructor_context": None,
+                    "target_learner_id": None,
+                    "course_materials": safe_mats,
+                }
+            )
             if not perms["mayReadInstructorKeys"]:
-                # Learner path must never carry instructor keys
                 req = AssistRequest(**{**req.__dict__, "instructor_context": None})
         else:
-            # Educator copilot: suggestions only; HITL required; never publish grades here.
             if not perms["mayPublishGradesWithoutHuman"]:
-                # Grade publish is not performed by this adapter (suggestions only).
                 pass
             if perms["hitlGradingRequired"] and req.capability in {
                 "grading_triage",
                 "feedback_suggest",
             }:
-                # Continue as suggestion-only; never self-grade / publish.
                 pass
             if not perms["maySelfGrade"]:
                 pass
+
         screen = screen_request(req)
         if not screen.allowed:
             return AssistResponse(
@@ -558,14 +743,15 @@ class GunnchAIAdapter:
                 detail={"integrity": screen.reason},
             )
 
-        # Cloud path fails closed without consent / when local-only
         disclosure = evaluate_cloud_disclosure(req)
         if req.processing_mode == "cloud-allowed" and disclosure["cloudPermitted"]:
-            # Still refuse — cloud stub is not implemented
             try:
                 return self.cloud_stub.assist(req)
             except ServiceError:
                 raise
+
+        if getattr(self.provider, "forbidden_fake", False):
+            raise ServiceError("AI_FAKE_PROVIDER_FORBIDDEN", 403)
 
         if not self.provider.available():
             raise ServiceError("AI_PROVIDER_UNAVAILABLE", 503)
@@ -573,16 +759,26 @@ class GunnchAIAdapter:
         result = self.provider.assist(req)
         if req.learner_facing:
             result.text = strip_answer_keys(result.text)
-            # Scrub any leaked markers from citations
             safe_cites = []
             for c in result.citations:
                 snippet = strip_answer_keys(c.get("snippet") or "")
+                source = c.get("source") or ""
                 if "cannot reveal answer keys" in snippet.lower():
                     continue
-                safe_cites.append({**c, "snippet": snippet})
+                if not material_path_allowed(source):
+                    continue
+                ch = c.get("content_hash") or content_hash(snippet)
+                safe_cites.append({**c, "snippet": snippet, "content_hash": ch})
             result.citations = safe_cites
+            result.grounded = bool(safe_cites)
+        else:
+            # grounded only when validated citations exist
+            result.grounded = bool(result.citations)
         result.mutates_grades = False
         result.suggestion_only = True
+        # Scrub query text from public detail
+        if "query" in result.detail:
+            result.detail = {**result.detail, "query": "[redacted]"}
         return result
 
     def refuse_silent_grade_change(self) -> None:

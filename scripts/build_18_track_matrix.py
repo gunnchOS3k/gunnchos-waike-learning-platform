@@ -157,10 +157,24 @@ def _row_for_track(
         decrypt = "FAIL:missing_manifest"
         blocker = blocker or "missing instructor manifest"
 
-    thin = track_id == "SEVEN_GC_APPRENTICESHIP" and counts.get("lessons", 0) == 0
-    final = "PASS" if decision.ok and decrypt.startswith("PASS") else "FAIL"
-    if thin and final == "PASS" and not blocker:
-        blocker = "thin_source_inventory_no_digital_rc_weeks"
+    shell_only = (
+        int(counts.get("lessons") or 0) == 0
+        and int(counts.get("assignments") or 0) == 0
+        and int(counts.get("quizzes") or 0) == 0
+        and int(counts.get("labs") or 0) == 0
+    )
+    # Authentic WAIKE policy: SEVEN_GC is research overlay / HUMAN_PENDING — no
+    # COURSE_DIGITAL_RC. Shell compile+verify must not be special-cased as digital PASS.
+    seven_gc_source_block = track_id == "SEVEN_GC_APPRENTICESHIP" and shell_only
+
+    if decision.ok and decrypt.startswith("PASS"):
+        if seven_gc_source_block:
+            final = "BLOCKED"
+            blocker = "SEVEN_GC_SOURCE_BLOCKS_18_OF_18"
+        else:
+            final = "PASS"
+    else:
+        final = "FAIL"
 
     if decision.ok and manifest_path.is_file():
         for e in json.loads(manifest_path.read_text(encoding="utf-8")).get("files") or []:
@@ -280,22 +294,37 @@ def main() -> int:
             writer.writerow({k: row.get(k, "") for k in MATRIX_COLUMNS})
 
     _write_md(rows, md_path, source_sha)
+    pass_n = sum(1 for r in rows if r["final_status"] == "PASS")
+    blocked_n = sum(1 for r in rows if r["final_status"] == "BLOCKED")
+    fail_n = sum(1 for r in rows if r["final_status"] not in {"PASS", "BLOCKED"})
+    seven_gc_blocks = any(
+        r["track"] == "SEVEN_GC_APPRENTICESHIP"
+        and r["final_status"] == "BLOCKED"
+        and "SEVEN_GC_SOURCE_BLOCKS_18_OF_18" in str(r.get("blocker") or "")
+        for r in rows
+    )
     payload = {
         "source_sha": source_sha,
         "package_version_default": PACKAGE_VERSION,
         "columns": MATRIX_COLUMNS,
         "rows": rows,
         "summary": {
-            "pass": sum(1 for r in rows if r["final_status"] == "PASS"),
-            "fail": sum(1 for r in rows if r["final_status"] != "PASS"),
+            "pass": pass_n,
+            "blocked": blocked_n,
+            "fail": fail_n,
             "tracks": len(rows),
+            "full_18_course_digital_rc": False,
+            "SEVEN_GC_SOURCE_BLOCKS_18_OF_18": seven_gc_blocks,
+            "ALL_18_WAIKE_TRACKS_DIGITALLY_AVAILABLE": False,
         },
     }
     json_path.write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    # Honest matrix: 17 digital PASS + SEVEN_GC BLOCKED is expected; not an all-18 PASS.
+    honest_ok = fail_n == 0 and seven_gc_blocks and pass_n == 17
     print(
         json.dumps(
             {
-                "ok": payload["summary"]["fail"] == 0,
+                "ok": honest_ok,
                 "summary": payload["summary"],
                 "csv": str(csv_path),
                 "md": str(md_path),
@@ -304,7 +333,7 @@ def main() -> int:
             indent=2,
         )
     )
-    return 0 if payload["summary"]["fail"] == 0 else 1
+    return 0 if honest_ok else 1
 
 
 if __name__ == "__main__":

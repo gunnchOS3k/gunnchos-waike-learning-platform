@@ -80,14 +80,17 @@ def test_version_fixture_mode_for_pr2_regression(client):
     assert body["learner_data_enabled"] is True
     assert body["assessment_lifecycle"] is True
     assert body["identity"] is True
+    assert body.get("offline_sync") is True
+    version = str(body.get("version") or "")
+    assert version, "version must be present"
+    # Accept gate-b / 0.5.x / prior markers / any 0.x semver continuation without enumerating forever.
     assert (
-        "pr3" in body["version"]
-        or "pr2" in body["version"]
-        or "gate-a" in body["version"]
-        or body["version"].startswith("0.3")
-        or body["version"].startswith("0.4")
-    )
-    assert body.get("offline_sync") is True or "gate-a" in body["version"] or "pr3" in body["version"]
+        "gate-b" in version
+        or "gate-a" in version
+        or "pr3" in version
+        or "pr2" in version
+        or version.startswith("0.")
+    ), f"unexpected version identity: {version!r}"
 
 
 def test_version_production_defaults(prod_client):

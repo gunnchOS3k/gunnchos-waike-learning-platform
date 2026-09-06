@@ -88,6 +88,13 @@ def test_seven_gc_thin_but_honest():
     assert inv["learner_file_count"] > 0  # program + apprenticeship docs exist
     # No fabricated digital_rc week lessons
     assert inv["activity_counts"]["lessons"] == 0
+    assert inv["activity_counts"]["assignments"] == 0
+    assert inv["activity_counts"]["quizzes"] == 0
+    assert inv["activity_counts"]["labs"] == 0
+    matrix = json.loads((ROOT / "reports/WAIKE_18_TRACK_PACKAGE_MATRIX.json").read_text())
+    row = next(r for r in matrix["rows"] if r["track"] == "SEVEN_GC_APPRENTICESHIP")
+    assert row["final_status"] == "BLOCKED"
+    assert "SEVEN_GC_SOURCE_BLOCKS_18_OF_18" in row["blocker"]
 
 
 def test_all_18_import_specs_present():

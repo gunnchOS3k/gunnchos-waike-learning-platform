@@ -1,4 +1,4 @@
-"""Gate B: learner open-track + progress + representative activity flows."""
+"""Gate B: learner open-track + progress + per-track packaged activity flows."""
 
 from __future__ import annotations
 
@@ -21,7 +21,9 @@ def test_learner_track_flow(client, packs_18, tmp_path, track_id):
     installed = install_track_into_hub(client, track_id, pack_dir)
     section_id = installed["section_id"]
     counts = installed["activity_counts"]
+    registered = installed["registered_activities"] or {}
     lh = auth_header(installed["learner_token"])
+    activity_status = dict(registered.get("status") or {})
 
     # Open track: section detail + activity listing
     detail = client.get(f"/api/v1/sections/{section_id}", headers=lh)
@@ -49,67 +51,67 @@ def test_learner_track_flow(client, packs_18, tmp_path, track_id):
     pull = device.pull()
     assert any(p["lesson_id"] == lesson_id for p in pull["lesson_progress"])
 
-    # Representative flows only when inventory count > 0 (honest for thin tracks)
-    if counts["lessons"] > 0:
-        # Lesson path already covered by progress sync above
-        assert True
+    if counts["lessons"] == 0:
+        assert activity_status.get("lessons") == "NOT_APPLICABLE"
+    else:
+        assert activity_status.get("lessons") == "REGISTERED"
+        assert (registered.get("lesson") or {}).get("module_id") == track_id
 
-    if counts["assignments"] > 0:
-        assigns = client.get("/api/v1/assignments", headers=lh)
-        assert assigns.status_code == 200
-        # Use seeded Digital Confidence assignment as hub lifecycle stand-in when present;
-        # do not invent track-specific assignment bodies.
-        seed = next((a for a in assigns.json() if a.get("module_id") == "DIGITAL_CONFIDENCE"), None)
-        if seed:
-            aid = seed["assignment_id"]
-            draft = client.put(
-                f"/api/v1/assignments/{aid}/draft",
-                headers=lh,
-                json={"text_response": f"gate-b draft {track_id}", "section_id": section_id},
-            )
-            assert draft.status_code == 200, draft.text
-
-    if counts["quizzes"] > 0:
-        app = client.app
-        seeded = app.state.activities.seed_section_activities(
-            section_id=section_id,
-            site_id="site-alpha",
-            instructor_id=installed["instructor_user_id"],
+    if counts["assignments"] == 0:
+        assert activity_status.get("assignments") == "NOT_APPLICABLE"
+        assert registered.get("assignment") is None
+    else:
+        assign_meta = registered["assignment"]
+        assert assign_meta["module_id"] == track_id
+        aid = assign_meta["assignment_id"]
+        detail_a = client.get(f"/api/v1/assignments/{aid}", headers=lh)
+        assert detail_a.status_code == 200, detail_a.text
+        assert detail_a.json()["module_id"] == track_id
+        draft = client.put(
+            f"/api/v1/assignments/{aid}/draft",
+            headers=lh,
+            json={"text_response": f"gate-b draft {track_id}", "section_id": section_id},
         )
-        quiz_id = seeded["quiz_id"]
+        assert draft.status_code == 200, draft.text
+
+    if counts["quizzes"] == 0:
+        assert activity_status.get("quizzes") == "NOT_APPLICABLE"
+        assert registered.get("quiz") is None
+        # Must not fall back to Gate A DIGITAL_CONFIDENCE seed quiz.
+        quiz_ids = [q["quiz_id"] for q in acts.json().get("quizzes") or []]
+        assert not any(qid.startswith("quiz_dc_w01") for qid in quiz_ids)
+    else:
+        quiz_meta = registered["quiz"]
+        assert quiz_meta["module_id"] == track_id
+        quiz_id = quiz_meta["quiz_id"]
         start = client.post(f"/api/v1/quizzes/{quiz_id}/attempts", headers=lh)
         assert start.status_code == 200, start.text
         attempt_id = start.json()["attempt_id"]
+        responses = quiz_meta.get("correct_responses") or {}
         submit = client.post(
             f"/api/v1/quiz-attempts/{attempt_id}/submit",
             headers=lh,
             json={
-                "responses": {
-                    f"qi_sc_{section_id}": "b",
-                    f"qi_ms_{section_id}": ["a", "c"],
-                    f"qi_tf_{section_id}": True,
-                    f"qi_num_{section_id}": 42,
-                    f"qi_short_{section_id}": "digital confidence",
-                    f"qi_file_{section_id}": {"f": 1},
-                },
+                "responses": responses,
                 "client_mutation_id": f"mut_gb_quiz_{track_id.lower()[:20]}",
             },
         )
         assert submit.status_code == 200, submit.text
 
-    if counts["labs"] > 0:
-        app = client.app
-        seeded = app.state.activities.seed_section_activities(
-            section_id=section_id,
-            site_id="site-alpha",
-            instructor_id=installed["instructor_user_id"],
-        )
-        lab_id = seeded["lab_id"]
+    if counts["labs"] == 0:
+        assert activity_status.get("labs") == "NOT_APPLICABLE"
+        assert registered.get("lab") is None
+        lab_ids = [lab["lab_id"] for lab in acts.json().get("labs") or []]
+        assert not any(lid.startswith("lab_dc_local_software") for lid in lab_ids)
+    else:
+        lab_meta = registered["lab"]
+        assert lab_meta["module_id"] == track_id
+        lab_id = lab_meta["lab_id"]
         run = client.post(
             f"/api/v1/labs/{lab_id}/runs",
             headers=lh,
             json={
-                "evidence": {"stdout_hash": f"gb_{track_id}"},
+                "evidence": {"stdout_hash": f"gb_{track_id}", "notes": "pack lab evidence"},
                 "artifact_hashes": ["aa"],
                 "client_mutation_id": f"mut_gb_lab_{track_id.lower()[:20]}",
             },

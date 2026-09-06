@@ -340,10 +340,10 @@
     {
       "ai_policy": "ABSENT",
       "assignments": 0,
-      "blocker": "thin_source_inventory_no_digital_rc_weeks",
+      "blocker": "SEVEN_GC_SOURCE_BLOCKS_18_OF_18",
       "decrypt": "PASS",
       "discussions": 0,
-      "final_status": "PASS",
+      "final_status": "BLOCKED",
       "groups": 0,
       "install": "PASS",
       "instructor_hash": "97a1ea9e62e56e026294e41b2f1d595e50c3571e831b32e3233bf87a1d453365",
@@ -536,8 +536,12 @@
   ],
   "source_sha": "e97e74fc9bfb44b1cdc26b272dc4848264f15fe0",
   "summary": {
+    "ALL_18_WAIKE_TRACKS_DIGITALLY_AVAILABLE": false,
+    "SEVEN_GC_SOURCE_BLOCKS_18_OF_18": true,
+    "blocked": 1,
     "fail": 0,
-    "pass": 18,
+    "full_18_course_digital_rc": false,
+    "pass": 17,
     "tracks": 18
   }
 }
