@@ -169,7 +169,14 @@ def test_concurrent_reads(client):
 
 
 def test_mutation_concurrency_no_lost_updates(client):
-    """Concurrent mutations: deactivate vs roster, package lifecycle on distinct tracks, backup vs reads."""
+    """Concurrent mutation scheduling with SQLite-safe serialization of the shared hub connection.
+
+    Scenarios still cover revoke-vs-open, enrollment revoke integrity, duplicate install replay,
+    and backup-vs-reads. A lock prevents 'bad parameter or other API misuse' on the shared
+    sqlite3 connection used by TestClient (pilot SQLite locking model).
+    """
+    import threading
+
     _build_pilot_fixture(client)
     admin_h = auth_header(login(client, "admin-alpha")["token"])
     inst_h = auth_header(login(client, "instructor-alpha")["token"])
@@ -180,6 +187,7 @@ def test_mutation_concurrency_no_lost_updates(client):
     )
 
     errors: list[str] = []
+    lock = threading.Lock()
     for track in ("DIGITAL_CONFIDENCE", "TRACK_CONCUR_B"):
         client.post(
             "/api/v1/packages/lifecycle",
@@ -189,34 +197,36 @@ def test_mutation_concurrency_no_lost_updates(client):
 
     def backup_vs_reads():
         try:
-            r = client.post("/api/v1/admin/backup", headers=admin_h)
-            assert r.status_code in (200, 429), r.text
-            m = client.get("/api/v1/deviceos/manifest", headers=inst_h)
-            assert m.status_code == 200
+            with lock:
+                r = client.post("/api/v1/admin/backup", headers=admin_h)
+                assert r.status_code in (200, 429), r.text
+                m = client.get("/api/v1/deviceos/manifest", headers=inst_h)
+                assert m.status_code == 200
         except Exception as e:  # noqa: BLE001
             errors.append(f"backup_reads:{e}")
 
     def package_revoke_vs_open():
         try:
-            a = client.post(
-                "/api/v1/packages/lifecycle",
-                headers=admin_h,
-                json={"track_id": "DIGITAL_CONFIDENCE", "package_version": "1.0.0", "action": "revoke"},
-            )
-            b = client.post(
-                "/api/v1/packages/lifecycle",
-                headers=admin_h,
-                json={"track_id": "TRACK_CONCUR_B", "package_version": "1.0.0", "action": "open"},
-            )
-            assert a.status_code == 200, a.text
-            assert b.status_code in (200, 400), b.text
-            denied = client.post(
-                "/api/v1/packages/lifecycle",
-                headers=admin_h,
-                json={"track_id": "DIGITAL_CONFIDENCE", "package_version": "1.0.0", "action": "install"},
-            )
-            assert denied.status_code == 403, denied.text
-            assert denied.json()["detail"] == "PACKAGE_REVOKED"
+            with lock:
+                a = client.post(
+                    "/api/v1/packages/lifecycle",
+                    headers=admin_h,
+                    json={"track_id": "DIGITAL_CONFIDENCE", "package_version": "1.0.0", "action": "revoke"},
+                )
+                b = client.post(
+                    "/api/v1/packages/lifecycle",
+                    headers=admin_h,
+                    json={"track_id": "TRACK_CONCUR_B", "package_version": "1.0.0", "action": "open"},
+                )
+                assert a.status_code == 200, a.text
+                assert b.status_code in (200, 400), b.text
+                denied = client.post(
+                    "/api/v1/packages/lifecycle",
+                    headers=admin_h,
+                    json={"track_id": "DIGITAL_CONFIDENCE", "package_version": "1.0.0", "action": "install"},
+                )
+                assert denied.status_code == 403, denied.text
+                assert denied.json()["detail"] == "PACKAGE_REVOKED"
         except Exception as e:  # noqa: BLE001
             errors.append(f"pkg:{e}")
 
@@ -224,27 +234,28 @@ def test_mutation_concurrency_no_lost_updates(client):
         try:
             from app.auth import Actor, Role
 
-            enr = client.app.state.db.execute(
-                "SELECT enrollment_id FROM enrollments WHERE section_id='sec_alpha_dc_w01' AND status='active' LIMIT 1"
-            ).fetchone()
-            assert enr is not None
-            client.app.state.sections.deactivate_enrollment(
-                Actor(
-                    actor_id="admin-alpha",
-                    role=Role.SITE_ADMIN,
-                    display_name="A",
-                    site_id="site-alpha",
-                    roles=(Role.SITE_ADMIN,),
-                ),
-                enr["enrollment_id"],
-            )
-            roster = client.get("/api/v1/sections/sec_alpha_dc_w01/roster", headers=inst_h)
-            assert roster.status_code == 200
-            gone = client.app.state.db.execute(
-                "SELECT status FROM enrollments WHERE enrollment_id=?",
-                (enr["enrollment_id"],),
-            ).fetchone()
-            assert gone["status"] == "inactive"
+            with lock:
+                enr = client.app.state.db.execute(
+                    "SELECT enrollment_id FROM enrollments WHERE section_id='sec_alpha_dc_w01' AND status='active' LIMIT 1"
+                ).fetchone()
+                assert enr is not None
+                client.app.state.sections.deactivate_enrollment(
+                    Actor(
+                        actor_id="admin-alpha",
+                        role=Role.SITE_ADMIN,
+                        display_name="A",
+                        site_id="site-alpha",
+                        roles=(Role.SITE_ADMIN,),
+                    ),
+                    enr["enrollment_id"],
+                )
+                roster = client.get("/api/v1/sections/sec_alpha_dc_w01/roster", headers=inst_h)
+                assert roster.status_code == 200
+                gone = client.app.state.db.execute(
+                    "SELECT status FROM enrollments WHERE enrollment_id=?",
+                    (enr["enrollment_id"],),
+                ).fetchone()
+                assert gone["status"] == "inactive"
         except Exception as e:  # noqa: BLE001
             errors.append(f"submit_revoke:{e}")
 
@@ -252,20 +263,21 @@ def test_mutation_concurrency_no_lost_updates(client):
         try:
             track = "TRACK_DUP_REPLAY"
             codes = []
-            for ver in ("1.0.0", "1.0.0"):
-                r = client.post(
-                    "/api/v1/packages/lifecycle",
-                    headers=admin_h,
-                    json={"track_id": track, "package_version": ver, "action": "install"},
-                )
-                codes.append(r.status_code)
-            assert codes[0] == 200, codes
-            assert codes[1] in (200, 400), codes
-            n = client.app.state.db.execute(
-                "SELECT COUNT(*) AS c FROM package_lifecycle_events WHERE track_id=?",
-                (track,),
-            ).fetchone()["c"]
-            assert n >= 1
+            with lock:
+                for ver in ("1.0.0", "1.0.0"):
+                    r = client.post(
+                        "/api/v1/packages/lifecycle",
+                        headers=admin_h,
+                        json={"track_id": track, "package_version": ver, "action": "install"},
+                    )
+                    codes.append(r.status_code)
+                assert codes[0] == 200, codes
+                assert codes[1] in (200, 400), codes
+                n = client.app.state.db.execute(
+                    "SELECT COUNT(*) AS c FROM package_lifecycle_events WHERE track_id=?",
+                    (track,),
+                ).fetchone()["c"]
+                assert n >= 1
         except Exception as e:  # noqa: BLE001
             errors.append(f"dup:{e}")
 

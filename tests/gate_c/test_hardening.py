@@ -169,6 +169,69 @@ def test_rate_limit(client):
         assert e.code == "RATE_LIMITED"
 
 
+def test_rate_limit_window_reset_via_fake_clock(client):
+    from app.modules.hardening import RateLimiter
+
+    clock = {"t": 1_000.0}
+
+    def now() -> float:
+        return clock["t"]
+
+    lim = RateLimiter(client.app.state.db, limit=3, window_seconds=60, clock=now)
+    key = "fake-clock-window"
+    for _ in range(3):
+        assert lim.check(key)["allowed"] is True
+    try:
+        lim.check(key)
+        assert False, "expected RATE_LIMITED"
+    except Exception as e:  # noqa: BLE001
+        from app.modules.assessment_lifecycle import ServiceError
+
+        assert isinstance(e, ServiceError)
+        assert e.code == "RATE_LIMITED"
+        assert int(e.detail.get("retry_after", 0)) >= 1
+    clock["t"] += 61.0
+    out = lim.check(key)
+    assert out["allowed"] is True
+    assert out["remaining"] == 2
+
+
+def test_rate_limit_independent_scopes(client):
+    from app.modules.hardening import RateLimiter
+    from app.modules.assessment_lifecycle import ServiceError
+
+    lim = RateLimiter(client.app.state.db, limit=2, window_seconds=60, clock=lambda: 5_000.0)
+    lim.check("scope-a")
+    lim.check("scope-a")
+    lim.check("scope-b")
+    lim.check("scope-b")
+    try:
+        lim.check("scope-a")
+        assert False
+    except ServiceError as e:
+        assert e.code == "RATE_LIMITED"
+    # Independent scope still usable after window not reset — already at limit for b;
+    # advance a new scope.
+    assert lim.check("scope-c")["allowed"] is True
+
+
+def test_rate_limit_retry_after_header(client):
+    from app.modules.hardening import RateLimiter
+    from app.modules.assessment_lifecycle import ServiceError
+    from app.api.routes_gate_c import _http
+
+    lim = RateLimiter(client.app.state.db, limit=1, window_seconds=60, clock=lambda: 9_000.0)
+    lim.check("http-retry")
+    try:
+        lim.check("http-retry")
+        assert False, "expected RATE_LIMITED"
+    except ServiceError as e:
+        exc = _http(e)
+        assert exc.status_code == 429
+        assert exc.headers is not None
+        assert "Retry-After" in exc.headers
+
+
 def test_redaction(client):
     from app.modules.hardening import redact_obj, redact_text
 
@@ -188,6 +251,88 @@ def test_package_lifecycle_downgrade_blocked(client):
         "DIGITAL_CONFIDENCE", "2.0.0", "1.0.0"
     )
     assert blocked["action"] == "downgrade_blocked"
+
+
+def test_package_lifecycle_semver_not_lexical(client):
+    from app.modules.hardening import parse_semver, semver_lt
+
+    assert parse_semver("1.9.0") < parse_semver("1.10.0")
+    assert semver_lt("1.9.0", "1.10.0") is True
+    assert semver_lt("1.10.0", "1.9.0") is False
+    h = auth_header(login(client, "admin-alpha")["token"])
+    track = "SEMVER_TRACK"
+    assert (
+        client.post(
+            "/api/v1/packages/lifecycle",
+            headers=h,
+            json={"track_id": track, "package_version": "1.9.0", "action": "install"},
+        ).status_code
+        == 200
+    )
+    up = client.post(
+        "/api/v1/packages/lifecycle",
+        headers=h,
+        json={"track_id": track, "package_version": "1.10.0", "action": "upgrade"},
+    )
+    assert up.status_code == 200, up.text
+    bad = client.app.state.packages.assert_no_silent_downgrade(track, "1.10.0", "1.9.0")
+    assert bad["action"] == "downgrade_blocked"
+
+
+def test_package_lifecycle_revoke_then_open_denied(client):
+    from app.modules.assessment_lifecycle import ServiceError
+
+    h = auth_header(login(client, "admin-alpha")["token"])
+    track = "REVOKE_OPEN_TRACK"
+    assert (
+        client.post(
+            "/api/v1/packages/lifecycle",
+            headers=h,
+            json={"track_id": track, "package_version": "1.0.0", "action": "install"},
+        ).status_code
+        == 200
+    )
+    assert (
+        client.post(
+            "/api/v1/packages/lifecycle",
+            headers=h,
+            json={"track_id": track, "package_version": "1.0.0", "action": "revoke"},
+        ).status_code
+        == 200
+    )
+    denied = client.post(
+        "/api/v1/packages/lifecycle",
+        headers=h,
+        json={"track_id": track, "package_version": "1.0.0", "action": "open"},
+    )
+    assert denied.status_code == 403
+    assert denied.json()["detail"] == "PACKAGE_REVOKED"
+    try:
+        client.app.state.packages.assert_can_open(track)
+        assert False, "assert_can_open should raise"
+    except ServiceError as e:
+        assert e.code == "PACKAGE_REVOKED"
+
+
+def test_package_illegal_transition(client):
+    from app.modules.assessment_lifecycle import ServiceError
+    from app.auth import Actor, Role
+
+    pkgs = client.app.state.packages
+    actor = Actor(
+        actor_id="admin-alpha",
+        role=Role.SITE_ADMIN,
+        display_name="A",
+        site_id="site-alpha",
+        roles=(Role.SITE_ADMIN,),
+    )
+    pkgs.record(actor, track_id="ILLEGAL_TX", package_version="1.0.0", action="install")
+    pkgs.record(actor, track_id="ILLEGAL_TX", package_version="1.0.0", action="archive")
+    try:
+        pkgs.record(actor, track_id="ILLEGAL_TX", package_version="1.0.0", action="activate")
+        assert False, "activate from archived should fail"
+    except ServiceError as e:
+        assert e.code == "PACKAGE_ILLEGAL_TRANSITION"
 
 
 def test_migration_ladder_gate_c_present(client):
