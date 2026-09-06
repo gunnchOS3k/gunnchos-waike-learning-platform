@@ -6,7 +6,7 @@ Generated: 2026-09-06T19:41:40Z
 - Platform main: `797f5f4b50ff844eecdd068736ac660561910bb4` (Gate B merge)
 - WAIKE main: `fbf7685bc5686201ccaa0128ee83346d59b3d584`
 - gunnchAI: `4b4f411710e8cdb8102a7e11502f8497f68156b1`
-- Device OS: `28562a8456207540c205a1c8a6434a491b0a4771`
+- Device OS: `4f02a48780d300a5d3a7758937b20e3bf9364d0d`
 - Gate B ancestry: OK
 - Duplicate Gate C PR: none
 

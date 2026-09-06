@@ -8,8 +8,8 @@
   "acknowledged": true,
   "launched": true,
   "reason": null,
-  "pid": 90441,
-  "executable": "/var/folders/dp/z5frf3m511jcdpdf8v878v8h0000gn/T/los-real-install-l88emaav/bin/waike-learning-os",
+  "pid": 95620,
+  "executable": "/Users/gunnchos/dev/waike-learning-os-workspace/gunnchos-waike-learning-platform/.tmp/e2e-tmp/los-real-install-qw918j8_/bin/waike-learning-os",
   "version": "0.1.0",
   "artifact_hash": "e6c0243af23414a1efbee0da303fc5cfb607b8df9ba54e2b79ff171bf7be82a4",
   "ipc": {
@@ -17,7 +17,7 @@
     "request": {
       "protocol": "gunnchos.learning_os.ipc.v1",
       "message_type": "launch_context",
-      "request_id": "4a94c3fd-0698-4582-97b3-e597d4968662",
+      "request_id": "aaa6834e-0589-4978-960d-3b5bfa9d2fab",
       "bundle_id": "com.gunnchos.waike.learning",
       "deep_link": {
         "uri": "waike://learn/home",
@@ -50,7 +50,7 @@
         "deep_link": "waike://learn/home",
         "message_type": "ack",
         "protocol": "gunnchos.learning_os.ipc.v1",
-        "request_id": "4a94c3fd-0698-4582-97b3-e597d4968662",
+        "request_id": "aaa6834e-0589-4978-960d-3b5bfa9d2fab",
         "status": "ok"
       }
     }
@@ -58,14 +58,14 @@
   "provenance": {
     "contract_version": "waike.learning_os.deviceos_integration_contract.v1",
     "gate_c_logical_version": "0.6.0-gate-c",
-    "platform_source_sha": null,
+    "platform_source_sha": "ff3177eecbbe894041ae7d0758a76f74b90b12f8",
     "app_version": "0.1.0",
     "artifact_hash": "e6c0243af23414a1efbee0da303fc5cfb607b8df9ba54e2b79ff171bf7be82a4",
     "version_clarity": "gate_c_logical_version is the Platform Gate C integration label; app_version is the installed Learning OS package/executable version. Do not equate them."
   },
   "mock": false,
   "executable_sha256": "e6c0243af23414a1efbee0da303fc5cfb607b8df9ba54e2b79ff171bf7be82a4",
-  "install_root": "/var/folders/dp/z5frf3m511jcdpdf8v878v8h0000gn/T/los-real-install-l88emaav",
+  "install_root": "/Users/gunnchos/dev/waike-learning-os-workspace/gunnchos-waike-learning-platform/.tmp/e2e-tmp/los-real-install-qw918j8_",
   "launch_context": {
     "app_version": "0.1.0",
     "bundle_id": "com.gunnchos.waike.learning",
@@ -89,7 +89,11 @@
       "valid": true
     },
     "protocol": "gunnchos.learning_os.ipc.v1",
-    "request_id": "4a94c3fd-0698-4582-97b3-e597d4968662"
+    "request_id": "aaa6834e-0589-4978-960d-3b5bfa9d2fab"
   },
-  "adapter_ipc_dir": "/var/folders/dp/z5frf3m511jcdpdf8v878v8h0000gn/T/waike-los-ipc-9187kpuq"
+  "adapter_ipc_dir": "/Users/gunnchos/dev/waike-learning-os-workspace/gunnchos-waike-learning-platform/.tmp/e2e-tmp/waike-los-ipc-0en_lrmj",
+  "device_os_sha": "4f02a48780d300a5d3a7758937b20e3bf9364d0d",
+  "tested_against": "accepted_device_os_main",
+  "platform_sha_at_local_run": "ff3177eecbbe894041ae7d0758a76f74b90b12f8",
+  "generated_utc": "2026-09-06T23:27:16Z"
 }

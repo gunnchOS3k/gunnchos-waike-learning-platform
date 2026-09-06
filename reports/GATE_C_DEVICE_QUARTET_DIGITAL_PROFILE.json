@@ -1,5 +1,5 @@
 {
-  "generated_utc": "2026-09-06T19:57:42Z",
+  "generated_utc": "2026-09-06T23:20:11Z",
   "profiles": [
     {
       "id": "student_14_5",
@@ -100,6 +100,7 @@
       "standalone_full_lms": false
     }
   ],
+  "fixture_label": "device_quartet_digital_fixture_only",
   "physical_validation": "EXTERNAL \u2014 not claimed by Gate C",
   "digital_tests": "synthetic capability profiles only"
 }

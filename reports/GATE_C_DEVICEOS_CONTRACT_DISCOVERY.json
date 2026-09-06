@@ -1,6 +1,6 @@
 {
   "generated_utc": "2026-09-06T19:41:40Z",
-  "device_os_main": "28562a8456207540c205a1c8a6434a491b0a4771",
+  "device_os_main": "4f02a48780d300a5d3a7758937b20e3bf9364d0d",
   "tested_against": "accepted_device_os_main",
   "contracts": {
     "app_registry": {

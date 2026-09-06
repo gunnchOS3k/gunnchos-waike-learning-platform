@@ -1,9 +1,11 @@
 {
-  "device_os_main_baseline": "28562a8456207540c205a1c8a6434a491b0a4771",
-  "device_os_integration_pr_head": "5afc126ef1ce0fe917f78d1a3434c1de801535fb",
-  "device_os_branch": "cursor/waike-learning-deviceos-integration",
+  "device_os_main_baseline": "4f02a48780d300a5d3a7758937b20e3bf9364d0d",
+  "device_os_accepted_main": "4f02a48780d300a5d3a7758937b20e3bf9364d0d",
+  "device_os_merged_pr": 132,
+  "device_os_merged_pr_tip": "5afc126ef1ce0fe917f78d1a3434c1de801535fb",
+  "device_os_branch": "main",
   "device_os_pr": "https://github.com/gunnchOS3k/gunnchos-device-os/pull/132",
-  "pin_policy": "Gate C deviceos jobs checkout Device OS PR head (not main) until integration merges",
+  "pin_policy": "Gate C deviceos jobs checkout accepted Device OS origin/main after PR #132 merge",
   "hashes": {
     "gunnchos_device_os/launcher.py": "db737a260a652056be4432ab3242cf0146c62cb029ef9f7c497894cd7009d8a7",
     "gunnchos_device_os/learning_os_launcher.py": "fe9b63f021c1c12bfe22e22e7472a371d95fa27e26fdc9a496b6ab36bdf2a9d1",

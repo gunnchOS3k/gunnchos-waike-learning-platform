@@ -1,11 +1,11 @@
 {
-  "generated_utc": "2026-09-06T22:26:01Z",
-  "status": "REVIEW_CROSS_REPO_PR_DEPENDENCY_ORDER",
-  "claims": [],
-  "claims_blocked": [
+  "generated_utc": "2026-09-06T23:20:11Z",
+  "status": "AUTOMATED_PIPELINE_PASS",
+  "claims": [
     "INTEROPERABILITY_AND_DEVICEOS_DIGITAL_INTEGRATION_COMPLETE",
     "PLATFORM_HARDENING_DIGITALLY_COMPLETE"
   ],
+  "claims_blocked": [],
   "checks": {
     "prior_regression": true,
     "gate_c": true,
@@ -61,11 +61,11 @@
   "pins": {
     "waike": "fbf7685bc5686201ccaa0128ee83346d59b3d584",
     "gunnchai": "4b4f411710e8cdb8102a7e11502f8497f68156b1",
-    "device_os": "5afc126ef1ce0fe917f78d1a3434c1de801535fb",
-    "device_os_accepted_main": "28562a8456207540c205a1c8a6434a491b0a4771"
+    "device_os": "4f02a48780d300a5d3a7758937b20e3bf9364d0d",
+    "device_os_accepted_main": "4f02a48780d300a5d3a7758937b20e3bf9364d0d"
   },
-  "device_os_pr_required": true,
-  "tested_against": "device_os_pr_head:5afc126ef1ce0fe917f78d1a3434c1de801535fb",
+  "device_os_pr_required": false,
+  "tested_against": "accepted_device_os_main",
   "exit_codes": {
     "prior_regression": 0,
     "prior_a": 0,
@@ -79,5 +79,5 @@
       "DMG verification ok:true"
     ]
   },
-  "owner_action": "REVIEW_CROSS_REPO_PR_DEPENDENCY_ORDER"
+  "owner_action": "MERGE_GATE_C_THEN_RERUN_ACCELERATED_MASTER_PROMPT"
 }

@@ -1,5 +1,5 @@
 {
-  "generated_utc": "2026-09-06T22:26:01Z",
+  "generated_utc": "2026-09-06T23:20:11Z",
   "manifest": {
     "app_id": "com.gunnchos.waike.learning",
     "device_os_registry_id": "waike_learning_os",
@@ -20,7 +20,7 @@
     "claim_boundary": "Digital integration only; Device OS remains install/launcher authority. Seed HTML is companion/discovery only \u2014 Learning OS Tauri app is SoR.",
     "device_os_root_present": true,
     "device_os_live_imports": true,
-    "device_os_pin": "5afc126ef1ce0fe917f78d1a3434c1de801535fb",
+    "device_os_pin": "4f02a48780d300a5d3a7758937b20e3bf9364d0d",
     "device_os_registry_name": "WAIKE Learning OS",
     "device_os_relationship": "thin_launcher_companion",
     "system_of_record": "platform_tauri_learning_os"
@@ -72,7 +72,7 @@
       "integration_contract": {
         "path": "/Users/gunnchos/dev/waike-learning-os-workspace/gunnchos-waike-learning-platform/contracts/deviceos/WAIKE_LEARNING_OS_INTEGRATION_CONTRACT.json",
         "exists": true,
-        "sha256": "4b4e04d9a7c8cfb51662207b8165f4109d962f3c96dba8d6902ed614df93b1fd"
+        "sha256": "791c2eb51733ea1c59d023ded767dc1ec238dd2514a5ebf3ef5be527d12d1e93"
       }
     },
     "registry_sample": {
@@ -86,7 +86,7 @@
       "alias_resolves_to": "waike_learning_os"
     }
   },
-  "device_os_pr_required": true,
-  "tested_against": "device_os_pr_head:5afc126ef1ce0fe917f78d1a3434c1de801535fb",
-  "device_os_pin": "5afc126ef1ce0fe917f78d1a3434c1de801535fb"
+  "device_os_pr_required": false,
+  "tested_against": "accepted_device_os_main",
+  "device_os_pin": "4f02a48780d300a5d3a7758937b20e3bf9364d0d"
 }

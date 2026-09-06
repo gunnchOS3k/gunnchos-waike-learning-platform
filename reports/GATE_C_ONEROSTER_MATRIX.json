@@ -1,5 +1,5 @@
 {
-  "generated_utc": "2026-09-06T19:57:42Z",
+  "generated_utc": "2026-09-06T23:20:11Z",
   "standard": "OneRoster pilot subset",
   "claim": "NOT_FULL_ONEROSTER",
   "supported": {
@@ -24,7 +24,9 @@
     "role_mapping": true,
     "org_relationship": true,
     "course_class_relationship": true,
-    "enrollment_relationship": true
+    "enrollment_relationship": true,
+    "local_section_mapping": true,
+    "enrollment_revoke": true
   },
   "auth": "site_admin / operator only; no password import; no auth bypass"
 }

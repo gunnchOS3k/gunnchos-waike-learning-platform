@@ -1,5 +1,5 @@
 {
-  "generated_utc": "2026-09-06T19:41:40Z",
+  "generated_utc": "2026-09-06T23:27:29Z",
   "gate": "GATE_C",
   "title": "Interoperability + Device OS + Hardening",
   "live_truth": {
@@ -7,10 +7,11 @@
     "platform_main_note": "Gate B merge PR #5; parent 02ee27c\u2026",
     "waike_main": "fbf7685bc5686201ccaa0128ee83346d59b3d584",
     "gunnchai_main": "4b4f411710e8cdb8102a7e11502f8497f68156b1",
-    "device_os_main": "28562a8456207540c205a1c8a6434a491b0a4771",
+    "device_os_main": "4f02a48780d300a5d3a7758937b20e3bf9364d0d",
     "gate_b_ancestor_ok": true,
     "open_gate_c_prs": [],
-    "duplicate_gate_c": false
+    "duplicate_gate_c": false,
+    "device_os_main_note": "PR #132 owner-merged; accepted origin/main merge SHA"
   },
   "branch": "cursor/waike-learning-gate-c-interop-hardening",
   "workstreams": {
@@ -72,5 +73,8 @@
       "security/accessibility certification",
       "Gate D full-system acceptance"
     ]
+  },
+  "pins": {
+    "device_os_main": "4f02a48780d300a5d3a7758937b20e3bf9364d0d"
   }
 }

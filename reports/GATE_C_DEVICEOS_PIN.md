@@ -4,12 +4,13 @@
 
 | Field | Value |
 |-------|-------|
-| Previous (main baseline) | `28562a8456207540c205a1c8a6434a491b0a4771` |
-| **Current DEVICE_OS_PIN_REF** | `5afc126ef1ce0fe917f78d1a3434c1de801535fb` |
-| Branch | `cursor/waike-learning-deviceos-integration` |
-| PR (draft) | https://github.com/gunnchOS3k/gunnchos-device-os/pull/132 |
+| Previous (pre-merge main) | `28562a8456207540c205a1c8a6434a491b0a4771` |
+| Merged PR tip (ancestral) | `5afc126ef1ce0fe917f78d1a3434c1de801535fb` |
+| **Current DEVICE_OS_PIN_REF** | `4f02a48780d300a5d3a7758937b20e3bf9364d0d` |
+| Branch | `main` |
+| PR (owner-merged) | https://github.com/gunnchOS3k/gunnchos-device-os/pull/132 |
 
-Gate C workflow (`.github/workflows/gate-c.yml`) and `scripts/verify_gate_c.py` checkout this **PR head SHA**, not `main`, for all deviceos jobs until the Device OS integration PR merges.
+Gate C workflow (`.github/workflows/gate-c.yml`) and `scripts/verify_gate_c.py` checkout this **accepted Device OS `origin/main` SHA** (merge commit for PR #132).
 
 ## Relationship
 

@@ -1,14 +1,14 @@
 # Gate C Verification
 
-Generated: 2026-09-06T22:26:01Z
-Status: **REVIEW_CROSS_REPO_PR_DEPENDENCY_ORDER**
+Generated: 2026-09-06T23:20:11Z
+Status: **AUTOMATED_PIPELINE_PASS**
 
 ## Claims earned
-- (none)
-
-## Claims blocked
 - `INTEROPERABILITY_AND_DEVICEOS_DIGITAL_INTEGRATION_COMPLETE`
 - `PLATFORM_HARDENING_DIGITALLY_COMPLETE`
+
+## Claims blocked
+- (none)
 
 ## Owner blockers
 - `C-OWNER-01`: **PASS**

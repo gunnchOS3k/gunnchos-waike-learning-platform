@@ -8,7 +8,7 @@
   "pins": {
     "waike": "fbf7685bc5686201ccaa0128ee83346d59b3d584",
     "gunnchai": "4b4f411710e8cdb8102a7e11502f8497f68156b1",
-    "device_os_accepted_main": "28562a8456207540c205a1c8a6434a491b0a4771"
+    "device_os_accepted_main": "4f02a48780d300a5d3a7758937b20e3bf9364d0d"
   },
   "prior_ci_run_id": 34057327622,
   "prior_ci_conclusion": "success",

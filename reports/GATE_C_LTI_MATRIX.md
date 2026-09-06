@@ -1,27 +1,8 @@
 # GATE_C_LTI_MATRIX
 
-Generated: 2026-09-06T19:57:42Z
+Generated: 2026-09-06T23:20:11Z
 
-```json
-{
-  "generated_utc": "2026-09-06T19:57:42Z",
-  "standard": "LTI 1.3 foundation",
-  "claim": "NOT_LTI_CERTIFIED",
-  "supported": [
-    "tool/platform registration",
-    "issuer/client/deployment",
-    "OIDC login initiation",
-    "state/nonce",
-    "JWT validation (iss/aud/exp/nonce/deployment)",
-    "JWKS/JWK",
-    "role mapping (capped)",
-    "target-link URI validation"
-  ],
-  "unsupported": [
-    "Deep Linking 2.0 full",
-    "Assignment and Grade Services full",
-    "Names and Role Provisioning full",
-    "external LMS certification"
-  ]
-}
-```
+- **standard**: `LTI 1.3 foundation`
+- **claim**: `NOT_LTI_CERTIFIED`
+- **supported**: `['tool/platform registration', 'issuer/client/deployment', 'OIDC login initiation', 'state/nonce', 'JWT validation (iss/aud/exp/nonce/deployment)', 'JWKS/JWK', 'role mapping (capped)', 'target-link URI validation']`
+- **unsupported**: `['Deep Linking 2.0 full', 'Assignment and Grade Services full', 'Names and Role Provisioning full', 'external LMS certification']`

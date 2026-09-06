@@ -14,7 +14,7 @@ env:
   CARGO_TERM_COLOR: always
   WAIKE_PIN_REF: "fbf7685bc5686201ccaa0128ee83346d59b3d584"
   GUNNCHAI_PIN_REF: "4b4f411710e8cdb8102a7e11502f8497f68156b1"
-  DEVICE_OS_PIN_REF: "5afc126ef1ce0fe917f78d1a3434c1de801535fb"
+  DEVICE_OS_PIN_REF: "4f02a48780d300a5d3a7758937b20e3bf9364d0d"
   # Exercise Device OS NativeLaunchAdapter via protocol-compatible fixture.
   LEARNING_OS_EXECUTABLE: ${{ github.workspace }}/gunnchos-device-os/fixtures/learning_os/waike-learning-os
   LEARNING_OS_APP_VERSION: "0.1.0-fixture"
