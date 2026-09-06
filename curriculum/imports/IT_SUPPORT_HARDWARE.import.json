@@ -1,0 +1,51 @@
+{
+  "module_id": "IT_SUPPORT_HARDWARE",
+  "source_commit": "fbf7685bc5686201ccaa0128ee83346d59b3d584",
+  "package_version": "1.0.0",
+  "source_kind": "digital_rc",
+  "digital_rc_package": "GENERAL_IT",
+  "migration": {
+    "from": "digital_confidence_only",
+    "to": "registry_18_tracks",
+    "content_schema": "waike.course_package.v1"
+  },
+  "learner_globs": [
+    "curriculum/digital_rc/GENERAL_IT/student/**",
+    "curriculum/digital_rc/GENERAL_IT/weeks/**",
+    "curriculum/digital_rc/GENERAL_IT/labs/**",
+    "curriculum/digital_rc/GENERAL_IT/assignments/**",
+    "curriculum/digital_rc/GENERAL_IT/quizzes/**",
+    "curriculum/digital_rc/GENERAL_IT/portfolio/**",
+    "curriculum/digital_rc/GENERAL_IT/projects/**",
+    "curriculum/digital_rc/GENERAL_IT/assessments/**",
+    "curriculum/digital_rc/GENERAL_IT/rubrics/**",
+    "curriculum/digital_rc/GENERAL_IT/syllabus.md",
+    "curriculum/digital_rc/GENERAL_IT/course.json",
+    "curriculum/digital_rc/GENERAL_IT/prerequisites.json",
+    "curriculum/digital_rc/GENERAL_IT/career_mapping.json",
+    "curriculum/digital_rc/GENERAL_IT/offline_pack/**",
+    "curriculum/digital_rc/GENERAL_IT/presentation/**",
+    "programs/it_support_hardware.md",
+    "programs/general_it.md",
+    "capstones/by_track/general_it.md"
+  ],
+  "instructor_only_globs": [
+    "curriculum/digital_rc/GENERAL_IT/instructor/**"
+  ],
+  "instructor_path_markers": [
+    "instructor_solution",
+    "instructor_solution_guide",
+    "instructor_solution_guides/",
+    "solution_guide",
+    "solution_notes_for_instructors",
+    "instructor_notes",
+    "answer_key",
+    "answer_keys/",
+    "answer_keys.json",
+    "/instructor/",
+    "instructor_packet",
+    "deep_instructor",
+    "teaching_notes.md",
+    "demo_plan.md"
+  ]
+}

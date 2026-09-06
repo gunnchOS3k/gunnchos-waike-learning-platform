@@ -33,6 +33,7 @@ test-results/
 *.db.enc
 services/hub/data/
 pack_out/
+pack_out_18/
 /tmp/
 curriculum/imports/*/build/
 reports/verify_pr1_run.log

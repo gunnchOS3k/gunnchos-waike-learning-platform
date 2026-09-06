@@ -1,0 +1,69 @@
+{
+  "generated_utc": "2026-09-06T19:14:35Z",
+  "status": "AUTOMATED_PIPELINE_PASS",
+  "claims": [
+    "GUNNCHAI_PLATFORM_INTEGRATION_DIGITALLY_COMPLETE",
+    "ALL_18_WAIKE_TRACKS_DIGITALLY_AVAILABLE",
+    "18_TRACK_PLATFORM_DELIVERY_DIGITALLY_COMPLETE"
+  ],
+  "claims_blocked": [],
+  "checks": {
+    "provenance_match": true,
+    "pin_allows_18": true,
+    "required_artifacts_present": true,
+    "gate_b_yml_no_continue_on_error": true,
+    "gate_b_yml_no_or_true": true,
+    "matrix_18_complete": true,
+    "matrix_all_tracks_pass": true,
+    "matrix_digital_17_pass_seven_gc_blocked": false,
+    "SEVEN_GC_SOURCE_BLOCKS_18_OF_18": false,
+    "SEVEN_GC_DIGITAL_RC_PRESENT": true,
+    "matrix_honest_18_or_legacy_17": true,
+    "track_acceptance": true,
+    "DEFAULT_RUNTIME_HAS_NO_FAKE_AI": true,
+    "gunnchai_contract_snapshot_pass": true,
+    "GATE_B_REQUIRED_TESTS_SKIPPED_eq_0": true,
+    "ai_gates_pass": true
+  },
+  "test_counts": {},
+  "blocked": [],
+  "source_blockers": [],
+  "exit_codes": {
+    "waike_rev_parse": 0
+  },
+  "GATE_B_REQUIRED_TESTS_SKIPPED": 0,
+  "gunnchai": {
+    "repo": "https://github.com/gunnchOS3k/gunnchAI3k",
+    "discovered_sha": "4b4f411710e8cdb8102a7e11502f8497f68156b1",
+    "ci_provider": "FakeGunnchAIProvider"
+  },
+  "claim_boundary": {
+    "earned_only_with": [
+      "Gate B CI required jobs SUCCESS including verify-gate-b",
+      "AI policy + context isolation + prompt injection + grade safety PASS",
+      "adversarial AI sabotage suite PASS",
+      "ALL_18 claims require all 18 matrix rows PASS with SEVEN_GC COURSE_DIGITAL_RC (not shell-only)"
+    ],
+    "does_not_claim": [
+      "human/field validation",
+      "accessibility certification",
+      "security certification",
+      "local GGUF/llama inference availability",
+      "Gate C interop / Device OS",
+      "pedagogical learning effectiveness",
+      "EXTERNAL physical/mentor/field gates for SEVEN_GC apprenticeship"
+    ]
+  },
+  "declared_pinned_commit": "fbf7685bc5686201ccaa0128ee83346d59b3d584",
+  "observed_source_commit": "fbf7685bc5686201ccaa0128ee83346d59b3d584",
+  "matrix_summary": {
+    "track_count": 18,
+    "pass_count": 18,
+    "blocked_count": 0,
+    "source_sha": "fbf7685bc5686201ccaa0128ee83346d59b3d584",
+    "SEVEN_GC_SOURCE_BLOCKS_18_OF_18": false,
+    "full_18_course_digital_rc": true,
+    "SEVEN_GC_DIGITAL_RC_PRESENT": true
+  },
+  "report_generated_from_sha": "577929203e5cc7ac143c07daa2d0deef7df8c943"
+}

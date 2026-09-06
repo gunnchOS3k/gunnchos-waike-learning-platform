@@ -1,0 +1,53 @@
+{
+  "module_id": "AI_ML_EDGE",
+  "source_commit": "fbf7685bc5686201ccaa0128ee83346d59b3d584",
+  "package_version": "1.0.0",
+  "source_kind": "digital_rc",
+  "digital_rc_package": "AI_ML_EDGE",
+  "migration": {
+    "from": "digital_confidence_only",
+    "to": "registry_18_tracks",
+    "content_schema": "waike.course_package.v1"
+  },
+  "learner_globs": [
+    "curriculum/digital_rc/AI_ML_EDGE/student/**",
+    "curriculum/digital_rc/AI_ML_EDGE/weeks/**",
+    "curriculum/digital_rc/AI_ML_EDGE/labs/**",
+    "curriculum/digital_rc/AI_ML_EDGE/assignments/**",
+    "curriculum/digital_rc/AI_ML_EDGE/quizzes/**",
+    "curriculum/digital_rc/AI_ML_EDGE/portfolio/**",
+    "curriculum/digital_rc/AI_ML_EDGE/projects/**",
+    "curriculum/digital_rc/AI_ML_EDGE/assessments/**",
+    "curriculum/digital_rc/AI_ML_EDGE/rubrics/**",
+    "curriculum/digital_rc/AI_ML_EDGE/syllabus.md",
+    "curriculum/digital_rc/AI_ML_EDGE/course.json",
+    "curriculum/digital_rc/AI_ML_EDGE/prerequisites.json",
+    "curriculum/digital_rc/AI_ML_EDGE/career_mapping.json",
+    "curriculum/digital_rc/AI_ML_EDGE/offline_pack/**",
+    "curriculum/digital_rc/AI_ML_EDGE/presentation/**",
+    "curriculum/digital_rc/AI_ML_EDGE/ai_use_policy.json",
+    "curriculum/digital_rc/AI_ML_EDGE/guides/**",
+    "programs/ai_ml_edge.md",
+    "programs/ai_ml.md",
+    "programs/edge_ai_and_embedded_systems.md"
+  ],
+  "instructor_only_globs": [
+    "curriculum/digital_rc/AI_ML_EDGE/instructor/**"
+  ],
+  "instructor_path_markers": [
+    "instructor_solution",
+    "instructor_solution_guide",
+    "instructor_solution_guides/",
+    "solution_guide",
+    "solution_notes_for_instructors",
+    "instructor_notes",
+    "answer_key",
+    "answer_keys/",
+    "answer_keys.json",
+    "/instructor/",
+    "instructor_packet",
+    "deep_instructor",
+    "teaching_notes.md",
+    "demo_plan.md"
+  ]
+}

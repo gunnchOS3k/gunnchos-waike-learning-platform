@@ -1,4 +1,5 @@
 import type { ActivityClient, InstructorActivityClient } from "./activities";
+import type { AiClient } from "../../components/ai/AiPanels";
 import type {
   AssignmentDetail,
   AssignmentSummary,
@@ -7,7 +8,7 @@ import type {
   HubClient,
   SubmissionView,
 } from "./client";
-
+import { HubAuthError } from "./client";
 type Store = {
   draft: DraftState;
   submissions: Array<SubmissionView & { idem?: string }>;
@@ -352,6 +353,7 @@ export function createMockHubClient(actor: HubActor): HubClient {
     // quiz that a learner could mistake for graded work.
     activities: unavailableActivities(),
     instructorActivities: unavailableInstructorActivities(),
+    ai: mockAiClient(),
   };
 }
 
@@ -359,6 +361,67 @@ const ACTIVITIES_UNAVAILABLE = "ACTIVITIES_REQUIRE_HUB";
 
 function reject(): never {
   throw new Error(ACTIVITIES_UNAVAILABLE);
+}
+
+function mockAiClient(): AiClient {
+  return {
+    async getPolicy(sectionId) {
+      return {
+        policy: "AI_ALLOWED",
+        scope: "default",
+        section_id: sectionId,
+        allowed_learner_capabilities: [
+          "explain",
+          "hint",
+          "misconception",
+          "remediation",
+          "citation",
+          "navigate",
+          "lab_troubleshoot",
+          "reflect",
+        ],
+        allowed_instructor_capabilities: [
+          "feedback_suggest",
+          "rubric_refine",
+          "misconception_cluster",
+          "remediation_suggest",
+          "lesson_adapt",
+          "grading_triage",
+        ],
+      };
+    },
+    async learnerAssist(body) {
+      return {
+        ok: true,
+        text: `[mock] Assist for ${body.capability}: grounded learner help only.`,
+        grounded: true,
+        citations: [{ source: "mock-lesson", snippet: "Course material excerpt" }],
+        refused: false,
+        refusal_code: null,
+        disclosure: "DISCLOSURE: LOCAL-ONLY (mock hub).",
+        suggestion_only: true,
+        mutates_grades: false,
+        provider_id: "mock-hub",
+      };
+    },
+    async instructorAssist(body) {
+      return {
+        ok: true,
+        text: `[mock] Suggestion for ${body.capability} — HITL required.`,
+        grounded: false,
+        citations: [],
+        refused: false,
+        refusal_code: null,
+        disclosure: "DISCLOSURE: LOCAL-ONLY (mock hub).",
+        suggestion_only: true,
+        mutates_grades: false,
+        provider_id: "mock-hub",
+      };
+    },
+    async applyGrade() {
+      throw new HubAuthError(403, "AI_SILENT_GRADE_FORBIDDEN");
+    },
+  };
 }
 
 function unavailableActivities(): ActivityClient {

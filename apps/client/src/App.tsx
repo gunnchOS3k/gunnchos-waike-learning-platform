@@ -8,6 +8,7 @@ import { TrustBanner } from "./components/TrustBanner";
 import { SyncStatusBanner } from "./components/sync/SyncStatusBanner";
 import { InstructorActivities } from "./components/activities/InstructorActivities";
 import { LearnerActivities } from "./components/activities/LearnerActivities";
+import { InstructorAiPanel, LearnerAiPanel } from "./components/ai/AiPanels";
 import type { AuthSession, HubActor, HubClient, SectionCard, SessionUser } from "./lib/hub/client";
 import { HubAuthError } from "./lib/hub/client";
 import { resolveHubClient } from "./lib/hub/resolveHub";
@@ -27,8 +28,10 @@ type Mode =
   | "home"
   | "assignments"
   | "activities"
+  | "ai"
   | "instruct"
   | "instruct-activities"
+  | "instruct-ai"
   | "gradebook"
   | "admin"
   | "roster";
@@ -566,6 +569,17 @@ export default function App() {
               >
                 Activities
               </button>
+              <button
+                type="button"
+                className={mode === "ai" ? "mode-active" : "ghost"}
+                data-testid="mode-ai"
+                onClick={() => {
+                  if (isMock) setMockActor({ actorId: "learner-a", role: "learner" });
+                  setMode("ai");
+                }}
+              >
+                AI tutor
+              </button>
             </>
           )}
           {(primaryRole === "instructor" ||
@@ -602,6 +616,17 @@ export default function App() {
                 }}
               >
                 Activity grading
+              </button>
+              <button
+                type="button"
+                className={mode === "instruct-ai" ? "mode-active" : "ghost"}
+                data-testid="mode-instruct-ai"
+                onClick={() => {
+                  if (isMock) setMockActor({ actorId: "instructor-1", role: "instructor" });
+                  setMode("instruct-ai");
+                }}
+              >
+                AI suggestions
               </button>
             </>
           )}
@@ -707,6 +732,13 @@ export default function App() {
             </section>
           )
         ) : null}
+        {mode === "ai" ? (
+          hub ? (
+            <LearnerAiPanel ai={hub.ai} sectionId={sectionId} />
+          ) : (
+            <HubUnavailablePanel title="AI tutor" />
+          )
+        ) : null}
         {mode === "instruct-activities" ? (
           hub && isStaff ? (
             <section className="panel" data-testid="instructor-activities">
@@ -721,6 +753,13 @@ export default function App() {
             <section className="panel">
               <p className="muted">{hubUnavailable ?? "Staff access required."}</p>
             </section>
+          )
+        ) : null}
+        {mode === "instruct-ai" ? (
+          hub && isStaff ? (
+            <InstructorAiPanel ai={hub.ai} sectionId={sectionId} />
+          ) : (
+            <HubUnavailablePanel title="AI suggestions" />
           )
         ) : null}
         {mode === "home" ? (

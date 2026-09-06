@@ -1,0 +1,52 @@
+{
+  "module_id": "PM_AGILE_LSS",
+  "source_commit": "fbf7685bc5686201ccaa0128ee83346d59b3d584",
+  "package_version": "1.0.0",
+  "source_kind": "digital_rc",
+  "digital_rc_package": "PM_AGILE_LSS",
+  "migration": {
+    "from": "digital_confidence_only",
+    "to": "registry_18_tracks",
+    "content_schema": "waike.course_package.v1"
+  },
+  "learner_globs": [
+    "curriculum/digital_rc/PM_AGILE_LSS/student/**",
+    "curriculum/digital_rc/PM_AGILE_LSS/weeks/**",
+    "curriculum/digital_rc/PM_AGILE_LSS/labs/**",
+    "curriculum/digital_rc/PM_AGILE_LSS/assignments/**",
+    "curriculum/digital_rc/PM_AGILE_LSS/quizzes/**",
+    "curriculum/digital_rc/PM_AGILE_LSS/portfolio/**",
+    "curriculum/digital_rc/PM_AGILE_LSS/projects/**",
+    "curriculum/digital_rc/PM_AGILE_LSS/assessments/**",
+    "curriculum/digital_rc/PM_AGILE_LSS/rubrics/**",
+    "curriculum/digital_rc/PM_AGILE_LSS/syllabus.md",
+    "curriculum/digital_rc/PM_AGILE_LSS/course.json",
+    "curriculum/digital_rc/PM_AGILE_LSS/prerequisites.json",
+    "curriculum/digital_rc/PM_AGILE_LSS/career_mapping.json",
+    "curriculum/digital_rc/PM_AGILE_LSS/offline_pack/**",
+    "curriculum/digital_rc/PM_AGILE_LSS/presentation/**",
+    "curriculum/digital_rc/PM_AGILE_LSS/ai_use_policy.json",
+    "curriculum/digital_rc/PM_AGILE_LSS/guides/**",
+    "programs/pm_agile_lss.md",
+    "programs/project_management_process_improvement.md"
+  ],
+  "instructor_only_globs": [
+    "curriculum/digital_rc/PM_AGILE_LSS/instructor/**"
+  ],
+  "instructor_path_markers": [
+    "instructor_solution",
+    "instructor_solution_guide",
+    "instructor_solution_guides/",
+    "solution_guide",
+    "solution_notes_for_instructors",
+    "instructor_notes",
+    "answer_key",
+    "answer_keys/",
+    "answer_keys.json",
+    "/instructor/",
+    "instructor_packet",
+    "deep_instructor",
+    "teaching_notes.md",
+    "demo_plan.md"
+  ]
+}

@@ -1,0 +1,70 @@
+{
+  "schema": "waike.gate_b.closure_verification.v1",
+  "generated_utc": "2026-09-06T19:14:48Z",
+  "platform_pr": 5,
+  "platform_branch": "cursor/waike-learning-gate-b-ai-18-tracks",
+  "platform_main": "43e770772b97a0d6900893ea7428df91f2acdb93",
+  "prior_platform_head": "577929203e5cc7ac143c07daa2d0deef7df8c943",
+  "waike_main": "fbf7685bc5686201ccaa0128ee83346d59b3d584",
+  "waike_seven_gc_pr": 57,
+  "gunnchai_pin": "4b4f411710e8cdb8102a7e11502f8497f68156b1",
+  "device_os_main": "28562a8456207540c205a1c8a6434a491b0a4771",
+  "SEVEN_GC_SOURCE_BLOCKS_18_OF_18": false,
+  "SEVEN_GC_DIGITAL_RC_PRESENT": true,
+  "full_18_course_digital_rc": true,
+  "matrix_summary": {
+    "pass": 18,
+    "blocked": 0,
+    "fail": 0,
+    "tracks": 18
+  },
+  "acceptance_summary": {
+    "matrix_pass": 18,
+    "e2e_pass": 18,
+    "GATE_B_REQUIRED_TESTS_SKIPPED": 0,
+    "ALL_18_WAIKE_TRACKS_DIGITALLY_AVAILABLE": true
+  },
+  "local_pytest": {
+    "gate_b_passed": 201,
+    "gate_b_skipped": 0,
+    "prior_regression_passed": 204,
+    "adversarial_passed": 12
+  },
+  "verify_gate_b_status": "AUTOMATED_PIPELINE_PASS",
+  "claims_earned_local_verify": [
+    "GUNNCHAI_PLATFORM_INTEGRATION_DIGITALLY_COMPLETE",
+    "ALL_18_WAIKE_TRACKS_DIGITALLY_AVAILABLE",
+    "18_TRACK_PLATFORM_DELIVERY_DIGITALLY_COMPLETE"
+  ],
+  "claims_blocked": [],
+  "artifact_digests_sha256": {
+    "reports/WAIKE_18_TRACK_PACKAGE_MATRIX.json": "9ad86e83aacecc1e624439fd9879c038ea153ea5de30629f139775be46064671",
+    "reports/GATE_B_TRACK_ACCEPTANCE.json": "9a6f5ac5cbfefedb056c63e81aa441af6aed7e5069099e5a34f1bee47924392b",
+    "reports/GATE_B_VERIFICATION.json": "b5798dbfbb4840557722754b3e384c8050b5efbecd063133b80c99a1ab33efab",
+    "reports/GATE_B_PYTEST_SUMMARY.json": "b0c806edccc8b39defaef0b6bccb98d7fdedcab0048436785d16a98ea77e76df",
+    "reports/GATE_B_GUNNCHAI_CONTRACT_SNAPSHOT.json": "f0471f9a4b94979c706b0f9149c297446f618a7bd2920662db85660ce3cde468",
+    "curriculum/registry/PIN.json": "1ebfd2ce1076a773512faae2e3df20131ee5ca90934a14ecb7c755536b65d855",
+    "curriculum/registry/CANONICAL_TRACK_REGISTRY.export.json": "884516f795987674575a39d69319abda3b4974329fbf5f6b62c0fee5948045d2",
+    "SEVEN_GC_APPRENTICESHIP.learner_hash": "4dcbddea070b95bcfa1320890b7f30175f451f77cbccc189ffd6a697e1df033f",
+    "SEVEN_GC_APPRENTICESHIP.instructor_hash": "abac7a9e39668941813993e415fbe61d7c1b3e7a2b4d09b7ed14e41869b31637"
+  },
+  "owner_action": "MERGE_GATE_B_THEN_RERUN_ACCELERATED_MASTER_PROMPT",
+  "owner_action_reason": "Local claims earned after SEVEN_GC digital pin; stop for remote Gate B CI green then owner merge of Platform PR #5. Do not start Gate C.",
+  "next_gate": "Gate C \u2014 interoperability + Device OS + hardening (do not start)",
+  "remote_ci_run_id": null,
+  "remote_ci_conclusion": null,
+  "notes": [
+    "Do not merge Platform PR #5 until remote CI green.",
+    "Do not fabricate evidence.",
+    "WAIKE export artifact on merge SHA was stale; Platform registry export regenerated from v1."
+  ],
+  "local_native": {
+    "frontend_vitest": {
+      "passed": 33,
+      "failed": 0
+    },
+    "rust_cargo_test": "LOCAL_ENV_BLOCKED_libsqlite3_sys_bindings_copy; defer to CI native-linux/rust jobs",
+    "macos_native": "defer_to_CI",
+    "native_linux": "defer_to_CI"
+  }
+}

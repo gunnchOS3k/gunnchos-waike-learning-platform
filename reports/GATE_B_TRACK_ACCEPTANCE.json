@@ -1,0 +1,545 @@
+{
+  "schema": "waike.gate_b.track_acceptance.v1",
+  "source_matrix": "reports/WAIKE_18_TRACK_PACKAGE_MATRIX.json",
+  "tracks": [
+    {
+      "track": "DIGITAL_CONFIDENCE",
+      "matrix_final_status": "PASS",
+      "matrix_install": "PASS",
+      "matrix_learner_visible": "PASS",
+      "matrix_instructor_visible": "PASS",
+      "matrix_offline": "NO",
+      "compile_verify_ok": true,
+      "activity_counts": {
+        "lessons": 8,
+        "assignments": 16,
+        "quizzes": 0,
+        "labs": 8,
+        "rubrics": 0
+      },
+      "e2e": {
+        "install": "PASS",
+        "learner": "PASS",
+        "instructor": "PASS",
+        "offline": "PASS"
+      },
+      "blocker": "",
+      "registered_activity_status": {
+        "lessons": "REGISTERED",
+        "assignments": "REGISTERED",
+        "quizzes": "NOT_APPLICABLE",
+        "labs": "REGISTERED"
+      }
+    },
+    {
+      "track": "IT_SUPPORT_HARDWARE",
+      "matrix_final_status": "PASS",
+      "matrix_install": "PASS",
+      "matrix_learner_visible": "PASS",
+      "matrix_instructor_visible": "PASS",
+      "matrix_offline": "YES",
+      "compile_verify_ok": true,
+      "activity_counts": {
+        "lessons": 10,
+        "assignments": 10,
+        "quizzes": 10,
+        "labs": 7,
+        "rubrics": 8
+      },
+      "e2e": {
+        "install": "PASS",
+        "learner": "PASS",
+        "instructor": "PASS",
+        "offline": "PASS"
+      },
+      "blocker": "",
+      "registered_activity_status": {
+        "lessons": "REGISTERED",
+        "assignments": "REGISTERED",
+        "quizzes": "REGISTERED",
+        "labs": "REGISTERED"
+      }
+    },
+    {
+      "track": "SOFTWARE_BUILDER",
+      "matrix_final_status": "PASS",
+      "matrix_install": "PASS",
+      "matrix_learner_visible": "PASS",
+      "matrix_instructor_visible": "PASS",
+      "matrix_offline": "YES",
+      "compile_verify_ok": true,
+      "activity_counts": {
+        "lessons": 10,
+        "assignments": 10,
+        "quizzes": 10,
+        "labs": 10,
+        "rubrics": 8
+      },
+      "e2e": {
+        "install": "PASS",
+        "learner": "PASS",
+        "instructor": "PASS",
+        "offline": "PASS"
+      },
+      "blocker": "",
+      "registered_activity_status": {
+        "lessons": "REGISTERED",
+        "assignments": "REGISTERED",
+        "quizzes": "REGISTERED",
+        "labs": "REGISTERED"
+      }
+    },
+    {
+      "track": "NETWORKING_INFRA",
+      "matrix_final_status": "PASS",
+      "matrix_install": "PASS",
+      "matrix_learner_visible": "PASS",
+      "matrix_instructor_visible": "PASS",
+      "matrix_offline": "YES",
+      "compile_verify_ok": true,
+      "activity_counts": {
+        "lessons": 10,
+        "assignments": 10,
+        "quizzes": 10,
+        "labs": 6,
+        "rubrics": 8
+      },
+      "e2e": {
+        "install": "PASS",
+        "learner": "PASS",
+        "instructor": "PASS",
+        "offline": "PASS"
+      },
+      "blocker": "",
+      "registered_activity_status": {
+        "lessons": "REGISTERED",
+        "assignments": "REGISTERED",
+        "quizzes": "REGISTERED",
+        "labs": "REGISTERED"
+      }
+    },
+    {
+      "track": "CYBER_SOC",
+      "matrix_final_status": "PASS",
+      "matrix_install": "PASS",
+      "matrix_learner_visible": "PASS",
+      "matrix_instructor_visible": "PASS",
+      "matrix_offline": "YES",
+      "compile_verify_ok": true,
+      "activity_counts": {
+        "lessons": 10,
+        "assignments": 10,
+        "quizzes": 10,
+        "labs": 7,
+        "rubrics": 8
+      },
+      "e2e": {
+        "install": "PASS",
+        "learner": "PASS",
+        "instructor": "PASS",
+        "offline": "PASS"
+      },
+      "blocker": "",
+      "registered_activity_status": {
+        "lessons": "REGISTERED",
+        "assignments": "REGISTERED",
+        "quizzes": "REGISTERED",
+        "labs": "REGISTERED"
+      }
+    },
+    {
+      "track": "DATA_DASHBOARDS",
+      "matrix_final_status": "PASS",
+      "matrix_install": "PASS",
+      "matrix_learner_visible": "PASS",
+      "matrix_instructor_visible": "PASS",
+      "matrix_offline": "YES",
+      "compile_verify_ok": true,
+      "activity_counts": {
+        "lessons": 10,
+        "assignments": 10,
+        "quizzes": 10,
+        "labs": 10,
+        "rubrics": 8
+      },
+      "e2e": {
+        "install": "PASS",
+        "learner": "PASS",
+        "instructor": "PASS",
+        "offline": "PASS"
+      },
+      "blocker": "",
+      "registered_activity_status": {
+        "lessons": "REGISTERED",
+        "assignments": "REGISTERED",
+        "quizzes": "REGISTERED",
+        "labs": "REGISTERED"
+      }
+    },
+    {
+      "track": "AI_ML_EDGE",
+      "matrix_final_status": "PASS",
+      "matrix_install": "PASS",
+      "matrix_learner_visible": "PASS",
+      "matrix_instructor_visible": "PASS",
+      "matrix_offline": "YES",
+      "compile_verify_ok": true,
+      "activity_counts": {
+        "lessons": 10,
+        "assignments": 10,
+        "quizzes": 10,
+        "labs": 10,
+        "rubrics": 8
+      },
+      "e2e": {
+        "install": "PASS",
+        "learner": "PASS",
+        "instructor": "PASS",
+        "offline": "PASS"
+      },
+      "blocker": "",
+      "registered_activity_status": {
+        "lessons": "REGISTERED",
+        "assignments": "REGISTERED",
+        "quizzes": "REGISTERED",
+        "labs": "REGISTERED"
+      }
+    },
+    {
+      "track": "EMBEDDED_PROTOTYPING",
+      "matrix_final_status": "PASS",
+      "matrix_install": "PASS",
+      "matrix_learner_visible": "PASS",
+      "matrix_instructor_visible": "PASS",
+      "matrix_offline": "YES",
+      "compile_verify_ok": true,
+      "activity_counts": {
+        "lessons": 10,
+        "assignments": 10,
+        "quizzes": 10,
+        "labs": 10,
+        "rubrics": 8
+      },
+      "e2e": {
+        "install": "PASS",
+        "learner": "PASS",
+        "instructor": "PASS",
+        "offline": "PASS"
+      },
+      "blocker": "",
+      "registered_activity_status": {
+        "lessons": "REGISTERED",
+        "assignments": "REGISTERED",
+        "quizzes": "REGISTERED",
+        "labs": "REGISTERED"
+      }
+    },
+    {
+      "track": "WIRELESS_6G",
+      "matrix_final_status": "PASS",
+      "matrix_install": "PASS",
+      "matrix_learner_visible": "PASS",
+      "matrix_instructor_visible": "PASS",
+      "matrix_offline": "YES",
+      "compile_verify_ok": true,
+      "activity_counts": {
+        "lessons": 10,
+        "assignments": 10,
+        "quizzes": 10,
+        "labs": 10,
+        "rubrics": 8
+      },
+      "e2e": {
+        "install": "PASS",
+        "learner": "PASS",
+        "instructor": "PASS",
+        "offline": "PASS"
+      },
+      "blocker": "",
+      "registered_activity_status": {
+        "lessons": "REGISTERED",
+        "assignments": "REGISTERED",
+        "quizzes": "REGISTERED",
+        "labs": "REGISTERED"
+      }
+    },
+    {
+      "track": "PM_AGILE_LSS",
+      "matrix_final_status": "PASS",
+      "matrix_install": "PASS",
+      "matrix_learner_visible": "PASS",
+      "matrix_instructor_visible": "PASS",
+      "matrix_offline": "YES",
+      "compile_verify_ok": true,
+      "activity_counts": {
+        "lessons": 10,
+        "assignments": 10,
+        "quizzes": 10,
+        "labs": 10,
+        "rubrics": 8
+      },
+      "e2e": {
+        "install": "PASS",
+        "learner": "PASS",
+        "instructor": "PASS",
+        "offline": "PASS"
+      },
+      "blocker": "",
+      "registered_activity_status": {
+        "lessons": "REGISTERED",
+        "assignments": "REGISTERED",
+        "quizzes": "REGISTERED",
+        "labs": "REGISTERED"
+      }
+    },
+    {
+      "track": "GAME_DEV_INTERACTIVE",
+      "matrix_final_status": "PASS",
+      "matrix_install": "PASS",
+      "matrix_learner_visible": "PASS",
+      "matrix_instructor_visible": "PASS",
+      "matrix_offline": "YES",
+      "compile_verify_ok": true,
+      "activity_counts": {
+        "lessons": 10,
+        "assignments": 10,
+        "quizzes": 10,
+        "labs": 10,
+        "rubrics": 8
+      },
+      "e2e": {
+        "install": "PASS",
+        "learner": "PASS",
+        "instructor": "PASS",
+        "offline": "PASS"
+      },
+      "blocker": "",
+      "registered_activity_status": {
+        "lessons": "REGISTERED",
+        "assignments": "REGISTERED",
+        "quizzes": "REGISTERED",
+        "labs": "REGISTERED"
+      }
+    },
+    {
+      "track": "SEVEN_GC_APPRENTICESHIP",
+      "matrix_final_status": "PASS",
+      "matrix_install": "PASS",
+      "matrix_learner_visible": "PASS",
+      "matrix_instructor_visible": "PASS",
+      "matrix_offline": "YES",
+      "compile_verify_ok": true,
+      "activity_counts": {
+        "lessons": 10,
+        "assignments": 10,
+        "quizzes": 10,
+        "labs": 10,
+        "rubrics": 8
+      },
+      "e2e": {
+        "install": "PASS",
+        "learner": "PASS",
+        "instructor": "PASS",
+        "offline": "PASS"
+      },
+      "blocker": "",
+      "registered_activity_status": {
+        "lessons": "REGISTERED",
+        "assignments": "REGISTERED",
+        "quizzes": "REGISTERED",
+        "labs": "REGISTERED"
+      }
+    },
+    {
+      "track": "CLOUD_DEVOPS",
+      "matrix_final_status": "PASS",
+      "matrix_install": "PASS",
+      "matrix_learner_visible": "PASS",
+      "matrix_instructor_visible": "PASS",
+      "matrix_offline": "YES",
+      "compile_verify_ok": true,
+      "activity_counts": {
+        "lessons": 10,
+        "assignments": 10,
+        "quizzes": 10,
+        "labs": 10,
+        "rubrics": 8
+      },
+      "e2e": {
+        "install": "PASS",
+        "learner": "PASS",
+        "instructor": "PASS",
+        "offline": "PASS"
+      },
+      "blocker": "",
+      "registered_activity_status": {
+        "lessons": "REGISTERED",
+        "assignments": "REGISTERED",
+        "quizzes": "REGISTERED",
+        "labs": "REGISTERED"
+      }
+    },
+    {
+      "track": "COMM_PD_ETHICS",
+      "matrix_final_status": "PASS",
+      "matrix_install": "PASS",
+      "matrix_learner_visible": "PASS",
+      "matrix_instructor_visible": "PASS",
+      "matrix_offline": "YES",
+      "compile_verify_ok": true,
+      "activity_counts": {
+        "lessons": 10,
+        "assignments": 10,
+        "quizzes": 10,
+        "labs": 10,
+        "rubrics": 8
+      },
+      "e2e": {
+        "install": "PASS",
+        "learner": "PASS",
+        "instructor": "PASS",
+        "offline": "PASS"
+      },
+      "blocker": "",
+      "registered_activity_status": {
+        "lessons": "REGISTERED",
+        "assignments": "REGISTERED",
+        "quizzes": "REGISTERED",
+        "labs": "REGISTERED"
+      }
+    },
+    {
+      "track": "ROBOTICS_CONTROL",
+      "matrix_final_status": "PASS",
+      "matrix_install": "PASS",
+      "matrix_learner_visible": "PASS",
+      "matrix_instructor_visible": "PASS",
+      "matrix_offline": "YES",
+      "compile_verify_ok": true,
+      "activity_counts": {
+        "lessons": 10,
+        "assignments": 10,
+        "quizzes": 10,
+        "labs": 10,
+        "rubrics": 8
+      },
+      "e2e": {
+        "install": "PASS",
+        "learner": "PASS",
+        "instructor": "PASS",
+        "offline": "PASS"
+      },
+      "blocker": "",
+      "registered_activity_status": {
+        "lessons": "REGISTERED",
+        "assignments": "REGISTERED",
+        "quizzes": "REGISTERED",
+        "labs": "REGISTERED"
+      }
+    },
+    {
+      "track": "GUNNCHOS_PRODUCT_LAB",
+      "matrix_final_status": "PASS",
+      "matrix_install": "PASS",
+      "matrix_learner_visible": "PASS",
+      "matrix_instructor_visible": "PASS",
+      "matrix_offline": "YES",
+      "compile_verify_ok": true,
+      "activity_counts": {
+        "lessons": 10,
+        "assignments": 10,
+        "quizzes": 10,
+        "labs": 10,
+        "rubrics": 8
+      },
+      "e2e": {
+        "install": "PASS",
+        "learner": "PASS",
+        "instructor": "PASS",
+        "offline": "PASS"
+      },
+      "blocker": "",
+      "registered_activity_status": {
+        "lessons": "REGISTERED",
+        "assignments": "REGISTERED",
+        "quizzes": "REGISTERED",
+        "labs": "REGISTERED"
+      }
+    },
+    {
+      "track": "HARDWARE_ENGINEERING",
+      "matrix_final_status": "PASS",
+      "matrix_install": "PASS",
+      "matrix_learner_visible": "PASS",
+      "matrix_instructor_visible": "PASS",
+      "matrix_offline": "YES",
+      "compile_verify_ok": true,
+      "activity_counts": {
+        "lessons": 10,
+        "assignments": 10,
+        "quizzes": 10,
+        "labs": 10,
+        "rubrics": 8
+      },
+      "e2e": {
+        "install": "PASS",
+        "learner": "PASS",
+        "instructor": "PASS",
+        "offline": "PASS"
+      },
+      "blocker": "",
+      "registered_activity_status": {
+        "lessons": "REGISTERED",
+        "assignments": "REGISTERED",
+        "quizzes": "REGISTERED",
+        "labs": "REGISTERED"
+      }
+    },
+    {
+      "track": "DATA_VIZ_BI",
+      "matrix_final_status": "PASS",
+      "matrix_install": "PASS",
+      "matrix_learner_visible": "PASS",
+      "matrix_instructor_visible": "PASS",
+      "matrix_offline": "YES",
+      "compile_verify_ok": true,
+      "activity_counts": {
+        "lessons": 10,
+        "assignments": 10,
+        "quizzes": 10,
+        "labs": 10,
+        "rubrics": 8
+      },
+      "e2e": {
+        "install": "PASS",
+        "learner": "PASS",
+        "instructor": "PASS",
+        "offline": "PASS"
+      },
+      "blocker": "",
+      "registered_activity_status": {
+        "lessons": "REGISTERED",
+        "assignments": "REGISTERED",
+        "quizzes": "REGISTERED",
+        "labs": "REGISTERED"
+      }
+    }
+  ],
+  "summary": {
+    "track_count": 18,
+    "matrix_pass": 18,
+    "matrix_blocked": 0,
+    "matrix_fail": 0,
+    "e2e_pass": 18,
+    "SEVEN_GC_SOURCE_BLOCKS_18_OF_18": false,
+    "ALL_18_WAIKE_TRACKS_DIGITALLY_AVAILABLE": true,
+    "GATE_B_REQUIRED_TESTS_SKIPPED": 0
+  },
+  "notes": [
+    "Statuses generated from executed install/learner/instructor/offline evidence.",
+    "Allowed statuses only: PASS / NOT_APPLICABLE / BLOCKED / FAIL / EXTERNAL_PHYSICAL_GATE.",
+    "SEVEN_GC_APPRENTICESHIP is COURSE_DIGITAL_RC on pinned WAIKE main after PR #57.",
+    "Per-track activities registered from that track's packaged inventory only.",
+    "EXTERNAL human/physical/field apprenticeship gates remain open (not claimed)."
+  ]
+}

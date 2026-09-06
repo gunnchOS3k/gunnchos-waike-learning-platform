@@ -1,0 +1,51 @@
+{
+  "module_id": "ROBOTICS_CONTROL",
+  "source_commit": "fbf7685bc5686201ccaa0128ee83346d59b3d584",
+  "package_version": "1.0.0",
+  "source_kind": "digital_rc",
+  "digital_rc_package": "ROBOTICS_CONTROL",
+  "migration": {
+    "from": "digital_confidence_only",
+    "to": "registry_18_tracks",
+    "content_schema": "waike.course_package.v1"
+  },
+  "learner_globs": [
+    "curriculum/digital_rc/ROBOTICS_CONTROL/student/**",
+    "curriculum/digital_rc/ROBOTICS_CONTROL/weeks/**",
+    "curriculum/digital_rc/ROBOTICS_CONTROL/labs/**",
+    "curriculum/digital_rc/ROBOTICS_CONTROL/assignments/**",
+    "curriculum/digital_rc/ROBOTICS_CONTROL/quizzes/**",
+    "curriculum/digital_rc/ROBOTICS_CONTROL/portfolio/**",
+    "curriculum/digital_rc/ROBOTICS_CONTROL/projects/**",
+    "curriculum/digital_rc/ROBOTICS_CONTROL/assessments/**",
+    "curriculum/digital_rc/ROBOTICS_CONTROL/rubrics/**",
+    "curriculum/digital_rc/ROBOTICS_CONTROL/syllabus.md",
+    "curriculum/digital_rc/ROBOTICS_CONTROL/course.json",
+    "curriculum/digital_rc/ROBOTICS_CONTROL/prerequisites.json",
+    "curriculum/digital_rc/ROBOTICS_CONTROL/career_mapping.json",
+    "curriculum/digital_rc/ROBOTICS_CONTROL/offline_pack/**",
+    "curriculum/digital_rc/ROBOTICS_CONTROL/presentation/**",
+    "curriculum/digital_rc/ROBOTICS_CONTROL/ai_use_policy.json",
+    "curriculum/digital_rc/ROBOTICS_CONTROL/guides/**",
+    "programs/robotics_and_control.md"
+  ],
+  "instructor_only_globs": [
+    "curriculum/digital_rc/ROBOTICS_CONTROL/instructor/**"
+  ],
+  "instructor_path_markers": [
+    "instructor_solution",
+    "instructor_solution_guide",
+    "instructor_solution_guides/",
+    "solution_guide",
+    "solution_notes_for_instructors",
+    "instructor_notes",
+    "answer_key",
+    "answer_keys/",
+    "answer_keys.json",
+    "/instructor/",
+    "instructor_packet",
+    "deep_instructor",
+    "teaching_notes.md",
+    "demo_plan.md"
+  ]
+}

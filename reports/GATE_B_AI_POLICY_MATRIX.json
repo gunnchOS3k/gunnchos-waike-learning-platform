@@ -1,0 +1,50 @@
+{
+  "gate": "B",
+  "title": "AI policy matrix",
+  "migration": "005_ai_policy",
+  "default_policy": "AI_ALLOWED",
+  "resolution_order": ["activity", "assessment", "section", "default"],
+  "policies": {
+    "AI_ALLOWED": {
+      "learner_capabilities": [
+        "explain",
+        "hint",
+        "misconception",
+        "remediation",
+        "citation",
+        "navigate",
+        "lab_troubleshoot",
+        "reflect"
+      ],
+      "instructor_capabilities": [
+        "feedback_suggest",
+        "rubric_refine",
+        "misconception_cluster",
+        "remediation_suggest",
+        "lesson_adapt",
+        "grading_triage"
+      ]
+    },
+    "AI_HINTS_ONLY": {
+      "learner_capabilities": ["hint", "navigate", "reflect"],
+      "instructor_capabilities": [
+        "feedback_suggest",
+        "rubric_refine",
+        "misconception_cluster",
+        "remediation_suggest",
+        "lesson_adapt",
+        "grading_triage"
+      ]
+    },
+    "AI_DISABLED": {
+      "learner_capabilities": [],
+      "instructor_capabilities": []
+    },
+    "AI_INSTRUCTOR_DEFINED": {
+      "learner_capabilities": "from instructor_defined.allowed_capabilities",
+      "instructor_capabilities": "from instructor_defined.allowed_capabilities or default instructor set"
+    }
+  },
+  "learner_cannot_alter_policy": true,
+  "tests": ["tests/gate_b/test_ai_policy.py"]
+}

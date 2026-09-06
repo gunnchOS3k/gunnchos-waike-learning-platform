@@ -1,4 +1,4 @@
-"""WAIKE Learning Hub — modular monolith (Gate A offline sync + activity engine)."""
+"""WAIKE Learning Hub — modular monolith (Gate A sync + Gate B gunnchAI)."""
 
 from __future__ import annotations
 
@@ -11,21 +11,26 @@ from pydantic import BaseModel, Field
 from app.api.routes import router as api_router
 from app.db import connect, migrate
 from app.modules.activity_engine import ActivityEngine
+from app.modules.ai_assist import AiAssistService
+from app.modules.ai_policy import AiPolicyService
 from app.modules.assessment_lifecycle import AssessmentService
 from app.modules.gradebook_service import GradebookService
+from app.modules.gunnchai_adapter import GunnchAIAdapter
 from app.modules.identity import IdentityService
 from app.modules.sections import SectionService
 from app.modules.sync import SyncService
 
-APP_VERSION = "0.4.0-gate-a"
+APP_VERSION = "0.5.0-gate-b"
 
 
 class DatabaseConfig(BaseModel):
     enabled: bool = True
     url: str | None = Field(default=None, description="sqlite path or postgresql URL")
     note: str = (
-        "Gate A uses SQLite hub persistence with forward migrations (m001–m004). "
-        "Production auth uses Argon2id sessions; fixture headers only when fixture_auth_enabled=true."
+        "Gate B uses SQLite hub persistence with forward migrations (m001–m005). "
+        "Production auth uses Argon2id sessions; fixture headers only when fixture_auth_enabled=true. "
+        "AI defaults to LocalGunnchAIProvider when available, else unavailable; "
+        "FakeGunnchAIProvider is tests-only (explicit injection or WAIKE_ALLOW_FAKE_AI=1)."
     )
 
 
@@ -124,7 +129,7 @@ def create_app(config: HubConfig | None = None, db_path: Path | None = None, see
         title="WAIKE Learning Hub",
         version=cfg.version,
         description=(
-            "Gate A offline-first sync + activity engine on PR3 multi-user LMS. "
+            "Gate B gunnchAI + Gate A offline-first sync/activity engine on PR3 multi-user LMS. "
             "production_auth_enabled=true by default; fixture X-Waike-Actor-* headers only when "
             "fixture_auth_enabled=true. Synthetic test accounts are never seeded unless tests "
             "pass seed=True or WAIKE_SEED_TEST_FIXTURES=true is set for a non-production path."
@@ -150,6 +155,8 @@ def create_app(config: HubConfig | None = None, db_path: Path | None = None, see
     )
     sync = SyncService(conn, blob_root=Path(path).parent / "blobs", sections=sections)
     activities = ActivityEngine(conn, sections=sections)
+    ai_policy = AiPolicyService(conn, sections)
+    ai = AiAssistService(conn, sections, ai_policy, adapter=GunnchAIAdapter())
 
     should_seed = bool(seed) or _fixture_seeding_allowed_by_env()
     if should_seed:
@@ -181,6 +188,8 @@ def create_app(config: HubConfig | None = None, db_path: Path | None = None, see
     app.state.gradebook = gradebook
     app.state.sync = sync
     app.state.activities = activities
+    app.state.ai_policy = ai_policy
+    app.state.ai = ai
     app.state.waike_root = str(waike) if waike else None
     app.state.seeded_test_fixtures = should_seed
 
@@ -200,6 +209,8 @@ def create_app(config: HubConfig | None = None, db_path: Path | None = None, see
             "gradebook": True,
             "offline_sync": True,
             "activity_engine": True,
+            "gunnchai": True,
+            "ai_policy": True,
             "seeded_test_fixtures": should_seed,
         }
 

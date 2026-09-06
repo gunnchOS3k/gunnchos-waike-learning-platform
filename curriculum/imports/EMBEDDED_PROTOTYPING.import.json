@@ -1,0 +1,51 @@
+{
+  "module_id": "EMBEDDED_PROTOTYPING",
+  "source_commit": "fbf7685bc5686201ccaa0128ee83346d59b3d584",
+  "package_version": "1.0.0",
+  "source_kind": "digital_rc",
+  "digital_rc_package": "EMBEDDED_PROTOTYPING",
+  "migration": {
+    "from": "digital_confidence_only",
+    "to": "registry_18_tracks",
+    "content_schema": "waike.course_package.v1"
+  },
+  "learner_globs": [
+    "curriculum/digital_rc/EMBEDDED_PROTOTYPING/student/**",
+    "curriculum/digital_rc/EMBEDDED_PROTOTYPING/weeks/**",
+    "curriculum/digital_rc/EMBEDDED_PROTOTYPING/labs/**",
+    "curriculum/digital_rc/EMBEDDED_PROTOTYPING/assignments/**",
+    "curriculum/digital_rc/EMBEDDED_PROTOTYPING/quizzes/**",
+    "curriculum/digital_rc/EMBEDDED_PROTOTYPING/portfolio/**",
+    "curriculum/digital_rc/EMBEDDED_PROTOTYPING/projects/**",
+    "curriculum/digital_rc/EMBEDDED_PROTOTYPING/assessments/**",
+    "curriculum/digital_rc/EMBEDDED_PROTOTYPING/rubrics/**",
+    "curriculum/digital_rc/EMBEDDED_PROTOTYPING/syllabus.md",
+    "curriculum/digital_rc/EMBEDDED_PROTOTYPING/course.json",
+    "curriculum/digital_rc/EMBEDDED_PROTOTYPING/prerequisites.json",
+    "curriculum/digital_rc/EMBEDDED_PROTOTYPING/career_mapping.json",
+    "curriculum/digital_rc/EMBEDDED_PROTOTYPING/offline_pack/**",
+    "curriculum/digital_rc/EMBEDDED_PROTOTYPING/presentation/**",
+    "curriculum/digital_rc/EMBEDDED_PROTOTYPING/ai_use_policy.json",
+    "curriculum/digital_rc/EMBEDDED_PROTOTYPING/guides/**",
+    "programs/embedded_prototyping.md"
+  ],
+  "instructor_only_globs": [
+    "curriculum/digital_rc/EMBEDDED_PROTOTYPING/instructor/**"
+  ],
+  "instructor_path_markers": [
+    "instructor_solution",
+    "instructor_solution_guide",
+    "instructor_solution_guides/",
+    "solution_guide",
+    "solution_notes_for_instructors",
+    "instructor_notes",
+    "answer_key",
+    "answer_keys/",
+    "answer_keys.json",
+    "/instructor/",
+    "instructor_packet",
+    "deep_instructor",
+    "teaching_notes.md",
+    "demo_plan.md"
+  ]
+}

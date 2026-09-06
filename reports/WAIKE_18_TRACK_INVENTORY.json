@@ -1,0 +1,907 @@
+{
+  "observed_source_commit": "fbf7685bc5686201ccaa0128ee83346d59b3d584",
+  "pinned_commit": "fbf7685bc5686201ccaa0128ee83346d59b3d584",
+  "tracks": [
+    {
+      "activity_counts": {
+        "assignments": 16,
+        "discussions": 1,
+        "groups": 24,
+        "labs": 8,
+        "lessons": 8,
+        "outcomes": 0,
+        "portfolio": 1,
+        "quizzes": 0,
+        "rubrics": 0
+      },
+      "digital_rc_package": null,
+      "digital_rc_package_exists": false,
+      "has_ai_policy": false,
+      "has_offline_pack": false,
+      "instructor_file_count": 37,
+      "learner_file_count": 193,
+      "rubric_outcome_coverage": {
+        "has_outcomes": false,
+        "has_portfolio": true,
+        "has_rubrics": false
+      },
+      "sample_instructor_paths": [
+        "group_projects/by_course/digital_confidence/instructor_solution_guide.md",
+        "instructor_solution_guides/by_course/digital_confidence/assignment_01_solution_guide.md",
+        "instructor_solution_guides/by_course/digital_confidence/assignment_02_solution_guide.md",
+        "instructor_solution_guides/by_course/digital_confidence/assignment_03_solution_guide.md",
+        "instructor_solution_guides/by_course/digital_confidence/assignment_04_solution_guide.md",
+        "instructor_solution_guides/by_course/digital_confidence/assignment_05_solution_guide.md",
+        "instructor_solution_guides/by_course/digital_confidence/assignment_06_solution_guide.md",
+        "instructor_solution_guides/by_course/digital_confidence/assignment_07_solution_guide.md"
+      ],
+      "sample_learner_paths": [
+        "assessment/by_course/digital_confidence/assessment_plan.md",
+        "assessment/by_course/digital_confidence/continuous_improvement_plan.md",
+        "assessment/by_course/digital_confidence/mastery_evidence_map.md",
+        "assessment/by_course/digital_confidence/revision_policy.md",
+        "assignment_bodies/by_course/digital_confidence/assignment_01.md",
+        "assignment_bodies/by_course/digital_confidence/assignment_02.md",
+        "assignment_bodies/by_course/digital_confidence/assignment_03.md",
+        "assignment_bodies/by_course/digital_confidence/assignment_04.md",
+        "assignment_bodies/by_course/digital_confidence/assignment_05.md",
+        "assignment_bodies/by_course/digital_confidence/assignment_06.md",
+        "assignment_bodies/by_course/digital_confidence/assignment_07.md",
+        "assignment_bodies/by_course/digital_confidence/assignment_08.md"
+      ],
+      "source_kind": "legacy_lessons_by_course",
+      "track": "DIGITAL_CONFIDENCE"
+    },
+    {
+      "activity_counts": {
+        "assignments": 10,
+        "discussions": 0,
+        "groups": 1,
+        "labs": 7,
+        "lessons": 10,
+        "outcomes": 4,
+        "portfolio": 2,
+        "quizzes": 10,
+        "rubrics": 8
+      },
+      "digital_rc_package": "GENERAL_IT",
+      "digital_rc_package_exists": true,
+      "has_ai_policy": false,
+      "has_offline_pack": true,
+      "instructor_file_count": 12,
+      "learner_file_count": 71,
+      "rubric_outcome_coverage": {
+        "has_outcomes": true,
+        "has_portfolio": true,
+        "has_rubrics": true
+      },
+      "sample_instructor_paths": [
+        "curriculum/digital_rc/GENERAL_IT/instructor/INSTRUCTOR_PACKET.md",
+        "curriculum/digital_rc/GENERAL_IT/instructor/answer_keys.json",
+        "curriculum/digital_rc/GENERAL_IT/instructor/week_01_notes.md",
+        "curriculum/digital_rc/GENERAL_IT/instructor/week_02_notes.md",
+        "curriculum/digital_rc/GENERAL_IT/instructor/week_03_notes.md",
+        "curriculum/digital_rc/GENERAL_IT/instructor/week_04_notes.md",
+        "curriculum/digital_rc/GENERAL_IT/instructor/week_05_notes.md",
+        "curriculum/digital_rc/GENERAL_IT/instructor/week_06_notes.md"
+      ],
+      "sample_learner_paths": [
+        "capstones/by_track/general_it.md",
+        "curriculum/digital_rc/GENERAL_IT/assessments/final_knowledge.json",
+        "curriculum/digital_rc/GENERAL_IT/assessments/final_practical.json",
+        "curriculum/digital_rc/GENERAL_IT/assessments/mid_course.json",
+        "curriculum/digital_rc/GENERAL_IT/assignments/a01.md",
+        "curriculum/digital_rc/GENERAL_IT/assignments/a02.md",
+        "curriculum/digital_rc/GENERAL_IT/assignments/a03.md",
+        "curriculum/digital_rc/GENERAL_IT/assignments/a04.md",
+        "curriculum/digital_rc/GENERAL_IT/assignments/a05.md",
+        "curriculum/digital_rc/GENERAL_IT/assignments/a06.md",
+        "curriculum/digital_rc/GENERAL_IT/assignments/a07.md",
+        "curriculum/digital_rc/GENERAL_IT/assignments/a08.md"
+      ],
+      "source_kind": "digital_rc",
+      "track": "IT_SUPPORT_HARDWARE"
+    },
+    {
+      "activity_counts": {
+        "assignments": 10,
+        "discussions": 0,
+        "groups": 1,
+        "labs": 10,
+        "lessons": 10,
+        "outcomes": 4,
+        "portfolio": 2,
+        "quizzes": 10,
+        "rubrics": 8
+      },
+      "digital_rc_package": "SOFTWARE_BUILDER",
+      "digital_rc_package_exists": true,
+      "has_ai_policy": true,
+      "has_offline_pack": true,
+      "instructor_file_count": 12,
+      "learner_file_count": 74,
+      "rubric_outcome_coverage": {
+        "has_outcomes": true,
+        "has_portfolio": true,
+        "has_rubrics": true
+      },
+      "sample_instructor_paths": [
+        "curriculum/digital_rc/SOFTWARE_BUILDER/instructor/INSTRUCTOR_PACKET.md",
+        "curriculum/digital_rc/SOFTWARE_BUILDER/instructor/answer_keys.json",
+        "curriculum/digital_rc/SOFTWARE_BUILDER/instructor/week_01_notes.md",
+        "curriculum/digital_rc/SOFTWARE_BUILDER/instructor/week_02_notes.md",
+        "curriculum/digital_rc/SOFTWARE_BUILDER/instructor/week_03_notes.md",
+        "curriculum/digital_rc/SOFTWARE_BUILDER/instructor/week_04_notes.md",
+        "curriculum/digital_rc/SOFTWARE_BUILDER/instructor/week_05_notes.md",
+        "curriculum/digital_rc/SOFTWARE_BUILDER/instructor/week_06_notes.md"
+      ],
+      "sample_learner_paths": [
+        "curriculum/digital_rc/SOFTWARE_BUILDER/ai_use_policy.json",
+        "curriculum/digital_rc/SOFTWARE_BUILDER/assessments/final_knowledge.json",
+        "curriculum/digital_rc/SOFTWARE_BUILDER/assessments/final_practical.json",
+        "curriculum/digital_rc/SOFTWARE_BUILDER/assessments/mid_course.json",
+        "curriculum/digital_rc/SOFTWARE_BUILDER/assignments/a01.md",
+        "curriculum/digital_rc/SOFTWARE_BUILDER/assignments/a02.md",
+        "curriculum/digital_rc/SOFTWARE_BUILDER/assignments/a03.md",
+        "curriculum/digital_rc/SOFTWARE_BUILDER/assignments/a04.md",
+        "curriculum/digital_rc/SOFTWARE_BUILDER/assignments/a05.md",
+        "curriculum/digital_rc/SOFTWARE_BUILDER/assignments/a06.md",
+        "curriculum/digital_rc/SOFTWARE_BUILDER/assignments/a07.md",
+        "curriculum/digital_rc/SOFTWARE_BUILDER/assignments/a08.md"
+      ],
+      "source_kind": "digital_rc",
+      "track": "SOFTWARE_BUILDER"
+    },
+    {
+      "activity_counts": {
+        "assignments": 10,
+        "discussions": 0,
+        "groups": 1,
+        "labs": 6,
+        "lessons": 10,
+        "outcomes": 4,
+        "portfolio": 2,
+        "quizzes": 10,
+        "rubrics": 8
+      },
+      "digital_rc_package": "COMPUTER_NETWORKING",
+      "digital_rc_package_exists": true,
+      "has_ai_policy": false,
+      "has_offline_pack": true,
+      "instructor_file_count": 12,
+      "learner_file_count": 69,
+      "rubric_outcome_coverage": {
+        "has_outcomes": true,
+        "has_portfolio": true,
+        "has_rubrics": true
+      },
+      "sample_instructor_paths": [
+        "curriculum/digital_rc/COMPUTER_NETWORKING/instructor/INSTRUCTOR_PACKET.md",
+        "curriculum/digital_rc/COMPUTER_NETWORKING/instructor/answer_keys.json",
+        "curriculum/digital_rc/COMPUTER_NETWORKING/instructor/week_01_notes.md",
+        "curriculum/digital_rc/COMPUTER_NETWORKING/instructor/week_02_notes.md",
+        "curriculum/digital_rc/COMPUTER_NETWORKING/instructor/week_03_notes.md",
+        "curriculum/digital_rc/COMPUTER_NETWORKING/instructor/week_04_notes.md",
+        "curriculum/digital_rc/COMPUTER_NETWORKING/instructor/week_05_notes.md",
+        "curriculum/digital_rc/COMPUTER_NETWORKING/instructor/week_06_notes.md"
+      ],
+      "sample_learner_paths": [
+        "curriculum/digital_rc/COMPUTER_NETWORKING/assessments/final_knowledge.json",
+        "curriculum/digital_rc/COMPUTER_NETWORKING/assessments/final_practical.json",
+        "curriculum/digital_rc/COMPUTER_NETWORKING/assessments/mid_course.json",
+        "curriculum/digital_rc/COMPUTER_NETWORKING/assignments/a01.md",
+        "curriculum/digital_rc/COMPUTER_NETWORKING/assignments/a02.md",
+        "curriculum/digital_rc/COMPUTER_NETWORKING/assignments/a03.md",
+        "curriculum/digital_rc/COMPUTER_NETWORKING/assignments/a04.md",
+        "curriculum/digital_rc/COMPUTER_NETWORKING/assignments/a05.md",
+        "curriculum/digital_rc/COMPUTER_NETWORKING/assignments/a06.md",
+        "curriculum/digital_rc/COMPUTER_NETWORKING/assignments/a07.md",
+        "curriculum/digital_rc/COMPUTER_NETWORKING/assignments/a08.md",
+        "curriculum/digital_rc/COMPUTER_NETWORKING/assignments/a09.md"
+      ],
+      "source_kind": "digital_rc",
+      "track": "NETWORKING_INFRA"
+    },
+    {
+      "activity_counts": {
+        "assignments": 10,
+        "discussions": 0,
+        "groups": 1,
+        "labs": 7,
+        "lessons": 10,
+        "outcomes": 4,
+        "portfolio": 2,
+        "quizzes": 10,
+        "rubrics": 8
+      },
+      "digital_rc_package": "CYBERSECURITY",
+      "digital_rc_package_exists": true,
+      "has_ai_policy": false,
+      "has_offline_pack": true,
+      "instructor_file_count": 12,
+      "learner_file_count": 70,
+      "rubric_outcome_coverage": {
+        "has_outcomes": true,
+        "has_portfolio": true,
+        "has_rubrics": true
+      },
+      "sample_instructor_paths": [
+        "curriculum/digital_rc/CYBERSECURITY/instructor/INSTRUCTOR_PACKET.md",
+        "curriculum/digital_rc/CYBERSECURITY/instructor/answer_keys.json",
+        "curriculum/digital_rc/CYBERSECURITY/instructor/week_01_notes.md",
+        "curriculum/digital_rc/CYBERSECURITY/instructor/week_02_notes.md",
+        "curriculum/digital_rc/CYBERSECURITY/instructor/week_03_notes.md",
+        "curriculum/digital_rc/CYBERSECURITY/instructor/week_04_notes.md",
+        "curriculum/digital_rc/CYBERSECURITY/instructor/week_05_notes.md",
+        "curriculum/digital_rc/CYBERSECURITY/instructor/week_06_notes.md"
+      ],
+      "sample_learner_paths": [
+        "curriculum/digital_rc/CYBERSECURITY/assessments/final_knowledge.json",
+        "curriculum/digital_rc/CYBERSECURITY/assessments/final_practical.json",
+        "curriculum/digital_rc/CYBERSECURITY/assessments/mid_course.json",
+        "curriculum/digital_rc/CYBERSECURITY/assignments/a01.md",
+        "curriculum/digital_rc/CYBERSECURITY/assignments/a02.md",
+        "curriculum/digital_rc/CYBERSECURITY/assignments/a03.md",
+        "curriculum/digital_rc/CYBERSECURITY/assignments/a04.md",
+        "curriculum/digital_rc/CYBERSECURITY/assignments/a05.md",
+        "curriculum/digital_rc/CYBERSECURITY/assignments/a06.md",
+        "curriculum/digital_rc/CYBERSECURITY/assignments/a07.md",
+        "curriculum/digital_rc/CYBERSECURITY/assignments/a08.md",
+        "curriculum/digital_rc/CYBERSECURITY/assignments/a09.md"
+      ],
+      "source_kind": "digital_rc",
+      "track": "CYBER_SOC"
+    },
+    {
+      "activity_counts": {
+        "assignments": 10,
+        "discussions": 0,
+        "groups": 1,
+        "labs": 10,
+        "lessons": 10,
+        "outcomes": 4,
+        "portfolio": 2,
+        "quizzes": 10,
+        "rubrics": 8
+      },
+      "digital_rc_package": "DATA_DASHBOARDS",
+      "digital_rc_package_exists": true,
+      "has_ai_policy": true,
+      "has_offline_pack": true,
+      "instructor_file_count": 14,
+      "learner_file_count": 74,
+      "rubric_outcome_coverage": {
+        "has_outcomes": true,
+        "has_portfolio": true,
+        "has_rubrics": true
+      },
+      "sample_instructor_paths": [
+        "curriculum/digital_rc/DATA_DASHBOARDS/instructor/INSTRUCTOR_PACKET.md",
+        "curriculum/digital_rc/DATA_DASHBOARDS/instructor/accessibility_and_udl_guide.md",
+        "curriculum/digital_rc/DATA_DASHBOARDS/instructor/answer_keys.json",
+        "curriculum/digital_rc/DATA_DASHBOARDS/instructor/misconceptions_remediation.md",
+        "curriculum/digital_rc/DATA_DASHBOARDS/instructor/week_01_notes.md",
+        "curriculum/digital_rc/DATA_DASHBOARDS/instructor/week_02_notes.md",
+        "curriculum/digital_rc/DATA_DASHBOARDS/instructor/week_03_notes.md",
+        "curriculum/digital_rc/DATA_DASHBOARDS/instructor/week_04_notes.md"
+      ],
+      "sample_learner_paths": [
+        "curriculum/digital_rc/DATA_DASHBOARDS/ai_use_policy.json",
+        "curriculum/digital_rc/DATA_DASHBOARDS/assessments/final_knowledge.json",
+        "curriculum/digital_rc/DATA_DASHBOARDS/assessments/final_practical.json",
+        "curriculum/digital_rc/DATA_DASHBOARDS/assessments/mid_course.json",
+        "curriculum/digital_rc/DATA_DASHBOARDS/assignments/a01.md",
+        "curriculum/digital_rc/DATA_DASHBOARDS/assignments/a02.md",
+        "curriculum/digital_rc/DATA_DASHBOARDS/assignments/a03.md",
+        "curriculum/digital_rc/DATA_DASHBOARDS/assignments/a04.md",
+        "curriculum/digital_rc/DATA_DASHBOARDS/assignments/a05.md",
+        "curriculum/digital_rc/DATA_DASHBOARDS/assignments/a06.md",
+        "curriculum/digital_rc/DATA_DASHBOARDS/assignments/a07.md",
+        "curriculum/digital_rc/DATA_DASHBOARDS/assignments/a08.md"
+      ],
+      "source_kind": "digital_rc",
+      "track": "DATA_DASHBOARDS"
+    },
+    {
+      "activity_counts": {
+        "assignments": 10,
+        "discussions": 0,
+        "groups": 1,
+        "labs": 10,
+        "lessons": 10,
+        "outcomes": 4,
+        "portfolio": 2,
+        "quizzes": 10,
+        "rubrics": 8
+      },
+      "digital_rc_package": "AI_ML_EDGE",
+      "digital_rc_package_exists": true,
+      "has_ai_policy": true,
+      "has_offline_pack": true,
+      "instructor_file_count": 12,
+      "learner_file_count": 75,
+      "rubric_outcome_coverage": {
+        "has_outcomes": true,
+        "has_portfolio": true,
+        "has_rubrics": true
+      },
+      "sample_instructor_paths": [
+        "curriculum/digital_rc/AI_ML_EDGE/instructor/INSTRUCTOR_PACKET.md",
+        "curriculum/digital_rc/AI_ML_EDGE/instructor/answer_keys.json",
+        "curriculum/digital_rc/AI_ML_EDGE/instructor/week_01_notes.md",
+        "curriculum/digital_rc/AI_ML_EDGE/instructor/week_02_notes.md",
+        "curriculum/digital_rc/AI_ML_EDGE/instructor/week_03_notes.md",
+        "curriculum/digital_rc/AI_ML_EDGE/instructor/week_04_notes.md",
+        "curriculum/digital_rc/AI_ML_EDGE/instructor/week_05_notes.md",
+        "curriculum/digital_rc/AI_ML_EDGE/instructor/week_06_notes.md"
+      ],
+      "sample_learner_paths": [
+        "curriculum/digital_rc/AI_ML_EDGE/ai_use_policy.json",
+        "curriculum/digital_rc/AI_ML_EDGE/assessments/final_knowledge.json",
+        "curriculum/digital_rc/AI_ML_EDGE/assessments/final_practical.json",
+        "curriculum/digital_rc/AI_ML_EDGE/assessments/mid_course.json",
+        "curriculum/digital_rc/AI_ML_EDGE/assignments/a01.md",
+        "curriculum/digital_rc/AI_ML_EDGE/assignments/a02.md",
+        "curriculum/digital_rc/AI_ML_EDGE/assignments/a03.md",
+        "curriculum/digital_rc/AI_ML_EDGE/assignments/a04.md",
+        "curriculum/digital_rc/AI_ML_EDGE/assignments/a05.md",
+        "curriculum/digital_rc/AI_ML_EDGE/assignments/a06.md",
+        "curriculum/digital_rc/AI_ML_EDGE/assignments/a07.md",
+        "curriculum/digital_rc/AI_ML_EDGE/assignments/a08.md"
+      ],
+      "source_kind": "digital_rc",
+      "track": "AI_ML_EDGE"
+    },
+    {
+      "activity_counts": {
+        "assignments": 10,
+        "discussions": 0,
+        "groups": 1,
+        "labs": 10,
+        "lessons": 10,
+        "outcomes": 4,
+        "portfolio": 2,
+        "quizzes": 10,
+        "rubrics": 8
+      },
+      "digital_rc_package": "EMBEDDED_PROTOTYPING",
+      "digital_rc_package_exists": true,
+      "has_ai_policy": true,
+      "has_offline_pack": true,
+      "instructor_file_count": 12,
+      "learner_file_count": 73,
+      "rubric_outcome_coverage": {
+        "has_outcomes": true,
+        "has_portfolio": true,
+        "has_rubrics": true
+      },
+      "sample_instructor_paths": [
+        "curriculum/digital_rc/EMBEDDED_PROTOTYPING/instructor/INSTRUCTOR_PACKET.md",
+        "curriculum/digital_rc/EMBEDDED_PROTOTYPING/instructor/answer_keys.json",
+        "curriculum/digital_rc/EMBEDDED_PROTOTYPING/instructor/week_01_notes.md",
+        "curriculum/digital_rc/EMBEDDED_PROTOTYPING/instructor/week_02_notes.md",
+        "curriculum/digital_rc/EMBEDDED_PROTOTYPING/instructor/week_03_notes.md",
+        "curriculum/digital_rc/EMBEDDED_PROTOTYPING/instructor/week_04_notes.md",
+        "curriculum/digital_rc/EMBEDDED_PROTOTYPING/instructor/week_05_notes.md",
+        "curriculum/digital_rc/EMBEDDED_PROTOTYPING/instructor/week_06_notes.md"
+      ],
+      "sample_learner_paths": [
+        "curriculum/digital_rc/EMBEDDED_PROTOTYPING/ai_use_policy.json",
+        "curriculum/digital_rc/EMBEDDED_PROTOTYPING/assessments/final_knowledge.json",
+        "curriculum/digital_rc/EMBEDDED_PROTOTYPING/assessments/final_practical.json",
+        "curriculum/digital_rc/EMBEDDED_PROTOTYPING/assessments/mid_course.json",
+        "curriculum/digital_rc/EMBEDDED_PROTOTYPING/assignments/a01.md",
+        "curriculum/digital_rc/EMBEDDED_PROTOTYPING/assignments/a02.md",
+        "curriculum/digital_rc/EMBEDDED_PROTOTYPING/assignments/a03.md",
+        "curriculum/digital_rc/EMBEDDED_PROTOTYPING/assignments/a04.md",
+        "curriculum/digital_rc/EMBEDDED_PROTOTYPING/assignments/a05.md",
+        "curriculum/digital_rc/EMBEDDED_PROTOTYPING/assignments/a06.md",
+        "curriculum/digital_rc/EMBEDDED_PROTOTYPING/assignments/a07.md",
+        "curriculum/digital_rc/EMBEDDED_PROTOTYPING/assignments/a08.md"
+      ],
+      "source_kind": "digital_rc",
+      "track": "EMBEDDED_PROTOTYPING"
+    },
+    {
+      "activity_counts": {
+        "assignments": 10,
+        "discussions": 0,
+        "groups": 1,
+        "labs": 10,
+        "lessons": 10,
+        "outcomes": 4,
+        "portfolio": 2,
+        "quizzes": 10,
+        "rubrics": 8
+      },
+      "digital_rc_package": "WIRELESS_6G",
+      "digital_rc_package_exists": true,
+      "has_ai_policy": true,
+      "has_offline_pack": true,
+      "instructor_file_count": 12,
+      "learner_file_count": 74,
+      "rubric_outcome_coverage": {
+        "has_outcomes": true,
+        "has_portfolio": true,
+        "has_rubrics": true
+      },
+      "sample_instructor_paths": [
+        "curriculum/digital_rc/WIRELESS_6G/instructor/INSTRUCTOR_PACKET.md",
+        "curriculum/digital_rc/WIRELESS_6G/instructor/answer_keys.json",
+        "curriculum/digital_rc/WIRELESS_6G/instructor/week_01_notes.md",
+        "curriculum/digital_rc/WIRELESS_6G/instructor/week_02_notes.md",
+        "curriculum/digital_rc/WIRELESS_6G/instructor/week_03_notes.md",
+        "curriculum/digital_rc/WIRELESS_6G/instructor/week_04_notes.md",
+        "curriculum/digital_rc/WIRELESS_6G/instructor/week_05_notes.md",
+        "curriculum/digital_rc/WIRELESS_6G/instructor/week_06_notes.md"
+      ],
+      "sample_learner_paths": [
+        "curriculum/digital_rc/WIRELESS_6G/ai_use_policy.json",
+        "curriculum/digital_rc/WIRELESS_6G/assessments/final_knowledge.json",
+        "curriculum/digital_rc/WIRELESS_6G/assessments/final_practical.json",
+        "curriculum/digital_rc/WIRELESS_6G/assessments/mid_course.json",
+        "curriculum/digital_rc/WIRELESS_6G/assignments/a01.md",
+        "curriculum/digital_rc/WIRELESS_6G/assignments/a02.md",
+        "curriculum/digital_rc/WIRELESS_6G/assignments/a03.md",
+        "curriculum/digital_rc/WIRELESS_6G/assignments/a04.md",
+        "curriculum/digital_rc/WIRELESS_6G/assignments/a05.md",
+        "curriculum/digital_rc/WIRELESS_6G/assignments/a06.md",
+        "curriculum/digital_rc/WIRELESS_6G/assignments/a07.md",
+        "curriculum/digital_rc/WIRELESS_6G/assignments/a08.md"
+      ],
+      "source_kind": "digital_rc",
+      "track": "WIRELESS_6G"
+    },
+    {
+      "activity_counts": {
+        "assignments": 10,
+        "discussions": 0,
+        "groups": 1,
+        "labs": 10,
+        "lessons": 10,
+        "outcomes": 4,
+        "portfolio": 2,
+        "quizzes": 10,
+        "rubrics": 8
+      },
+      "digital_rc_package": "PM_AGILE_LSS",
+      "digital_rc_package_exists": true,
+      "has_ai_policy": true,
+      "has_offline_pack": true,
+      "instructor_file_count": 12,
+      "learner_file_count": 74,
+      "rubric_outcome_coverage": {
+        "has_outcomes": true,
+        "has_portfolio": true,
+        "has_rubrics": true
+      },
+      "sample_instructor_paths": [
+        "curriculum/digital_rc/PM_AGILE_LSS/instructor/INSTRUCTOR_PACKET.md",
+        "curriculum/digital_rc/PM_AGILE_LSS/instructor/answer_keys.json",
+        "curriculum/digital_rc/PM_AGILE_LSS/instructor/week_01_notes.md",
+        "curriculum/digital_rc/PM_AGILE_LSS/instructor/week_02_notes.md",
+        "curriculum/digital_rc/PM_AGILE_LSS/instructor/week_03_notes.md",
+        "curriculum/digital_rc/PM_AGILE_LSS/instructor/week_04_notes.md",
+        "curriculum/digital_rc/PM_AGILE_LSS/instructor/week_05_notes.md",
+        "curriculum/digital_rc/PM_AGILE_LSS/instructor/week_06_notes.md"
+      ],
+      "sample_learner_paths": [
+        "curriculum/digital_rc/PM_AGILE_LSS/ai_use_policy.json",
+        "curriculum/digital_rc/PM_AGILE_LSS/assessments/final_knowledge.json",
+        "curriculum/digital_rc/PM_AGILE_LSS/assessments/final_practical.json",
+        "curriculum/digital_rc/PM_AGILE_LSS/assessments/mid_course.json",
+        "curriculum/digital_rc/PM_AGILE_LSS/assignments/a01.md",
+        "curriculum/digital_rc/PM_AGILE_LSS/assignments/a02.md",
+        "curriculum/digital_rc/PM_AGILE_LSS/assignments/a03.md",
+        "curriculum/digital_rc/PM_AGILE_LSS/assignments/a04.md",
+        "curriculum/digital_rc/PM_AGILE_LSS/assignments/a05.md",
+        "curriculum/digital_rc/PM_AGILE_LSS/assignments/a06.md",
+        "curriculum/digital_rc/PM_AGILE_LSS/assignments/a07.md",
+        "curriculum/digital_rc/PM_AGILE_LSS/assignments/a08.md"
+      ],
+      "source_kind": "digital_rc",
+      "track": "PM_AGILE_LSS"
+    },
+    {
+      "activity_counts": {
+        "assignments": 10,
+        "discussions": 0,
+        "groups": 1,
+        "labs": 10,
+        "lessons": 10,
+        "outcomes": 4,
+        "portfolio": 2,
+        "quizzes": 10,
+        "rubrics": 8
+      },
+      "digital_rc_package": "GAME_DEV_INTERACTIVE",
+      "digital_rc_package_exists": true,
+      "has_ai_policy": true,
+      "has_offline_pack": true,
+      "instructor_file_count": 12,
+      "learner_file_count": 73,
+      "rubric_outcome_coverage": {
+        "has_outcomes": true,
+        "has_portfolio": true,
+        "has_rubrics": true
+      },
+      "sample_instructor_paths": [
+        "curriculum/digital_rc/GAME_DEV_INTERACTIVE/instructor/INSTRUCTOR_PACKET.md",
+        "curriculum/digital_rc/GAME_DEV_INTERACTIVE/instructor/answer_keys.json",
+        "curriculum/digital_rc/GAME_DEV_INTERACTIVE/instructor/week_01_notes.md",
+        "curriculum/digital_rc/GAME_DEV_INTERACTIVE/instructor/week_02_notes.md",
+        "curriculum/digital_rc/GAME_DEV_INTERACTIVE/instructor/week_03_notes.md",
+        "curriculum/digital_rc/GAME_DEV_INTERACTIVE/instructor/week_04_notes.md",
+        "curriculum/digital_rc/GAME_DEV_INTERACTIVE/instructor/week_05_notes.md",
+        "curriculum/digital_rc/GAME_DEV_INTERACTIVE/instructor/week_06_notes.md"
+      ],
+      "sample_learner_paths": [
+        "curriculum/digital_rc/GAME_DEV_INTERACTIVE/ai_use_policy.json",
+        "curriculum/digital_rc/GAME_DEV_INTERACTIVE/assessments/final_knowledge.json",
+        "curriculum/digital_rc/GAME_DEV_INTERACTIVE/assessments/final_practical.json",
+        "curriculum/digital_rc/GAME_DEV_INTERACTIVE/assessments/mid_course.json",
+        "curriculum/digital_rc/GAME_DEV_INTERACTIVE/assignments/a01.md",
+        "curriculum/digital_rc/GAME_DEV_INTERACTIVE/assignments/a02.md",
+        "curriculum/digital_rc/GAME_DEV_INTERACTIVE/assignments/a03.md",
+        "curriculum/digital_rc/GAME_DEV_INTERACTIVE/assignments/a04.md",
+        "curriculum/digital_rc/GAME_DEV_INTERACTIVE/assignments/a05.md",
+        "curriculum/digital_rc/GAME_DEV_INTERACTIVE/assignments/a06.md",
+        "curriculum/digital_rc/GAME_DEV_INTERACTIVE/assignments/a07.md",
+        "curriculum/digital_rc/GAME_DEV_INTERACTIVE/assignments/a08.md"
+      ],
+      "source_kind": "digital_rc",
+      "track": "GAME_DEV_INTERACTIVE"
+    },
+    {
+      "activity_counts": {
+        "assignments": 10,
+        "discussions": 0,
+        "groups": 1,
+        "labs": 10,
+        "lessons": 10,
+        "outcomes": 4,
+        "portfolio": 2,
+        "quizzes": 10,
+        "rubrics": 8
+      },
+      "digital_rc_package": "SEVEN_GC_APPRENTICESHIP",
+      "digital_rc_package_exists": true,
+      "has_ai_policy": true,
+      "has_offline_pack": true,
+      "instructor_file_count": 12,
+      "learner_file_count": 77,
+      "rubric_outcome_coverage": {
+        "has_outcomes": true,
+        "has_portfolio": true,
+        "has_rubrics": true
+      },
+      "sample_instructor_paths": [
+        "curriculum/digital_rc/SEVEN_GC_APPRENTICESHIP/instructor/INSTRUCTOR_PACKET.md",
+        "curriculum/digital_rc/SEVEN_GC_APPRENTICESHIP/instructor/answer_keys.json",
+        "curriculum/digital_rc/SEVEN_GC_APPRENTICESHIP/instructor/week_01_notes.md",
+        "curriculum/digital_rc/SEVEN_GC_APPRENTICESHIP/instructor/week_02_notes.md",
+        "curriculum/digital_rc/SEVEN_GC_APPRENTICESHIP/instructor/week_03_notes.md",
+        "curriculum/digital_rc/SEVEN_GC_APPRENTICESHIP/instructor/week_04_notes.md",
+        "curriculum/digital_rc/SEVEN_GC_APPRENTICESHIP/instructor/week_05_notes.md",
+        "curriculum/digital_rc/SEVEN_GC_APPRENTICESHIP/instructor/week_06_notes.md"
+      ],
+      "sample_learner_paths": [
+        "curriculum/digital_rc/SEVEN_GC_APPRENTICESHIP/ai_use_policy.json",
+        "curriculum/digital_rc/SEVEN_GC_APPRENTICESHIP/assessments/final_knowledge.json",
+        "curriculum/digital_rc/SEVEN_GC_APPRENTICESHIP/assessments/final_practical.json",
+        "curriculum/digital_rc/SEVEN_GC_APPRENTICESHIP/assessments/mid_course.json",
+        "curriculum/digital_rc/SEVEN_GC_APPRENTICESHIP/assignments/a01.md",
+        "curriculum/digital_rc/SEVEN_GC_APPRENTICESHIP/assignments/a02.md",
+        "curriculum/digital_rc/SEVEN_GC_APPRENTICESHIP/assignments/a03.md",
+        "curriculum/digital_rc/SEVEN_GC_APPRENTICESHIP/assignments/a04.md",
+        "curriculum/digital_rc/SEVEN_GC_APPRENTICESHIP/assignments/a05.md",
+        "curriculum/digital_rc/SEVEN_GC_APPRENTICESHIP/assignments/a06.md",
+        "curriculum/digital_rc/SEVEN_GC_APPRENTICESHIP/assignments/a07.md",
+        "curriculum/digital_rc/SEVEN_GC_APPRENTICESHIP/assignments/a08.md"
+      ],
+      "source_kind": "digital_rc",
+      "track": "SEVEN_GC_APPRENTICESHIP"
+    },
+    {
+      "activity_counts": {
+        "assignments": 10,
+        "discussions": 0,
+        "groups": 1,
+        "labs": 10,
+        "lessons": 10,
+        "outcomes": 4,
+        "portfolio": 2,
+        "quizzes": 10,
+        "rubrics": 8
+      },
+      "digital_rc_package": "CLOUD_DEVOPS",
+      "digital_rc_package_exists": true,
+      "has_ai_policy": true,
+      "has_offline_pack": true,
+      "instructor_file_count": 12,
+      "learner_file_count": 73,
+      "rubric_outcome_coverage": {
+        "has_outcomes": true,
+        "has_portfolio": true,
+        "has_rubrics": true
+      },
+      "sample_instructor_paths": [
+        "curriculum/digital_rc/CLOUD_DEVOPS/instructor/INSTRUCTOR_PACKET.md",
+        "curriculum/digital_rc/CLOUD_DEVOPS/instructor/answer_keys.json",
+        "curriculum/digital_rc/CLOUD_DEVOPS/instructor/week_01_notes.md",
+        "curriculum/digital_rc/CLOUD_DEVOPS/instructor/week_02_notes.md",
+        "curriculum/digital_rc/CLOUD_DEVOPS/instructor/week_03_notes.md",
+        "curriculum/digital_rc/CLOUD_DEVOPS/instructor/week_04_notes.md",
+        "curriculum/digital_rc/CLOUD_DEVOPS/instructor/week_05_notes.md",
+        "curriculum/digital_rc/CLOUD_DEVOPS/instructor/week_06_notes.md"
+      ],
+      "sample_learner_paths": [
+        "curriculum/digital_rc/CLOUD_DEVOPS/ai_use_policy.json",
+        "curriculum/digital_rc/CLOUD_DEVOPS/assessments/final_knowledge.json",
+        "curriculum/digital_rc/CLOUD_DEVOPS/assessments/final_practical.json",
+        "curriculum/digital_rc/CLOUD_DEVOPS/assessments/mid_course.json",
+        "curriculum/digital_rc/CLOUD_DEVOPS/assignments/a01.md",
+        "curriculum/digital_rc/CLOUD_DEVOPS/assignments/a02.md",
+        "curriculum/digital_rc/CLOUD_DEVOPS/assignments/a03.md",
+        "curriculum/digital_rc/CLOUD_DEVOPS/assignments/a04.md",
+        "curriculum/digital_rc/CLOUD_DEVOPS/assignments/a05.md",
+        "curriculum/digital_rc/CLOUD_DEVOPS/assignments/a06.md",
+        "curriculum/digital_rc/CLOUD_DEVOPS/assignments/a07.md",
+        "curriculum/digital_rc/CLOUD_DEVOPS/assignments/a08.md"
+      ],
+      "source_kind": "digital_rc",
+      "track": "CLOUD_DEVOPS"
+    },
+    {
+      "activity_counts": {
+        "assignments": 10,
+        "discussions": 0,
+        "groups": 1,
+        "labs": 10,
+        "lessons": 10,
+        "outcomes": 4,
+        "portfolio": 2,
+        "quizzes": 10,
+        "rubrics": 8
+      },
+      "digital_rc_package": "COMM_PD_ETHICS",
+      "digital_rc_package_exists": true,
+      "has_ai_policy": true,
+      "has_offline_pack": true,
+      "instructor_file_count": 14,
+      "learner_file_count": 75,
+      "rubric_outcome_coverage": {
+        "has_outcomes": true,
+        "has_portfolio": true,
+        "has_rubrics": true
+      },
+      "sample_instructor_paths": [
+        "curriculum/digital_rc/COMM_PD_ETHICS/instructor/INSTRUCTOR_PACKET.md",
+        "curriculum/digital_rc/COMM_PD_ETHICS/instructor/accessibility_and_udl_guide.md",
+        "curriculum/digital_rc/COMM_PD_ETHICS/instructor/answer_keys.json",
+        "curriculum/digital_rc/COMM_PD_ETHICS/instructor/misconceptions_remediation.md",
+        "curriculum/digital_rc/COMM_PD_ETHICS/instructor/week_01_notes.md",
+        "curriculum/digital_rc/COMM_PD_ETHICS/instructor/week_02_notes.md",
+        "curriculum/digital_rc/COMM_PD_ETHICS/instructor/week_03_notes.md",
+        "curriculum/digital_rc/COMM_PD_ETHICS/instructor/week_04_notes.md"
+      ],
+      "sample_learner_paths": [
+        "curriculum/digital_rc/COMM_PD_ETHICS/ai_use_policy.json",
+        "curriculum/digital_rc/COMM_PD_ETHICS/assessments/final_knowledge.json",
+        "curriculum/digital_rc/COMM_PD_ETHICS/assessments/final_practical.json",
+        "curriculum/digital_rc/COMM_PD_ETHICS/assessments/mid_course.json",
+        "curriculum/digital_rc/COMM_PD_ETHICS/assignments/a01.md",
+        "curriculum/digital_rc/COMM_PD_ETHICS/assignments/a02.md",
+        "curriculum/digital_rc/COMM_PD_ETHICS/assignments/a03.md",
+        "curriculum/digital_rc/COMM_PD_ETHICS/assignments/a04.md",
+        "curriculum/digital_rc/COMM_PD_ETHICS/assignments/a05.md",
+        "curriculum/digital_rc/COMM_PD_ETHICS/assignments/a06.md",
+        "curriculum/digital_rc/COMM_PD_ETHICS/assignments/a07.md",
+        "curriculum/digital_rc/COMM_PD_ETHICS/assignments/a08.md"
+      ],
+      "source_kind": "digital_rc",
+      "track": "COMM_PD_ETHICS"
+    },
+    {
+      "activity_counts": {
+        "assignments": 10,
+        "discussions": 0,
+        "groups": 1,
+        "labs": 10,
+        "lessons": 10,
+        "outcomes": 4,
+        "portfolio": 2,
+        "quizzes": 10,
+        "rubrics": 8
+      },
+      "digital_rc_package": "ROBOTICS_CONTROL",
+      "digital_rc_package_exists": true,
+      "has_ai_policy": true,
+      "has_offline_pack": true,
+      "instructor_file_count": 12,
+      "learner_file_count": 73,
+      "rubric_outcome_coverage": {
+        "has_outcomes": true,
+        "has_portfolio": true,
+        "has_rubrics": true
+      },
+      "sample_instructor_paths": [
+        "curriculum/digital_rc/ROBOTICS_CONTROL/instructor/INSTRUCTOR_PACKET.md",
+        "curriculum/digital_rc/ROBOTICS_CONTROL/instructor/answer_keys.json",
+        "curriculum/digital_rc/ROBOTICS_CONTROL/instructor/week_01_notes.md",
+        "curriculum/digital_rc/ROBOTICS_CONTROL/instructor/week_02_notes.md",
+        "curriculum/digital_rc/ROBOTICS_CONTROL/instructor/week_03_notes.md",
+        "curriculum/digital_rc/ROBOTICS_CONTROL/instructor/week_04_notes.md",
+        "curriculum/digital_rc/ROBOTICS_CONTROL/instructor/week_05_notes.md",
+        "curriculum/digital_rc/ROBOTICS_CONTROL/instructor/week_06_notes.md"
+      ],
+      "sample_learner_paths": [
+        "curriculum/digital_rc/ROBOTICS_CONTROL/ai_use_policy.json",
+        "curriculum/digital_rc/ROBOTICS_CONTROL/assessments/final_knowledge.json",
+        "curriculum/digital_rc/ROBOTICS_CONTROL/assessments/final_practical.json",
+        "curriculum/digital_rc/ROBOTICS_CONTROL/assessments/mid_course.json",
+        "curriculum/digital_rc/ROBOTICS_CONTROL/assignments/a01.md",
+        "curriculum/digital_rc/ROBOTICS_CONTROL/assignments/a02.md",
+        "curriculum/digital_rc/ROBOTICS_CONTROL/assignments/a03.md",
+        "curriculum/digital_rc/ROBOTICS_CONTROL/assignments/a04.md",
+        "curriculum/digital_rc/ROBOTICS_CONTROL/assignments/a05.md",
+        "curriculum/digital_rc/ROBOTICS_CONTROL/assignments/a06.md",
+        "curriculum/digital_rc/ROBOTICS_CONTROL/assignments/a07.md",
+        "curriculum/digital_rc/ROBOTICS_CONTROL/assignments/a08.md"
+      ],
+      "source_kind": "digital_rc",
+      "track": "ROBOTICS_CONTROL"
+    },
+    {
+      "activity_counts": {
+        "assignments": 10,
+        "discussions": 0,
+        "groups": 1,
+        "labs": 10,
+        "lessons": 10,
+        "outcomes": 4,
+        "portfolio": 2,
+        "quizzes": 10,
+        "rubrics": 8
+      },
+      "digital_rc_package": "GUNNCHOS_PRODUCT_LAB",
+      "digital_rc_package_exists": true,
+      "has_ai_policy": true,
+      "has_offline_pack": true,
+      "instructor_file_count": 12,
+      "learner_file_count": 73,
+      "rubric_outcome_coverage": {
+        "has_outcomes": true,
+        "has_portfolio": true,
+        "has_rubrics": true
+      },
+      "sample_instructor_paths": [
+        "curriculum/digital_rc/GUNNCHOS_PRODUCT_LAB/instructor/INSTRUCTOR_PACKET.md",
+        "curriculum/digital_rc/GUNNCHOS_PRODUCT_LAB/instructor/answer_keys.json",
+        "curriculum/digital_rc/GUNNCHOS_PRODUCT_LAB/instructor/week_01_notes.md",
+        "curriculum/digital_rc/GUNNCHOS_PRODUCT_LAB/instructor/week_02_notes.md",
+        "curriculum/digital_rc/GUNNCHOS_PRODUCT_LAB/instructor/week_03_notes.md",
+        "curriculum/digital_rc/GUNNCHOS_PRODUCT_LAB/instructor/week_04_notes.md",
+        "curriculum/digital_rc/GUNNCHOS_PRODUCT_LAB/instructor/week_05_notes.md",
+        "curriculum/digital_rc/GUNNCHOS_PRODUCT_LAB/instructor/week_06_notes.md"
+      ],
+      "sample_learner_paths": [
+        "curriculum/digital_rc/GUNNCHOS_PRODUCT_LAB/ai_use_policy.json",
+        "curriculum/digital_rc/GUNNCHOS_PRODUCT_LAB/assessments/final_knowledge.json",
+        "curriculum/digital_rc/GUNNCHOS_PRODUCT_LAB/assessments/final_practical.json",
+        "curriculum/digital_rc/GUNNCHOS_PRODUCT_LAB/assessments/mid_course.json",
+        "curriculum/digital_rc/GUNNCHOS_PRODUCT_LAB/assignments/a01.md",
+        "curriculum/digital_rc/GUNNCHOS_PRODUCT_LAB/assignments/a02.md",
+        "curriculum/digital_rc/GUNNCHOS_PRODUCT_LAB/assignments/a03.md",
+        "curriculum/digital_rc/GUNNCHOS_PRODUCT_LAB/assignments/a04.md",
+        "curriculum/digital_rc/GUNNCHOS_PRODUCT_LAB/assignments/a05.md",
+        "curriculum/digital_rc/GUNNCHOS_PRODUCT_LAB/assignments/a06.md",
+        "curriculum/digital_rc/GUNNCHOS_PRODUCT_LAB/assignments/a07.md",
+        "curriculum/digital_rc/GUNNCHOS_PRODUCT_LAB/assignments/a08.md"
+      ],
+      "source_kind": "digital_rc",
+      "track": "GUNNCHOS_PRODUCT_LAB"
+    },
+    {
+      "activity_counts": {
+        "assignments": 10,
+        "discussions": 0,
+        "groups": 1,
+        "labs": 10,
+        "lessons": 10,
+        "outcomes": 4,
+        "portfolio": 2,
+        "quizzes": 10,
+        "rubrics": 8
+      },
+      "digital_rc_package": "HARDWARE_ENGINEERING",
+      "digital_rc_package_exists": true,
+      "has_ai_policy": true,
+      "has_offline_pack": true,
+      "instructor_file_count": 12,
+      "learner_file_count": 73,
+      "rubric_outcome_coverage": {
+        "has_outcomes": true,
+        "has_portfolio": true,
+        "has_rubrics": true
+      },
+      "sample_instructor_paths": [
+        "curriculum/digital_rc/HARDWARE_ENGINEERING/instructor/INSTRUCTOR_PACKET.md",
+        "curriculum/digital_rc/HARDWARE_ENGINEERING/instructor/answer_keys.json",
+        "curriculum/digital_rc/HARDWARE_ENGINEERING/instructor/week_01_notes.md",
+        "curriculum/digital_rc/HARDWARE_ENGINEERING/instructor/week_02_notes.md",
+        "curriculum/digital_rc/HARDWARE_ENGINEERING/instructor/week_03_notes.md",
+        "curriculum/digital_rc/HARDWARE_ENGINEERING/instructor/week_04_notes.md",
+        "curriculum/digital_rc/HARDWARE_ENGINEERING/instructor/week_05_notes.md",
+        "curriculum/digital_rc/HARDWARE_ENGINEERING/instructor/week_06_notes.md"
+      ],
+      "sample_learner_paths": [
+        "curriculum/digital_rc/HARDWARE_ENGINEERING/ai_use_policy.json",
+        "curriculum/digital_rc/HARDWARE_ENGINEERING/assessments/final_knowledge.json",
+        "curriculum/digital_rc/HARDWARE_ENGINEERING/assessments/final_practical.json",
+        "curriculum/digital_rc/HARDWARE_ENGINEERING/assessments/mid_course.json",
+        "curriculum/digital_rc/HARDWARE_ENGINEERING/assignments/a01.md",
+        "curriculum/digital_rc/HARDWARE_ENGINEERING/assignments/a02.md",
+        "curriculum/digital_rc/HARDWARE_ENGINEERING/assignments/a03.md",
+        "curriculum/digital_rc/HARDWARE_ENGINEERING/assignments/a04.md",
+        "curriculum/digital_rc/HARDWARE_ENGINEERING/assignments/a05.md",
+        "curriculum/digital_rc/HARDWARE_ENGINEERING/assignments/a06.md",
+        "curriculum/digital_rc/HARDWARE_ENGINEERING/assignments/a07.md",
+        "curriculum/digital_rc/HARDWARE_ENGINEERING/assignments/a08.md"
+      ],
+      "source_kind": "digital_rc",
+      "track": "HARDWARE_ENGINEERING"
+    },
+    {
+      "activity_counts": {
+        "assignments": 10,
+        "discussions": 0,
+        "groups": 1,
+        "labs": 10,
+        "lessons": 10,
+        "outcomes": 4,
+        "portfolio": 2,
+        "quizzes": 10,
+        "rubrics": 8
+      },
+      "digital_rc_package": "DATA_VIZ_BI",
+      "digital_rc_package_exists": true,
+      "has_ai_policy": true,
+      "has_offline_pack": true,
+      "instructor_file_count": 12,
+      "learner_file_count": 73,
+      "rubric_outcome_coverage": {
+        "has_outcomes": true,
+        "has_portfolio": true,
+        "has_rubrics": true
+      },
+      "sample_instructor_paths": [
+        "curriculum/digital_rc/DATA_VIZ_BI/instructor/INSTRUCTOR_PACKET.md",
+        "curriculum/digital_rc/DATA_VIZ_BI/instructor/answer_keys.json",
+        "curriculum/digital_rc/DATA_VIZ_BI/instructor/week_01_notes.md",
+        "curriculum/digital_rc/DATA_VIZ_BI/instructor/week_02_notes.md",
+        "curriculum/digital_rc/DATA_VIZ_BI/instructor/week_03_notes.md",
+        "curriculum/digital_rc/DATA_VIZ_BI/instructor/week_04_notes.md",
+        "curriculum/digital_rc/DATA_VIZ_BI/instructor/week_05_notes.md",
+        "curriculum/digital_rc/DATA_VIZ_BI/instructor/week_06_notes.md"
+      ],
+      "sample_learner_paths": [
+        "curriculum/digital_rc/DATA_VIZ_BI/ai_use_policy.json",
+        "curriculum/digital_rc/DATA_VIZ_BI/assessments/final_knowledge.json",
+        "curriculum/digital_rc/DATA_VIZ_BI/assessments/final_practical.json",
+        "curriculum/digital_rc/DATA_VIZ_BI/assessments/mid_course.json",
+        "curriculum/digital_rc/DATA_VIZ_BI/assignments/a01.md",
+        "curriculum/digital_rc/DATA_VIZ_BI/assignments/a02.md",
+        "curriculum/digital_rc/DATA_VIZ_BI/assignments/a03.md",
+        "curriculum/digital_rc/DATA_VIZ_BI/assignments/a04.md",
+        "curriculum/digital_rc/DATA_VIZ_BI/assignments/a05.md",
+        "curriculum/digital_rc/DATA_VIZ_BI/assignments/a06.md",
+        "curriculum/digital_rc/DATA_VIZ_BI/assignments/a07.md",
+        "curriculum/digital_rc/DATA_VIZ_BI/assignments/a08.md"
+      ],
+      "source_kind": "digital_rc",
+      "track": "DATA_VIZ_BI"
+    }
+  ],
+  "waike_root": "/Users/gunnchos/dev/waike-learning-os-workspace/waike-research-ops"
+}

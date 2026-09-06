@@ -1,0 +1,51 @@
+{
+  "module_id": "DATA_DASHBOARDS",
+  "source_commit": "fbf7685bc5686201ccaa0128ee83346d59b3d584",
+  "package_version": "1.0.0",
+  "source_kind": "digital_rc",
+  "digital_rc_package": "DATA_DASHBOARDS",
+  "migration": {
+    "from": "digital_confidence_only",
+    "to": "registry_18_tracks",
+    "content_schema": "waike.course_package.v1"
+  },
+  "learner_globs": [
+    "curriculum/digital_rc/DATA_DASHBOARDS/student/**",
+    "curriculum/digital_rc/DATA_DASHBOARDS/weeks/**",
+    "curriculum/digital_rc/DATA_DASHBOARDS/labs/**",
+    "curriculum/digital_rc/DATA_DASHBOARDS/assignments/**",
+    "curriculum/digital_rc/DATA_DASHBOARDS/quizzes/**",
+    "curriculum/digital_rc/DATA_DASHBOARDS/portfolio/**",
+    "curriculum/digital_rc/DATA_DASHBOARDS/projects/**",
+    "curriculum/digital_rc/DATA_DASHBOARDS/assessments/**",
+    "curriculum/digital_rc/DATA_DASHBOARDS/rubrics/**",
+    "curriculum/digital_rc/DATA_DASHBOARDS/syllabus.md",
+    "curriculum/digital_rc/DATA_DASHBOARDS/course.json",
+    "curriculum/digital_rc/DATA_DASHBOARDS/prerequisites.json",
+    "curriculum/digital_rc/DATA_DASHBOARDS/career_mapping.json",
+    "curriculum/digital_rc/DATA_DASHBOARDS/offline_pack/**",
+    "curriculum/digital_rc/DATA_DASHBOARDS/presentation/**",
+    "curriculum/digital_rc/DATA_DASHBOARDS/ai_use_policy.json",
+    "curriculum/digital_rc/DATA_DASHBOARDS/guides/**",
+    "programs/data_databases_dashboards.md"
+  ],
+  "instructor_only_globs": [
+    "curriculum/digital_rc/DATA_DASHBOARDS/instructor/**"
+  ],
+  "instructor_path_markers": [
+    "instructor_solution",
+    "instructor_solution_guide",
+    "instructor_solution_guides/",
+    "solution_guide",
+    "solution_notes_for_instructors",
+    "instructor_notes",
+    "answer_key",
+    "answer_keys/",
+    "answer_keys.json",
+    "/instructor/",
+    "instructor_packet",
+    "deep_instructor",
+    "teaching_notes.md",
+    "demo_plan.md"
+  ]
+}

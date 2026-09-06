@@ -1,0 +1,54 @@
+{
+  "module_id": "SEVEN_GC_APPRENTICESHIP",
+  "source_commit": "fbf7685bc5686201ccaa0128ee83346d59b3d584",
+  "package_version": "1.0.0",
+  "source_kind": "digital_rc",
+  "digital_rc_package": "SEVEN_GC_APPRENTICESHIP",
+  "coverage_note": "First-class COURSE_DIGITAL_RC on WAIKE main after PR #57. RESEARCH_APPRENTICESHIP retained; EXTERNAL human/physical/field gates remain open.",
+  "migration": {
+    "from": "digital_confidence_only",
+    "to": "registry_18_tracks",
+    "content_schema": "waike.course_package.v1"
+  },
+  "learner_globs": [
+    "curriculum/digital_rc/SEVEN_GC_APPRENTICESHIP/student/**",
+    "curriculum/digital_rc/SEVEN_GC_APPRENTICESHIP/weeks/**",
+    "curriculum/digital_rc/SEVEN_GC_APPRENTICESHIP/labs/**",
+    "curriculum/digital_rc/SEVEN_GC_APPRENTICESHIP/assignments/**",
+    "curriculum/digital_rc/SEVEN_GC_APPRENTICESHIP/quizzes/**",
+    "curriculum/digital_rc/SEVEN_GC_APPRENTICESHIP/portfolio/**",
+    "curriculum/digital_rc/SEVEN_GC_APPRENTICESHIP/projects/**",
+    "curriculum/digital_rc/SEVEN_GC_APPRENTICESHIP/assessments/**",
+    "curriculum/digital_rc/SEVEN_GC_APPRENTICESHIP/rubrics/**",
+    "curriculum/digital_rc/SEVEN_GC_APPRENTICESHIP/syllabus.md",
+    "curriculum/digital_rc/SEVEN_GC_APPRENTICESHIP/course.json",
+    "curriculum/digital_rc/SEVEN_GC_APPRENTICESHIP/prerequisites.json",
+    "curriculum/digital_rc/SEVEN_GC_APPRENTICESHIP/career_mapping.json",
+    "curriculum/digital_rc/SEVEN_GC_APPRENTICESHIP/offline_pack/**",
+    "curriculum/digital_rc/SEVEN_GC_APPRENTICESHIP/presentation/**",
+    "curriculum/digital_rc/SEVEN_GC_APPRENTICESHIP/ai_use_policy.json",
+    "curriculum/digital_rc/SEVEN_GC_APPRENTICESHIP/fixtures/**",
+    "curriculum/digital_rc/SEVEN_GC_APPRENTICESHIP/gunnchai_tutor_cards.json",
+    "curriculum/digital_rc/SEVEN_GC_APPRENTICESHIP/delivery_formats.json",
+    "programs/seven_gc_apprenticeship.md"
+  ],
+  "instructor_only_globs": [
+    "curriculum/digital_rc/SEVEN_GC_APPRENTICESHIP/instructor/**"
+  ],
+  "instructor_path_markers": [
+    "instructor_solution",
+    "instructor_solution_guide",
+    "instructor_solution_guides/",
+    "solution_guide",
+    "solution_notes_for_instructors",
+    "instructor_notes",
+    "answer_key",
+    "answer_keys/",
+    "answer_keys.json",
+    "/instructor/",
+    "instructor_packet",
+    "deep_instructor",
+    "teaching_notes.md",
+    "demo_plan.md"
+  ]
+}

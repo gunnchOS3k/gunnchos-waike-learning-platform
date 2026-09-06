@@ -1,6 +1,6 @@
 {
   "module_id": "DIGITAL_CONFIDENCE",
-  "source_commit": "e97e74fc9bfb44b1cdc26b272dc4848264f15fe0",
+  "source_commit": "fbf7685bc5686201ccaa0128ee83346d59b3d584",
   "learner_globs": [
     "programs/digital_confidence.md",
     "programs/digital_confidence_to_operator.md",
@@ -47,5 +47,13 @@
     "teaching_notes.md",
     "demo_plan.md"
   ],
-  "learner_safe_from_general_it": []
+  "learner_safe_from_general_it": [],
+  "package_version": "1.0.0",
+  "source_kind": "legacy_lessons_by_course",
+  "digital_rc_package": null,
+  "migration": {
+    "from": "digital_confidence_only",
+    "to": "registry_18_tracks",
+    "content_schema": "waike.course_package.v1"
+  }
 }

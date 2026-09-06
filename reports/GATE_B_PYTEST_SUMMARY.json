@@ -1,0 +1,10 @@
+{
+  "passed": 201,
+  "failed": 0,
+  "skipped": 0,
+  "errors": 0,
+  "tests": 201,
+  "ai_ok": true,
+  "source": "reports/GATE_B_PYTEST_JUNIT.xml",
+  "note": "Full tests/gate_b local run after SEVEN_GC digital pin"
+}

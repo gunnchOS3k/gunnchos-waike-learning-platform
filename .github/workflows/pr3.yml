@@ -4,15 +4,14 @@ name: PR3
 # Do not mask claimed capabilities with continue-on-error / || true.
 
 on:
-  pull_request:
-  push:
-    branches: [main, "cursor/**"]
+  workflow_dispatch:
+  # Historical gate — manual only. Gate B (.github/workflows/gate-b.yml) is authoritative.
 
 env:
   SOURCE_DATE_EPOCH: "1700000000"
   WAIKE_DEV_DB_KEY: "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef"
   CARGO_TERM_COLOR: always
-  WAIKE_PIN_REF: "e97e74fc9bfb44b1cdc26b272dc4848264f15fe0"
+  WAIKE_PIN_REF: "fbf7685bc5686201ccaa0128ee83346d59b3d584"
 
 jobs:
   contracts-compiler:
