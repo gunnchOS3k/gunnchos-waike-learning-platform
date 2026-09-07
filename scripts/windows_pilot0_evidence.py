@@ -340,7 +340,7 @@ def main() -> int:
         encoding="utf-8",
     )
     print(json.dumps({"claim": claim, "sha12": sha[:12], "blockers": blockers}, indent=2))
-    return 0 if claim in {"WINDOWS_PILOT0_PASS", "WINDOWS_PILOT0_PARTIAL"} else 1
+    return 0 if claim == "WINDOWS_PILOT0_PASS" else 1
 
 
 if __name__ == "__main__":

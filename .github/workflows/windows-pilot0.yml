@@ -112,15 +112,22 @@ jobs:
             build = @{ beforeBuildCommand = ""; frontendDist = "../dist" }
             bundle = @{ targets = @("nsis") }
           } | ConvertTo-Json -Compress -Depth 5
-          Set-Content -Encoding utf8 -Path tauri.windows-pilot0.json -Value $cfg
+          [System.IO.File]::WriteAllText((Join-Path (Get-Location) "tauri.windows-pilot0.json"), $cfg)
           Write-Host "tauri override config: $(Get-Content tauri.windows-pilot0.json -Raw)"
           Write-Host "rustc: $(rustc --version)"
           Write-Host "cargo: $(cargo --version)"
           # Surface compile errors as annotations without private log download.
-          pnpm exec tauri build --config tauri.windows-pilot0.json --verbose
+          try {
+            pnpm exec tauri build --config tauri.windows-pilot0.json --verbose
+          } catch {
+            Write-Host "::error title=WINDOWS_PILOT0::TAURI_BUILD_FAILED $($_.Exception.Message)"
+            throw
+          }
           $nsis = Get-ChildItem -Recurse -Filter *.exe -Path src-tauri/target/release/bundle/nsis -ErrorAction SilentlyContinue
           if (-not $nsis) { throw "NSIS exe missing under src-tauri/target/release/bundle/nsis" }
-          Write-Host "NSIS artifacts:"; $nsis | ForEach-Object { $_.FullName }      - name: Record runner image metadata
+          Write-Host "NSIS artifacts:"; $nsis | ForEach-Object { $_.FullName }
+
+      - name: Record runner image metadata
         if: always()
         shell: pwsh
         run: |
@@ -196,7 +203,7 @@ jobs:
             build = @{ beforeBuildCommand = "" }
             bundle = @{ targets = @("nsis") }
           } | ConvertTo-Json -Compress -Depth 5
-          Set-Content -Encoding utf8 -Path tauri.windows-pilot0.json -Value $cfg
+          [System.IO.File]::WriteAllText((Join-Path (Get-Location) "tauri.windows-pilot0.json"), $cfg)
           pnpm exec tauri build --config tauri.windows-pilot0.json
       - name: Write compatibility note
         if: always()
