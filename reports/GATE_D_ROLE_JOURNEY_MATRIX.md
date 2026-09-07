@@ -1,0 +1,11 @@
+# Gate D Role Journey Matrix
+
+Generated: 2026-09-07T00:07:08Z
+
+| Role | Result |
+|------|--------|
+| `learner` | `{'least_privilege': 'PASS', 'journey': 'PASS'}` |
+| `instructor` | `{'least_privilege': 'PASS', 'journey': 'PASS'}` |
+| `grader` | `{'least_privilege': 'PASS', 'queue': 'PASS', 'admin_denied': 'PASS'}` |
+| `guardian` | `{'least_privilege': 'PASS', 'linked_overview': 'PASS', 'unlinked_denied': 'PASS', 'admin_denied': 'PASS', 'grading_denied': 'PASS', 'answer_key_excluded': 'PASS'}` |
+| `site_admin` | `{'least_privilege': 'PASS', 'cross_site_isolation': 'PASS'}` |

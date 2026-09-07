@@ -1,0 +1,12 @@
+{
+  "generated_utc": "2026-09-07T00:07:04Z",
+  "status": "PASS",
+  "checks": {
+    "online_start": "PASS",
+    "disconnect_durable": "PASS",
+    "reboot_resume": "PASS",
+    "reconnect_receipt": "PASS",
+    "second_device": "PASS",
+    "no_false_synced": "PASS"
+  }
+}

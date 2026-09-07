@@ -1,0 +1,13 @@
+{
+  "generated_utc": "2026-09-07T00:06:58Z",
+  "gunnchai_pin": "4b4f411710e8cdb8102a7e11502f8497f68156b1",
+  "modes": [
+    "AI_ALLOWED",
+    "HINTS_ONLY",
+    "DISABLED",
+    "INSTRUCTOR_DEFINED"
+  ],
+  "never_silent_grade_change": true,
+  "never_sole_grader": true,
+  "status": "PASS"
+}

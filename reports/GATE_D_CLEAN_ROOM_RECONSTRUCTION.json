@@ -1,0 +1,33 @@
+{
+  "generated_utc": "2026-09-07T00:05:45Z",
+  "method": "fresh_workspace_from_pinned_shas",
+  "pins": {
+    "device_os": "4f02a48780d300a5d3a7758937b20e3bf9364d0d",
+    "waike": "fbf7685bc5686201ccaa0128ee83346d59b3d584",
+    "gunnchai": "4b4f411710e8cdb8102a7e11502f8497f68156b1"
+  },
+  "observed": {
+    "waike": "fbf7685bc5686201ccaa0128ee83346d59b3d584",
+    "device_os": "4f02a48780d300a5d3a7758937b20e3bf9364d0d",
+    "gunnchai": "4b4f411710e8cdb8102a7e11502f8497f68156b1",
+    "platform": "58daf1a0cc22b60c4246eb4195b74bcb0a714a38"
+  },
+  "mismatches": {},
+  "forbidden": {
+    "uncommitted_deps": false,
+    "stale_db_reuse": false,
+    "hidden_fixtures": false,
+    "prior_run_artifact_reuse": false
+  },
+  "reconstruction_steps": [
+    "Checkout platform Gate D head into empty runner workspace",
+    "Checkout waike-research-ops @fbf7685bc5686201ccaa0128ee83346d59b3d584",
+    "Checkout gunnchos-device-os @4f02a48780d300a5d3a7758937b20e3bf9364d0d",
+    "Checkout gunnchAI3k @4b4f411710e8cdb8102a7e11502f8497f68156b1",
+    "Align curriculum/registry/PIN.json absolute_path_hint to checkout",
+    "Install Python/Node/Rust toolchains without reusing prior pack_out/DBs",
+    "Run Gate D acceptance suites; fail closed on skip/xfail masks"
+  ],
+  "ci_workspace": false,
+  "ok": true
+}

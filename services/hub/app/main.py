@@ -10,6 +10,8 @@ from pydantic import BaseModel, Field
 
 from app.api.routes import router as api_router
 from app.api.routes_gate_c import router as gate_c_router
+from app.api.routes_gate_d import router as gate_d_router
+from app.modules.guardian import GuardianService
 from app.db import connect, migrate
 from app.modules.activity_engine import ActivityEngine
 from app.modules.ai_assist import AiAssistService
@@ -191,12 +193,14 @@ def create_app(config: HubConfig | None = None, db_path: Path | None = None, see
         app_version=cfg.version,
     )
     rate_limiter = RateLimiter(conn)
+    guardian = GuardianService(conn)
 
     should_seed = bool(seed) or _fixture_seeding_allowed_by_env()
     if should_seed:
         # Always keep PR2 actors table for assessment FK-ish references.
         assessment.seed_synthetic_actors()
         identity.seed_sites_and_users()
+        guardian.seed_fixture_links()
         sections.seed_digital_confidence_section(source_commit=src)
         if waike is not None:
             assign = assessment.seed_digital_confidence_assignment()
@@ -234,6 +238,7 @@ def create_app(config: HubConfig | None = None, db_path: Path | None = None, see
     app.state.observability = observability
     app.state.packages = packages
     app.state.rate_limiter = rate_limiter
+    app.state.guardian = guardian
     app.state.waike_root = str(waike) if waike else None
     app.state.seeded_test_fixtures = should_seed
 
@@ -269,6 +274,7 @@ def create_app(config: HubConfig | None = None, db_path: Path | None = None, see
 
     app.include_router(api_router)
     app.include_router(gate_c_router)
+    app.include_router(gate_d_router)
     return app
 
 

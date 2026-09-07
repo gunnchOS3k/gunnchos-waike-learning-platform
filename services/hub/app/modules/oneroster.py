@@ -35,6 +35,8 @@ ROLE_MAP = {
     "instructor": Role.INSTRUCTOR,
     "aide": Role.GRADER,
     "grader": Role.GRADER,
+    "guardian": Role.GUARDIAN,
+    "parent": Role.GUARDIAN,
     "administrator": Role.SITE_ADMIN,
     "admin": Role.SITE_ADMIN,
 }

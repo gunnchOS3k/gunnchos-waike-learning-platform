@@ -1,0 +1,6 @@
+{
+  "generated_utc": "2026-09-07T00:07:08Z",
+  "status": "PASS",
+  "evidence": "tests/gate_c/test_performance_concurrency.py + hardening diagnostics",
+  "field_pilot_claimed": false
+}

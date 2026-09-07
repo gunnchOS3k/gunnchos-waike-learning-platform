@@ -1,0 +1,117 @@
+{
+  "generated_utc": "2026-09-07T00:06:58Z",
+  "waike_pin": "fbf7685bc5686201ccaa0128ee83346d59b3d584",
+  "track_count": 18,
+  "rows": [
+    {
+      "track_id": "DIGITAL_CONFIDENCE",
+      "stable_id": "DIGITAL_CONFIDENCE",
+      "status": "PASS",
+      "gate_b_status": null
+    },
+    {
+      "track_id": "IT_SUPPORT_HARDWARE",
+      "stable_id": "IT_SUPPORT_HARDWARE",
+      "status": "PASS",
+      "gate_b_status": null
+    },
+    {
+      "track_id": "SOFTWARE_BUILDER",
+      "stable_id": "SOFTWARE_BUILDER",
+      "status": "PASS",
+      "gate_b_status": null
+    },
+    {
+      "track_id": "NETWORKING_INFRA",
+      "stable_id": "NETWORKING_INFRA",
+      "status": "PASS",
+      "gate_b_status": null
+    },
+    {
+      "track_id": "CYBER_SOC",
+      "stable_id": "CYBER_SOC",
+      "status": "PASS",
+      "gate_b_status": null
+    },
+    {
+      "track_id": "DATA_DASHBOARDS",
+      "stable_id": "DATA_DASHBOARDS",
+      "status": "PASS",
+      "gate_b_status": null
+    },
+    {
+      "track_id": "AI_ML_EDGE",
+      "stable_id": "AI_ML_EDGE",
+      "status": "PASS",
+      "gate_b_status": null
+    },
+    {
+      "track_id": "EMBEDDED_PROTOTYPING",
+      "stable_id": "EMBEDDED_PROTOTYPING",
+      "status": "PASS",
+      "gate_b_status": null
+    },
+    {
+      "track_id": "WIRELESS_6G",
+      "stable_id": "WIRELESS_6G",
+      "status": "PASS",
+      "gate_b_status": null
+    },
+    {
+      "track_id": "PM_AGILE_LSS",
+      "stable_id": "PM_AGILE_LSS",
+      "status": "PASS",
+      "gate_b_status": null
+    },
+    {
+      "track_id": "GAME_DEV_INTERACTIVE",
+      "stable_id": "GAME_DEV_INTERACTIVE",
+      "status": "PASS",
+      "gate_b_status": null
+    },
+    {
+      "track_id": "SEVEN_GC_APPRENTICESHIP",
+      "stable_id": "SEVEN_GC_APPRENTICESHIP",
+      "status": "PASS",
+      "gate_b_status": null
+    },
+    {
+      "track_id": "CLOUD_DEVOPS",
+      "stable_id": "CLOUD_DEVOPS",
+      "status": "PASS",
+      "gate_b_status": null
+    },
+    {
+      "track_id": "COMM_PD_ETHICS",
+      "stable_id": "COMM_PD_ETHICS",
+      "status": "PASS",
+      "gate_b_status": null
+    },
+    {
+      "track_id": "ROBOTICS_CONTROL",
+      "stable_id": "ROBOTICS_CONTROL",
+      "status": "PASS",
+      "gate_b_status": null
+    },
+    {
+      "track_id": "GUNNCHOS_PRODUCT_LAB",
+      "stable_id": "GUNNCHOS_PRODUCT_LAB",
+      "status": "PASS",
+      "gate_b_status": null
+    },
+    {
+      "track_id": "HARDWARE_ENGINEERING",
+      "stable_id": "HARDWARE_ENGINEERING",
+      "status": "PASS",
+      "gate_b_status": null
+    },
+    {
+      "track_id": "DATA_VIZ_BI",
+      "stable_id": "DATA_VIZ_BI",
+      "status": "PASS",
+      "gate_b_status": null
+    }
+  ],
+  "all_pass": true,
+  "method": "canonical_registry_ids_not_directory_count"
+}
