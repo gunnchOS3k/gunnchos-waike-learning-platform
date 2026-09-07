@@ -1,5 +1,17 @@
 {
-  "generated_utc": "2026-09-07T01:18:28Z",
+  "generated_utc": "2026-09-07T01:44:10Z",
   "findings": [],
+  "soft_fail_scan_roots": [
+    "tests/gate_d",
+    "tests/gate_c",
+    "tests/gate_b",
+    "tests/gate_a",
+    "tests/assessment",
+    "tests/pr3",
+    "tests/compatibility",
+    "tests/security",
+    "tests/integration",
+    "services/hub/tests"
+  ],
   "status": "PASS"
 }

@@ -5,6 +5,7 @@ from __future__ import annotations
 import json
 import re
 from datetime import datetime, timezone
+from pathlib import Path
 
 from gd_helpers import PINS, ROOT, write_json
 
@@ -12,36 +13,54 @@ GATE_D_TESTS = ROOT / "tests" / "gate_d"
 WF = ROOT / ".github" / "workflows" / "gate-d.yml"
 VERIFY = ROOT / "scripts" / "verify_gate_d.py"
 
+# Paths covered by AUTOMATED_FULL_PLATFORM_PASS / Gate D prior regression + Gate D suite.
+SOFT_FAIL_SCAN_ROOTS: tuple[Path, ...] = (
+    ROOT / "tests" / "gate_d",
+    ROOT / "tests" / "gate_c",
+    ROOT / "tests" / "gate_b",
+    ROOT / "tests" / "gate_a",
+    ROOT / "tests" / "assessment",
+    ROOT / "tests" / "pr3",
+    ROOT / "tests" / "compatibility",
+    ROOT / "tests" / "security",
+    ROOT / "tests" / "integration",
+    ROOT / "services" / "hub" / "tests",
+)
+
+_OR_TRUE_LINE = re.compile(
+    r"(?:assert\b.*\bor\s+[Tt]rue\b)|(?:==\s+.+\s+or\s+[Tt]rue\b)|(?:\bor\s+[Tt]rue\b.*assert)"
+)
+
+
+def _iter_python_files(root: Path) -> list[Path]:
+    if not root.is_dir():
+        return []
+    return sorted(p for p in root.rglob("*.py") if p.is_file())
+
 
 def _scan_or_true_tautologies() -> list[dict]:
-    findings = []
-    for path in sorted(GATE_D_TESTS.glob("test_*.py")):
-        text = path.read_text(encoding="utf-8")
-        for i, line in enumerate(text.splitlines(), 1):
-            stripped = line.strip()
-            if stripped.startswith("#") or stripped.startswith('"""') or stripped.startswith("'"):
-                continue
-            # Only flag assert soft-fails / boolean tautologies in code, not prose.
-            if re.search(r"assert\b.*\bor\s+True\b", line) or re.search(
-                r"assert\b.*\bor\s+true\b", line
-            ):
-                findings.append(
-                    {
-                        "id": "D-ADV-OR-TRUE",
-                        "severity": "Critical",
-                        "finding": f"soft-fail tautology in {path.name}:{i}: {line.strip()}",
-                    }
-                )
-            elif re.search(r"==\s+.+\s+or\s+True\b", line) or re.search(
-                r"\bor\s+True\b.*assert", line
-            ):
-                findings.append(
-                    {
-                        "id": "D-ADV-OR-TRUE",
-                        "severity": "Critical",
-                        "finding": f"soft-fail tautology in {path.name}:{i}: {line.strip()}",
-                    }
-                )
+    findings: list[dict] = []
+    for root in SOFT_FAIL_SCAN_ROOTS:
+        for path in _iter_python_files(root):
+            text = path.read_text(encoding="utf-8")
+            rel = path.relative_to(ROOT).as_posix()
+            for i, line in enumerate(text.splitlines(), 1):
+                stripped = line.strip()
+                if (
+                    not stripped
+                    or stripped.startswith("#")
+                    or stripped.startswith('"""')
+                    or stripped.startswith("'''")
+                ):
+                    continue
+                if _OR_TRUE_LINE.search(line):
+                    findings.append(
+                        {
+                            "id": "D-ADV-OR-TRUE",
+                            "severity": "Critical",
+                            "finding": f"soft-fail tautology in {rel}:{i}: {stripped}",
+                        }
+                    )
     return findings
 
 
@@ -178,12 +197,15 @@ def test_adversarial_final_review():
         f"Generated: {datetime.now(tz=timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ')}",
         "",
         "## Hunt checklist",
-        "- soft-fail assert tautologies (boolean OR True after asserts)",
+        "- soft-fail assert tautologies across Gate D + prior-regression suites (boolean OR True)",
         "- stale PR1 DMG as current native proof",
         "- all-18 registry auto-PASS",
         "- Device OS E2E upload warn-only",
         "- evidence SHA not equal to PR head",
         "- mocks-as-prod / skips / xfail / continue-on-error / shell true-masks",
+        "",
+        "## Soft-fail scan roots",
+        *[f"- `{p.relative_to(ROOT).as_posix()}`" for p in SOFT_FAIL_SCAN_ROOTS],
         "",
         f"## Findings: {len(findings)}",
     ]
@@ -197,6 +219,7 @@ def test_adversarial_final_review():
         {
             "generated_utc": datetime.now(tz=timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
             "findings": findings,
+            "soft_fail_scan_roots": [p.relative_to(ROOT).as_posix() for p in SOFT_FAIL_SCAN_ROOTS],
             "status": "PASS" if not findings else "FAIL",
         },
     )

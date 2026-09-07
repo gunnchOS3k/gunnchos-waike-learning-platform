@@ -30,9 +30,11 @@
   ],
   "falsified_head": "f566ece0fab28ffd28255b54916cdd025b08bb69",
   "falsified_ci_run": "34070752294",
+  "claims_weakened_head": "b5e075c7cd4c184f5d38f035a393a18bd55dc761",
+  "claims_weakened_ci_run": "34072635669",
   "device_os_accepted_main": "4f02a48780d300a5d3a7758937b20e3bf9364d0d",
   "waike_pin": "fbf7685bc5686201ccaa0128ee83346d59b3d584",
   "gunnchai_pin": "4b4f411710e8cdb8102a7e11502f8497f68156b1",
   "owner_action": "HOLD_MERGE_AND_REMEDIATE",
-  "honesty": "Independent adversarial review FALSIFIED prior Gate D claims. Soft-fail tautologies, stale PR1 DMG as native proof, all-18 auto-PASS, warn-only Device OS E2E upload, and evidence SHA mismatches must be remediated and re-proven on remote Gate D CI before any claim is earned again."
+  "honesty": "CLAIMS_WEAKENED on b5e075c: AUTOMATED_FULL_PLATFORM_PASS failed due to residual gate_c soft-fail (or True). Claims withdrawn until remediations re-green on remote Gate D CI. External/physical/certification gates remain OPEN."
 }

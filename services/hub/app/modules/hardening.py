@@ -531,7 +531,7 @@ class Observability:
                 health = "degraded"
 
         bundle = {
-            "schema_migrations": migrations if "migrations" in dir() or True else [],
+            "schema_migrations": [],
             "health": health,
             "subsystems": subsystems,
             "redaction": True,

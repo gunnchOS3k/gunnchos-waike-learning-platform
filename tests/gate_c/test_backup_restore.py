@@ -38,7 +38,11 @@ def test_backup_and_tamper(client, tmp_path):
     assert r.status_code == 200, r.text
     path = Path(r.json()["path"])
     assert path.is_file()
-    assert "hub.sqlite3" in r.json().get("members", [{"name": "hub.sqlite3"}])[0]["name"] or True
+    members = r.json().get("members")
+    assert isinstance(members, list) and members, "backup response must include members"
+    assert any(
+        isinstance(m, dict) and m.get("name") == "hub.sqlite3" for m in members
+    ), "backup members must include hub.sqlite3"
 
     evil = tmp_path / "evil.waikebak"
     with zipfile.ZipFile(path) as src, zipfile.ZipFile(evil, "w") as dst:
