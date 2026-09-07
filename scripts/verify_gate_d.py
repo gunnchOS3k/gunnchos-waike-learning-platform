@@ -42,6 +42,145 @@ REQUIRED_ARTIFACTS = [
     "EXTERNAL_HUMAN_PHYSICAL_GATES.md",
 ]
 
+LEARNER_REQUIRED_STEPS = (
+    "auth",
+    "enroll_nav",
+    "lessons_nav",
+    "assignments",
+    "quizzes",
+    "discussions",
+    "groups",
+    "labs",
+    "save_resume_offline_sync",
+    "mastery_portfolio",
+    "projects_capstones",
+)
+
+INSTRUCTOR_REQUIRED_STEPS = (
+    "auth_roles",
+    "sections_activity",
+    "assessment_queue",
+    "grading_rubrics_feedback",
+    "gradebook",
+    "mastery_remediation",
+    "discussion_group",
+    "accommodations",
+    "admin_operator",
+)
+
+ROLE_MATRIX_REQUIRED = (
+    "learner",
+    "instructor",
+    "grader",
+    "guardian",
+    "site_admin",
+)
+
+REJECTED_STEP_STATUSES = {
+    "PASS_OPTIONAL",
+    "PENDING",
+    "SKIPPED",
+    "NOT_APPLICABLE",
+    "UNKNOWN",
+    "FAIL",
+    "BLOCKED",
+}
+
+
+def _semantic_fail(scope: str, field: str, observed, required) -> dict:
+    return {"scope": scope, "field": field, "observed": observed, "required": required}
+
+
+def evaluate_journey_report(
+    path: Path,
+    *,
+    scope: str,
+    required_steps: tuple[str, ...],
+) -> tuple[bool, list[dict]]:
+    """Require top-level status PASS and every required step exactly 'PASS'."""
+    details: list[dict] = []
+    if not path.is_file():
+        details.append(_semantic_fail(scope, "report_file", None, str(path.name)))
+        return False, details
+    try:
+        data = json.loads(path.read_text(encoding="utf-8"))
+    except json.JSONDecodeError:
+        details.append(_semantic_fail(scope, "report_json", "invalid", "valid_json"))
+        return False, details
+    status = data.get("status")
+    if status != "PASS":
+        details.append(_semantic_fail(scope, "status", status, "PASS"))
+    steps = data.get("steps")
+    if not isinstance(steps, dict):
+        details.append(_semantic_fail(scope, "steps", type(steps).__name__, "dict"))
+        return False, details
+    for key in required_steps:
+        observed = steps.get(key, None)
+        if observed != "PASS":
+            details.append(_semantic_fail(scope, f"steps.{key}", observed, "PASS"))
+        if isinstance(observed, str) and observed in REJECTED_STEP_STATUSES:
+            details.append(
+                _semantic_fail(scope, f"steps.{key}_rejected_token", observed, "PASS")
+            )
+        if isinstance(observed, str) and observed.startswith("PASS") and observed != "PASS":
+            details.append(
+                _semantic_fail(scope, f"steps.{key}_startswith_pass", observed, "PASS")
+            )
+    return len(details) == 0, details
+
+
+def evaluate_role_matrix(path: Path) -> tuple[bool, list[dict]]:
+    details: list[dict] = []
+    if not path.is_file():
+        details.append(_semantic_fail("role_matrix", "report_file", None, path.name))
+        return False, details
+    try:
+        data = json.loads(path.read_text(encoding="utf-8"))
+    except json.JSONDecodeError:
+        details.append(_semantic_fail("role_matrix", "report_json", "invalid", "valid_json"))
+        return False, details
+    roles = data.get("roles")
+    if not isinstance(roles, dict):
+        details.append(_semantic_fail("role_matrix", "roles", type(roles).__name__, "dict"))
+        return False, details
+    for role in ROLE_MATRIX_REQUIRED:
+        row = roles.get(role)
+        if not isinstance(row, dict):
+            details.append(_semantic_fail("role_matrix", f"roles.{role}", row, "dict"))
+            continue
+        lp = row.get("least_privilege")
+        if lp != "PASS":
+            details.append(
+                _semantic_fail("role_matrix", f"roles.{role}.least_privilege", lp, "PASS")
+            )
+    return len(details) == 0, details
+
+
+def evaluate_journeys_semantic() -> tuple[bool, list[dict], dict]:
+    details: list[dict] = []
+    learner_ok, learner_d = evaluate_journey_report(
+        REPORTS / "GATE_D_LEARNER_JOURNEY.json",
+        scope="learner_journey",
+        required_steps=LEARNER_REQUIRED_STEPS,
+    )
+    instructor_ok, instructor_d = evaluate_journey_report(
+        REPORTS / "GATE_D_INSTRUCTOR_JOURNEY.json",
+        scope="instructor_journey",
+        required_steps=INSTRUCTOR_REQUIRED_STEPS,
+    )
+    roles_ok, roles_d = evaluate_role_matrix(REPORTS / "GATE_D_ROLE_JOURNEY_MATRIX.json")
+    details.extend(learner_d)
+    details.extend(instructor_d)
+    details.extend(roles_d)
+    summary = {
+        "learner_ok": learner_ok,
+        "instructor_ok": instructor_ok,
+        "role_matrix_ok": roles_ok,
+        "detail_count": len(details),
+    }
+    return learner_ok and instructor_ok and roles_ok, details, summary
+
+
 
 def plain(proc: subprocess.CompletedProcess) -> str:
     return ANSI.sub("", (proc.stdout or "") + (proc.stderr or ""))
@@ -381,10 +520,30 @@ Status: **OPEN / EXTERNAL** — recorded honestly; not fabricated.
         tracks_ok = bool(tdata.get("all_pass")) and int(tdata.get("track_count") or 0) == 18
     results["checks"]["all_18_tracks"] = tracks_ok
 
-    journeys_ok = (REPORTS / "GATE_D_LEARNER_JOURNEY.json").is_file() and (
-        REPORTS / "GATE_D_INSTRUCTOR_JOURNEY.json"
-    ).is_file() and (REPORTS / "GATE_D_ROLE_JOURNEY_MATRIX.json").is_file()
+    journeys_ok, journey_details, journey_summary = evaluate_journeys_semantic()
     results["checks"]["journeys"] = journeys_ok
+    results["journey_semantic"] = journey_summary
+    if journey_details:
+        results["journey_semantic_failures"] = journey_details
+        results["blocked"].append("journey_semantic")  # type: ignore[union-attr]
+
+    # Clean-room semantic: require measured ok:true (not file presence alone).
+    clean_room_report = REPORTS / "GATE_D_CLEAN_ROOM_RECONSTRUCTION.json"
+    clean_room_semantic = False
+    if clean_room_report.is_file():
+        try:
+            cr_data = json.loads(clean_room_report.read_text(encoding="utf-8"))
+            clean_room_semantic = cr_data.get("ok") is True
+            if not clean_room_semantic:
+                results["blocked"].append("clean_room_ok_false")  # type: ignore[union-attr]
+        except json.JSONDecodeError:
+            results["blocked"].append("clean_room_json_invalid")  # type: ignore[union-attr]
+    results["checks"]["clean_room_semantic"] = clean_room_semantic
+    # Prefer measured clean-room ok over mere script exit when report present.
+    if clean_room_report.is_file():
+        results["checks"]["clean_room"] = bool(
+            results["checks"].get("clean_room")
+        ) and clean_room_semantic
 
     adv = REPORTS / "GATE_D_ADVERSARIAL_REVIEW.json"
     adv_ok = False
@@ -421,7 +580,7 @@ Status: **OPEN / EXTERNAL** — recorded honestly; not fabricated.
         for c in (CLAIM_AUTO, CLAIM_18, CLAIM_JOURNEYS, CLAIM_ALPHA):
             blocked.append(c)
         results["status"] = "AUTOMATED_PIPELINE_BLOCKED_BY_CODE"
-        results["owner_action"] = "HOLD_MERGE_AND_REMEDIATE"
+        results["owner_action"] = "GATE_D_NOT_READY"
         if prior.returncode != 0:
             results["blocked"].append("prior_regression")  # type: ignore[union-attr]
         if gate_d.returncode != 0:
@@ -466,9 +625,15 @@ Status: **OPEN / EXTERNAL** — recorded honestly; not fabricated.
         "## Claim boundary",
         "- Does not claim physical Device Quartet, notarization, WCAG/FERPA/standards certification, or field pilot.",
     ]
+    if journey_details:
+        md.extend(["", "## Journey semantic failures"])
+        for d in journey_details[:40]:
+            md.append(
+                f"- `{d['scope']}` / `{d['field']}`: observed=`{d['observed']}` required=`{d['required']}`"
+            )
     (REPORTS / "GATE_D_VERIFICATION.md").write_text("\n".join(md) + "\n")
 
-    # Update FULL_COMPLETION_STATE.json — claims only after remediations + green CI.
+    # This-run FULL_COMPLETION_STATE for CI artifact only (committed baseline stays PENDING).
     state = {
         "schema": "waike.learning_os.full_completion_state.v1",
         "platform_repo": "gunnchOS3k/gunnchos-waike-learning-platform",
@@ -477,6 +642,7 @@ Status: **OPEN / EXTERNAL** — recorded honestly; not fabricated.
         "gate_c_merge_commit": "58daf1a0cc22b60c4246eb4195b74bcb0a714a38",
         "current_wave": "GATE_D_FULL_ACCEPTANCE",
         "status": results["status"],
+        "source": "verify_gate_d_this_run",
         "waves": {
             "PR1_FOUNDATION": "MERGED",
             "PR2_ASSESSMENT_LIFECYCLE": "MERGED",
@@ -486,7 +652,7 @@ Status: **OPEN / EXTERNAL** — recorded honestly; not fabricated.
             "GATE_C_INTEROP_DEVICE_HARDENING": "MERGED",
             "GATE_D_FULL_ACCEPTANCE": "CLAIMS_EARNED_PENDING_OWNER_MERGE"
             if digital_ready
-            else "HOLD_MERGE_AND_REMEDIATE",
+            else "GATE_D_NOT_READY",
         },
         "claims_earned": claims,
         "claims_pending": blocked,
@@ -500,15 +666,16 @@ Status: **OPEN / EXTERNAL** — recorded honestly; not fabricated.
         "last_verified_utc": now,
         "platform_sha": platform_sha,
         "honesty": (
-            "Digital Gate D claims earned only when clean-room + prior regression + Gate D suites "
-            "pass with zero skips, this-run native Linux/macOS artifacts bound to PR head SHA, "
-            "and CI Device OS E2E evidence bound to the same head. External/physical/certification "
-            "gates remain OPEN."
+            "This-run CI artifact: digital Gate D claims earned only when clean-room + prior "
+            "regression + Gate D suites pass with zero skips, semantic journey/role PASS fields, "
+            "this-run native Linux/macOS artifacts bound to PR head SHA, and CI Device OS E2E "
+            "evidence bound to the same head. Committed FULL_COMPLETION_STATE.json baseline remains "
+            "PENDING_FINAL_EXACT_HEAD_CI until owner merges. External gates remain OPEN."
             if digital_ready
             else (
-                "Prior Gate D claims FALSIFIED / withdrawn until remediations re-green. "
-                "See GATE_D_VERIFICATION.json blocked list. Owner action: HOLD_MERGE_AND_REMEDIATE."
-            ),
+                "Gate D not ready — see GATE_D_VERIFICATION.json blocked list / "
+                "journey_semantic_failures. Owner action: GATE_D_NOT_READY."
+            )
         ),
     }
     _write_json("FULL_COMPLETION_STATE.json", state)

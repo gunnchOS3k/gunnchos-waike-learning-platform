@@ -1,5 +1,5 @@
 {
-  "generated_utc": "2026-09-07T00:07:00Z",
+  "generated_utc": "2026-09-07T02:30:13Z",
   "status": "PASS",
   "steps": {
     "auth_roles": "PASS",
@@ -9,7 +9,16 @@
     "gradebook": "PASS",
     "mastery_remediation": "PASS",
     "discussion_group": "PASS",
-    "accommodations": "PASS_OPTIONAL",
+    "accommodations": "PASS",
     "admin_operator": "PASS"
-  }
+  },
+  "accommodations_effect": "quiz_attempt_override",
+  "mastery_observable": true,
+  "remediation_observable": true,
+  "gradebook_learner_ids_sampled": [
+    "learner-a",
+    "learner-alpha",
+    "learner-b",
+    "learner-beta"
+  ]
 }

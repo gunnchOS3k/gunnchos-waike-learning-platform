@@ -47,6 +47,10 @@ def auth_header(token: str) -> dict[str, str]:
     return {"Authorization": f"Bearer {token}"}
 
 
+def user_id(session: dict) -> str:
+    return session["user"]["user_id"]
+
+
 def write_json(name: str, data: dict) -> Path:
     REPORTS.mkdir(exist_ok=True)
     path = REPORTS / name
