@@ -7,7 +7,7 @@ PR: https://github.com/gunnchOS3k/gunnchos-waike-learning-platform/pull/7
 
 | ID | Blocker | Status | Notes |
 |----|---------|--------|-------|
-| F1 | Accommodations REQUIRED real instructor workflow | CLOSED | Create/update/denials/effect/read-back; `"accommodations":"PASS"` |
+| F1 | Accommodations REQUIRED real instructor workflow | CLOSED | due_extension wired in `_effective_policies`; create/GET due+time read-back; runtime time/due effect (30→105) + attempt override; `"accommodations":"PASS"` |
 | F2 | Mastery/remediation REQUIRED real | CLOSED | Gap grade → mastery+remediation fetch; `"mastery_remediation":"PASS"` |
 | F3 | Semantic fail-closed verify_gate_d journeys | CLOSED | Exact PASS allowlists + structured `{scope,field,observed,required}` |
 | F4 | Adversarial catches semantic soft-passes | CLOSED | Static scan + behavioral sabotage executed in report |

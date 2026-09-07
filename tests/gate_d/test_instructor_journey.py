@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 
 from gd_helpers import SECTION, auth_header, login, user_id, write_json
 
@@ -163,11 +163,14 @@ def test_complete_instructor_journey(client):
     )
     assert create.status_code == 200, create.text
     assert create.json().get("attempt_override") == 5
+    assert create.json().get("time_multiplier") == 1.5
+    assert create.json().get("due_extension_minutes") == 30
 
     listed = client.get(f"/api/v1/accommodations/{lid}", headers=ih, params={"section_id": SECTION})
     assert listed.status_code == 200, listed.text
     assert listed.json().get("attempt_override") == 5
     assert listed.json().get("time_multiplier") == 1.5
+    assert listed.json().get("due_extension_minutes") == 30
 
     update = client.post(
         "/api/v1/accommodations",
@@ -183,6 +186,8 @@ def test_complete_instructor_journey(client):
     )
     assert update.status_code == 200, update.text
     assert update.json().get("attempt_override") == 6
+    assert update.json().get("time_multiplier") == 2.0
+    assert update.json().get("due_extension_minutes") == 45
 
     unrelated = _unrelated_same_site_instructor(client)
     deny_unassigned = client.post(
@@ -230,7 +235,42 @@ def test_complete_instructor_journey(client):
     )
     assert deny_wrong_section.status_code in (403, 404), deny_wrong_section.text
 
-    # Product effect: attempt_override allows more than default quiz attempts.
+    # Persist + read-back after "reload" (fresh GET) — include due + time fields.
+    reread = client.get(f"/api/v1/accommodations/{lid}", headers=ih, params={"section_id": SECTION})
+    assert reread.status_code == 200
+    assert reread.json().get("attempt_override") == 6
+    assert reread.json().get("time_multiplier") == 2.0
+    assert reread.json().get("due_extension_minutes") == 45
+
+    # Product effect — time/due: control vs accommodated timed attempt.
+    # Base quiz time_limit=30; multiplier 2.0 → 60; due_extension +45 → 105.
+    control = login(client, "learner-beta")
+    ctrl = client.post(
+        "/api/v1/quizzes/quiz_dc_w01_gate_a/attempts",
+        headers=auth_header(control["token"]),
+    )
+    assert ctrl.status_code == 200, ctrl.text
+    assert float(ctrl.json()["time_limit_minutes"]) == 30.0
+
+    def _parse_ts(ts: str) -> datetime:
+        return datetime.fromisoformat(ts.replace("Z", "+00:00"))
+
+    ctrl_span = _parse_ts(ctrl.json()["deadline_at"]) - _parse_ts(ctrl.json()["started_at"])
+    assert abs(ctrl_span - timedelta(minutes=30)) < timedelta(seconds=90)
+
+    timed = client.post("/api/v1/quizzes/quiz_dc_w01_gate_a/attempts", headers=lh)
+    assert timed.status_code == 200, timed.text
+    assert float(timed.json()["time_limit_minutes"]) == 105.0
+    acc_span = _parse_ts(timed.json()["deadline_at"]) - _parse_ts(timed.json()["started_at"])
+    assert abs(acc_span - timedelta(minutes=105)) < timedelta(seconds=90)
+    # Close the timed attempt so attempt_override proof can continue cleanly.
+    client.post(
+        f"/api/v1/quiz-attempts/{timed.json()['attempt_id']}/submit",
+        headers=lh,
+        json={"responses": {}, "client_mutation_id": "mut_gd_acc_time_01_xxxx"},
+    )
+
+    # Product effect — attempt_override allows more than default (2) quiz attempts.
     for i in range(3):
         start = client.post("/api/v1/quizzes/quiz_dc_w01_gate_a/attempts", headers=lh)
         assert start.status_code == 200, start.text
@@ -240,10 +280,6 @@ def test_complete_instructor_journey(client):
             json={"responses": {}, "client_mutation_id": f"mut_gd_acc_quiz_{i:02d}_xxxx"},
         )
 
-    reread = client.get(f"/api/v1/accommodations/{lid}", headers=ih, params={"section_id": SECTION})
-    assert reread.status_code == 200
-    assert reread.json().get("attempt_override") == 6
-    assert reread.json().get("time_multiplier") == 2.0
     steps["accommodations"] = "PASS"
 
     users = client.get("/api/v1/admin/users", headers=ah)
@@ -260,7 +296,14 @@ def test_complete_instructor_journey(client):
             "generated_utc": datetime.now(tz=timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
             "status": "PASS",
             "steps": steps,
-            "accommodations_effect": "quiz_attempt_override",
+            "accommodations_effect": {
+                "attempt_override": True,
+                "time_multiplier": True,
+                "due_extension_minutes": True,
+                "control_time_limit_minutes": 30.0,
+                "accommodated_time_limit_minutes": 105.0,
+                "formula": "base_30 * time_multiplier_2.0 + due_extension_45",
+            },
             "mastery_observable": True,
             "remediation_observable": True,
             "gradebook_learner_ids_sampled": sorted(x for x in gb_learners if x)[:8],
