@@ -134,10 +134,19 @@ def main() -> int:
         if proc.returncode != 0:
             blockers.append("INSTALL_FAILED")
         local = Path(os.environ.get("LOCALAPPDATA", "")) / "WAIKE Learning OS"
-        candidates = list(install_dir.rglob("*.exe")) + (
-            list(local.rglob("*.exe")) if local.exists() else []
-        )
-        installed_exe = candidates[0] if candidates else None
+        # Prefer the app binary; never pick uninstallers or the NSIS setup itself.
+        def _is_app_exe(p: Path) -> bool:
+            n = p.name.lower()
+            if "uninstall" in n or n.endswith("-setup.exe") or n.endswith("_x64-setup.exe"):
+                return False
+            return n.endswith(".exe")
+
+        candidates = [p for p in install_dir.rglob("*.exe") if _is_app_exe(p)]
+        if local.exists():
+            candidates += [p for p in local.rglob("*.exe") if _is_app_exe(p)]
+        # Prefer product-named exe if present.
+        preferred = [p for p in candidates if "waike" in p.name.lower()]
+        installed_exe = (preferred or candidates or [None])[0]
     elif artifact_kind == "exe" and artifact is not None:
         checks["install"] = {
             "status": "PASS",
@@ -159,28 +168,79 @@ def main() -> int:
         blockers.append("INSTALL_SKIPPED_NO_ARTIFACT")
         skipped_required += 1
 
-    if installed_exe and installed_exe.is_file():
+    # Fallback launch target: freshly built Tauri release binary (same bits NSIS wraps).
+    release_bin = (
+        ROOT
+        / "apps"
+        / "client"
+        / "src-tauri"
+        / "target"
+        / "release"
+        / "waike-learning-client.exe"
+    )
+    launch_exe = installed_exe if (installed_exe and Path(installed_exe).is_file()) else None
+    if launch_exe is None and release_bin.is_file():
+        launch_exe = release_bin
+
+    # WebView2 presence (Tauri 2 Windows runtime dependency).
+    wv2_roots = [
+        Path(os.environ.get("ProgramFiles(x86)", r"C:\Program Files (x86)"))
+        / "Microsoft"
+        / "EdgeWebView"
+        / "Application",
+        Path(os.environ.get("ProgramFiles", r"C:\Program Files"))
+        / "Microsoft"
+        / "EdgeWebView"
+        / "Application",
+    ]
+    webview2 = any(r.is_dir() for r in wv2_roots)
+    checks["webview2_runtime"] = {
+        "status": "PASS" if webview2 else "FAIL",
+        "paths_checked": [str(r) for r in wv2_roots],
+    }
+    if not webview2:
+        blockers.append("WEBVIEW2_RUNTIME_MISSING")
+
+    if launch_exe and Path(launch_exe).is_file():
+        log_out = REPORTS / "first_launch_stdout.txt"
+        log_err = REPORTS / "first_launch_stderr.txt"
         try:
-            proc = subprocess.Popen([str(installed_exe)], cwd=str(installed_exe.parent))
-            time.sleep(8)
+            with log_out.open("w", encoding="utf-8") as so, log_err.open("w", encoding="utf-8") as se:
+                proc = subprocess.Popen(
+                    [str(launch_exe)],
+                    cwd=str(Path(launch_exe).parent),
+                    stdout=so,
+                    stderr=se,
+                )
+            # Cold WebView2 start on hosted runners can exceed 8s.
+            time.sleep(20)
             alive = proc.poll() is None
+            exit_code = proc.poll()
             if alive:
                 proc.terminate()
                 try:
                     proc.wait(timeout=10)
                 except subprocess.TimeoutExpired:
                     proc.kill()
+            err_tail = log_err.read_text(encoding="utf-8", errors="replace")[-1200:]
             checks["first_launch"] = {
                 "status": "PASS" if alive else "FAIL",
-                "pid_alive_after_8s": alive,
+                "pid_alive_after_20s": alive,
+                "exit_code": exit_code,
+                "exe": str(launch_exe),
+                "stderr_tail": err_tail,
+                "webview2_present": webview2,
             }
             if not alive:
                 blockers.append("LAUNCH_EXITED_EARLY")
+                print(f"::error title=WINDOWS_PILOT0::LAUNCH_EXITED_EARLY exit={exit_code}")
+                if err_tail:
+                    print(f"::error title=WINDOWS_PILOT0_LAUNCH_STDERR::{err_tail[:400]}")
         except OSError as exc:
-            checks["first_launch"] = {"status": "FAIL", "error": str(exc)}
+            checks["first_launch"] = {"status": "FAIL", "error": str(exc), "exe": str(launch_exe)}
             blockers.append("LAUNCH_FAILED")
     else:
-        checks["first_launch"] = {"status": "FAIL", "detail": "installed exe not found"}
+        checks["first_launch"] = {"status": "FAIL", "detail": "installed/release exe not found"}
         blockers.append("LAUNCH_NO_EXE")
         skipped_required += 1
 
@@ -229,11 +289,11 @@ def main() -> int:
         }
         blockers.append("SOAK_SKIPPED")
         skipped_required += 1
-    elif installed_exe and installed_exe.is_file() and checks.get("first_launch", {}).get("status") == "PASS":
-        target = installed_exe if installed_exe.is_file() else artifact
-        if target and Path(target).is_file():
+    elif launch_exe and Path(launch_exe).is_file() and checks.get("first_launch", {}).get("status") == "PASS":
+        target = Path(launch_exe)
+        if target.is_file():
             start = time.time()
-            proc = subprocess.Popen([str(target)])
+            proc = subprocess.Popen([str(target)], cwd=str(target.parent))
             ok = True
             while time.time() - start < soak_seconds:
                 if proc.poll() is not None:

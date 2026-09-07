@@ -56,6 +56,27 @@ jobs:
             if (Test-Path $nsis) { echo "C:\Program Files (x86)\NSIS" | Out-File -Append -FilePath $env:GITHUB_PATH }
           }
           Get-Command makensis -ErrorAction SilentlyContinue | Format-List
+      - name: Ensure WebView2 runtime (Tauri)
+        shell: pwsh
+        run: |
+          $wv = @(
+            "${env:ProgramFiles(x86)}\Microsoft\EdgeWebView\Application",
+            "$env:ProgramFiles\Microsoft\EdgeWebView\Application"
+          ) | Where-Object { Test-Path $_ }
+          if ($wv) {
+            Write-Host "WebView2 present: $($wv -join ', ')"
+          } else {
+            Write-Host "WebView2 missing — installing Evergreen Bootstrapper"
+            $boot = Join-Path $env:RUNNER_TEMP "MicrosoftEdgeWebview2Setup.exe"
+            Invoke-WebRequest -Uri "https://go.microsoft.com/fwlink/p/?LinkId=2124703" -OutFile $boot
+            Start-Process -FilePath $boot -ArgumentList "/silent","/install" -Wait
+            $wv2 = @(
+              "${env:ProgramFiles(x86)}\Microsoft\EdgeWebView\Application",
+              "$env:ProgramFiles\Microsoft\EdgeWebView\Application"
+            ) | Where-Object { Test-Path $_ }
+            if (-not $wv2) { throw "WEBVIEW2_RUNTIME_MISSING after bootstrapper" }
+            Write-Host "WebView2 installed: $($wv2 -join ', ')"
+          }
       - name: Align WAIKE pin provenance
         shell: bash
         run: |
