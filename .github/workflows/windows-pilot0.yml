@@ -44,6 +44,18 @@ jobs:
           cache-dependency-path: apps/client/pnpm-lock.yaml
       - uses: dtolnay/rust-toolchain@stable
       - uses: astral-sh/setup-uv@v4
+        with:
+          python-version: "3.12"
+      - name: Install Windows bundler deps (NSIS)
+        shell: pwsh
+        run: |
+          # MSI/WiX is not assumed on hosted runners; Pilot 0 uses NSIS only.
+          choco install nsis -y --no-progress
+          if (-not (Get-Command makensis -ErrorAction SilentlyContinue)) {
+            $nsis = "C:\Program Files (x86)\NSIS\makensis.exe"
+            if (Test-Path $nsis) { echo "C:\Program Files (x86)\NSIS" | Out-File -Append -FilePath $env:GITHUB_PATH }
+          }
+          Get-Command makensis -ErrorAction SilentlyContinue | Format-List
       - name: Align WAIKE pin provenance
         shell: bash
         run: |
@@ -62,9 +74,20 @@ jobs:
       - name: Bootstrap Python + compile sample pack
         shell: bash
         run: |
+          set -euo pipefail
           uv venv .venv
-          uv pip install --python .venv/bin/python -e tools/course_compiler cryptography PyNaCl
-          .venv/bin/course-compiler compile DIGITAL_CONFIDENCE --out pack_out
+          # Windows venvs use Scripts/, Unix uses bin/ — never hardcode .venv/bin on windows-*.
+          if [ -x .venv/Scripts/python.exe ]; then
+            PY=".venv/Scripts/python.exe"
+            export PATH="$(pwd)/.venv/Scripts:${PATH}"
+          elif [ -x .venv/bin/python ]; then
+            PY=".venv/bin/python"
+            export PATH="$(pwd)/.venv/bin:${PATH}"
+          else
+            echo "venv python missing"; find .venv -maxdepth 3 -type f | head -50; exit 2
+          fi
+          uv pip install --python "$PY" -e tools/course_compiler cryptography PyNaCl
+          course-compiler compile DIGITAL_CONFIDENCE --out pack_out
       - name: Install frontend deps (lockfile)
         working-directory: apps/client
         shell: bash
@@ -75,8 +98,11 @@ jobs:
         env:
           WAIKE_DEV_DB_KEY: ${{ env.WAIKE_DEV_DB_KEY }}
         run: |
+          set -euo pipefail
           pnpm run build
-          pnpm exec tauri build
+          # Frontend already built; avoid tauri.conf beforeBuildCommand (npm) under pnpm layout.
+          # Restrict to NSIS — do not require WiX/MSI on hosted runners.
+          pnpm exec tauri build --config '{"build":{"beforeBuildCommand":""},"bundle":{"targets":["nsis"]}}'
       - name: Record runner image metadata
         shell: pwsh
         run: |
@@ -108,7 +134,6 @@ jobs:
           name: waike-windows-pilot0-${{ steps.meta.outputs.short_sha }}
           path: |
             apps/client/src-tauri/target/release/bundle/nsis/*
-            apps/client/src-tauri/target/release/bundle/msi/*
             reports/windows_pilot0/**
           retention-days: 14
           if-no-files-found: error
@@ -128,13 +153,23 @@ jobs:
           cache: pnpm
           cache-dependency-path: apps/client/pnpm-lock.yaml
       - uses: dtolnay/rust-toolchain@stable
+      - name: Install Windows bundler deps (NSIS)
+        shell: pwsh
+        run: |
+          choco install nsis -y --no-progress
+          if (-not (Get-Command makensis -ErrorAction SilentlyContinue)) {
+            if (Test-Path "C:\Program Files (x86)\NSIS\makensis.exe") {
+              echo "C:\Program Files (x86)\NSIS" | Out-File -Append -FilePath $env:GITHUB_PATH
+            }
+          }
       - name: Compatibility smoke — frontend + tauri build only
         working-directory: apps/client
         shell: bash
         run: |
+          set -euo pipefail
           pnpm install --frozen-lockfile
           pnpm run build
-          pnpm exec tauri build
+          pnpm exec tauri build --config '{"build":{"beforeBuildCommand":""},"bundle":{"targets":["nsis"]}}'
       - name: Write compatibility note
         shell: pwsh
         run: |
