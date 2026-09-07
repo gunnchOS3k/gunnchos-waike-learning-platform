@@ -94,16 +94,22 @@ jobs:
         run: pnpm install --frozen-lockfile
       - name: Build frontend + Tauri Windows bundles
         working-directory: apps/client
-        shell: bash
+        shell: pwsh
         env:
           WAIKE_DEV_DB_KEY: ${{ env.WAIKE_DEV_DB_KEY }}
         run: |
-          set -euo pipefail
+          $ErrorActionPreference = "Stop"
           pnpm run build
-          # Frontend already built; avoid tauri.conf beforeBuildCommand (npm) under pnpm layout.
-          # Restrict to NSIS — do not require WiX/MSI on hosted runners.
-          pnpm exec tauri build --config '{"build":{"beforeBuildCommand":""},"bundle":{"targets":["nsis"]}}'
+          # Avoid bash/JSON quoting pitfalls on Windows; write merge config to disk.
+          $cfg = @{
+            build = @{ beforeBuildCommand = "" }
+            bundle = @{ targets = @("nsis") }
+          } | ConvertTo-Json -Compress -Depth 5
+          Set-Content -Encoding utf8 -Path tauri.windows-pilot0.json -Value $cfg
+          Get-Content tauri.windows-pilot0.json
+          pnpm exec tauri build --config tauri.windows-pilot0.json
       - name: Record runner image metadata
+        if: always()
         shell: pwsh
         run: |
           New-Item -ItemType Directory -Force -Path reports/windows_pilot0 | Out-Null
@@ -121,22 +127,27 @@ jobs:
         shell: pwsh
         env:
           WINDOWS_PILOT0_SOAK_SECONDS: ${{ github.event.inputs.soak_seconds || '1800' }}
+          WINDOWS_PILOT0_HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
         run: |
           python scripts/windows_pilot0_evidence.py
       - name: Short SHA for artifacts
         id: meta
+        if: always()
         shell: bash
         run: |
-          SHORT="${GITHUB_SHA:0:12}"
+          HEAD_SHA="${{ github.event.pull_request.head.sha }}"
+          if [ -z "$HEAD_SHA" ]; then HEAD_SHA="${GITHUB_SHA}"; fi
+          SHORT="${HEAD_SHA:0:12}"
           echo "short_sha=$SHORT" >> "$GITHUB_OUTPUT"
       - uses: actions/upload-artifact@v4
+        if: always()
         with:
           name: waike-windows-pilot0-${{ steps.meta.outputs.short_sha }}
           path: |
             apps/client/src-tauri/target/release/bundle/nsis/*
             reports/windows_pilot0/**
           retention-days: 14
-          if-no-files-found: error
+          if-no-files-found: warn
 
   windows-pilot0-windows-latest:
     name: windows-pilot0-windows-latest
@@ -164,13 +175,19 @@ jobs:
           }
       - name: Compatibility smoke — frontend + tauri build only
         working-directory: apps/client
-        shell: bash
+        shell: pwsh
         run: |
-          set -euo pipefail
+          $ErrorActionPreference = "Stop"
           pnpm install --frozen-lockfile
           pnpm run build
-          pnpm exec tauri build --config '{"build":{"beforeBuildCommand":""},"bundle":{"targets":["nsis"]}}'
+          $cfg = @{
+            build = @{ beforeBuildCommand = "" }
+            bundle = @{ targets = @("nsis") }
+          } | ConvertTo-Json -Compress -Depth 5
+          Set-Content -Encoding utf8 -Path tauri.windows-pilot0.json -Value $cfg
+          pnpm exec tauri build --config tauri.windows-pilot0.json
       - name: Write compatibility note
+        if: always()
         shell: pwsh
         run: |
           New-Item -ItemType Directory -Force -Path reports/windows_pilot0 | Out-Null
@@ -182,7 +199,9 @@ jobs:
             GITHUB_SHA = $env:GITHUB_SHA
           } | ConvertTo-Json | Set-Content -Encoding utf8 reports/windows_pilot0/WINDOWS_LATEST_COMPAT.json
       - uses: actions/upload-artifact@v4
+        if: always()
         with:
-          name: waike-windows-pilot0-latest-compat-${{ github.sha }}
+          name: waike-windows-pilot0-latest-compat-${{ github.event.pull_request.head.sha || github.sha }}
           path: reports/windows_pilot0/WINDOWS_LATEST_COMPAT.json
           retention-days: 14
+          if-no-files-found: warn
