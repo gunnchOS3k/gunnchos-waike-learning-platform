@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from datetime import datetime, timezone
 
-from helpers import REPORTS, auth_header, login, write_json
+from gd_helpers import REPORTS, auth_header, login, write_json
 
 
 def test_security_privacy_matrix(client):

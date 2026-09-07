@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from datetime import datetime, timezone
 
-from helpers import SECTION, auth_header, login, write_json
+from gd_helpers import SECTION, auth_header, login, write_json
 
 
 def test_offline_cross_device_acceptance(client, tmp_path):

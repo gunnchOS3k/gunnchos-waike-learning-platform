@@ -6,7 +6,7 @@ import json
 from datetime import datetime, timezone
 from pathlib import Path
 
-from helpers import PINS, ROOT, write_json
+from gd_helpers import PINS, ROOT, write_json
 
 
 def test_gunnchai_pin_and_policy_artifacts():

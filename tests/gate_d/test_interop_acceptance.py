@@ -5,7 +5,7 @@ from __future__ import annotations
 from datetime import datetime, timezone
 from pathlib import Path
 
-from helpers import ROOT, write_json
+from gd_helpers import ROOT, write_json
 
 
 def test_interop_matrices_present_and_honest():

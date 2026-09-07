@@ -114,30 +114,34 @@ def main() -> int:
     results["exit_codes"] = {"clean_room": cr.returncode}
     results["checks"]["clean_room"] = cr.returncode == 0
 
-    # Prior regression PR1–Gate C
-    prior = run(
+    # Prior regression PR1–Gate C (isolate helpers module namespaces)
+    prior_a = run(
         [
-            py,
-            "-m",
-            "pytest",
-            "-q",
-            "tests/compatibility",
-            "tests/security",
-            "tests/integration",
-            "tests/assessment",
-            "tests/pr3",
-            "tests/gate_a",
-            "tests/gate_b",
-            "tests/gate_c",
-            "services/hub/tests",
+            py, "-m", "pytest", "-q",
+            "tests/compatibility", "tests/security", "tests/integration",
+            "tests/assessment", "tests/pr3", "tests/gate_a", "services/hub/tests",
             "--tb=line",
         ],
         env=env,
     )
-    prior_counts = _parse_pytest_counts(plain(prior))
+    env_c = dict(env)
+    prior_c = run([py, "-m", "pytest", "-q", "tests/gate_c", "--tb=line"], env=env_c)
+    env_b = dict(env)
+    env_b["PYTHONPATH"] = "tools/course_compiler:services/hub"
+    prior_b = run([py, "-m", "pytest", "-q", "tests/gate_b", "--tb=line"], env=env_b)
+    prior_counts = _parse_pytest_counts(plain(prior_a))
+    for part in (prior_c, prior_b):
+        for k, v in _parse_pytest_counts(plain(part)).items():
+            prior_counts[k] = prior_counts.get(k, 0) + v
+    prior_rc = 0 if prior_a.returncode == 0 and prior_b.returncode == 0 and prior_c.returncode == 0 else 1
+
+    class _Prior:
+        returncode = prior_rc
+
+    prior = _Prior()
     results["test_counts"]["prior_regression"] = prior_counts
-    results["exit_codes"]["prior_regression"] = prior.returncode  # type: ignore[index]
-    results["checks"]["prior_regression"] = prior.returncode == 0 and prior_counts["failed"] == 0
+    results["exit_codes"]["prior_regression"] = prior_rc  # type: ignore[index]
+    results["checks"]["prior_regression"] = prior_rc == 0 and prior_counts["failed"] == 0
     if prior_counts.get("skipped"):
         results["GATE_D_REQUIRED_TESTS_SKIPPED"] = prior_counts["skipped"]
 

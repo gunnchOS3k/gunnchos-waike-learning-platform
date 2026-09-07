@@ -69,7 +69,7 @@ jobs:
           WAIKE_ROOT: ${{ github.workspace }}/waike-research-ops
           DEVICE_OS_ROOT: ${{ github.workspace }}/gunnchos-device-os
           GUNNCHAI_ROOT: ${{ github.workspace }}/gunnchAI3k
-          PYTHONPATH: tools/course_compiler:services/hub
+          PYTHONPATH: services/hub
           WAIKE_ALLOW_FAKE_AI: "1"
         run: |
           .venv/bin/python scripts/clean_room_reconstruct.py
@@ -122,14 +122,15 @@ jobs:
           WAIKE_ROOT: ${{ github.workspace }}/waike-research-ops
           DEVICE_OS_ROOT: ${{ github.workspace }}/gunnchos-device-os
           GUNNCHAI_ROOT: ${{ github.workspace }}/gunnchAI3k
-          PYTHONPATH: tools/course_compiler:services/hub
+          PYTHONPATH: services/hub
           WAIKE_ALLOW_FAKE_AI: "1"
         run: |
           .venv/bin/pytest -q \
             tests/compatibility tests/security tests/integration \
             tests/assessment tests/pr3 tests/gate_a \
-            tests/gate_b tests/gate_c services/hub/tests \
-            --tb=line
+            services/hub/tests --tb=line
+          .venv/bin/pytest -q tests/gate_c --tb=line
+          PYTHONPATH=tools/course_compiler:services/hub .venv/bin/pytest -q tests/gate_b --tb=line
 
   all-18-tracks:
     name: all-18-tracks
@@ -185,7 +186,7 @@ jobs:
           .venv/bin/python -m course_compiler.cli compile-all --out pack_out_18
           WAIKE_ROOT=$WAIKE_ROOT .venv/bin/python scripts/inventory_18_tracks.py
           WAIKE_ROOT=$WAIKE_ROOT .venv/bin/python scripts/build_18_track_matrix.py
-          .venv/bin/pytest -q \
+          PYTHONPATH=tools/course_compiler:services/hub .venv/bin/pytest -q \
             tests/gate_b/test_compiler_18.py \
             tests/gate_b/test_package_security_18.py \
             tests/gate_b/test_runtime_import_18.py \
@@ -195,8 +196,8 @@ jobs:
             tests/gate_b/test_instructor_18.py \
             tests/gate_b/test_offline_18.py \
             tests/gate_b/test_track_acceptance_e2e.py \
-            tests/gate_d/test_all_18_tracks.py \
             --tb=short
+          .venv/bin/pytest -q tests/gate_d/test_all_18_tracks.py --tb=short
 
   learner-journey:
     name: learner-journey
@@ -245,14 +246,12 @@ jobs:
           WAIKE_ROOT: ${{ github.workspace }}/waike-research-ops
           DEVICE_OS_ROOT: ${{ github.workspace }}/gunnchos-device-os
           GUNNCHAI_ROOT: ${{ github.workspace }}/gunnchAI3k
-          PYTHONPATH: tools/course_compiler:services/hub
+          PYTHONPATH: services/hub
           WAIKE_ALLOW_FAKE_AI: "1"
         run: |
-          .venv/bin/pytest -q \
-            tests/gate_a/test_learner_e2e.py \
-            tests/assessment \
-            tests/gate_d/test_learner_journey.py \
-            --tb=short
+          .venv/bin/pytest -q tests/assessment --tb=short
+          .venv/bin/pytest -q tests/gate_a/test_learner_e2e.py --tb=short
+          .venv/bin/pytest -q tests/gate_d/test_learner_journey.py --tb=short
 
   instructor-journey:
     name: instructor-journey
@@ -301,14 +300,12 @@ jobs:
           WAIKE_ROOT: ${{ github.workspace }}/waike-research-ops
           DEVICE_OS_ROOT: ${{ github.workspace }}/gunnchos-device-os
           GUNNCHAI_ROOT: ${{ github.workspace }}/gunnchAI3k
-          PYTHONPATH: tools/course_compiler:services/hub
+          PYTHONPATH: services/hub
           WAIKE_ALLOW_FAKE_AI: "1"
         run: |
-          .venv/bin/pytest -q \
-            tests/gate_a/test_instructor_e2e.py \
-            tests/pr3/test_gradebook.py \
-            tests/gate_d/test_instructor_journey.py \
-            --tb=short
+          .venv/bin/pytest -q tests/pr3/test_gradebook.py --tb=short
+          .venv/bin/pytest -q tests/gate_a/test_instructor_e2e.py --tb=short
+          .venv/bin/pytest -q tests/gate_d/test_instructor_journey.py --tb=short
 
   other-roles:
     name: other-roles
@@ -357,15 +354,14 @@ jobs:
           WAIKE_ROOT: ${{ github.workspace }}/waike-research-ops
           DEVICE_OS_ROOT: ${{ github.workspace }}/gunnchos-device-os
           GUNNCHAI_ROOT: ${{ github.workspace }}/gunnchAI3k
-          PYTHONPATH: tools/course_compiler:services/hub
+          PYTHONPATH: services/hub
           WAIKE_ALLOW_FAKE_AI: "1"
         run: |
           .venv/bin/pytest -q \
             tests/pr3/test_authorization.py \
             tests/pr3/test_multi_role_atomic.py \
-            tests/pr3/test_multi_user_e2e.py \
-            tests/gate_d/test_other_roles.py \
-            --tb=short
+            tests/pr3/test_multi_user_e2e.py --tb=short
+          .venv/bin/pytest -q tests/gate_d/test_other_roles.py --tb=short
 
   offline-cross-device:
     name: offline-cross-device
@@ -414,7 +410,7 @@ jobs:
           WAIKE_ROOT: ${{ github.workspace }}/waike-research-ops
           DEVICE_OS_ROOT: ${{ github.workspace }}/gunnchos-device-os
           GUNNCHAI_ROOT: ${{ github.workspace }}/gunnchAI3k
-          PYTHONPATH: tools/course_compiler:services/hub
+          PYTHONPATH: services/hub
           WAIKE_ALLOW_FAKE_AI: "1"
         run: |
           .venv/bin/pytest -q \
@@ -422,9 +418,8 @@ jobs:
             tests/gate_a/test_cross_device.py \
             tests/gate_a/test_conflict.py \
             tests/gate_a/test_sync_api.py \
-            tests/gate_a/test_sync_model.py \
-            tests/gate_d/test_offline_cross_device.py \
-            --tb=short
+            tests/gate_a/test_sync_model.py --tb=short
+          .venv/bin/pytest -q tests/gate_d/test_offline_cross_device.py --tb=short
 
   gunnchai-acceptance:
     name: gunnchai-acceptance
@@ -477,7 +472,7 @@ jobs:
           WAIKE_ALLOW_FAKE_AI: "1"
         run: |
           .venv/bin/python scripts/verify_gunnchai_contract.py
-          .venv/bin/pytest -q \
+          PYTHONPATH=tools/course_compiler:services/hub .venv/bin/pytest -q \
             tests/gate_b/test_ai_policy.py \
             tests/gate_b/test_ai_grounding_integrity.py \
             tests/gate_b/test_ai_context_isolation.py \
@@ -487,8 +482,8 @@ jobs:
             tests/gate_b/test_gunnchai_contract.py \
             tests/gate_b/test_production_ai_no_fake.py \
             tests/gate_b/test_adversarial_ai_sabotage.py \
-            tests/gate_d/test_gunnchai_acceptance.py \
             --tb=short
+          .venv/bin/pytest -q tests/gate_d/test_gunnchai_acceptance.py --tb=short
 
   interop-acceptance:
     name: interop-acceptance
@@ -537,7 +532,7 @@ jobs:
           WAIKE_ROOT: ${{ github.workspace }}/waike-research-ops
           DEVICE_OS_ROOT: ${{ github.workspace }}/gunnchos-device-os
           GUNNCHAI_ROOT: ${{ github.workspace }}/gunnchAI3k
-          PYTHONPATH: tools/course_compiler:services/hub
+          PYTHONPATH: services/hub
           WAIKE_ALLOW_FAKE_AI: "1"
         run: |
           .venv/bin/pytest -q \
@@ -546,9 +541,8 @@ jobs:
             tests/gate_c/test_qti.py \
             tests/gate_c/test_qti_security.py \
             tests/gate_c/test_lti.py \
-            tests/gate_c/test_lti_security.py \
-            tests/gate_d/test_interop_acceptance.py \
-            --tb=short
+            tests/gate_c/test_lti_security.py --tb=short
+          .venv/bin/pytest -q tests/gate_d/test_interop_acceptance.py --tb=short
 
   deviceos-acceptance:
     name: deviceos-acceptance
@@ -597,13 +591,11 @@ jobs:
           WAIKE_ROOT: ${{ github.workspace }}/waike-research-ops
           DEVICE_OS_ROOT: ${{ github.workspace }}/gunnchos-device-os
           GUNNCHAI_ROOT: ${{ github.workspace }}/gunnchAI3k
-          PYTHONPATH: tools/course_compiler:services/hub
+          PYTHONPATH: services/hub
           WAIKE_ALLOW_FAKE_AI: "1"
         run: |
-          .venv/bin/pytest -q \
-            tests/gate_c/test_deviceos.py \
-            tests/gate_d/test_deviceos_acceptance.py \
-            --tb=short
+          .venv/bin/pytest -q tests/gate_c/test_deviceos.py --tb=short
+          .venv/bin/pytest -q tests/gate_d/test_deviceos_acceptance.py --tb=short
 
   data-durability:
     name: data-durability
@@ -652,18 +644,17 @@ jobs:
           WAIKE_ROOT: ${{ github.workspace }}/waike-research-ops
           DEVICE_OS_ROOT: ${{ github.workspace }}/gunnchos-device-os
           GUNNCHAI_ROOT: ${{ github.workspace }}/gunnchAI3k
-          PYTHONPATH: tools/course_compiler:services/hub
+          PYTHONPATH: services/hub
           WAIKE_ALLOW_FAKE_AI: "1"
         run: |
+          .venv/bin/pytest -q tests/pr3/test_migration_pr2_to_pr3.py --tb=short
           .venv/bin/pytest -q \
-            tests/gate_c/test_backup_restore.py \
             tests/gate_a/test_migration_pr3_to_gate_a.py \
             tests/gate_a/test_idempotency.py \
             tests/gate_a/test_idempotency_closure.py \
-            tests/gate_a/test_transaction_integrity_closure.py \
-            tests/pr3/test_migration_pr2_to_pr3.py \
-            tests/gate_d/test_data_durability.py \
-            --tb=short
+            tests/gate_a/test_transaction_integrity_closure.py --tb=short
+          .venv/bin/pytest -q tests/gate_c/test_backup_restore.py --tb=short
+          .venv/bin/pytest -q tests/gate_d/test_data_durability.py --tb=short
 
   security-privacy:
     name: security-privacy
@@ -712,18 +703,17 @@ jobs:
           WAIKE_ROOT: ${{ github.workspace }}/waike-research-ops
           DEVICE_OS_ROOT: ${{ github.workspace }}/gunnchos-device-os
           GUNNCHAI_ROOT: ${{ github.workspace }}/gunnchAI3k
-          PYTHONPATH: tools/course_compiler:services/hub
+          PYTHONPATH: services/hub
           WAIKE_ALLOW_FAKE_AI: "1"
         run: |
+          .venv/bin/pytest -q tests/security --tb=short
           .venv/bin/pytest -q \
-            tests/security \
-            tests/gate_c/test_security_sabotage.py \
             tests/gate_a/test_adversarial_sabotage.py \
             tests/gate_a/test_object_authz_closure.py \
             tests/gate_a/test_attachment_security.py \
-            tests/gate_a/test_attachment_tenancy_closure.py \
-            tests/gate_d/test_security_privacy.py \
-            --tb=short
+            tests/gate_a/test_attachment_tenancy_closure.py --tb=short
+          .venv/bin/pytest -q tests/gate_c/test_security_sabotage.py --tb=short
+          .venv/bin/pytest -q tests/gate_d/test_security_privacy.py --tb=short
 
   perf-ops:
     name: perf-ops
@@ -772,14 +762,13 @@ jobs:
           WAIKE_ROOT: ${{ github.workspace }}/waike-research-ops
           DEVICE_OS_ROOT: ${{ github.workspace }}/gunnchos-device-os
           GUNNCHAI_ROOT: ${{ github.workspace }}/gunnchAI3k
-          PYTHONPATH: tools/course_compiler:services/hub
+          PYTHONPATH: services/hub
           WAIKE_ALLOW_FAKE_AI: "1"
         run: |
           .venv/bin/pytest -q \
             tests/gate_c/test_performance_concurrency.py \
-            tests/gate_c/test_hardening.py \
-            tests/gate_d/test_perf_ops.py \
-            --tb=short
+            tests/gate_c/test_hardening.py --tb=short
+          .venv/bin/pytest -q tests/gate_d/test_perf_ops.py --tb=short
 
   adversarial-final:
     name: adversarial-final
@@ -828,15 +817,14 @@ jobs:
           WAIKE_ROOT: ${{ github.workspace }}/waike-research-ops
           DEVICE_OS_ROOT: ${{ github.workspace }}/gunnchos-device-os
           GUNNCHAI_ROOT: ${{ github.workspace }}/gunnchAI3k
-          PYTHONPATH: tools/course_compiler:services/hub
+          PYTHONPATH: services/hub
           WAIKE_ALLOW_FAKE_AI: "1"
         run: |
-          .venv/bin/pytest -q \
-            tests/gate_d/test_adversarial_final.py \
-            tests/gate_c/test_security_sabotage.py \
-            tests/gate_b/test_adversarial_ai_sabotage.py \
-            tests/gate_a/test_adversarial_sabotage.py \
-            --tb=short
+          .venv/bin/pytest -q tests/gate_d/test_adversarial_final.py --tb=short
+          .venv/bin/pytest -q tests/gate_c/test_security_sabotage.py --tb=short
+          PYTHONPATH=tools/course_compiler:services/hub .venv/bin/pytest -q \
+            tests/gate_b/test_adversarial_ai_sabotage.py --tb=short
+          .venv/bin/pytest -q tests/gate_a/test_adversarial_sabotage.py --tb=short
 
   a11y-frontend:
     name: a11y-frontend
@@ -852,18 +840,52 @@ jobs:
           cache: pnpm
           cache-dependency-path: apps/client/pnpm-lock.yaml
       - name: Frontend + a11y suites
+        working-directory: apps/client
         run: |
-          cd apps/client && pnpm install --frozen-lockfile
-          pnpm test -- --run src/test/a11y.gate-a.test.tsx src/test/a11y.gate-b.test.tsx src/test/a11y.gate-c.test.tsx src/test/keyboard.gate-c.test.tsx src/test/a11y.pr3.test.tsx
+          pnpm install --frozen-lockfile
+          pnpm exec vitest run src/test/a11y.gate-a.test.tsx src/test/a11y.gate-b.test.tsx src/test/a11y.gate-c.test.tsx src/test/keyboard.gate-c.test.tsx src/test/a11y.pr3.test.tsx
 
   rust:
     name: rust
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+        with:
+          repository: gunnchOS3k/waike-research-ops
+          path: waike-research-ops
+          ref: ${{ env.WAIKE_PIN_REF }}
+      - uses: astral-sh/setup-uv@v4
+      - name: Align WAIKE pin provenance
+        run: |
+          python3 - <<'PY'
+          import json, subprocess
+          from pathlib import Path
+          pin = Path("curriculum/registry/PIN.json")
+          data = json.loads(pin.read_text())
+          data["source_path"] = "./waike-research-ops"
+          data["absolute_path_hint"] = str(Path("waike-research-ops").resolve())
+          observed = subprocess.check_output(["git","-C","waike-research-ops","rev-parse","HEAD"], text=True).strip()
+          if data["pinned_commit"] != observed:
+              raise SystemExit(f"PROVENANCE_MISMATCH {data['pinned_commit']} != {observed}")
+          pin.write_text(json.dumps(data, indent=2) + "\n")
+          PY
       - uses: dtolnay/rust-toolchain@stable
-      - name: Cargo test
-        run: cd apps/client/src-tauri && cargo test
+      - name: Install webkit/gtk deps
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            libwebkit2gtk-4.1-dev libgtk-3-dev libayatana-appindicator3-dev \
+            librsvg2-dev patchelf pkg-config libglib2.0-dev
+      - name: Prepare pack + cargo test
+        env:
+          WAIKE_ROOT: ${{ github.workspace }}/waike-research-ops
+          WAIKE_DEV_DB_KEY: ${{ env.WAIKE_DEV_DB_KEY }}
+        run: |
+          uv venv .venv
+          uv pip install --python .venv/bin/python -e tools/course_compiler cryptography PyNaCl
+          .venv/bin/course-compiler compile DIGITAL_CONFIDENCE --out pack_out
+          cd apps/client/src-tauri && cargo test
 
   native-linux:
     name: native-linux
@@ -882,7 +904,7 @@ jobs:
       - name: Install linux deps
         run: |
           sudo apt-get update
-          sudo apt-get install -y libwebkit2gtk-4.1-dev libgtk-3-dev libayatana-appindicator3-dev librsvg2-dev patchelf pkg-config
+          sudo apt-get install -y libwebkit2gtk-4.1-dev libgtk-3-dev libayatana-appindicator3-dev librsvg2-dev patchelf pkg-config libglib2.0-dev
       - name: Build native Linux artifact
         env:
           SOURCE_DATE_EPOCH: "1700000000"
@@ -894,7 +916,6 @@ jobs:
           test -x target/release/waike-learning-client
           HEAD_SHA="${{ github.event.pull_request.head.sha }}"
           if [ -z "$HEAD_SHA" ]; then HEAD_SHA="${{ github.sha }}"; fi
-          SHORT="${HEAD_SHA:0:12}"
           sha256sum target/release/waike-learning-client | tee ../../../reports/LINUX_SHA256SUMS.txt
           echo "artifact_head_sha=$HEAD_SHA" > ../../../reports/LINUX_ARTIFACT_META.txt
           echo "waike_pin_ref=${{ env.WAIKE_PIN_REF }}" >> ../../../reports/LINUX_ARTIFACT_META.txt
@@ -922,6 +943,7 @@ jobs:
           repository: gunnchOS3k/waike-research-ops
           path: waike-research-ops
           ref: ${{ env.WAIKE_PIN_REF }}
+      - uses: astral-sh/setup-uv@v4
       - name: Align WAIKE pin provenance
         run: |
           python3 - <<'PY'
@@ -945,11 +967,11 @@ jobs:
           node-version: "20"
           cache: pnpm
           cache-dependency-path: apps/client/pnpm-lock.yaml
-      - uses: dtolnay/rust-toolchain@stable
       - name: Build frontend + tauri DMG
         env:
           SOURCE_DATE_EPOCH: "1700000000"
           WAIKE_DEV_DB_KEY: ${{ env.WAIKE_DEV_DB_KEY }}
+          WAIKE_ROOT: ${{ github.workspace }}/waike-research-ops
         run: |
           mkdir -p reports pack_out
           uv venv .venv
@@ -1006,7 +1028,9 @@ jobs:
       - name: Install linux deps + xvfb
         run: |
           sudo apt-get update
-          sudo apt-get install -y libwebkit2gtk-4.1-dev libgtk-3-dev libayatana-appindicator3-dev librsvg2-dev patchelf pkg-config libglib2.0-dev xvfb
+          sudo apt-get install -y \
+            libwebkit2gtk-4.1-dev libgtk-3-dev libayatana-appindicator3-dev \
+            librsvg2-dev patchelf pkg-config libglib2.0-dev xvfb
       - name: Build actual Platform Linux Tauri binary
         env:
           SOURCE_DATE_EPOCH: "1700000000"
