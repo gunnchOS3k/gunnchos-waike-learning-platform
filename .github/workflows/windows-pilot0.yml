@@ -92,7 +92,7 @@ jobs:
         working-directory: apps/client
         shell: bash
         run: pnpm install --frozen-lockfile
-      - name: Build frontend + Tauri Windows bundles
+      - name: Build frontend (vite)
         working-directory: apps/client
         shell: pwsh
         env:
@@ -100,15 +100,27 @@ jobs:
         run: |
           $ErrorActionPreference = "Stop"
           pnpm run build
-          # Avoid bash/JSON quoting pitfalls on Windows; write merge config to disk.
+          if (-not (Test-Path dist/index.html)) { throw "frontend dist/index.html missing after vite build" }
+      - name: Build Tauri Windows NSIS bundle
+        working-directory: apps/client
+        shell: pwsh
+        env:
+          WAIKE_DEV_DB_KEY: ${{ env.WAIKE_DEV_DB_KEY }}
+        run: |
+          $ErrorActionPreference = "Stop"
           $cfg = @{
-            build = @{ beforeBuildCommand = "" }
+            build = @{ beforeBuildCommand = ""; frontendDist = "../dist" }
             bundle = @{ targets = @("nsis") }
           } | ConvertTo-Json -Compress -Depth 5
           Set-Content -Encoding utf8 -Path tauri.windows-pilot0.json -Value $cfg
-          Get-Content tauri.windows-pilot0.json
-          pnpm exec tauri build --config tauri.windows-pilot0.json
-      - name: Record runner image metadata
+          Write-Host "tauri override config: $(Get-Content tauri.windows-pilot0.json -Raw)"
+          Write-Host "rustc: $(rustc --version)"
+          Write-Host "cargo: $(cargo --version)"
+          # Surface compile errors as annotations without private log download.
+          pnpm exec tauri build --config tauri.windows-pilot0.json --verbose
+          $nsis = Get-ChildItem -Recurse -Filter *.exe -Path src-tauri/target/release/bundle/nsis -ErrorAction SilentlyContinue
+          if (-not $nsis) { throw "NSIS exe missing under src-tauri/target/release/bundle/nsis" }
+          Write-Host "NSIS artifacts:"; $nsis | ForEach-Object { $_.FullName }      - name: Record runner image metadata
         if: always()
         shell: pwsh
         run: |
