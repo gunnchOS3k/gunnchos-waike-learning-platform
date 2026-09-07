@@ -55,20 +55,32 @@ def _measure_uncommitted_deps(waike: Path, device: Path, gunnchai: Path) -> tupl
 
 
 def _measure_stale_db_reuse() -> tuple[bool, dict]:
-    """True when hub/test DB appears to reuse a committed or shared stale path."""
+    """True when hub/test DB appears committed or forced onto a durable shared path."""
     notes: list[str] = []
     stale = False
-    committed_dbs = list(ROOT.glob("**/*.sqlite3"))
-    # Ignore venv / node_modules / .tmp ephemeral noise; flag tracked-looking paths under repo root.
-    suspicious = []
-    for p in committed_dbs:
-        rel = p.relative_to(ROOT).as_posix()
-        if any(x in rel for x in (".venv/", "node_modules/", ".tmp/", "target/", "pack_out")):
+    suspicious: list[str] = []
+    # Measure committed sqlite reuse via git index (not ephemeral runner/tmp DBs).
+    try:
+        tracked = subprocess.check_output(
+            ["git", "-C", str(ROOT), "ls-files", "*.sqlite3", "*.sqlite", "*.db"],
+            text=True,
+        ).splitlines()
+    except subprocess.CalledProcessError:
+        tracked = []
+        notes.append("git_ls_files_failed")
+    for rel in tracked:
+        if any(x in rel for x in (".venv/", "node_modules/", ".tmp/", "target/")):
             continue
-        # Committed sqlite under services/ or reports/ is stale reuse risk.
-        if rel.startswith(("services/", "reports/", "apps/")) or "/fixtures/" in rel:
+        suspicious.append(rel)
+        stale = True
+    # Explicit durable hub paths that must never be reused as Gate D truth DBs.
+    for rel in ("hub.sqlite3", "services/hub/hub.sqlite3"):
+        p = ROOT / rel
+        if p.exists():
+            # If untracked ephemeral file appears under repo root durable name, still flag.
             suspicious.append(rel)
             stale = True
+            notes.append(f"durable_path_exists:{rel}")
     env_db = os.environ.get("GATE_D_DB_PATH") or os.environ.get("WAIKE_HUB_DB")
     if env_db:
         p = Path(env_db)
@@ -77,17 +89,12 @@ def _measure_stale_db_reuse() -> tuple[bool, dict]:
             under_tmp = tmp_root in p.resolve().parents or p.resolve().parent == tmp_root
         except OSError:
             under_tmp = False
-        if p.exists() and not under_tmp and "gate" not in p.name.lower():
+        if p.exists() and not under_tmp and ".tmp" not in str(p):
             notes.append(f"env_db_not_temp:{env_db}")
-            # Only flag when clearly a shared durable path outside temp/CI workspace.
-            if str(p).startswith(str(ROOT)) and ".tmp" not in str(p):
+            if str(p.resolve()).startswith(str(ROOT.resolve())):
                 stale = True
                 suspicious.append(str(p))
-    # Fresh CI / pytest uses tmp_path — absence of committed hub.sqlite3 is the positive signal.
-    if (ROOT / "hub.sqlite3").exists() or (ROOT / "services/hub/hub.sqlite3").exists():
-        stale = True
-        suspicious.append("committed_hub.sqlite3")
-    return stale, {"suspicious_db_paths": suspicious, "notes": notes}
+    return stale, {"suspicious_db_paths": suspicious, "notes": notes, "tracked_sqlite": tracked[:20]}
 
 
 def _measure_prior_run_artifact_reuse() -> tuple[bool, dict]:
