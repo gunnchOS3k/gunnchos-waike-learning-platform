@@ -1,6 +1,6 @@
 # Gate D Clean-Room Reconstruction
 
-Generated: 2026-09-07T02:30:12Z
+Generated: 2026-09-07T03:01:07Z
 OK: **False**
 
 ## Pins
@@ -12,7 +12,7 @@ OK: **False**
 - `waike`: `fbf7685bc5686201ccaa0128ee83346d59b3d584`
 - `device_os`: `4f02a48780d300a5d3a7758937b20e3bf9364d0d`
 - `gunnchai`: `4b4f411710e8cdb8102a7e11502f8497f68156b1`
-- `platform`: `26290475e0387adf953cdeedc9b216d8129cdfc6`
+- `platform`: `271944f3effdc7dc3ef82c11b1294f9c5a8159fa`
 
 ## Forbidden (measured)
 - `uncommitted_deps`: `False`

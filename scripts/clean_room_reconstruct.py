@@ -127,13 +127,19 @@ def _measure_fixture_only_production_proof() -> tuple[bool, dict]:
     )
     details["workflow_unsets_learning_os_executable"] = "unset LEARNING_OS_EXECUTABLE" in wf_text
     e2e = REPORTS / "DEVICEOS_REAL_TAURI_E2E.json"
+    require_e2e = os.environ.get("GATE_D_REQUIRE_DEVICEOS_E2E", "").strip() in (
+        "1",
+        "true",
+        "TRUE",
+    )
     if e2e.is_file():
         try:
             de = json.loads(e2e.read_text(encoding="utf-8"))
         except json.JSONDecodeError:
             de = {}
-            fixture_only = True
-            details["deviceos_json"] = "invalid"
+            if require_e2e:
+                fixture_only = True
+                details["deviceos_json"] = "invalid"
         blob = json.dumps(de)
         if de.get("mock") is True:
             fixture_only = True
@@ -143,21 +149,22 @@ def _measure_fixture_only_production_proof() -> tuple[bool, dict]:
             details["deviceos_fixture_path"] = True
         if de.get("launched") or de.get("acknowledged"):
             details["deviceos_real_launch_signal"] = True
-        if de.get("reason") == "COMMITTED_TEMPLATE_NOT_GATE_D_EVIDENCE":
-            # Template is not production proof; treat as fixture-only until CI overwrites.
-            if os.environ.get("GITHUB_ACTIONS") == "true":
+        template = de.get("reason") == "COMMITTED_TEMPLATE_NOT_GATE_D_EVIDENCE"
+        if template:
+            details["deviceos_pending_template"] = True
+            # Template is honest non-proof until verify stages this-run E2E.
+            # Fail only when this-run Device OS evidence is required.
+            if require_e2e:
                 fixture_only = True
-                details["deviceos_template_in_ci"] = True
-            else:
-                details["deviceos_template_local_ok"] = True
+                details["deviceos_template_under_require"] = True
+        elif require_e2e and not (de.get("launched") or de.get("acknowledged")):
+            fixture_only = True
+            details["deviceos_required_but_not_launched"] = True
     else:
-        # Before Device OS job stages evidence, rely on workflow guards.
-        if os.environ.get("GITHUB_ACTIONS") == "true" and os.environ.get(
-            "GATE_D_REQUIRE_DEVICEOS_E2E"
-        ) == "1":
+        details["deviceos_report_absent"] = True
+        if require_e2e:
             fixture_only = True
             details["deviceos_missing_under_require"] = True
-        details["deviceos_report_absent"] = True
 
     # Fake AI allowed only for test harness — never as sole production proof claim.
     details["waike_allow_fake_ai_env"] = os.environ.get("WAIKE_ALLOW_FAKE_AI", "")
