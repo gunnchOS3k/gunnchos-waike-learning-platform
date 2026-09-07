@@ -293,6 +293,8 @@ Status: **OPEN / EXTERNAL** — recorded honestly; not fabricated.
     results["claims_blocked"] = blocked
 
     _write_json("GATE_D_VERIFICATION.json", results)
+    claim_lines = [f"- `{c}`" for c in claims] or ["- (none)"]
+    blocked_lines = [f"- `{c}`" for c in blocked] or ["- (none)"]
     md = [
         "# Gate D Verification",
         "",
@@ -300,10 +302,10 @@ Status: **OPEN / EXTERNAL** — recorded honestly; not fabricated.
         f"Status: **{results['status']}**",
         "",
         "## Claims earned",
-        *[f"- `{c}`" for c in claims] or ["- (none)"],
+        *claim_lines,
         "",
         "## Claims blocked",
-        *[f"- `{c}`" for c in blocked] or ["- (none)"],
+        *blocked_lines,
         "",
         "## Test counts",
         f"- prior_regression: `{prior_counts}`",
