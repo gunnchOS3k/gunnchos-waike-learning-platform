@@ -1,0 +1,58 @@
+{
+  "generated_utc": "2026-09-07T03:01:07Z",
+  "method": "fresh_workspace_from_pinned_shas_measured",
+  "pins": {
+    "device_os": "4f02a48780d300a5d3a7758937b20e3bf9364d0d",
+    "waike": "fbf7685bc5686201ccaa0128ee83346d59b3d584",
+    "gunnchai": "4b4f411710e8cdb8102a7e11502f8497f68156b1"
+  },
+  "observed": {
+    "waike": "fbf7685bc5686201ccaa0128ee83346d59b3d584",
+    "device_os": "4f02a48780d300a5d3a7758937b20e3bf9364d0d",
+    "gunnchai": "4b4f411710e8cdb8102a7e11502f8497f68156b1",
+    "platform": "271944f3effdc7dc3ef82c11b1294f9c5a8159fa"
+  },
+  "mismatches": {},
+  "forbidden": {
+    "uncommitted_deps": false,
+    "stale_db_reuse": true,
+    "prior_run_artifact_reuse": false,
+    "fixture_only_production_proof": false
+  },
+  "measurements": {
+    "uncommitted_deps": {
+      "waike": [],
+      "device_os": [],
+      "gunnchai": []
+    },
+    "stale_db_reuse": {
+      "suspicious_db_paths": [
+        "services/hub/data/hub.sqlite3"
+      ],
+      "notes": []
+    },
+    "prior_run_artifact_reuse": {
+      "checked": [
+        "/Users/gunnchos/dev/waike-learning-os-workspace/gunnchos-waike-learning-platform/.gate_d_prior_artifacts"
+      ]
+    },
+    "fixture_only_production_proof": {
+      "workflow_rejects_deviceos_fixture": true,
+      "workflow_unsets_learning_os_executable": true,
+      "deviceos_pending_template": true,
+      "waike_allow_fake_ai_env": "1"
+    }
+  },
+  "reconstruction_steps": [
+    "Checkout platform Gate D head into empty runner workspace",
+    "Checkout waike-research-ops @fbf7685bc5686201ccaa0128ee83346d59b3d584",
+    "Checkout gunnchos-device-os @4f02a48780d300a5d3a7758937b20e3bf9364d0d",
+    "Checkout gunnchAI3k @4b4f411710e8cdb8102a7e11502f8497f68156b1",
+    "Align curriculum/registry/PIN.json absolute_path_hint to checkout",
+    "Install Python/Node/Rust toolchains without reusing prior pack_out/DBs",
+    "Run Gate D acceptance suites; fail closed on skip/xfail masks",
+    "Require this-run native + Device OS Tauri E2E (not fixture-only production proof)"
+  ],
+  "ci_workspace": false,
+  "ok": false
+}

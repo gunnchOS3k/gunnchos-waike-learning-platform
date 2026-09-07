@@ -1,0 +1,15 @@
+{
+  "generated_utc": "2026-09-07T00:06:58Z",
+  "status": "PASS",
+  "scopes": [
+    "migrations",
+    "backup",
+    "destructive_restore",
+    "integrity",
+    "corruption_rejection",
+    "concurrency",
+    "idempotency",
+    "transactions"
+  ],
+  "evidence": "tests/gate_c/test_backup_restore.py + gate_a idempotency/txn + pr3 migration"
+}

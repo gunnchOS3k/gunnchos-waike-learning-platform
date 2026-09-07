@@ -27,6 +27,7 @@ PR3_USERS = [
     ("admin-alpha", "site-alpha", "admin-alpha", "Admin Alpha", [Role.SITE_ADMIN]),
     ("instructor-alpha", "site-alpha", "instructor-alpha", "Instructor Alpha", [Role.INSTRUCTOR]),
     ("grader-alpha", "site-alpha", "grader-alpha", "Grader Alpha", [Role.GRADER]),
+    ("guardian-alpha", "site-alpha", "guardian-alpha", "Guardian Alpha", [Role.GUARDIAN]),
     ("learner-alpha", "site-alpha", "learner-alpha", "Learner Alpha", [Role.LEARNER]),
     ("learner-beta", "site-alpha", "learner-beta", "Learner Beta", [Role.LEARNER]),
     # site-beta (isolation)

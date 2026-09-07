@@ -1,0 +1,31 @@
+{
+  "generated_utc": "2026-09-07T04:00:05Z",
+  "status": "PASS",
+  "steps": {
+    "auth_roles": "PASS",
+    "sections_activity": "PASS",
+    "assessment_queue": "PASS",
+    "grading_rubrics_feedback": "PASS",
+    "gradebook": "PASS",
+    "mastery_remediation": "PASS",
+    "discussion_group": "PASS",
+    "accommodations": "PASS",
+    "admin_operator": "PASS"
+  },
+  "accommodations_effect": {
+    "attempt_override": true,
+    "time_multiplier": true,
+    "due_extension_minutes": true,
+    "control_time_limit_minutes": 30.0,
+    "accommodated_time_limit_minutes": 105.0,
+    "formula": "base_30 * time_multiplier_2.0 + due_extension_45"
+  },
+  "mastery_observable": true,
+  "remediation_observable": true,
+  "gradebook_learner_ids_sampled": [
+    "learner-a",
+    "learner-alpha",
+    "learner-b",
+    "learner-beta"
+  ]
+}

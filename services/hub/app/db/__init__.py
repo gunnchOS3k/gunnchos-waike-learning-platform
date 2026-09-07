@@ -10,6 +10,7 @@ from app.migrations.m004_offline_sync_activities import SQL as M004
 from app.migrations.m005_ai_policy import SQL as M005
 from app.migrations.m006_gate_c import SQL as M006
 from app.migrations.m007_gate_c_owner import SQL as M007
+from app.migrations.m008_gate_d import SQL as M008
 
 
 MIGRATIONS: list[tuple[str, str]] = [
@@ -20,6 +21,7 @@ MIGRATIONS: list[tuple[str, str]] = [
     ("005_ai_policy", M005),
     ("006_gate_c", M006),
     ("007_gate_c_owner", M007),
+    ("008_gate_d", M008),
 ]
 
 

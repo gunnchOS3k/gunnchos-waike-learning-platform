@@ -1,4 +1,4 @@
-.PHONY: bootstrap lint test build verify-pr1 verify-pr2 verify-pr3 verify-gate-a verify-gate-b verify-gate-c gate-c-test compile-dc compile-18 rust-test frontend-test hub-test python-test assessment-test pr3-test gate-a-test gate-b-test gate-b-ai-test clean
+.PHONY: bootstrap lint test build verify-pr1 verify-pr2 verify-pr3 verify-gate-a verify-gate-b verify-gate-c verify-gate-d gate-c-test gate-d-test compile-dc compile-18 rust-test frontend-test hub-test python-test assessment-test pr3-test gate-a-test gate-b-test gate-b-ai-test clean
 
 export PATH := $(HOME)/.cargo/bin:$(PATH)
 export SOURCE_DATE_EPOCH ?= 1700000000
@@ -139,3 +139,11 @@ verify-gate-c:
 	@mkdir -p reports
 	@WAIKE_ROOT=$(WAIKE_ROOT) DEVICE_OS_ROOT=$${DEVICE_OS_ROOT:-$(CURDIR)/../gunnchos-device-os} GUNNCHAI_ROOT=$${GUNNCHAI_ROOT:-$(CURDIR)/../gunnchAI3k} WAIKE_ALLOW_FAKE_AI=$${WAIKE_ALLOW_FAKE_AI:-1} $(PYTHON) scripts/verify_gate_c.py
 	@echo "verify-gate-c: see reports/GATE_C_VERIFICATION.md"
+
+gate-d-test:
+	WAIKE_ROOT=$(WAIKE_ROOT) DEVICE_OS_ROOT=$(CURDIR)/../gunnchos-device-os GUNNCHAI_ROOT=$(CURDIR)/../gunnchAI3k PYTHONPATH=tools/course_compiler:services/hub $(PYTHON) -m pytest -q tests/gate_d
+
+verify-gate-d:
+	@mkdir -p reports
+	@WAIKE_ROOT=$(WAIKE_ROOT) DEVICE_OS_ROOT=$${DEVICE_OS_ROOT:-$(CURDIR)/../gunnchos-device-os} GUNNCHAI_ROOT=$${GUNNCHAI_ROOT:-$(CURDIR)/../gunnchAI3k} WAIKE_ALLOW_FAKE_AI=$${WAIKE_ALLOW_FAKE_AI:-1} $(PYTHON) scripts/verify_gate_d.py
+	@echo "verify-gate-d: see reports/GATE_D_VERIFICATION.md"

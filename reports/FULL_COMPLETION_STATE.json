@@ -1,39 +1,31 @@
 {
   "schema": "waike.learning_os.full_completion_state.v1",
   "platform_repo": "gunnchOS3k/gunnchos-waike-learning-platform",
-  "platform_pr": 6,
-  "platform_branch": "cursor/waike-learning-gate-c-interop-hardening",
-  "gate_b_merge_commit": "797f5f4b50ff844eecdd068736ac660561910bb4",
-  "current_wave": "GATE_C_INTEROP_DEVICE_HARDENING",
-  "status": "GATE_C_CLAIMS_EARNED_AWAITING_OWNER_MERGE",
+  "platform_branch": "cursor/waike-learning-gate-d-full-acceptance",
+  "accepted_platform_main": "58daf1a0cc22b60c4246eb4195b74bcb0a714a38",
+  "gate_c_merge_commit": "58daf1a0cc22b60c4246eb4195b74bcb0a714a38",
+  "current_wave": "GATE_D_FULL_ACCEPTANCE",
+  "status": "PENDING_FINAL_EXACT_HEAD_CI",
+  "source": "committed_baseline_not_ci_artifact",
   "waves": {
     "PR1_FOUNDATION": "MERGED",
     "PR2_ASSESSMENT_LIFECYCLE": "MERGED",
     "PR3_IDENTITY_INSTRUCTOR": "MERGED",
     "GATE_A_OFFLINE_ACTIVITIES": "MERGED",
     "GATE_B_AI_18_TRACKS": "MERGED",
-    "GATE_C_INTEROP_DEVICE_HARDENING": "CLAIMS_EARNED_PENDING_OWNER_MERGE",
-    "GATE_D_FULL_ACCEPTANCE": "PENDING"
+    "GATE_C_INTEROP_DEVICE_HARDENING": "MERGED",
+    "GATE_D_FULL_ACCEPTANCE": "GATE_D_NOT_READY"
   },
-  "claims_earned": [
-    "digitally implemented and automatically tested for PR 1 scope",
-    "ASSESSMENT_LIFECYCLE_DIGITALLY_COMPLETE",
-    "IDENTITY_AND_INSTRUCTOR_WORKFLOWS_DIGITALLY_COMPLETE",
-    "OFFLINE_AND_ACTIVITY_ENGINE_DIGITALLY_COMPLETE",
-    "GUNNCHAI_PLATFORM_INTEGRATION_DIGITALLY_COMPLETE",
+  "claims_earned": [],
+  "claims_pending": [
+    "AUTOMATED_FULL_PLATFORM_PASS",
     "ALL_18_WAIKE_TRACKS_DIGITALLY_AVAILABLE",
-    "18_TRACK_PLATFORM_DELIVERY_DIGITALLY_COMPLETE",
-    "INTEROPERABILITY_AND_DEVICEOS_DIGITAL_INTEGRATION_COMPLETE",
-    "PLATFORM_HARDENING_DIGITALLY_COMPLETE"
+    "LEARNER_AND_INSTRUCTOR_WORKFLOWS_DIGITALLY_COMPLETE",
+    "READY_FOR_STAFF_ALPHA_AND_HUMAN_VALIDATION"
   ],
-  "claims_pending": [],
-  "device_os_pr": 132,
   "device_os_accepted_main": "4f02a48780d300a5d3a7758937b20e3bf9364d0d",
-  "owner_action": "MERGE_GATE_C_THEN_RERUN_ACCELERATED_MASTER_PROMPT",
-  "next_gate_after_honest_gate_c": "Gate D \u2014 full-system acceptance (do not start)",
-  "last_verified_utc": "2026-09-06T23:27:16Z",
-  "honesty": "Device OS PR #132 owner-merged; Platform re-pinned to accepted origin/main. Local verify_gate_c + real Tauri E2E passed against accepted main. Claims pending remote CI green on final head; do not merge until remote green; do not start Gate D.",
-  "device_os_pr_merged": true,
-  "device_os_pr_tip_ancestral": "5afc126ef1ce0fe917f78d1a3434c1de801535fb",
-  "device_os_pin": "4f02a48780d300a5d3a7758937b20e3bf9364d0d"
+  "waike_pin": "fbf7685bc5686201ccaa0128ee83346d59b3d584",
+  "gunnchai_pin": "4b4f411710e8cdb8102a7e11502f8497f68156b1",
+  "owner_action": "GATE_D_NOT_READY",
+  "honesty": "Committed baseline only. Claims are earned solely from this-run Gate D CI artifact (gate-d-reports-<HEAD>/FULL_COMPLETION_STATE.json written by verify-gate-d). Do not treat this committed file as earned proof. External/human/physical gates remain OPEN."
 }

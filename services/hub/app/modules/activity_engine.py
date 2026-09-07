@@ -260,6 +260,8 @@ class ActivityEngine:
             raise ServiceError("INVALID_TIME_MULTIPLIER", 400)
         if attempt_override is not None and attempt_override <= 0:
             raise ServiceError("INVALID_ATTEMPT_OVERRIDE", 400)
+        if due_extension_minutes is not None and due_extension_minutes < 0:
+            raise ServiceError("INVALID_DUE_EXTENSION", 400)
 
         existing = self.conn.execute(
             "SELECT * FROM accommodations WHERE learner_id=? AND section_id=?",
@@ -376,6 +378,19 @@ class ActivityEngine:
                     minutes=int(acc["availability_extension_minutes"])
                 )
                 policies["availability_end"] = _fmt(end)
+            # due_extension_minutes: extend availability due-window when present, and
+            # add absolute minutes to the timed attempt deadline (submission due).
+            if acc["due_extension_minutes"] is not None:
+                due_ext = int(acc["due_extension_minutes"])
+                if due_ext > 0:
+                    if policies.get("availability_end"):
+                        end = _parse(policies["availability_end"]) + timedelta(minutes=due_ext)
+                        policies["availability_end"] = _fmt(end)
+                    if policies.get("time_limit_minutes") is not None:
+                        policies["time_limit_minutes"] = float(policies["time_limit_minutes"]) + float(
+                            due_ext
+                        )
+                    policies["due_extension_minutes_applied"] = due_ext
             policies["accommodation_applied"] = True
             policies["alternate_modality"] = acc["alternate_modality"]
         else:

@@ -1,0 +1,11 @@
+{
+  "generated_utc": "2026-09-07T01:18:28Z",
+  "status": "PASS",
+  "certification_claimed": false,
+  "subsets": [
+    "OneRoster",
+    "QTI",
+    "LTI"
+  ],
+  "adversarial_rejection": "exercised_via_gate_c_security_suites"
+}

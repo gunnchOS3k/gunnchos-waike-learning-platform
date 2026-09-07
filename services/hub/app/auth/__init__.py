@@ -26,6 +26,7 @@ __all__ = [
     "require_learner",
     "require_instructor_side",
     "require_site_admin",
+    "require_guardian",
     "session_token_hash",
     "issue_session",
     "revoke_session",
@@ -36,6 +37,7 @@ class Role(str, Enum):
     LEARNER = "learner"
     INSTRUCTOR = "instructor"
     GRADER = "grader"
+    GUARDIAN = "guardian"
     SITE_ADMIN = "site_admin"
 
 
@@ -44,6 +46,7 @@ ROLE_PRECEDENCE: tuple[Role, ...] = (
     Role.SITE_ADMIN,
     Role.INSTRUCTOR,
     Role.GRADER,
+    Role.GUARDIAN,
     Role.LEARNER,
 )
 
@@ -276,4 +279,10 @@ def require_instructor_side(actor: Actor) -> Actor:
 def require_site_admin(actor: Actor) -> Actor:
     if not actor.has_role(Role.SITE_ADMIN):
         raise HTTPException(status_code=403, detail="SITE_ADMIN_REQUIRED")
+    return actor
+
+
+def require_guardian(actor: Actor) -> Actor:
+    if not actor.has_role(Role.GUARDIAN):
+        raise HTTPException(status_code=403, detail="GUARDIAN_ROLE_REQUIRED")
     return actor

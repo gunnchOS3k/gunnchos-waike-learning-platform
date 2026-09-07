@@ -85,6 +85,15 @@
         "screen_capture",
         "ring_input"
       ]
+    },
+    "guardian": {
+      "device_os_role": "guardian",
+      "permissions": [
+        "files_read",
+        "network",
+        "notifications",
+        "identity_read"
+      ]
     }
   },
   "ipc_protocol": "gunnchos.learning_os.ipc.v1",
