@@ -158,9 +158,16 @@ def main() -> int:
         ) + gate_counts["skipped"]
 
     # Dependency provenance
+    # Prefer PR head SHA over ephemeral merge ref so evidence matches branch tip.
     platform_sha = (
-        run(["git", "rev-parse", "HEAD"]).stdout or ""
-    ).strip() or os.environ.get("GITHUB_SHA", "")
+        os.environ.get("GATE_D_HEAD_SHA")
+        or os.environ.get("GITHUB_EVENT_PULL_REQUEST_HEAD_SHA")
+        or ""
+    ).strip()
+    if not platform_sha:
+        platform_sha = (
+            run(["git", "rev-parse", "HEAD"]).stdout or ""
+        ).strip() or os.environ.get("GITHUB_SHA", "")
     provenance = {
         "generated_utc": now,
         "platform_sha": platform_sha,

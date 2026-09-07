@@ -1109,19 +1109,26 @@ jobs:
           uv pip install --python .venv/bin/python -e tools/course_compiler fastapi uvicorn pydantic httpx pytest pyyaml jsonschema argon2-cffi cryptography PyNaCl PyJWT
 
       - name: Bootstrap + verify-gate-d
-
         env:
           WAIKE_ROOT: ${{ github.workspace }}/waike-research-ops
           DEVICE_OS_ROOT: ${{ github.workspace }}/gunnchos-device-os
           GUNNCHAI_ROOT: ${{ github.workspace }}/gunnchAI3k
           PYTHONPATH: tools/course_compiler:services/hub
           WAIKE_ALLOW_FAKE_AI: "1"
+          GATE_D_HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
         run: |
           mkdir -p reports
           make verify-gate-d
+      - name: Record evidence head SHA
+        id: reports_meta
+        run: |
+          HEAD_SHA="${{ github.event.pull_request.head.sha }}"
+          if [ -z "$HEAD_SHA" ]; then HEAD_SHA="${{ github.sha }}"; fi
+          echo "head_sha=$HEAD_SHA" >> "$GITHUB_OUTPUT"
+          echo "short_sha=${HEAD_SHA:0:12}" >> "$GITHUB_OUTPUT"
       - uses: actions/upload-artifact@v4
         with:
-          name: gate-d-reports-${{ github.sha }}
+          name: gate-d-reports-${{ steps.reports_meta.outputs.head_sha }}
           path: reports/
           retention-days: 14
 
