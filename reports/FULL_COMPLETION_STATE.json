@@ -4,9 +4,8 @@
   "platform_branch": "cursor/waike-learning-gate-d-full-acceptance",
   "accepted_platform_main": "58daf1a0cc22b60c4246eb4195b74bcb0a714a38",
   "gate_c_merge_commit": "58daf1a0cc22b60c4246eb4195b74bcb0a714a38",
-  "pr6_tip_ancestral": "4086dbfa141e0c56fbf543efa0e1c9851abb5e6d",
   "current_wave": "GATE_D_FULL_ACCEPTANCE",
-  "status": "GATE_D_IN_PROGRESS_AWAITING_REMOTE_CI",
+  "status": "CLAIMS_WITHDRAWN_PENDING_REMEDIATION_CI",
   "waves": {
     "PR1_FOUNDATION": "MERGED",
     "PR2_ASSESSMENT_LIFECYCLE": "MERGED",
@@ -14,7 +13,7 @@
     "GATE_A_OFFLINE_ACTIVITIES": "MERGED",
     "GATE_B_AI_18_TRACKS": "MERGED",
     "GATE_C_INTEROP_DEVICE_HARDENING": "MERGED",
-    "GATE_D_FULL_ACCEPTANCE": "IN_PROGRESS_AWAITING_REMOTE_CI"
+    "GATE_D_FULL_ACCEPTANCE": "HOLD_MERGE_AND_REMEDIATE"
   },
   "claims_earned": [],
   "claims_pending": [
@@ -23,10 +22,17 @@
     "LEARNER_AND_INSTRUCTOR_WORKFLOWS_DIGITALLY_COMPLETE",
     "READY_FOR_STAFF_ALPHA_AND_HUMAN_VALIDATION"
   ],
+  "claims_withdrawn_until_reproof": [
+    "AUTOMATED_FULL_PLATFORM_PASS",
+    "ALL_18_WAIKE_TRACKS_DIGITALLY_AVAILABLE",
+    "LEARNER_AND_INSTRUCTOR_WORKFLOWS_DIGITALLY_COMPLETE",
+    "READY_FOR_STAFF_ALPHA_AND_HUMAN_VALIDATION"
+  ],
+  "falsified_head": "f566ece0fab28ffd28255b54916cdd025b08bb69",
+  "falsified_ci_run": "34070752294",
   "device_os_accepted_main": "4f02a48780d300a5d3a7758937b20e3bf9364d0d",
   "waike_pin": "fbf7685bc5686201ccaa0128ee83346d59b3d584",
   "gunnchai_pin": "4b4f411710e8cdb8102a7e11502f8497f68156b1",
-  "owner_action": "WAIT_GATE_D_REMOTE_CI_THEN_MERGE_IF_GREEN",
-  "last_verified_utc": "2026-09-07T00:10:00Z",
-  "honesty": "Gate D implemented on accepted main after PR #6 merge. Local gate_d suite 16/16 PASS. Claims not earned until remote Gate D CI green on final head. External/physical/certification gates remain OPEN."
+  "owner_action": "HOLD_MERGE_AND_REMEDIATE",
+  "honesty": "Independent adversarial review FALSIFIED prior Gate D claims. Soft-fail tautologies, stale PR1 DMG as native proof, all-18 auto-PASS, warn-only Device OS E2E upload, and evidence SHA mismatches must be remediated and re-proven on remote Gate D CI before any claim is earned again."
 }

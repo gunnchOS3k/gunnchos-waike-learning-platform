@@ -925,7 +925,7 @@ jobs:
           echo "format=ELF_binary_not_zip" >> ../../../reports/LINUX_ARTIFACT_META.txt
       - uses: actions/upload-artifact@v4
         with:
-          name: waike-learning-os-gate-d-linux-${{ github.sha }}
+          name: waike-learning-os-gate-d-linux
           path: |
             apps/client/src-tauri/target/release/waike-learning-client
             reports/LINUX_SHA256SUMS.txt
@@ -982,6 +982,9 @@ jobs:
           pnpm run build
           pnpm exec tauri build
       - name: Verify DMG contents + hashes
+        env:
+          GATE_D_HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+          GATE_NATIVE_LABEL: Gate D
         run: |
           python3 scripts/verify_macos_dmg.py
           HEAD_SHA="${{ github.event.pull_request.head.sha }}"
@@ -996,7 +999,7 @@ jobs:
           echo "format=DMG_not_zip" >> reports/MACOS_ARTIFACT_META.txt
       - uses: actions/upload-artifact@v4
         with:
-          name: waike-learning-os-gate-d-macos-${{ github.sha }}
+          name: waike-learning-os-gate-d-macos
           path: |
             apps/client/src-tauri/target/release/bundle/dmg/*.dmg
             reports/MACOS_DMG_VERIFICATION.md
@@ -1045,7 +1048,7 @@ jobs:
           DEVICE_OS_ROOT: ${{ github.workspace }}/gunnchos-device-os
           LEARNING_OS_REAL_BINARY: ${{ github.workspace }}/apps/client/src-tauri/target/release/waike-learning-client
           LEARNING_OS_APP_VERSION: "0.1.0"
-          LEARNING_OS_PLATFORM_SHA: ${{ github.sha }}
+          LEARNING_OS_PLATFORM_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
           DEVICE_OS_PIN_REF: ${{ env.DEVICE_OS_PIN_REF }}
           WAIKE_CI_HEADLESS_UI: "1"
           CI_HEADLESS_UI: "1"
@@ -1064,7 +1067,7 @@ jobs:
             reports/DEVICEOS_REAL_TAURI_E2E.md
             reports/DEVICEOS_REAL_TAURI_SABOTAGE.json
           retention-days: 14
-          if-no-files-found: warn
+          if-no-files-found: error
 
   verify-gate-d:
     name: verify-gate-d
@@ -1108,6 +1111,54 @@ jobs:
           uv venv .venv
           uv pip install --python .venv/bin/python -e tools/course_compiler fastapi uvicorn pydantic httpx pytest pyyaml jsonschema argon2-cffi cryptography PyNaCl PyJWT
 
+      - name: Download this-run Linux native artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: waike-learning-os-gate-d-linux
+          path: artifacts/gate-d-native/linux
+      - name: Download this-run macOS native artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: waike-learning-os-gate-d-macos
+          path: artifacts/gate-d-native/macos
+      - name: Download this-run Device OS E2E artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: deviceos-real-tauri-e2e-gate-d
+          path: artifacts/gate-d-native/deviceos
+
+      - name: Stage this-run evidence into reports/
+        run: |
+          set -euo pipefail
+          mkdir -p reports
+          # Prefer downloaded this-run evidence over any committed stale templates.
+          for f in \
+            LINUX_ARTIFACT_META.txt LINUX_SHA256SUMS.txt \
+            MACOS_ARTIFACT_META.txt MACOS_SHA256SUMS.txt \
+            MACOS_DMG_VERIFICATION.json MACOS_DMG_VERIFICATION.md \
+            DEVICEOS_REAL_TAURI_E2E.json DEVICEOS_REAL_TAURI_E2E.md \
+            DEVICEOS_REAL_TAURI_SABOTAGE.json
+          do
+            found="$(find artifacts/gate-d-native -type f -name "$f" -print -quit)"
+            if [ -n "$found" ]; then
+              cp -f "$found" "reports/$f"
+              echo "staged $f from $found"
+            else
+              echo "MISSING this-run artifact file: $f" >&2
+              exit 1
+            fi
+          done
+          # Reject ZIP-as-DMG confusion: at least one real .dmg must be present in download.
+          if ! find artifacts/gate-d-native -type f -name '*.dmg' | grep -q .; then
+            echo "MISSING this-run macOS .dmg artifact" >&2
+            exit 1
+          fi
+          # Reject committed local-path Device OS evidence if it somehow remained.
+          if grep -q '/Users/' reports/DEVICEOS_REAL_TAURI_E2E.json; then
+            echo "Device OS E2E still contains local absolute paths" >&2
+            exit 1
+          fi
+
       - name: Bootstrap + verify-gate-d
         env:
           WAIKE_ROOT: ${{ github.workspace }}/waike-research-ops
@@ -1116,6 +1167,8 @@ jobs:
           PYTHONPATH: tools/course_compiler:services/hub
           WAIKE_ALLOW_FAKE_AI: "1"
           GATE_D_HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+          GATE_D_REQUIRE_NATIVE: "1"
+          GATE_D_REQUIRE_DEVICEOS_E2E: "1"
         run: |
           mkdir -p reports
           make verify-gate-d

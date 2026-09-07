@@ -35,10 +35,19 @@ def main() -> int:
     dmgs = sorted(dmg_dir.glob("*.dmg")) if dmg_dir.is_dir() else []
     apps = sorted(app_dir.glob("*.app")) if app_dir.is_dir() else []
 
+    head_sha = (
+        os.environ.get("GATE_D_HEAD_SHA")
+        or os.environ.get("GITHUB_EVENT_PULL_REQUEST_HEAD_SHA")
+        or ""
+    ).strip()
+    if not head_sha:
+        head_sha = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=ROOT, text=True).strip()
+    gate_label = os.environ.get("GATE_NATIVE_LABEL", "Gate").strip() or "Gate"
     result: dict = {
         "generated_utc": datetime.now(tz=timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
-        "recovery_status": "REGENERATED_FROM_PR1_SOURCE",
-        "source_commit": subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=ROOT, text=True).strip(),
+        "recovery_status": "THIS_RUN_NATIVE_BUILD",
+        "source_commit": head_sha,
+        "artifact_head_sha": head_sha,
         "ok": False,
     }
 
@@ -110,18 +119,22 @@ def main() -> int:
             else ""
         )
     )
-    result["gate"] = "Gate C"
+    result["gate"] = gate_label
     result["ok"] = bool(
         result.get("hdiutil_verify_ok") and result.get("mount_ok") and result.get("app_present")
     )
+    # Reject ZIP-as-DMG confusion: require real .dmg path and never treat .zip as DMG.
+    if not str(result.get("dmg_path", "")).lower().endswith(".dmg"):
+        result["ok"] = False
+        result["error"] = "dmg_path is not a .dmg (ZIP-as-DMG rejected)"
 
     (REPORTS / "MACOS_DMG_VERIFICATION.json").write_text(json.dumps(result, indent=2) + "\n")
     md = [
-        "# macOS DMG verification (Gate C)",
+        f"# macOS DMG verification ({gate_label})",
         "",
-        f"- gate: `Gate C`",
+        f"- gate: `{gate_label}`",
         f"- recovery_status: `{result['recovery_status']}`",
-        f"- source_commit: `{result['source_commit']}`",
+        f"- source_commit / artifact_head_sha: `{result['source_commit']}`",
         f"- dmg_sha256: `{result['dmg_sha256']}`",
         f"- dmg_bytes: `{result['dmg_bytes']}`",
         f"- inner_app_sha256: `{result.get('inner_app_sha256')}`",
@@ -135,7 +148,8 @@ def main() -> int:
         f"- signing_notarization: `{result.get('signing_notarization')}`",
         f"- ok: `{result['ok']}`",
         "",
-        "Gate C CI artifact — UNSIGNED_CI_BUILD / NOT_NOTARIZED unless genuine notarization is detected.",
+        "This-run CI artifact — UNSIGNED_CI_BUILD / NOT_NOTARIZED unless genuine notarization is detected.",
+        "Stale RECOVERED_EXACT_PR1_ARTIFACT evidence is not accepted as current native proof.",
         "",
     ]
     (REPORTS / "MACOS_DMG_VERIFICATION.md").write_text("\n".join(md))

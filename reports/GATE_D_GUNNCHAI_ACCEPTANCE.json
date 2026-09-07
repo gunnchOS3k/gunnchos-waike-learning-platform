@@ -1,6 +1,8 @@
 {
-  "generated_utc": "2026-09-07T00:06:58Z",
+  "generated_utc": "2026-09-07T01:18:28Z",
   "gunnchai_pin": "4b4f411710e8cdb8102a7e11502f8497f68156b1",
+  "expected_sha": "4b4f411710e8cdb8102a7e11502f8497f68156b1",
+  "observed_sha": "4b4f411710e8cdb8102a7e11502f8497f68156b1",
   "modes": [
     "AI_ALLOWED",
     "HINTS_ONLY",

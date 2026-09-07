@@ -182,29 +182,163 @@ def main() -> int:
     }
     _write_json("GATE_D_DEPENDENCY_PROVENANCE.json", provenance)
 
-    # Native artifact manifest (honest about CI artifacts when present)
+    # Native + Device OS evidence must be this-run CI artifacts bound to PR head SHA.
+    require_native = os.environ.get("GATE_D_REQUIRE_NATIVE", "").strip() in ("1", "true", "TRUE")
+    require_deviceos = os.environ.get("GATE_D_REQUIRE_DEVICEOS_E2E", "").strip() in (
+        "1",
+        "true",
+        "TRUE",
+    )
+    # In GitHub Actions, always require this-run native + Device OS E2E binding.
+    if os.environ.get("GITHUB_ACTIONS") == "true":
+        require_native = True
+        require_deviceos = True
+
+    def _parse_meta(path: Path) -> dict[str, str]:
+        meta: dict[str, str] = {}
+        if not path.is_file():
+            return meta
+        for line in path.read_text(encoding="utf-8").splitlines():
+            if "=" in line:
+                k, v = line.split("=", 1)
+                meta[k.strip()] = v.strip()
+        return meta
+
+    native_notes: list[str] = []
+    linux_meta = _parse_meta(REPORTS / "LINUX_ARTIFACT_META.txt")
+    macos_meta = _parse_meta(REPORTS / "MACOS_ARTIFACT_META.txt")
+    linux_sums_ok = (REPORTS / "LINUX_SHA256SUMS.txt").is_file()
+    macos_sums_ok = (REPORTS / "MACOS_SHA256SUMS.txt").is_file()
+    linux_head = linux_meta.get("artifact_head_sha", "")
+    macos_head = macos_meta.get("artifact_head_sha", "")
+    linux_format = linux_meta.get("format", "")
+    macos_format = macos_meta.get("format", "")
+
+    linux_ok = bool(
+        linux_meta
+        and linux_sums_ok
+        and linux_head
+        and linux_head == platform_sha
+        and linux_format == "ELF_binary_not_zip"
+    )
+    if not linux_ok:
+        native_notes.append(
+            "linux this-run meta/sums/head/format binding failed "
+            f"(head={linux_head!r} expected={platform_sha!r} format={linux_format!r})"
+        )
+
+    macos_ver_path = REPORTS / "MACOS_DMG_VERIFICATION.json"
+    macos_ver: dict = {}
+    macos_ok = False
+    if macos_ver_path.is_file():
+        try:
+            macos_ver = json.loads(macos_ver_path.read_text(encoding="utf-8"))
+        except json.JSONDecodeError:
+            native_notes.append("MACOS_DMG_VERIFICATION.json invalid JSON")
+            macos_ver = {}
+    recovery = str(macos_ver.get("recovery_status") or "")
+    if recovery == "RECOVERED_EXACT_PR1_ARTIFACT":
+        native_notes.append("rejected stale PR1 RECOVERED_EXACT_PR1_ARTIFACT as Gate D native proof")
+    elif not macos_ver_path.is_file():
+        native_notes.append("missing MACOS_DMG_VERIFICATION.json")
+    elif macos_ver.get("ok") is not True:
+        native_notes.append("MACOS_DMG_VERIFICATION ok!=true")
+    elif not macos_meta:
+        native_notes.append("missing MACOS_ARTIFACT_META.txt")
+    elif not macos_sums_ok:
+        native_notes.append("missing MACOS_SHA256SUMS.txt")
+    else:
+        ver_head = str(
+            macos_ver.get("artifact_head_sha")
+            or macos_ver.get("source_commit")
+            or macos_head
+            or ""
+        )
+        dmg_path = str(macos_ver.get("dmg_path") or macos_ver.get("preserved_dmg_path") or "")
+        zip_confused = dmg_path.lower().endswith(".zip") or macos_format != "DMG_not_zip"
+        if zip_confused:
+            native_notes.append("ZIP-as-DMG confusion or format!=DMG_not_zip")
+        elif ver_head != platform_sha or macos_head != platform_sha:
+            native_notes.append(
+                f"macos artifact_head_sha mismatch ver={ver_head!r} meta={macos_head!r} "
+                f"expected={platform_sha!r}"
+            )
+        elif recovery != "THIS_RUN_NATIVE_BUILD":
+            native_notes.append(f"macos recovery_status not this-run: {recovery!r}")
+        else:
+            macos_ok = True
+
     native = {
         "generated_utc": now,
+        "platform_sha": platform_sha,
+        "this_run_only": True,
         "linux": {
-            "meta": (REPORTS / "LINUX_ARTIFACT_META.txt").is_file(),
-            "sums": (REPORTS / "LINUX_SHA256SUMS.txt").is_file(),
+            "meta": bool(linux_meta),
+            "sums": linux_sums_ok,
+            "artifact_head_sha": linux_head,
+            "format": linux_format,
+            "ok": linux_ok,
         },
         "macos": {
-            "meta": (REPORTS / "MACOS_ARTIFACT_META.txt").is_file(),
-            "sums": (REPORTS / "MACOS_SHA256SUMS.txt").is_file(),
-            "verification": (REPORTS / "MACOS_DMG_VERIFICATION.json").is_file(),
+            "meta": bool(macos_meta),
+            "sums": macos_sums_ok,
+            "verification": macos_ver_path.is_file(),
+            "artifact_head_sha": macos_head,
+            "format": macos_format,
+            "recovery_status": recovery,
+            "ok": macos_ok,
         },
-        "zip_is_not_dmg": True,
+        "zip_is_not_dmg": macos_format == "DMG_not_zip"
+        and not str(macos_ver.get("dmg_path") or "").lower().endswith(".zip"),
         "signing_notarization": "EXTERNAL_UNSIGNED_CI_BUILD",
         "notarization_claimed": False,
+        "notes": native_notes,
+        "require_native": require_native,
     }
-    if native["macos"]["verification"]:
-        try:
-            ver = json.loads((REPORTS / "MACOS_DMG_VERIFICATION.json").read_text())
-            native["macos"]["ok"] = ver.get("ok") is True
-        except json.JSONDecodeError:
-            native["macos"]["ok"] = False
+    native_pass = bool(linux_ok and macos_ok and native["zip_is_not_dmg"])
+    native["ok"] = native_pass
     _write_json("GATE_D_NATIVE_ARTIFACT_MANIFEST.json", native)
+    results["checks"]["native_artifacts"] = native_pass if require_native else True
+    if require_native and not native_pass:
+        results["blocked"].append("native_artifacts_this_run")  # type: ignore[union-attr]
+
+    # Device OS real Tauri E2E — CI-produced only; reject committed local-path evidence.
+    deviceos_path = REPORTS / "DEVICEOS_REAL_TAURI_E2E.json"
+    deviceos_notes: list[str] = []
+    deviceos_ok = False
+    if deviceos_path.is_file():
+        try:
+            de = json.loads(deviceos_path.read_text(encoding="utf-8"))
+        except json.JSONDecodeError:
+            de = {}
+            deviceos_notes.append("DEVICEOS_REAL_TAURI_E2E.json invalid JSON")
+        blob = json.dumps(de)
+        if "/Users/gunnchos" in blob or "/Users/" in blob:
+            deviceos_notes.append("rejected local absolute path Device OS E2E evidence")
+        prov = de.get("provenance") or {}
+        e2e_sha = str(prov.get("platform_source_sha") or de.get("platform_sha_at_local_run") or "")
+        if e2e_sha != platform_sha:
+            deviceos_notes.append(
+                f"Device OS E2E platform_source_sha {e2e_sha!r} != head {platform_sha!r}"
+            )
+        launched = bool(de.get("launched") or de.get("acknowledged"))
+        if de.get("mock") is True:
+            deviceos_notes.append("Device OS E2E marked mock=true")
+        if not deviceos_notes and launched and e2e_sha == platform_sha:
+            deviceos_ok = True
+    else:
+        deviceos_notes.append("missing DEVICEOS_REAL_TAURI_E2E.json")
+    deviceos_report = {
+        "generated_utc": now,
+        "platform_sha": platform_sha,
+        "ok": deviceos_ok,
+        "notes": deviceos_notes,
+        "require_deviceos": require_deviceos,
+    }
+    _write_json("GATE_D_DEVICEOS_E2E_BINDING.json", deviceos_report)
+    results["checks"]["deviceos_e2e_binding"] = deviceos_ok if require_deviceos else True
+    if require_deviceos and not deviceos_ok:
+        results["blocked"].append("deviceos_e2e_binding")  # type: ignore[union-attr]
 
     # External ledger refresh (honest OPEN)
     external_md = f"""# External / Human / Physical Gates
@@ -259,6 +393,8 @@ Status: **OPEN / EXTERNAL** — recorded honestly; not fabricated.
     results["checks"]["adversarial"] = adv_ok
 
     skipped = int(results["GATE_D_REQUIRED_TESTS_SKIPPED"] or 0)
+    native_check = bool(results["checks"].get("native_artifacts"))
+    deviceos_check = bool(results["checks"].get("deviceos_e2e_binding"))
     digital_ready = (
         bool(results["checks"].get("clean_room"))
         and bool(results["checks"].get("prior_regression"))
@@ -267,6 +403,8 @@ Status: **OPEN / EXTERNAL** — recorded honestly; not fabricated.
         and tracks_ok
         and journeys_ok
         and adv_ok
+        and native_check
+        and deviceos_check
         and skipped == 0
         and prior.returncode == 0
         and gate_d.returncode == 0
@@ -283,7 +421,7 @@ Status: **OPEN / EXTERNAL** — recorded honestly; not fabricated.
         for c in (CLAIM_AUTO, CLAIM_18, CLAIM_JOURNEYS, CLAIM_ALPHA):
             blocked.append(c)
         results["status"] = "AUTOMATED_PIPELINE_BLOCKED_BY_CODE"
-        results["owner_action"] = "GATE_D_NOT_READY"
+        results["owner_action"] = "HOLD_MERGE_AND_REMEDIATE"
         if prior.returncode != 0:
             results["blocked"].append("prior_regression")  # type: ignore[union-attr]
         if gate_d.returncode != 0:
@@ -294,6 +432,10 @@ Status: **OPEN / EXTERNAL** — recorded honestly; not fabricated.
             results["blocked"].append("journeys")  # type: ignore[union-attr]
         if not adv_ok:
             results["blocked"].append("adversarial")  # type: ignore[union-attr]
+        if not native_check:
+            results["blocked"].append("native_artifacts")  # type: ignore[union-attr]
+        if not deviceos_check:
+            results["blocked"].append("deviceos_e2e")  # type: ignore[union-attr]
         rc = 1
 
     results["claims"] = claims
@@ -326,7 +468,7 @@ Status: **OPEN / EXTERNAL** — recorded honestly; not fabricated.
     ]
     (REPORTS / "GATE_D_VERIFICATION.md").write_text("\n".join(md) + "\n")
 
-    # Update FULL_COMPLETION_STATE.json
+    # Update FULL_COMPLETION_STATE.json — claims only after remediations + green CI.
     state = {
         "schema": "waike.learning_os.full_completion_state.v1",
         "platform_repo": "gunnchOS3k/gunnchos-waike-learning-platform",
@@ -344,10 +486,13 @@ Status: **OPEN / EXTERNAL** — recorded honestly; not fabricated.
             "GATE_C_INTEROP_DEVICE_HARDENING": "MERGED",
             "GATE_D_FULL_ACCEPTANCE": "CLAIMS_EARNED_PENDING_OWNER_MERGE"
             if digital_ready
-            else "IN_PROGRESS_OR_BLOCKED",
+            else "HOLD_MERGE_AND_REMEDIATE",
         },
         "claims_earned": claims,
         "claims_pending": blocked,
+        "claims_withdrawn_until_reproof": []
+        if digital_ready
+        else [CLAIM_AUTO, CLAIM_18, CLAIM_JOURNEYS, CLAIM_ALPHA],
         "device_os_accepted_main": PINS["device_os"],
         "waike_pin": PINS["waike"],
         "gunnchai_pin": PINS["gunnchai"],
@@ -356,10 +501,14 @@ Status: **OPEN / EXTERNAL** — recorded honestly; not fabricated.
         "platform_sha": platform_sha,
         "honesty": (
             "Digital Gate D claims earned only when clean-room + prior regression + Gate D suites "
-            "pass with zero skips and required evidence artifacts. External/physical/certification "
+            "pass with zero skips, this-run native Linux/macOS artifacts bound to PR head SHA, "
+            "and CI Device OS E2E evidence bound to the same head. External/physical/certification "
             "gates remain OPEN."
             if digital_ready
-            else "Gate D not ready — see GATE_D_VERIFICATION.json blocked list."
+            else (
+                "Prior Gate D claims FALSIFIED / withdrawn until remediations re-green. "
+                "See GATE_D_VERIFICATION.json blocked list. Owner action: HOLD_MERGE_AND_REMEDIATE."
+            ),
         ),
     }
     _write_json("FULL_COMPLETION_STATE.json", state)

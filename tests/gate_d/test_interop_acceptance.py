@@ -2,19 +2,27 @@
 
 from __future__ import annotations
 
+import json
 from datetime import datetime, timezone
-from pathlib import Path
 
 from gd_helpers import ROOT, write_json
 
 
 def test_interop_matrices_present_and_honest():
-    for name in (
+    required = (
         "GATE_C_ONEROSTER_MATRIX.json",
         "GATE_C_QTI_MATRIX.json",
         "GATE_C_LTI_MATRIX.json",
-    ):
-        assert (ROOT / "reports" / name).is_file() or True  # regenerated in verify
+    )
+    for name in required:
+        path = ROOT / "reports" / name
+        assert path.is_file(), f"missing interop matrix: {name}"
+        data = json.loads(path.read_text(encoding="utf-8"))
+        assert data, f"empty interop matrix: {name}"
+        # Never claim external certification from Gate D digital suites.
+        assert data.get("certification_claimed") is not True
+        assert data.get("externally_certified") is not True
+
     write_json(
         "GATE_D_INTEROP_ACCEPTANCE.json",
         {
