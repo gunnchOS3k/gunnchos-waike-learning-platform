@@ -1,0 +1,247 @@
+name: Windows Pilot 0
+
+# Authentic Windows evidence for WAIKE Learning Platform (Tauri native).
+# Authoritative runner: windows-2025. Optional compatibility: windows-latest.
+# Never treats Linux/macOS as Windows proof. Cursor merges nothing.
+
+on:
+  pull_request:
+  push:
+    branches: [main, "cursor/windows-pilot0-authentic-evidence*"]
+  workflow_dispatch:
+    inputs:
+      soak_seconds:
+        description: "Soak duration seconds (Pilot 0 requires >=1800 for PASS)"
+        required: false
+        default: "1800"
+
+env:
+  SOURCE_DATE_EPOCH: "1700000000"
+  # Same documented development DB key used by Gate C/D / PR3 workflows (not production).
+  WAIKE_DEV_DB_KEY: "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef"
+  CARGO_TERM_COLOR: always
+  WAIKE_PIN_REF: "fbf7685bc5686201ccaa0128ee83346d59b3d584"
+
+jobs:
+  windows-pilot0-windows-2025:
+    name: windows-pilot0-windows-2025
+    runs-on: windows-2025
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+        with:
+          repository: gunnchOS3k/waike-research-ops
+          path: waike-research-ops
+          ref: ${{ env.WAIKE_PIN_REF }}
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9.15.9
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: pnpm
+          cache-dependency-path: apps/client/pnpm-lock.yaml
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: astral-sh/setup-uv@v4
+        with:
+          python-version: "3.12"
+      - name: Install Windows bundler deps (NSIS)
+        shell: pwsh
+        run: |
+          # MSI/WiX is not assumed on hosted runners; Pilot 0 uses NSIS only.
+          choco install nsis -y --no-progress
+          if (-not (Get-Command makensis -ErrorAction SilentlyContinue)) {
+            $nsis = "C:\Program Files (x86)\NSIS\makensis.exe"
+            if (Test-Path $nsis) { echo "C:\Program Files (x86)\NSIS" | Out-File -Append -FilePath $env:GITHUB_PATH }
+          }
+          Get-Command makensis -ErrorAction SilentlyContinue | Format-List
+      - name: Ensure WebView2 runtime (Tauri)
+        shell: pwsh
+        run: |
+          $wv = @(
+            "${env:ProgramFiles(x86)}\Microsoft\EdgeWebView\Application",
+            "$env:ProgramFiles\Microsoft\EdgeWebView\Application"
+          ) | Where-Object { Test-Path $_ }
+          if ($wv) {
+            Write-Host "WebView2 present: $($wv -join ', ')"
+          } else {
+            Write-Host "WebView2 missing — installing Evergreen Bootstrapper"
+            $boot = Join-Path $env:RUNNER_TEMP "MicrosoftEdgeWebview2Setup.exe"
+            Invoke-WebRequest -Uri "https://go.microsoft.com/fwlink/p/?LinkId=2124703" -OutFile $boot
+            Start-Process -FilePath $boot -ArgumentList "/silent","/install" -Wait
+            $wv2 = @(
+              "${env:ProgramFiles(x86)}\Microsoft\EdgeWebView\Application",
+              "$env:ProgramFiles\Microsoft\EdgeWebView\Application"
+            ) | Where-Object { Test-Path $_ }
+            if (-not $wv2) { throw "WEBVIEW2_RUNTIME_MISSING after bootstrapper" }
+            Write-Host "WebView2 installed: $($wv2 -join ', ')"
+          }
+      - name: Align WAIKE pin provenance
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import json, subprocess
+          from pathlib import Path
+          pin = Path("curriculum/registry/PIN.json")
+          data = json.loads(pin.read_text())
+          data["source_path"] = "./waike-research-ops"
+          data["absolute_path_hint"] = str(Path("waike-research-ops").resolve())
+          observed = subprocess.check_output(["git","-C","waike-research-ops","rev-parse","HEAD"], text=True).strip()
+          if data["pinned_commit"] != observed:
+              raise SystemExit(f"PROVENANCE_MISMATCH {data['pinned_commit']} != {observed}")
+          pin.write_text(json.dumps(data, indent=2) + "\n")
+          PY
+      - name: Bootstrap Python + compile sample pack
+        shell: bash
+        run: |
+          set -euo pipefail
+          uv venv .venv
+          # Windows venvs use Scripts/, Unix uses bin/ — never hardcode .venv/bin on windows-*.
+          if [ -x .venv/Scripts/python.exe ]; then
+            PY=".venv/Scripts/python.exe"
+            export PATH="$(pwd)/.venv/Scripts:${PATH}"
+          elif [ -x .venv/bin/python ]; then
+            PY=".venv/bin/python"
+            export PATH="$(pwd)/.venv/bin:${PATH}"
+          else
+            echo "venv python missing"; find .venv -maxdepth 3 -type f | head -50; exit 2
+          fi
+          uv pip install --python "$PY" -e tools/course_compiler cryptography PyNaCl
+          course-compiler compile DIGITAL_CONFIDENCE --out pack_out
+      - name: Install frontend deps (lockfile)
+        working-directory: apps/client
+        shell: bash
+        run: pnpm install --frozen-lockfile
+      - name: Build frontend (vite)
+        working-directory: apps/client
+        shell: pwsh
+        env:
+          WAIKE_DEV_DB_KEY: ${{ env.WAIKE_DEV_DB_KEY }}
+        run: |
+          $ErrorActionPreference = "Stop"
+          pnpm run build
+          if (-not (Test-Path dist/index.html)) { throw "frontend dist/index.html missing after vite build" }
+      - name: Build Tauri Windows NSIS bundle
+        working-directory: apps/client
+        shell: pwsh
+        env:
+          WAIKE_DEV_DB_KEY: ${{ env.WAIKE_DEV_DB_KEY }}
+        run: |
+          $ErrorActionPreference = "Stop"
+          $cfg = @{
+            build = @{ beforeBuildCommand = ""; frontendDist = "../dist" }
+            bundle = @{ targets = @("nsis") }
+          } | ConvertTo-Json -Compress -Depth 5
+          [System.IO.File]::WriteAllText((Join-Path (Get-Location) "tauri.windows-pilot0.json"), $cfg)
+          Write-Host "tauri override config: $(Get-Content tauri.windows-pilot0.json -Raw)"
+          Write-Host "rustc: $(rustc --version)"
+          Write-Host "cargo: $(cargo --version)"
+          # Surface compile errors as annotations without private log download.
+          try {
+            pnpm exec tauri build --config tauri.windows-pilot0.json --verbose
+          } catch {
+            Write-Host "::error title=WINDOWS_PILOT0::TAURI_BUILD_FAILED $($_.Exception.Message)"
+            throw
+          }
+          $nsis = Get-ChildItem -Recurse -Filter *.exe -Path src-tauri/target/release/bundle/nsis -ErrorAction SilentlyContinue
+          if (-not $nsis) { throw "NSIS exe missing under src-tauri/target/release/bundle/nsis" }
+          Write-Host "NSIS artifacts:"; $nsis | ForEach-Object { $_.FullName }
+
+      - name: Record runner image metadata
+        if: always()
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force -Path reports/windows_pilot0 | Out-Null
+          $meta = [ordered]@{
+            ImageOS = $env:ImageOS
+            ImageVersion = $env:ImageVersion
+            RUNNER_OS = $env:RUNNER_OS
+            RUNNER_ARCH = $env:RUNNER_ARCH
+            RUNNER_NAME = $env:RUNNER_NAME
+            GITHUB_SHA = $env:GITHUB_SHA
+            recorded_at_utc = (Get-Date).ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ssZ")
+          }
+          $meta | ConvertTo-Json | Set-Content -Encoding utf8 reports/windows_pilot0/RUNNER_META.json
+      - name: Collect Windows Pilot 0 evidence (incl. soak)
+        shell: pwsh
+        env:
+          WINDOWS_PILOT0_SOAK_SECONDS: ${{ github.event.inputs.soak_seconds || '1800' }}
+          WINDOWS_PILOT0_HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: |
+          python scripts/windows_pilot0_evidence.py
+      - name: Short SHA for artifacts
+        id: meta
+        if: always()
+        shell: bash
+        run: |
+          HEAD_SHA="${{ github.event.pull_request.head.sha }}"
+          if [ -z "$HEAD_SHA" ]; then HEAD_SHA="${GITHUB_SHA}"; fi
+          SHORT="${HEAD_SHA:0:12}"
+          echo "short_sha=$SHORT" >> "$GITHUB_OUTPUT"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: waike-windows-pilot0-${{ steps.meta.outputs.short_sha }}
+          path: |
+            apps/client/src-tauri/target/release/bundle/nsis/*
+            reports/windows_pilot0/**
+          retention-days: 14
+          if-no-files-found: warn
+
+  windows-pilot0-windows-latest:
+    name: windows-pilot0-windows-latest
+    runs-on: windows-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9.15.9
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: pnpm
+          cache-dependency-path: apps/client/pnpm-lock.yaml
+      - uses: dtolnay/rust-toolchain@stable
+      - name: Install Windows bundler deps (NSIS)
+        shell: pwsh
+        run: |
+          choco install nsis -y --no-progress
+          if (-not (Get-Command makensis -ErrorAction SilentlyContinue)) {
+            if (Test-Path "C:\Program Files (x86)\NSIS\makensis.exe") {
+              echo "C:\Program Files (x86)\NSIS" | Out-File -Append -FilePath $env:GITHUB_PATH
+            }
+          }
+      - name: Compatibility smoke — frontend + tauri build only
+        working-directory: apps/client
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = "Stop"
+          pnpm install --frozen-lockfile
+          pnpm run build
+          $cfg = @{
+            build = @{ beforeBuildCommand = "" }
+            bundle = @{ targets = @("nsis") }
+          } | ConvertTo-Json -Compress -Depth 5
+          [System.IO.File]::WriteAllText((Join-Path (Get-Location) "tauri.windows-pilot0.json"), $cfg)
+          pnpm exec tauri build --config tauri.windows-pilot0.json
+      - name: Write compatibility note
+        if: always()
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force -Path reports/windows_pilot0 | Out-Null
+          @{
+            job = "windows-pilot0-windows-latest"
+            role = "compatibility_smoke_not_authoritative"
+            ImageOS = $env:ImageOS
+            ImageVersion = $env:ImageVersion
+            GITHUB_SHA = $env:GITHUB_SHA
+          } | ConvertTo-Json | Set-Content -Encoding utf8 reports/windows_pilot0/WINDOWS_LATEST_COMPAT.json
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: waike-windows-pilot0-latest-compat-${{ github.event.pull_request.head.sha || github.sha }}
+          path: reports/windows_pilot0/WINDOWS_LATEST_COMPAT.json
+          retention-days: 14
+          if-no-files-found: warn
