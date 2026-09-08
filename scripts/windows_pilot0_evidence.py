@@ -283,6 +283,60 @@ def main() -> int:
         "detail": "no prior Pilot 0 Windows package on this runner to upgrade from",
     }
 
+    checks["crash_scan"] = {
+        "status": "PASS",
+        "detail": "no WerFault child observed during short launch smoke (best-effort)",
+    }
+
+    # Prefer release binary for soak when present — survives independent of NSIS install tree.
+    soak_target = release_bin if release_bin.is_file() else (Path(launch_exe) if launch_exe else None)
+
+    if skip_soak:
+        checks["soak_30min"] = {
+            "status": "FAIL",
+            "detail": "WINDOWS_PILOT0_SKIP_SOAK set — required soak not executed",
+        }
+        blockers.append("SOAK_SKIPPED")
+        skipped_required += 1
+    elif soak_target and soak_target.is_file() and checks.get("first_launch", {}).get("status") == "PASS":
+        start = time.time()
+        soak_env = os.environ.copy()
+        soak_env.setdefault(
+            "WAIKE_DEV_DB_KEY",
+            "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef",
+        )
+        proc = subprocess.Popen([str(soak_target)], cwd=str(ROOT), env=soak_env)
+        ok = True
+        while time.time() - start < soak_seconds:
+            if proc.poll() is not None:
+                ok = False
+                break
+            time.sleep(10)
+        elapsed = time.time() - start
+        exit_code = proc.poll()
+        if proc.poll() is None:
+            proc.terminate()
+            try:
+                proc.wait(timeout=15)
+            except subprocess.TimeoutExpired:
+                proc.kill()
+        checks["soak_30min"] = {
+            "status": "PASS" if ok and elapsed >= soak_seconds else "FAIL",
+            "requested_seconds": soak_seconds,
+            "elapsed_seconds": int(elapsed),
+            "process_survived": ok,
+            "exe": str(soak_target),
+            "exit_code": exit_code,
+        }
+        if checks["soak_30min"]["status"] != "PASS":
+            blockers.append("SOAK_FAILED")
+            print(f"::error title=WINDOWS_PILOT0::SOAK_FAILED exit={exit_code} elapsed={int(elapsed)}")
+    else:
+        checks["soak_30min"] = {"status": "FAIL", "detail": "launch did not pass or soak exe missing"}
+        blockers.append("SOAK_NOT_STARTED")
+        skipped_required += 1
+
+    # Uninstall AFTER soak so we do not delete the installed tree mid-proof.
     uninstaller = None
     if install_dir.exists():
         cands = list(install_dir.rglob("uninstall.exe")) + list(install_dir.rglob("Uninstall*.exe"))
@@ -298,58 +352,6 @@ def main() -> int:
             "status": "PARTIAL",
             "detail": "no silent uninstaller discovered; portable exe path or NSIS uninstall missing",
         }
-
-    checks["crash_scan"] = {
-        "status": "PASS",
-        "detail": "no WerFault child observed during short launch smoke (best-effort)",
-    }
-
-    if skip_soak:
-        checks["soak_30min"] = {
-            "status": "FAIL",
-            "detail": "WINDOWS_PILOT0_SKIP_SOAK set — required soak not executed",
-        }
-        blockers.append("SOAK_SKIPPED")
-        skipped_required += 1
-    elif launch_exe and Path(launch_exe).is_file() and checks.get("first_launch", {}).get("status") == "PASS":
-        target = Path(launch_exe)
-        if target.is_file():
-            start = time.time()
-            soak_env = os.environ.copy()
-            soak_env.setdefault(
-                "WAIKE_DEV_DB_KEY",
-                "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef",
-            )
-            proc = subprocess.Popen([str(target)], cwd=str(ROOT), env=soak_env)
-            ok = True
-            while time.time() - start < soak_seconds:
-                if proc.poll() is not None:
-                    ok = False
-                    break
-                time.sleep(10)
-            elapsed = time.time() - start
-            if proc.poll() is None:
-                proc.terminate()
-                try:
-                    proc.wait(timeout=15)
-                except subprocess.TimeoutExpired:
-                    proc.kill()
-            checks["soak_30min"] = {
-                "status": "PASS" if ok and elapsed >= soak_seconds else "FAIL",
-                "requested_seconds": soak_seconds,
-                "elapsed_seconds": int(elapsed),
-                "process_survived": ok,
-            }
-            if checks["soak_30min"]["status"] != "PASS":
-                blockers.append("SOAK_FAILED")
-        else:
-            checks["soak_30min"] = {"status": "FAIL", "detail": "no exe for soak"}
-            blockers.append("SOAK_NO_EXE")
-            skipped_required += 1
-    else:
-        checks["soak_30min"] = {"status": "FAIL", "detail": "launch did not pass; soak not started"}
-        blockers.append("SOAK_NOT_STARTED")
-        skipped_required += 1
 
     checks["standard_user_probe"] = {
         "status": "PARTIAL",
