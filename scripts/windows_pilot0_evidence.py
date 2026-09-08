@@ -202,13 +202,33 @@ def main() -> int:
         blockers.append("WEBVIEW2_RUNTIME_MISSING")
 
     if launch_exe and Path(launch_exe).is_file():
+        # Stage verify key into the app data dir load_verify_key() checks, and launch
+        # with cwd=repo root so relative contracts/fixtures paths also resolve.
+        key_src = ROOT / "contracts" / "fixtures" / "keys" / "TEST_ONLY_ed25519_public.key"
+        data_dir = Path(os.environ.get("LOCALAPPDATA", str(Path.home()))) / "waike-learning-os"
+        data_dir.mkdir(parents=True, exist_ok=True)
+        if key_src.is_file():
+            staged = data_dir / "TEST_ONLY_ed25519_public.key"
+            staged.write_bytes(key_src.read_bytes())
+        else:
+            blockers.append("VERIFY_KEY_FIXTURE_MISSING")
+            print("::error title=WINDOWS_PILOT0::VERIFY_KEY_FIXTURE_MISSING")
+
+        launch_env = os.environ.copy()
+        launch_env.setdefault(
+            "WAIKE_DEV_DB_KEY",
+            "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef",
+        )
+        # Do NOT force WAIKE_CI_HEADLESS_UI here — that path exits after ACK (no soak).
+
         log_out = REPORTS / "first_launch_stdout.txt"
         log_err = REPORTS / "first_launch_stderr.txt"
         try:
             with log_out.open("w", encoding="utf-8") as so, log_err.open("w", encoding="utf-8") as se:
                 proc = subprocess.Popen(
                     [str(launch_exe)],
-                    cwd=str(Path(launch_exe).parent),
+                    cwd=str(ROOT),
+                    env=launch_env,
                     stdout=so,
                     stderr=se,
                 )
@@ -228,6 +248,8 @@ def main() -> int:
                 "pid_alive_after_20s": alive,
                 "exit_code": exit_code,
                 "exe": str(launch_exe),
+                "cwd": str(ROOT),
+                "verify_key_staged": str(data_dir / "TEST_ONLY_ed25519_public.key"),
                 "stderr_tail": err_tail,
                 "webview2_present": webview2,
             }
@@ -293,7 +315,12 @@ def main() -> int:
         target = Path(launch_exe)
         if target.is_file():
             start = time.time()
-            proc = subprocess.Popen([str(target)], cwd=str(target.parent))
+            soak_env = os.environ.copy()
+            soak_env.setdefault(
+                "WAIKE_DEV_DB_KEY",
+                "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef",
+            )
+            proc = subprocess.Popen([str(target)], cwd=str(ROOT), env=soak_env)
             ok = True
             while time.time() - start < soak_seconds:
                 if proc.poll() is not None:
