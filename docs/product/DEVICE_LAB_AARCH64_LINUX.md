@@ -39,11 +39,14 @@ This workflow does **not** consume `waike-research-ops` curriculum content, so
 no curriculum pin is recorded as consumed. Device OS / gunnchAI SHAs are
 **not** hard-coded into artifact metadata (optional Device Lab guest hint only).
 
+Target id: `aarch64-current` (Ubuntu 24.04 / newer-glibc). For Debian 12 /
+glibc-2.36 guests see [DEVICE_LAB_AARCH64_GLIBC236.md](./DEVICE_LAB_AARCH64_GLIBC236.md).
+
 See also: [MULTI_ARCHITECTURE_SUPPORT.md](./MULTI_ARCHITECTURE_SUPPORT.md).
 
 ## Non-goals
 
-- Does not replace or shrink Linux x86_64 Gate D or Windows Pilot 0.
+- Does not replace or shrink Linux x86_64 Gate D, glibc236 ARM, or Windows Pilot 0.
 - Does not claim Device Lab PASS until Device OS consumes the artifact on
   accepted-main (after owner merge + pin re-freeze + runtime re-earn).
 - Does not merge itself; Edmund is sole merge authority.
