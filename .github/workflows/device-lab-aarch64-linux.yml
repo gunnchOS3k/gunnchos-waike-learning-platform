@@ -5,26 +5,32 @@
 # guest without a full amd64 sysroot (qemu-user-static alone is insufficient
 # for dynamically linked WebKit/GTK Tauri binaries).
 #
-# This workflow publishes an aarch64 ELF for Device Lab staging without
-# reducing WAIKE product scope. Unmerged until owner accepts / re-freezes pins.
+# Additive: keeps Linux x86_64 (Gate D native-linux) and Windows Pilot 0.
+# Does not use qemu-user as a canonical ARM artifact. Native ubuntu-24.04-arm
+# only. Unmerged until owner accepts / re-freezes pins.
 
 name: Device Lab aarch64 Linux
 
 on:
   workflow_dispatch:
+  # Push to main is unconditional so the merge commit regenerates the exact
+  # accepted-main aarch64 artifact (artifact_source_sha=${{ github.sha }}).
+  # Feature-branch pushes continue for pre-merge validation.
   push:
     branches:
+      - main
       - cursor/device-lab-aarch64-linux-ci
   pull_request:
     paths:
       - ".github/workflows/device-lab-aarch64-linux.yml"
       - "apps/client/**"
+      - "docs/product/DEVICE_LAB_AARCH64_LINUX.md"
+      - "docs/product/MULTI_ARCHITECTURE_SUPPORT.md"
 
 env:
   WAIKE_DEV_DB_KEY: "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef"
-  WAIKE_PIN_REF: "fbf7685bc5686201ccaa0128ee83346d59b3d584"
-  DEVICE_OS_PIN_REF: "4f02a48780d300a5d3a7758937b20e3bf9364d0d"
-  GUNNCHAI_PIN_REF: "4b4f411710e8cdb8102a7e11502f8497f68156b1"
+  # Reproducible-build timestamp policy (same epoch as Gate C/D / Windows Pilot 0).
+  SOURCE_DATE_EPOCH: "1700000000"
 
 jobs:
   native-linux-aarch64:
@@ -46,31 +52,111 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y libwebkit2gtk-4.1-dev libgtk-3-dev \
             libayatana-appindicator3-dev librsvg2-dev patchelf pkg-config \
-            libglib2.0-dev
+            libglib2.0-dev binutils
       - name: Build native aarch64 Linux artifact
         env:
-          SOURCE_DATE_EPOCH: "1700000000"
+          SOURCE_DATE_EPOCH: ${{ env.SOURCE_DATE_EPOCH }}
           WAIKE_DEV_DB_KEY: ${{ env.WAIKE_DEV_DB_KEY }}
         run: |
+          set -euo pipefail
           mkdir -p reports
+          BIN="apps/client/src-tauri/target/release/waike-learning-client"
+          REPORTS="reports"
+
+          # Intrinsic source identity: WAIKE Learning Platform commit under test.
+          # On pull_request, prefer PR head SHA; on push to main, github.sha is
+          # the accepted-main merge commit (exact post-merge artifact source).
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            ARTIFACT_SOURCE_SHA="${{ github.event.pull_request.head.sha }}"
+          else
+            ARTIFACT_SOURCE_SHA="${{ github.sha }}"
+          fi
+          test -n "$ARTIFACT_SOURCE_SHA"
+
           cd apps/client && pnpm install --frozen-lockfile && pnpm run build
           cd src-tauri && cargo build --release
-          test -x target/release/waike-learning-client
-          file target/release/waike-learning-client | tee ../../../reports/LINUX_AARCH64_FILE.txt
-          file target/release/waike-learning-client | grep -E 'ARM aarch64|aarch64'
-          HEAD_SHA="${{ github.event.pull_request.head.sha }}"
-          if [ -z "$HEAD_SHA" ]; then HEAD_SHA="${{ github.sha }}"; fi
-          sha256sum target/release/waike-learning-client | tee ../../../reports/LINUX_AARCH64_SHA256SUMS.txt
+          cd ../../..
+
+          test -x "$BIN" || { echo "FATAL: missing artifact $BIN"; exit 1; }
+
+          FILE_OUT="$(file "$BIN")"
+          echo "$FILE_OUT" | tee "$REPORTS/LINUX_AARCH64_FILE.txt"
+          echo "$FILE_OUT" | grep -E 'ARM aarch64|aarch64' \
+            || { echo "FATAL: wrong-arch (expected ARM aarch64 ELF)"; exit 1; }
+          echo "$FILE_OUT" | grep -qi 'ELF' \
+            || { echo "FATAL: not an ELF binary"; exit 1; }
+
+          sha256sum "$BIN" | tee "$REPORTS/LINUX_AARCH64_SHA256SUMS.txt"
+
+          # Runtime dependency report for Device OS guest staging.
           {
-            echo "artifact_head_sha=$HEAD_SHA"
+            echo "=== file ==="
+            echo "$FILE_OUT"
+            echo
+            echo "=== readelf -h ==="
+            readelf -h "$BIN"
+            echo
+            echo "=== dynamic interpreter (readelf -l) ==="
+            readelf -l "$BIN" | awk '/Requesting program interpreter/{print; found=1} END{if(!found) exit 1}'
+            echo
+            echo "=== ldd ==="
+            ldd "$BIN" || { echo "FATAL: ldd failed"; exit 1; }
+          } | tee "$REPORTS/LINUX_AARCH64_RUNTIME_DEPS.txt"
+
+          RUSTC_V="$(rustc --version)"
+          CARGO_V="$(cargo --version)"
+          NODE_V="$(node --version)"
+          PNPM_V="$(pnpm --version)"
+          RUST_HOST="$(rustc -vV | awk '/^host:/{print $2}')"
+          RUST_TARGET="$RUST_HOST"
+          PNPM_LOCK_SHA="$(sha256sum apps/client/pnpm-lock.yaml | awk '{print $1}')"
+          CARGO_LOCK_SHA="$(sha256sum apps/client/src-tauri/Cargo.lock | awk '{print $1}')"
+          ARTIFACT_FILENAME="$(basename "$BIN")"
+          ARTIFACT_SHA256="$(awk '{print $1}' "$REPORTS/LINUX_AARCH64_SHA256SUMS.txt")"
+
+          # Intrinsic provenance only. No Device OS / gunnchAI SHAs.
+          # This workflow does not checkout waike-research-ops; curriculum pin
+          # is intentionally omitted (not consumed). Optional Device Lab
+          # context is labeled as non-intrinsic below.
+          {
+            echo "artifact_source_sha=${ARTIFACT_SOURCE_SHA}"
+            echo "waike_source_sha=${ARTIFACT_SOURCE_SHA}"
+            echo "waike_ref=${{ github.ref }}"
+            echo "github_ref_name=${{ github.ref_name }}"
+            echo "event_name=${{ github.event_name }}"
+            echo "os=linux"
             echo "arch=aarch64"
-            echo "waike_pin_ref=${{ env.WAIKE_PIN_REF }}"
-            echo "gunnchai_pin_ref=${{ env.GUNNCHAI_PIN_REF }}"
-            echo "device_os_pin_ref=${{ env.DEVICE_OS_PIN_REF }}"
-            echo "gate=Device Lab aarch64 Linux"
+            echo "runner_os=${{ runner.os }}"
+            echo "runner_arch=${{ runner.arch }}"
+            echo "runs_on=ubuntu-24.04-arm"
+            echo "rust_host=${RUST_HOST}"
+            echo "rust_target=${RUST_TARGET}"
+            echo "artifact_filename=${ARTIFACT_FILENAME}"
+            echo "artifact_sha256=${ARTIFACT_SHA256}"
+            echo "file_summary=${FILE_OUT}"
             echo "format=ELF_binary_not_zip"
-            echo "guest_target=device_lab_interactive_development_guest_aarch64"
-          } > ../../../reports/LINUX_AARCH64_ARTIFACT_META.txt
+            echo "node_version=${NODE_V}"
+            echo "pnpm_version=${PNPM_V}"
+            echo "rustc_version=${RUSTC_V}"
+            echo "cargo_version=${CARGO_V}"
+            echo "pnpm_lock_sha256=${PNPM_LOCK_SHA}"
+            echo "cargo_lock_sha256=${CARGO_LOCK_SHA}"
+            echo "workflow_run_id=${{ github.run_id }}"
+            echo "workflow_run_attempt=${{ github.run_attempt }}"
+            echo "source_date_epoch=${SOURCE_DATE_EPOCH}"
+            echo "reproducible_build_timestamp_policy=SOURCE_DATE_EPOCH_fixed"
+            echo "curriculum_pin_consumed=false"
+            echo "gate=Device Lab aarch64 Linux"
+            echo "canonical_build=native_ubuntu_24_04_arm_not_qemu_user"
+            echo "# optional_device_lab_context (non-intrinsic; not a pin coupling)"
+            echo "guest_target_hint=device_lab_interactive_development_guest_aarch64"
+          } > "$REPORTS/LINUX_AARCH64_ARTIFACT_META.txt"
+
+          # On main push, artifact_source_sha must equal github.sha (accepted-main).
+          if [ "${{ github.event_name }}" = "push" ] && [ "${{ github.ref }}" = "refs/heads/main" ]; then
+            grep -qx "artifact_source_sha=${{ github.sha }}" "$REPORTS/LINUX_AARCH64_ARTIFACT_META.txt" \
+              || { echo "FATAL: main push artifact_source_sha != github.sha"; exit 1; }
+          fi
       - uses: actions/upload-artifact@v4
         with:
           name: waike-learning-os-device-lab-linux-aarch64
@@ -79,5 +165,6 @@ jobs:
             reports/LINUX_AARCH64_SHA256SUMS.txt
             reports/LINUX_AARCH64_ARTIFACT_META.txt
             reports/LINUX_AARCH64_FILE.txt
+            reports/LINUX_AARCH64_RUNTIME_DEPS.txt
           retention-days: 14
           if-no-files-found: error
