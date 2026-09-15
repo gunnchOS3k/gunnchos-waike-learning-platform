@@ -49,17 +49,41 @@ jobs:
         run: |
           set -euo pipefail
           export DEBIAN_FRONTEND=noninteractive
-          apt-get update
-          apt-get install -y --no-install-recommends \
+          export APT_LISTCHANGES_FRONTEND=none
+          # Retry apt under flaky mirrors; keep real bookworm packages.
+          apt_retry() {
+            local attempt=1
+            local max=5
+            local delay=5
+            while true; do
+              if "$@"; then
+                return 0
+              fi
+              if [ "$attempt" -ge "$max" ]; then
+                echo "FATAL: apt command failed after ${max} attempts: $*" >&2
+                return 1
+              fi
+              echo "WARN: apt attempt ${attempt}/${max} failed; retrying in ${delay}s: $*" >&2
+              sleep "$delay"
+              attempt=$((attempt + 1))
+              delay=$((delay * 2))
+            done
+          }
+          apt_retry apt-get update -yq
+          apt_retry apt-get install -yq --no-install-recommends \
+            -o Dpkg::Options::=--force-confdef \
+            -o Dpkg::Options::=--force-confold \
             bash ca-certificates curl git build-essential pkg-config file binutils \
             python3 \
             libwebkit2gtk-4.1-dev libgtk-3-dev \
             libayatana-appindicator3-dev librsvg2-dev \
             libglib2.0-dev libssl-dev patchelf
           # Confirm host userspace is bookworm / glibc 2.36 class.
-          cat /etc/os-release | tee /tmp/os-release.txt
-          cat /etc/debian_version | tee /tmp/debian_version.txt
-          ldd --version | head -n1 | tee /tmp/ldd_version.txt
+          # Avoid `cmd | head` under pipefail: head closes early → SIGPIPE (141).
+          tee /tmp/os-release.txt < /etc/os-release
+          tee /tmp/debian_version.txt < /etc/debian_version
+          ldd --version > /tmp/ldd_version_full.txt
+          head -n1 /tmp/ldd_version_full.txt | tee /tmp/ldd_version.txt
           uname -m | tee /tmp/uname_m.txt
           test "$(uname -m)" = "aarch64" \
             || { echo "FATAL: container not native aarch64"; exit 1; }
