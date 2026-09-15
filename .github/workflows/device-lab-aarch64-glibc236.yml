@@ -40,6 +40,10 @@ jobs:
     container:
       image: node:20-bookworm@sha256:f5b23dfa20dc91f65416e7d8dbee9f7a728a5677a53f711a1047f0eaac77d8f0
       options: --user root
+    # Container default is dash (`sh`); require bash for pipefail / arrays.
+    defaults:
+      run:
+        shell: bash
     steps:
       - name: Install Debian 12 build deps
         run: |
@@ -47,7 +51,7 @@ jobs:
           export DEBIAN_FRONTEND=noninteractive
           apt-get update
           apt-get install -y --no-install-recommends \
-            ca-certificates curl git build-essential pkg-config file binutils \
+            bash ca-certificates curl git build-essential pkg-config file binutils \
             python3 \
             libwebkit2gtk-4.1-dev libgtk-3-dev \
             libayatana-appindicator3-dev librsvg2-dev \
