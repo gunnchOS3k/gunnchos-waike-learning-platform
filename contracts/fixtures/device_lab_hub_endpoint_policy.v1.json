@@ -1,0 +1,10 @@
+{
+  "schema_version": "hub_endpoint_policy.v1",
+  "authorized_hub_base_url": "http://10.0.2.2:8787",
+  "deployment_id": "device-lab-qemu-guest",
+  "site_id": "device-lab",
+  "require_https": false,
+  "allow_insecure_local": true,
+  "provenance": "device_lab_fixture",
+  "expires_at": null
+}

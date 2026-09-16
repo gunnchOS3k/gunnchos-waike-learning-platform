@@ -204,6 +204,7 @@ export default function App() {
   const [pendingDeviceOsNav, setPendingDeviceOsNav] = useState<string | null>(null);
   const [deviceOsNavApplied, setDeviceOsNavApplied] = useState(false);
   const [runtimeHubUrl, setRuntimeHubUrl] = useState<string | undefined>(undefined);
+  const [runtimeHubPolicyAuthorized, setRuntimeHubPolicyAuthorized] = useState(false);
 
   const tokenRef = useCallback(() => session?.token ?? null, [session]);
 
@@ -220,8 +221,9 @@ export default function App() {
       resolveHubClient(tokenRef, onAuthFailure, mockActor, {
         ...(import.meta.env as { MODE?: string; VITE_HUB_URL?: string; VITE_WAIKE_MOCK_HUB?: string }),
         runtimeHubUrl,
+        runtimeHubPolicyAuthorized,
       }),
-    [tokenRef, onAuthFailure, mockActor, runtimeHubUrl],
+    [tokenRef, onAuthFailure, mockActor, runtimeHubUrl, runtimeHubPolicyAuthorized],
   );
   const hub: HubClient | null = hubResolution.client;
   const hubUnavailable =
@@ -264,7 +266,9 @@ export default function App() {
       if (!ctx) return;
       const hubFromCtx = ctx.context?.hub_url;
       if (typeof hubFromCtx === "string" && hubFromCtx.trim()) {
+        // Native validate_request_file already authorized + normalized hub_url via HubEndpointPolicy.
         setRuntimeHubUrl(hubFromCtx.trim().replace(/\/$/, ""));
+        setRuntimeHubPolicyAuthorized(true);
       }
       if (!ctx.deep_link?.valid) return;
       const next = modeForDeviceOsDeepLink(ctx.deep_link.kind);
