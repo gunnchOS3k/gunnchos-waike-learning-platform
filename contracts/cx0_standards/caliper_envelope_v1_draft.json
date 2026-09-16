@@ -1,0 +1,25 @@
+{
+  "schema": "gunnchos.waike.cx0.caliper_envelope.v1_draft",
+  "title": "Caliper 1.2 event envelope adapter draft",
+  "certification_claimed": false,
+  "required": [
+    "sensor",
+    "sendTime",
+    "data"
+  ],
+  "properties": {
+    "sensor": {
+      "type": "string"
+    },
+    "sendTime": {
+      "type": "string"
+    },
+    "data": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    }
+  },
+  "notes": "Privacy-gated exporter planned; not enabled by default."
+}

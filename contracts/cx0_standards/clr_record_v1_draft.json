@@ -1,0 +1,24 @@
+{
+  "schema": "gunnchos.waike.cx0.clr_record.v1_draft",
+  "title": "CLR 2.0 record draft",
+  "certification_claimed": false,
+  "required": [
+    "id",
+    "learner",
+    "achievements"
+  ],
+  "properties": {
+    "id": {
+      "type": "string"
+    },
+    "learner": {
+      "type": "object"
+    },
+    "achievements": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    }
+  }
+}

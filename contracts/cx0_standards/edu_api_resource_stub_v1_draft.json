@@ -1,0 +1,22 @@
+{
+  "schema": "gunnchos.waike.cx0.edu_api_resource.v1_draft",
+  "title": "Edu-API optional resource stub",
+  "certification_claimed": false,
+  "required": [
+    "resourceType",
+    "id"
+  ],
+  "properties": {
+    "resourceType": {
+      "enum": [
+        "Section",
+        "Enrollment",
+        "Grade"
+      ]
+    },
+    "id": {
+      "type": "string"
+    }
+  },
+  "notes": "Optional; deferred behind OneRoster pilot stability."
+}
