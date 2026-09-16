@@ -11,6 +11,11 @@ export type HubEnv = {
   MODE?: string;
   VITE_HUB_URL?: string;
   VITE_WAIKE_MOCK_HUB?: string;
+  /**
+   * Runtime Hub base URL from Device OS launch context (`hub_url`) or equivalent.
+   * Compile-time `VITE_HUB_URL` still wins when set. Never enables mock by itself.
+   */
+  runtimeHubUrl?: string;
 };
 
 /** Fail-closed hub resolution: never silently mock in production/native. */
@@ -20,7 +25,7 @@ export function resolveHubClient(
   actor?: HubActor,
   env: HubEnv = import.meta.env,
 ): HubResolution {
-  const base = (env.VITE_HUB_URL || "").trim().replace(/\/$/, "");
+  const base = (env.VITE_HUB_URL || env.runtimeHubUrl || "").trim().replace(/\/$/, "");
   if (base) {
     return {
       status: "http",

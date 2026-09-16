@@ -52,6 +52,30 @@ describe("resolveHubClient fail-closed", () => {
       expect(r.client).not.toBeNull();
     }
   });
+
+  it("creates HTTP hub client from Device OS runtimeHubUrl without enabling mock", () => {
+    const r = resolveHubClient(getToken, undefined, actor, {
+      MODE: "production",
+      runtimeHubUrl: "http://10.0.2.2:8787/",
+    });
+    expect(r.status).toBe("http");
+    if (r.status === "http") {
+      expect(r.baseUrl).toBe("http://10.0.2.2:8787");
+      expect(r.client).not.toBeNull();
+    }
+  });
+
+  it("prefers VITE_HUB_URL over runtimeHubUrl", () => {
+    const r = resolveHubClient(getToken, undefined, actor, {
+      MODE: "production",
+      VITE_HUB_URL: "https://hub.example.edu",
+      runtimeHubUrl: "http://10.0.2.2:8787",
+    });
+    expect(r.status).toBe("http");
+    if (r.status === "http") {
+      expect(r.baseUrl).toBe("https://hub.example.edu");
+    }
+  });
 });
 
 describe("createHttpHubClient", () => {

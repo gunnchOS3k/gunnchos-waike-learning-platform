@@ -38,6 +38,8 @@ const ALLOWED_CONTEXT_KEYS: &[&str] = &[
     "activity_id",
     "sync_cursor",
     "revision",
+    // Device Lab / school deploy: runtime Hub base URL (http/https only).
+    "hub_url",
 ];
 
 const SECRET_CONTEXT_KEYS: &[&str] = &[
@@ -483,6 +485,20 @@ fn validate_request_file(
                 }
             }
         }
+        if k == "hub_url" {
+            if let Some(s) = v.as_str() {
+                let lower = s.to_ascii_lowercase();
+                let ok = (lower.starts_with("http://") || lower.starts_with("https://"))
+                    && !s.contains('\0')
+                    && !s.contains(' ')
+                    && !s.contains('\\');
+                if !ok {
+                    return Err("unsafe_context_value:hub_url".into());
+                }
+            } else if !v.is_null() {
+                return Err("unsafe_context_value:hub_url".into());
+            }
+        }
         clean.insert(k.clone(), v.clone());
     }
 
@@ -790,6 +806,38 @@ mod tests {
             validate_request_file(&dir.path().join(format!("request-{rid2}.json")), rid2, None)
                 .unwrap_err();
         assert!(err2.starts_with("unknown_context_field:"));
+    }
+
+    #[test]
+    fn accepts_hub_url_context() {
+        let dir = tempfile::tempdir().unwrap();
+        let rid = "req-hub";
+        let body = json!({
+            "protocol": PROTOCOL_ID,
+            "message_type": MESSAGE_LAUNCH_CONTEXT,
+            "request_id": rid,
+            "bundle_id": BUNDLE_ID,
+            "deep_link": {"canonical": "waike://learn/home", "valid": true, "kind": "learn", "path": "home"},
+            "context": {"hub_url": "http://10.0.2.2:8787", "platform_role": "learner", "profile": "student", "mode": "School", "bundle_id": BUNDLE_ID}
+        });
+        write_req(dir.path(), rid, &body);
+        let intent = validate_request_file(&dir.path().join(format!("request-{rid}.json")), rid, None)
+            .unwrap();
+        assert_eq!(intent.context.get("hub_url").and_then(|v| v.as_str()), Some("http://10.0.2.2:8787"));
+
+        let rid2 = "req-hub-bad";
+        let body2 = json!({
+            "protocol": PROTOCOL_ID,
+            "message_type": MESSAGE_LAUNCH_CONTEXT,
+            "request_id": rid2,
+            "bundle_id": BUNDLE_ID,
+            "deep_link": {"canonical": "waike://learn/home", "valid": true, "kind": "learn", "path": "home"},
+            "context": {"hub_url": "/etc/passwd"}
+        });
+        write_req(dir.path(), rid2, &body2);
+        let err = validate_request_file(&dir.path().join(format!("request-{rid2}.json")), rid2, None)
+            .unwrap_err();
+        assert_eq!(err, "unsafe_context_value:hub_url");
     }
 
     #[test]
