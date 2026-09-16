@@ -1,0 +1,59 @@
+{
+  "$id": "https://waike.learning/contracts/hub_endpoint_policy.v1.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "HubEndpointPolicy v1",
+  "description": "Trusted deployment policy authorizing exactly one Hub base URL/origin for the WAIKE client. Launch-context hub_url may request a Hub; this policy is the authorization authority.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "authorized_hub_base_url",
+    "deployment_id",
+    "require_https",
+    "allow_insecure_local",
+    "provenance"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "hub_endpoint_policy.v1"
+    },
+    "authorized_hub_base_url": {
+      "type": "string",
+      "minLength": 8,
+      "description": "Normalized Hub base URL (scheme://host[:port][/path]); trailing slash optional; must parse under Hub URL rules."
+    },
+    "deployment_id": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Deployment or site identifier for this authorization."
+    },
+    "site_id": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Optional school/community site id (may match login site_id)."
+    },
+    "require_https": {
+      "type": "boolean",
+      "description": "When true, remote Hub must be https unless allow_insecure_local explicitly permits a matching http URL."
+    },
+    "allow_insecure_local": {
+      "type": "boolean",
+      "description": "Explicit local/test exception allowing the authorized http Hub (Device Lab). Never implied by launch context alone."
+    },
+    "provenance": {
+      "type": "string",
+      "enum": [
+        "managed_policy",
+        "owner_bundle",
+        "enrollment",
+        "device_lab_fixture",
+        "test"
+      ],
+      "description": "How this policy was provisioned."
+    },
+    "expires_at": {
+      "type": ["string", "null"],
+      "description": "Optional RFC3339 expiry; null/omitted means no expiry."
+    }
+  }
+}

@@ -12,6 +12,8 @@ use std::path::{Path, PathBuf};
 use std::time::{Duration, Instant, SystemTime};
 use std::{env, thread};
 
+use crate::hub_endpoint_policy::authorize_launch_hub_url;
+
 pub const PROTOCOL_ID: &str = "gunnchos.learning_os.ipc.v1";
 pub const BUNDLE_ID: &str = "com.gunnchos.waike.learning";
 pub const MESSAGE_LAUNCH_CONTEXT: &str = "launch_context";
@@ -38,6 +40,8 @@ const ALLOWED_CONTEXT_KEYS: &[&str] = &[
     "activity_id",
     "sync_cursor",
     "revision",
+    // Device Lab / school deploy: runtime Hub base URL (http/https only).
+    "hub_url",
 ];
 
 const SECRET_CONTEXT_KEYS: &[&str] = &[
@@ -483,6 +487,20 @@ fn validate_request_file(
                 }
             }
         }
+        if k == "hub_url" {
+            if let Some(s) = v.as_str() {
+                // Native URL parse + HubEndpointPolicy authorization (not JS / string-prefix).
+                match authorize_launch_hub_url(s) {
+                    Ok(normalized) => {
+                        clean.insert(k.clone(), Value::String(normalized));
+                        continue;
+                    }
+                    Err(reason) => return Err(reason),
+                }
+            } else if !v.is_null() {
+                return Err("unsafe_context_value:hub_url".into());
+            }
+        }
         clean.insert(k.clone(), v.clone());
     }
 
@@ -790,6 +808,98 @@ mod tests {
             validate_request_file(&dir.path().join(format!("request-{rid2}.json")), rid2, None)
                 .unwrap_err();
         assert!(err2.starts_with("unknown_context_field:"));
+    }
+
+    #[test]
+    fn accepts_hub_url_context() {
+        use crate::hub_endpoint_policy::with_policy_env;
+
+        let policy = r#"{
+          "schema_version": "hub_endpoint_policy.v1",
+          "authorized_hub_base_url": "http://10.0.2.2:8787",
+          "deployment_id": "device-lab-qemu-guest",
+          "site_id": "device-lab",
+          "require_https": false,
+          "allow_insecure_local": true,
+          "provenance": "device_lab_fixture",
+          "expires_at": null
+        }"#;
+
+        with_policy_env(Some(policy), None, || {
+            let dir = tempfile::tempdir().unwrap();
+            let rid = "req-hub";
+            let body = json!({
+                "protocol": PROTOCOL_ID,
+                "message_type": MESSAGE_LAUNCH_CONTEXT,
+                "request_id": rid,
+                "bundle_id": BUNDLE_ID,
+                "deep_link": {"canonical": "waike://learn/home", "valid": true, "kind": "learn", "path": "home"},
+                "context": {"hub_url": "http://10.0.2.2:8787/", "platform_role": "learner", "profile": "student", "mode": "School", "bundle_id": BUNDLE_ID}
+            });
+            write_req(dir.path(), rid, &body);
+            let intent =
+                validate_request_file(&dir.path().join(format!("request-{rid}.json")), rid, None)
+                    .unwrap();
+            assert_eq!(
+                intent.context.get("hub_url").and_then(|v| v.as_str()),
+                Some("http://10.0.2.2:8787")
+            );
+
+            let rid2 = "req-hub-bad";
+            let body2 = json!({
+                "protocol": PROTOCOL_ID,
+                "message_type": MESSAGE_LAUNCH_CONTEXT,
+                "request_id": rid2,
+                "bundle_id": BUNDLE_ID,
+                "deep_link": {"canonical": "waike://learn/home", "valid": true, "kind": "learn", "path": "home"},
+                "context": {"hub_url": "/etc/passwd"}
+            });
+            write_req(dir.path(), rid2, &body2);
+            let err =
+                validate_request_file(&dir.path().join(format!("request-{rid2}.json")), rid2, None)
+                    .unwrap_err();
+            assert!(
+                err.contains("hub_url") || err == "hub_url_parse_failed",
+                "unexpected: {err}"
+            );
+
+            let rid3 = "req-hub-evil";
+            let body3 = json!({
+                "protocol": PROTOCOL_ID,
+                "message_type": MESSAGE_LAUNCH_CONTEXT,
+                "request_id": rid3,
+                "bundle_id": BUNDLE_ID,
+                "deep_link": {"canonical": "waike://learn/home", "valid": true, "kind": "learn", "path": "home"},
+                "context": {"hub_url": "https://evil.example"}
+            });
+            write_req(dir.path(), rid3, &body3);
+            let err3 =
+                validate_request_file(&dir.path().join(format!("request-{rid3}.json")), rid3, None)
+                    .unwrap_err();
+            assert_eq!(err3, "hub_url_not_in_policy");
+        });
+    }
+
+    #[test]
+    fn rejects_hub_url_without_policy() {
+        use crate::hub_endpoint_policy::with_policy_env;
+        with_policy_env(None, None, || {
+            let dir = tempfile::tempdir().unwrap();
+            let rid = "req-hub-nopolicy";
+            let body = json!({
+                "protocol": PROTOCOL_ID,
+                "message_type": MESSAGE_LAUNCH_CONTEXT,
+                "request_id": rid,
+                "bundle_id": BUNDLE_ID,
+                "deep_link": {"canonical": "waike://learn/home", "valid": true, "kind": "learn", "path": "home"},
+                "context": {"hub_url": "https://hub.school.example"}
+            });
+            write_req(dir.path(), rid, &body);
+            let err =
+                validate_request_file(&dir.path().join(format!("request-{rid}.json")), rid, None)
+                    .unwrap_err();
+            assert_eq!(err, "hub_url_policy_missing");
+        });
     }
 
     #[test]

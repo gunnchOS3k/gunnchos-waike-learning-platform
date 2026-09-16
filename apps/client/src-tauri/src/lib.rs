@@ -1,6 +1,7 @@
 mod db;
 mod deviceos_launch;
 mod error;
+mod hub_endpoint_policy;
 mod keyring_store;
 mod offline;
 #[cfg(test)]
