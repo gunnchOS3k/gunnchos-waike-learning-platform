@@ -128,10 +128,24 @@ jobs:
           test -n "$ARTIFACT_SOURCE_SHA"
 
           cd apps/client && pnpm install --frozen-lockfile && pnpm run build
-          cd src-tauri && cargo build --release
+          # Must enable custom-protocol when invoking cargo directly. `pnpm exec tauri
+          # build` does this implicitly; without it the release binary loads
+          # http://localhost:1420 (devUrl) and Device Lab guests show a white
+          # WebView: "Could not connect to localhost: Connection refused".
+          cd src-tauri && cargo build --release --features custom-protocol
           cd ../../..
 
           test -x "$BIN" || { echo "FATAL: missing artifact $BIN"; exit 1; }
+
+          # Fail-closed: embedded UI must be selected over Vite devUrl.
+          if ! strings -a "$BIN" | grep -F "Sign in to your school hub" >/dev/null; then
+            echo "FATAL: frontendDist markers missing from release binary (custom-protocol embed failed?)"
+            exit 1
+          fi
+          if strings -a "$BIN" | grep -E 'http://localhost:1420/?$' >/dev/null; then
+            # Config string may still appear; ensure we also have embedded UI marker above.
+            echo "NOTE: tauri.conf.json devUrl string still present in binary (expected config embed)"
+          fi
 
           FILE_OUT="$(file "$BIN")"
           echo "$FILE_OUT" | tee "$REPORTS/LINUX_AARCH64_GLIBC236_FILE.txt"

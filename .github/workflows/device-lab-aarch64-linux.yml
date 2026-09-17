@@ -74,10 +74,16 @@ jobs:
           test -n "$ARTIFACT_SOURCE_SHA"
 
           cd apps/client && pnpm install --frozen-lockfile && pnpm run build
-          cd src-tauri && cargo build --release
+          # Must enable custom-protocol when invoking cargo directly (see glibc236 workflow).
+          cd src-tauri && cargo build --release --features custom-protocol
           cd ../../..
 
           test -x "$BIN" || { echo "FATAL: missing artifact $BIN"; exit 1; }
+
+          if ! strings -a "$BIN" | grep -F "Sign in to your school hub" >/dev/null; then
+            echo "FATAL: frontendDist markers missing from release binary (custom-protocol embed failed?)"
+            exit 1
+          fi
 
           FILE_OUT="$(file "$BIN")"
           echo "$FILE_OUT" | tee "$REPORTS/LINUX_AARCH64_FILE.txt"
