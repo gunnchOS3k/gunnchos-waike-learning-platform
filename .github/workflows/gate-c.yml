@@ -2045,7 +2045,7 @@ jobs:
           uv venv .venv
           uv pip install --python .venv/bin/python -e tools/course_compiler cryptography PyNaCl jsonschema pyyaml
           .venv/bin/course-compiler compile DIGITAL_CONFIDENCE --out pack_out
-          cd apps/client/src-tauri && cargo test
+          cd apps/client/src-tauri && cargo test --no-default-features
 
   native-linux:
     name: native-linux
@@ -2070,7 +2070,11 @@ jobs:
           SOURCE_DATE_EPOCH: "1700000000"
         run: |
           cd apps/client && pnpm install --frozen-lockfile && pnpm run build
-          cd src-tauri && cargo build --release
+          cd src-tauri && cargo build --release --features custom-protocol
+          cd ../../..
+          bash scripts/smoke_embedded_frontend_dist.sh \
+            apps/client/src-tauri/target/release/waike-learning-client \
+            apps/client/dist
       - name: Record artifact meta
         id: meta
         run: |
@@ -2251,11 +2255,14 @@ jobs:
           WAIKE_DEV_DB_KEY: ${{ env.WAIKE_DEV_DB_KEY }}
         run: |
           cd apps/client && pnpm install --frozen-lockfile && pnpm run build
-          cd src-tauri && cargo build --release
-          test -x target/release/waike-learning-client
+          cd src-tauri && cargo build --release --features custom-protocol
+          cd ../../..
+          BIN=apps/client/src-tauri/target/release/waike-learning-client
+          bash scripts/smoke_embedded_frontend_dist.sh "$BIN" apps/client/dist
+          test -x "$BIN"
           # Guard: never substitute the Device OS protocol fixture for this job.
           ! test -ef "${{ github.workspace }}/gunnchos-device-os/fixtures/learning_os/waike-learning-os" \
-            target/release/waike-learning-client
+            "$BIN"
       - name: Real Device OS ↔ Tauri runtime E2E + sabotage
         env:
           DEVICE_OS_ROOT: ${{ github.workspace }}/gunnchos-device-os

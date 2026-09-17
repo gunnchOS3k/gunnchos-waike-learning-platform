@@ -74,10 +74,14 @@ jobs:
           test -n "$ARTIFACT_SOURCE_SHA"
 
           cd apps/client && pnpm install --frozen-lockfile && pnpm run build
-          cd src-tauri && cargo build --release
+          # Must enable custom-protocol when invoking cargo directly (see glibc236 workflow).
+          cd src-tauri && cargo build --release --features custom-protocol
           cd ../../..
 
           test -x "$BIN" || { echo "FATAL: missing artifact $BIN"; exit 1; }
+
+          bash scripts/smoke_embedded_frontend_dist.sh "$BIN" apps/client/dist
+
 
           FILE_OUT="$(file "$BIN")"
           echo "$FILE_OUT" | tee "$REPORTS/LINUX_AARCH64_FILE.txt"

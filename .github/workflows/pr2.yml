@@ -131,7 +131,7 @@ jobs:
           uv venv .venv
           uv pip install --python .venv/bin/python -e tools/course_compiler cryptography PyNaCl jsonschema pyyaml
           .venv/bin/course-compiler compile DIGITAL_CONFIDENCE --out pack_out
-          cd apps/client/src-tauri && cargo test
+          cd apps/client/src-tauri && cargo test --no-default-features
 
   frontend:
     name: frontend
@@ -339,7 +339,7 @@ jobs:
           cd apps/client && pnpm install --frozen-lockfile && cd ../..
           .venv/bin/course-compiler compile DIGITAL_CONFIDENCE --out pack_out
           .venv/bin/pytest -q tests services/hub/tests
-          cd apps/client/src-tauri && cargo test && cd ../../..
+          cd apps/client/src-tauri && cargo test --no-default-features && cd ../../..
           cd apps/client && pnpm test && pnpm run build && cd ../..
           .venv/bin/python scripts/verify_pr2.py
       - name: Record PR head for reports artifact

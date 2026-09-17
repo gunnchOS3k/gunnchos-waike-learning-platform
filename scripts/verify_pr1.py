@@ -113,7 +113,7 @@ def main() -> int:
         ),
     }
     rt = run(
-        ["bash", "-lc", 'source "$HOME/.cargo/env" && cargo test'],
+        ["bash", "-lc", 'source "$HOME/.cargo/env" && cargo test --no-default-features'],
         cwd=ROOT / "apps/client/src-tauri",
         env=cargo_env,
     )
