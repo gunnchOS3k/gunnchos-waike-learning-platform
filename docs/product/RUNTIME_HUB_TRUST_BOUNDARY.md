@@ -92,7 +92,7 @@ Authorization requires normalized equality to `authorized_hub_base_url` plus tra
 
 After owner merge of this WAIKE PR and glibc236 artifact re-freeze:
 
-1. Provision `HubEndpointPolicy v1` into the guest (env `WAIKE_HUB_ENDPOINT_POLICY_PATH` / `WAIKE_HUB_ENDPOINT_POLICY_JSON` or managed data-dir file) authorizing **exactly** the Device Lab Hub base used in launch context (e.g. `http://10.0.2.100:8787` or `http://10.0.2.2:8787`) with `allow_insecure_local: true`, `require_https: false`, provenance `device_lab_fixture` (or later `managed_policy`). Runtime CSP connect-src follows that same exact origin.
+1. Provision `HubEndpointPolicy v1` into the guest (env `WAIKE_HUB_ENDPOINT_POLICY_PATH` / `WAIKE_HUB_ENDPOINT_POLICY_JSON` or managed data-dir file) authorizing **exactly** the Device Lab Hub base used in launch context (e.g. `http://10.0.2.100:8787` or `http://10.0.2.2:8787`) with `allow_insecure_local: true`, `require_https: false`, provenance `device_lab_fixture` (or later `managed_policy`). Runtime CSP connect-src follows that same exact origin. Effective policy is stored as a Tauri `Csp::DirectiveMap`, logged as `WAIKE_EFFECTIVE_CSP*`, and injected as an HTML CSP meta tag so WebKitGTK applies connect-src even when custom-protocol headers are ignored.
 2. Continue passing launch-context `hub_url` matching that authorized base.
 3. Keep mockHub disabled (`VITE_WAIKE_MOCK_HUB` unset/false).
 4. Re-earn `WAIKE_REAL_RUNTIME_DEVICE_LAB_PASS` / GUI+Hub journey on the new accepted-main pin.
