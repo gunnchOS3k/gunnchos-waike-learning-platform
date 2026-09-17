@@ -122,3 +122,19 @@ def test_fixture_headers_rejected_in_production(prod_client):
     )
     assert r.status_code == 401
     assert r.json()["detail"] == "FIXTURE_AUTH_REJECTED"
+
+
+def test_device_lab_webview_cors_preflight(prod_client):
+    """Tauri custom-protocol Origin must get CORS preflight for login POST."""
+    r = prod_client.options(
+        "/api/v1/auth/login",
+        headers={
+            "Origin": "http://ipc.localhost",
+            "Access-Control-Request-Method": "POST",
+            "Access-Control-Request-Headers": "content-type",
+        },
+    )
+    assert r.status_code in (200, 204)
+    assert r.headers.get("access-control-allow-origin") == "http://ipc.localhost"
+    allow_methods = (r.headers.get("access-control-allow-methods") or "").upper()
+    assert "POST" in allow_methods

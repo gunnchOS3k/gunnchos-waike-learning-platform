@@ -6,6 +6,7 @@ import os
 from pathlib import Path
 
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 
 from app.api.routes import router as api_router
@@ -150,6 +151,29 @@ def create_app(config: HubConfig | None = None, db_path: Path | None = None, see
             "fixture_auth_enabled=true. Synthetic test accounts are never seeded unless tests "
             "pass seed=True or WAIKE_SEED_TEST_FIXTURES=true is set for a non-production path."
         ),
+    )
+    # Additive CORS for Tauri custom-protocol WebView (Origin: http(s)://ipc.localhost)
+    # and Device Lab guest→Hub binds. Does not weaken auth; only unlocks browser preflight.
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=[
+            "http://ipc.localhost",
+            "https://ipc.localhost",
+            "http://tauri.localhost",
+            "https://tauri.localhost",
+            "tauri://localhost",
+            "null",
+        ],
+        allow_credentials=False,
+        allow_methods=["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+        allow_headers=[
+            "Content-Type",
+            "Authorization",
+            "X-Waike-Actor-Id",
+            "X-Waike-Actor-Role",
+            "Access-Control-Request-Private-Network",
+        ],
+        max_age=600,
     )
     app.state.config = cfg
 
