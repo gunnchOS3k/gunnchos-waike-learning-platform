@@ -305,6 +305,15 @@ fn get_initial_deviceos_launch_context(
     }
 }
 
+/// Frontend → stderr diagnostics for Device Lab GUI log scrapes (CSP / login fetch).
+#[tauri::command]
+fn report_client_diag(kind: String, detail: String) -> Result<(), CommandError> {
+    // Keep detail short; never echo passwords/tokens from the UI.
+    let safe = detail.chars().take(500).collect::<String>();
+    eprintln!("WAIKE_CLIENT_DIAG kind={kind} detail={safe}");
+    Ok(())
+}
+
 fn deviceos_prepare_or_exit() -> Option<PreparedLaunch> {
     let cli = parse_cli_args(std::env::args());
     match prepare_deviceos_launch(&cli) {
@@ -379,17 +388,38 @@ pub fn run() {
     let prepared_for_setup = prepared.clone();
 
     let mut context = tauri::generate_context!();
-    // Fail-closed static CSP + exact HubEndpointPolicy / VITE_HUB_URL origins only.
-    // Never scheme-wide http:/https: (would undermine HubEndpointPolicy trust boundary).
-    if let Err(e) = hub_connect_csp::apply_hub_connect_csp_to_config(
+    // Fail-closed static CSP + exact HubEndpointPolicy / VITE_HUB_URL / launch-authorized
+    // origins only. Never scheme-wide http:/https: (would undermine HubEndpointPolicy).
+    // Fold the already-authorized launch hub_url so connect-src cannot diverge from ACK.
+    let launch_hub = prepared.as_ref().and_then(|p| {
+        p.intent
+            .context
+            .get("hub_url")
+            .and_then(|v| v.as_str())
+            .map(|s| s.to_string())
+    });
+    let applied = match hub_connect_csp::apply_hub_connect_csp_to_config_with_launch(
         &mut context.config_mut().app.security.csp,
+        launch_hub.as_deref(),
     ) {
-        eprintln!("WAIKE Learning OS hub connect-src CSP error: {e}");
-        if let Some(p) = &prepared {
-            let _ = deviceos_launch::write_nack(&p.ipc_dir, &p.request_id, "process_init_failure");
+        Ok(applied) => applied,
+        Err(e) => {
+            eprintln!("WAIKE Learning OS hub connect-src CSP error: {e}");
+            if let Some(p) = &prepared {
+                let _ = deviceos_launch::write_nack(&p.ipc_dir, &p.request_id, "process_init_failure");
+            }
+            std::process::exit(1);
         }
-        std::process::exit(1);
-    }
+    };
+    // Device Lab scrapes stdout/stderr: prove effective connect-src before WebView start.
+    eprintln!(
+        "WAIKE_EFFECTIVE_CSP_CONNECT_SRC={}",
+        applied.connect_src.join(" ")
+    );
+    eprintln!("WAIKE_EFFECTIVE_CSP={}", applied.effective_csp);
+    // WebKitGTK: also inject CSP meta into HTML assets (header-only apply is unreliable).
+    hub_connect_csp::install_html_csp_meta_assets(&mut context, &applied.effective_csp);
+    eprintln!("WAIKE_CSP_HTML_META_INJECTED=true");
 
     tauri::Builder::default()
         .plugin(tauri_plugin_dialog::init())
@@ -431,6 +461,7 @@ pub fn run() {
             sync_get_counts,
             sync_offline_state,
             get_initial_deviceos_launch_context,
+            report_client_diag,
         ])
         .run(context)
         .expect("error while running WAIKE Learning OS");

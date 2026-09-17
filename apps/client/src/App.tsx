@@ -414,11 +414,20 @@ export default function App() {
 
   async function onLogin(e: React.FormEvent) {
     e.preventDefault();
-    if (!hub) return;
+    if (!hub) {
+      setError("School Hub not configured / unavailable");
+      return;
+    }
     setLoading(true);
     setError(null);
     setSessionExpired(false);
     try {
+      if (isTauri()) {
+        void invoke("report_client_diag", {
+          kind: "hub_login_fetch_start",
+          detail: hubResolution.status === "http" ? hubResolution.baseUrl : "unknown",
+        }).catch(() => undefined);
+      }
       const s = await hub.login(username, password, siteId);
       setSession(s);
       sessionStorage.setItem(SESSION_KEY, JSON.stringify(s));
@@ -432,7 +441,14 @@ export default function App() {
         setMode(role === "learner" ? "home" : "instruct");
       }
     } catch (err) {
-      setError(err instanceof HubAuthError ? err.detail : String(err));
+      const detail = err instanceof HubAuthError ? err.detail : String(err);
+      if (isTauri()) {
+        void invoke("report_client_diag", {
+          kind: "hub_login_fetch_error",
+          detail,
+        }).catch(() => undefined);
+      }
+      setError(detail);
     } finally {
       setLoading(false);
     }
