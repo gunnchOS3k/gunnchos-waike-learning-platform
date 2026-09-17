@@ -49,8 +49,23 @@ No pre-existing managed Hub trusted-origin / enrollment Hub binding was present;
 ## Transport rules
 
 - Remote / production Hub: **HTTPS** (`require_https: true`, `allow_insecure_local: false`)
-- Plain HTTP only when policy sets `allow_insecure_local: true` and authorizes the exact base (Device Lab example: `http://10.0.2.2:8787`)
+- Plain HTTP only when policy sets `allow_insecure_local: true` and authorizes the exact base (Device Lab example: `http://10.0.2.100:8787` or fixture `http://10.0.2.2:8787`)
 - That Device Lab address is **not** hard-coded as production Hub
+
+## Webview CSP connect-src (defense-in-depth)
+
+Static `tauri.conf.json` uses fail-closed:
+
+`connect-src 'self' ipc: http://ipc.localhost https://ipc.localhost`
+
+At process start (before webview), `hub_connect_csp` appends **exact** origins from:
+
+1. Provisioned HubEndpointPolicy `authorized_hub_base_url` (HTTP→`ws:`, HTTPS→`wss:` pair)
+2. Compile-time `VITE_HUB_URL` when baked into the image
+
+**Forbidden:** scheme-wide `http:` / `https:` / `ws:` / `wss:` (would allow arbitrary hosts and undermine this policy).
+
+Untrusted hubs: policy rejects credential path **and** CSP omits their origin.
 
 ## Policy load order (trusted provision)
 
@@ -77,12 +92,12 @@ Authorization requires normalized equality to `authorized_hub_base_url` plus tra
 
 After owner merge of this WAIKE PR and glibc236 artifact re-freeze:
 
-1. Provision `HubEndpointPolicy v1` into the guest (env `WAIKE_HUB_ENDPOINT_POLICY_PATH` / `WAIKE_HUB_ENDPOINT_POLICY_JSON` or managed data-dir file) authorizing **exactly** `http://10.0.2.2:8787` with `allow_insecure_local: true`, `require_https: false`, provenance `device_lab_fixture` (or later `managed_policy`).
+1. Provision `HubEndpointPolicy v1` into the guest (env `WAIKE_HUB_ENDPOINT_POLICY_PATH` / `WAIKE_HUB_ENDPOINT_POLICY_JSON` or managed data-dir file) authorizing **exactly** the Device Lab Hub base used in launch context (e.g. `http://10.0.2.100:8787` or `http://10.0.2.2:8787`) with `allow_insecure_local: true`, `require_https: false`, provenance `device_lab_fixture` (or later `managed_policy`). Runtime CSP connect-src follows that same exact origin.
 2. Continue passing launch-context `hub_url` matching that authorized base.
 3. Keep mockHub disabled (`VITE_WAIKE_MOCK_HUB` unset/false).
 4. Re-earn `WAIKE_REAL_RUNTIME_DEVICE_LAB_PASS` / GUI+Hub journey on the new accepted-main pin.
 
-Future school/community deploys authorize their HTTPS Hub by provisioning policy — **no per-site WAIKE rebuild required**.
+Future school/community deploys authorize their HTTPS Hub by provisioning policy — **no per-site WAIKE rebuild required** (CSP updates at process start from policy).
 
 ## Claim boundary
 

@@ -1,6 +1,7 @@
 mod db;
 mod deviceos_launch;
 mod error;
+mod hub_connect_csp;
 mod hub_endpoint_policy;
 mod keyring_store;
 mod offline;
@@ -377,6 +378,19 @@ pub fn run() {
     let launch_intent = prepared.as_ref().map(|p| p.intent.clone());
     let prepared_for_setup = prepared.clone();
 
+    let mut context = tauri::generate_context!();
+    // Fail-closed static CSP + exact HubEndpointPolicy / VITE_HUB_URL origins only.
+    // Never scheme-wide http:/https: (would undermine HubEndpointPolicy trust boundary).
+    if let Err(e) = hub_connect_csp::apply_hub_connect_csp_to_config(
+        &mut context.config_mut().app.security.csp,
+    ) {
+        eprintln!("WAIKE Learning OS hub connect-src CSP error: {e}");
+        if let Some(p) = &prepared {
+            let _ = deviceos_launch::write_nack(&p.ipc_dir, &p.request_id, "process_init_failure");
+        }
+        std::process::exit(1);
+    }
+
     tauri::Builder::default()
         .plugin(tauri_plugin_dialog::init())
         .manage(AppState {
@@ -418,6 +432,6 @@ pub fn run() {
             sync_offline_state,
             get_initial_deviceos_launch_context,
         ])
-        .run(tauri::generate_context!())
+        .run(context)
         .expect("error while running WAIKE Learning OS");
 }
