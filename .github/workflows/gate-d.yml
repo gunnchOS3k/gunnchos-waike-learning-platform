@@ -885,7 +885,7 @@ jobs:
           uv venv .venv
           uv pip install --python .venv/bin/python -e tools/course_compiler cryptography PyNaCl
           .venv/bin/course-compiler compile DIGITAL_CONFIDENCE --out pack_out
-          cd apps/client/src-tauri && cargo test
+          cd apps/client/src-tauri && cargo test --no-default-features
 
   native-linux:
     name: native-linux
@@ -912,17 +912,21 @@ jobs:
         run: |
           mkdir -p reports
           cd apps/client && pnpm install --frozen-lockfile && pnpm run build
-          cd src-tauri && cargo build --release
-          test -x target/release/waike-learning-client
+          # custom-protocol is default; pass explicitly for Device Lab / release parity.
+          cd src-tauri && cargo build --release --features custom-protocol
+          cd ../../..
+          BIN=apps/client/src-tauri/target/release/waike-learning-client
+          bash scripts/smoke_embedded_frontend_dist.sh "$BIN" apps/client/dist
+          test -x "$BIN"
           HEAD_SHA="${{ github.event.pull_request.head.sha }}"
           if [ -z "$HEAD_SHA" ]; then HEAD_SHA="${{ github.sha }}"; fi
-          sha256sum target/release/waike-learning-client | tee ../../../reports/LINUX_SHA256SUMS.txt
-          echo "artifact_head_sha=$HEAD_SHA" > ../../../reports/LINUX_ARTIFACT_META.txt
-          echo "waike_pin_ref=${{ env.WAIKE_PIN_REF }}" >> ../../../reports/LINUX_ARTIFACT_META.txt
-          echo "gunnchai_pin_ref=${{ env.GUNNCHAI_PIN_REF }}" >> ../../../reports/LINUX_ARTIFACT_META.txt
-          echo "device_os_pin_ref=${{ env.DEVICE_OS_PIN_REF }}" >> ../../../reports/LINUX_ARTIFACT_META.txt
-          echo "gate=Gate D" >> ../../../reports/LINUX_ARTIFACT_META.txt
-          echo "format=ELF_binary_not_zip" >> ../../../reports/LINUX_ARTIFACT_META.txt
+          sha256sum "$BIN" | tee reports/LINUX_SHA256SUMS.txt
+          echo "artifact_head_sha=$HEAD_SHA" > reports/LINUX_ARTIFACT_META.txt
+          echo "waike_pin_ref=${{ env.WAIKE_PIN_REF }}" >> reports/LINUX_ARTIFACT_META.txt
+          echo "gunnchai_pin_ref=${{ env.GUNNCHAI_PIN_REF }}" >> reports/LINUX_ARTIFACT_META.txt
+          echo "device_os_pin_ref=${{ env.DEVICE_OS_PIN_REF }}" >> reports/LINUX_ARTIFACT_META.txt
+          echo "gate=Gate D" >> reports/LINUX_ARTIFACT_META.txt
+          echo "format=ELF_binary_not_zip" >> reports/LINUX_ARTIFACT_META.txt
       - uses: actions/upload-artifact@v4
         with:
           name: waike-learning-os-gate-d-linux
@@ -1040,9 +1044,12 @@ jobs:
           WAIKE_DEV_DB_KEY: ${{ env.WAIKE_DEV_DB_KEY }}
         run: |
           cd apps/client && pnpm install --frozen-lockfile && pnpm run build
-          cd src-tauri && cargo build --release
-          test -x target/release/waike-learning-client
-          ! test -ef "${{ github.workspace }}/gunnchos-device-os/fixtures/learning_os/waike-learning-os" target/release/waike-learning-client
+          cd src-tauri && cargo build --release --features custom-protocol
+          cd ../../..
+          BIN=apps/client/src-tauri/target/release/waike-learning-client
+          bash scripts/smoke_embedded_frontend_dist.sh "$BIN" apps/client/dist
+          test -x "$BIN"
+          ! test -ef "${{ github.workspace }}/gunnchos-device-os/fixtures/learning_os/waike-learning-os" "$BIN"
       - name: Real Device OS ↔ Tauri runtime E2E + sabotage
         env:
           DEVICE_OS_ROOT: ${{ github.workspace }}/gunnchos-device-os

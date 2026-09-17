@@ -50,7 +50,7 @@ hub-test:
 	WAIKE_ROOT=$(WAIKE_ROOT) PYTHONPATH=services/hub $(PYTHON) -m pytest -q services/hub/tests
 
 rust-test:
-	cd $(TAURI) && cargo test
+	cd $(TAURI) && cargo test --no-default-features
 
 frontend-test:
 	cd $(CLIENT) && (command -v pnpm >/dev/null && pnpm test || npm test)

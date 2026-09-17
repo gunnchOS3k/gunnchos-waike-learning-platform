@@ -45,6 +45,8 @@ url = "2"
 # (http://localhost:1420) and the WebView shows:
 #   "Could not connect to localhost: Connection refused"
 # which blocks all Hub login / client HTTP in Device OS guests.
+# Default-on so plain `cargo build --release` embeds frontendDist. Unit-test CI
+# must use `cargo test --no-default-features` when apps/client/dist is absent.
 [features]
 default = ["custom-protocol"]
 custom-protocol = ["tauri/custom-protocol"]
