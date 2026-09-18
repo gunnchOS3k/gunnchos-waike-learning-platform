@@ -5,7 +5,7 @@
 
 ## B. Branch / final SHA
 Branch: `device-lab/pixel6a-full-waike-pilot`  
-`af0ced73bfbc7f450518848e2532b6ace1587274`
+`06d90c166949a77b7c25ecbbbe924fc6b8ae3c13`
 
 ## C. Pixel baseline
 `/Users/gunnchos/Downloads/gunnchos-7gc-research-product-spine/repos/gunnchos-waike-learning-platform/artifacts/pixel6a_waike/DEVICE_BASELINE.json`
