@@ -66,5 +66,8 @@ Phase B — all native gates **false**.
 See `GATE_TOKENS.json`. Aggregate `WAIKE_ALL_CONTENT_ALL_ROLE_PIXEL_PILOT_PASS=false` (honest — physical remount + offline/soak/a11y outstanding).
 
 ## Z. DRAFT PR + next action
+DRAFT PR: https://github.com/gunnchOS3k/gunnchos-waike-learning-platform/pull/19
+
 `NEXT_WAIKE_ACTION=OWNER_REAUTH_USB_DEBUGGING_THEN_RERUN_make_pixel-waike-full-pilot`
+
 Do not merge until aggregate gate is true after physical remount.

@@ -33,3 +33,15 @@ Physical gates that remain false until re-authorized evidence is captured:
 - `PIXEL_WAIKE_OFFLINE_RESTART_RECONNECT_PASS`
 - `PIXEL_WAIKE_STABILITY_PASS` (full 30-minute soak)
 - Aggregate `WAIKE_ALL_CONTENT_ALL_ROLE_PIXEL_PILOT_PASS`
+
+## Flaky auth observed
+
+ADB briefly shows `device`, then flips to `unauthorized` on the next `adb shell` / screencap.
+This usually means **"Always allow from this computer" was not checked**, or the RSA key prompt needs a fresh Allow after `adb kill-server`.
+
+Please:
+
+1. Revoke USB debugging authorizations on Pixel (Developer options → Revoke USB debugging authorizations).
+2. Re-plug USB-C, unlock.
+3. Accept the prompt with **Always allow from this computer** checked.
+4. Confirm stable: `adb shell getprop ro.product.model` succeeds repeatedly.
