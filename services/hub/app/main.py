@@ -35,6 +35,7 @@ from app.modules.oneroster import OneRosterService
 from app.modules.qti import QtiService
 from app.modules.sections import SectionService
 from app.modules.sync import SyncService
+from app.modules.telemetry import TelemetryService
 
 APP_VERSION = "0.6.0-gate-c"
 
@@ -216,6 +217,7 @@ def create_app(config: HubConfig | None = None, db_path: Path | None = None, see
         gunnchai_root=os.environ.get("GUNNCHAI_ROOT"),
         app_version=cfg.version,
     )
+    telemetry = TelemetryService(conn, observability)
     rate_limiter = RateLimiter(conn)
     guardian = GuardianService(conn)
 
@@ -260,6 +262,7 @@ def create_app(config: HubConfig | None = None, db_path: Path | None = None, see
     app.state.privacy = privacy
     app.state.admin = admin
     app.state.observability = observability
+    app.state.telemetry = telemetry
     app.state.packages = packages
     app.state.rate_limiter = rate_limiter
     app.state.guardian = guardian
