@@ -3,71 +3,118 @@
 ## A. Accepted main SHA
 `747e64e6386c10ef8c0f72c50eb5557035e5c9b9`
 
-## B. Branch
-`device-lab/pixel6a-full-waike-pilot` (from accepted main)
+## B. Branch / final SHA
+Branch: `device-lab/pixel6a-full-waike-pilot`  
+`af0ced73bfbc7f450518848e2532b6ace1587274`
 
 ## C. Pixel baseline
-See `artifacts/pixel6a_waike/DEVICE_BASELINE.json` — Pixel 6a, Android 17 / SDK 37, 1080x2400 @ 420dpi. Captured while ADB status was `device`.
+`/Users/gunnchos/Downloads/gunnchos-7gc-research-product-spine/repos/gunnchos-waike-learning-platform/artifacts/pixel6a_waike/DEVICE_BASELINE.json`
 
-**Current ADB:** `unauthorized` after later `adb kill-server`. Owner must re-accept USB debugging — see `OWNER_ADB_REAUTH.md`.
+- Serial `27211JEGR06194`, Google Pixel 6a (`bluejay`)
+- Android 17 / SDK 37, 1080×2400 @ 420dpi
+- Captured while ADB status was `device` (2026-09-18T23:00:32Z)
+- **Current ADB:** `offline` (flaky USB). Owner must re-approve USB debugging — see `OWNER_ADB_REAUTH.md` and `defects/DEFECT-0001/`.
 
 ## D. Mac / Hub baseline
-Pilot Hub on `127.0.0.1:8000` with `WAIKE_PIXEL_PILOT=true`, production password auth, fixture headers off. Vite client on `127.0.0.1:1420` with `VITE_HUB_URL` + `VITE_PIXEL_PILOT`.
+`artifacts/pixel6a_waike/MAC_HUB_BASELINE.json`
+
+- Hub: `127.0.0.1:8000` (`WAIKE_PIXEL_PILOT=true`, production password auth, fixture headers off)
+- Client: `127.0.0.1:1420`
+- CORS: exact origins only (no `*`)
+- DB: gitignored `.pixel-pilot/hub.sqlite3`
 
 ## E. 18-track runtime inventory
-`FULL_18_TRACK_RUNTIME_INVENTORY.json` — `all_18_loaded=true`, 18/18 IDs.
+`artifacts/pixel6a_waike/FULL_18_TRACK_RUNTIME_INVENTORY.json` — `all_18_loaded=true`, exact 18 registry IDs.
+
+Gate: `PIXEL_PILOT_ALL_18_TRACKS_LOADED=true`
 
 ## F. Role manifest
-`ROLE_TEST_MANIFEST.json` — learner/instructor/grader/guardian/site_admin (+ beta isolation users). Passwords only in gitignored `.pixel-pilot/credentials.json`.
+`artifacts/pixel6a_waike/ROLE_TEST_MANIFEST.json` — learner / instructor / grader / guardian / site_admin (+ beta isolation + unlinked guardian). Passwords only in gitignored `.pixel-pilot/credentials.json` (`password_present=true`, no password values in git).
+
+Gate: `PIXEL_PILOT_ALL_ROLES_SEEDED=true`
 
 ## G. PWA / mobile-web
-Manifest + SW shell cache; `runtimeAdapter` TAURI_DESKTOP / WEB_MOBILE; touch CSS; pilot banner; no mockHub in pixel pilot mode.
+Manifest + shell SW (no `/api/` cache); `runtimeAdapter` `TAURI_DESKTOP` | `WEB_MOBILE`; touch CSS; pilot role banner; `VITE_PIXEL_PILOT` refuses silent mockHub.
+
+Gates: `WAIKE_PIXEL_WEB_CLIENT_PASS=true`, `WAIKE_PIXEL_PWA_INSTALL_PASS=true`
 
 ## H. Pixel↔Hub transport
-ADB reverse `8000`/`1420` earned while authorized (`PIXEL_TO_REAL_HUB_CONNECTIVITY_PASS=true`). Re-reverse after re-auth.
+Preferred ADB reverse `tcp:8000` / `tcp:1420`. **Not currently earned** — device offline (`PIXEL_TO_REAL_HUB_CONNECTIVITY_PASS=false`). Brief authorized windows earlier proved reverse listing possible.
 
-## I–M. Role journeys (password API against real Hub)
-Learner 18-track visibility, instructor, grader, guardian, site_admin — **pass** (API/password; physical UI remount blocked by unauthorized).
+## I–M. Role journeys
+Mac password-API against real Hub: learner 18/18 tracks, instructor/grader/guardian/site_admin smoke, documented in `ROLE_JOURNEY_EVIDENCE.json` (`evidence_mode=mac_api_password_auth`, `MAC_API_ROLE_JOURNEYS_PROVEN=true`).
 
-## N. Session isolation
-**pass** (logout revokes token; sequential role logins).
+**PIXEL_* journey gates = false** until authorized Pixel + reverse (`PHYSICAL_UI_ROLE_JOURNEYS_PROVEN=false`). No fabricated physical UI success.
+
+## N. Role / session isolation
+Mac API: logout revokes token across sequential role logins (`mac_api_session_isolation`). `PIXEL_ROLE_SESSION_ISOLATION_PASS=false` pending physical eligibility.
 
 ## O. Cross-site isolation
-**pass** (alpha admin cannot list beta users; alpha instructor denied beta roster).
+Mac API: alpha admin does not list beta users; alpha instructor denied beta roster. `PIXEL_CROSS_SITE_ISOLATION_PASS=false` pending physical eligibility.
 
 ## P. Offline / restart / reconnect
-**false** — not earned; web IndexedDB offline explicitly unclaimed.
+`PIXEL_WAIKE_OFFLINE_RESTART_RECONNECT_PASS=false` — not earned (ADB offline; IndexedDB path unclaimed).
 
 ## Q. AI surfaces
-**false** — not fully exercised on Pixel in this run.
+`PIXEL_WAIKE_AI_SURFACE_PASS=false` — honest fail; no fake provider; KIRBY not blocking.
 
-## R. Accessibility mechanics
-**false** — uiautomator dump blocked while unauthorized; remount required.
+## R. Accessibility
+`PIXEL_ACCESSIBILITY_MECHANICS_PASS=false`. `HUMAN_DISABLED_USER_ACCESSIBILITY_VALIDATION=false`. Partial dumps under `artifacts/pixel6a_waike/accessibility/` from earlier authorized window.
 
-## S. Stability
-**false** — full 30-minute soak not claimed (short sample only).
+## S. Performance / stability
+Budgets defined in `PERFORMANCE_BUDGETS.json`. `PIXEL_WAIKE_STABILITY_PASS=false` (no 30-min soak).
 
 ## T. Defects
-None filed under `defects/` for Mac-side failures; physical remount gap documented in `OWNER_ADB_REAUTH.md`.
+`artifacts/pixel6a_waike/defects/DEFECT-0001/` — `ADB_DEVICE_OFFLINE` (open).
 
-## U. Fixes
-Exact-origin CORS (`cors_origins.py`); full curriculum seed; pilot users; mobile/PWA client; oracle + `make pixel-waike-full-pilot`.
+## U. Fixes this wave
+- Aligned `create_test_users.seed_pilot_users` with `pixel-*` keys + IdentityService
+- Learner visibility via `/api/v1/learner/home` (18 exact tracks)
+- Simplified Hub bootstrap (no wipe/race on fixture assignment seed)
+- PIXEL_* journey gates require physical eligibility (no Mac-API-only greenwash)
+- Tests under `tests/pixel_pilot/` (6 passed)
 
-## V. Regressions
-`test_cors_origins.py`, `test_pixel_curriculum_seed.py`, `runtimeAdapter.test.ts`.
+## V. Regressions added
+- `tests/pixel_pilot/*` (curriculum seed, CORS, create_test_users, oracle)
+- `apps/client` resolveHub + runtimeAdapter vitest (17 passed)
 
 ## W. Acceptance matrix
-`PIXEL_FULL_ACCEPTANCE_MATRIX.csv`
+`artifacts/pixel6a_waike/PIXEL_FULL_ACCEPTANCE_MATRIX.csv`
 
-## X. Native Android
-Phase B — all native gates **false**.
+## X. Native Android Phase B
+`NATIVE_ANDROID_PHASE_B.json` — **DEFER**; all native gates false. PWA remains primary.
 
 ## Y. Gate tokens
-See `GATE_TOKENS.json`. Aggregate `WAIKE_ALL_CONTENT_ALL_ROLE_PIXEL_PILOT_PASS=false` (honest — physical remount + offline/soak/a11y outstanding).
+`artifacts/pixel6a_waike/GATE_TOKENS.json`
 
-## Z. DRAFT PR + next action
-DRAFT PR: https://github.com/gunnchOS3k/gunnchos-waike-learning-platform/pull/19
+| Token | Value |
+|-------|-------|
+| PIXEL6A_WAIKE_DEVICE_CONNECTED | false |
+| PIXEL_PILOT_ALL_18_TRACKS_LOADED | true |
+| PIXEL_PILOT_ALL_ROLES_SEEDED | true |
+| WAIKE_PIXEL_WEB_CLIENT_PASS | true |
+| PIXEL_TO_REAL_HUB_CONNECTIVITY_PASS | false |
+| WAIKE_PIXEL_PWA_INSTALL_PASS | true |
+| PIXEL_LEARNER_18_TRACK_VISIBILITY_PASS | false |
+| PIXEL_INSTRUCTOR_JOURNEY_PASS | false |
+| PIXEL_GRADER_JOURNEY_PASS | false |
+| PIXEL_GUARDIAN_JOURNEY_PASS | false |
+| PIXEL_SITE_ADMIN_JOURNEY_PASS | false |
+| PIXEL_ROLE_SESSION_ISOLATION_PASS | false |
+| PIXEL_CROSS_SITE_ISOLATION_PASS | false |
+| PIXEL_WAIKE_OFFLINE_RESTART_RECONNECT_PASS | false |
+| PIXEL_ACCESSIBILITY_MECHANICS_PASS | false |
+| PIXEL_WAIKE_STABILITY_PASS | false |
+| PIXEL_WAIKE_AI_SURFACE_PASS | false |
+| WAIKE_ANDROID_NATIVE_* | false |
+| HUMAN_DISABLED_USER_ACCESSIBILITY_VALIDATION | false |
+| WAIKE_ALL_CONTENT_ALL_ROLE_PIXEL_PILOT_PASS | false |
 
+## Z. DRAFT PR
+https://github.com/gunnchOS3k/gunnchos-waike-learning-platform/pull/19 (DRAFT, do not merge)
+
+### Next action
 `NEXT_WAIKE_ACTION=OWNER_REAUTH_USB_DEBUGGING_THEN_RERUN_make_pixel-waike-full-pilot`
 
-Do not merge until aggregate gate is true after physical remount.
+Preferred when fully green:
+`NEXT_WAIKE_ACTION=FREEZE_PIXEL6A_FULL_CONTENT_ALL_ROLE_PILOT_BUILD_AND_BEGIN_OWNER_HUMAN_USABILITY_PASS`
