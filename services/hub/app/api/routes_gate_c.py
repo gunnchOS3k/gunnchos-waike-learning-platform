@@ -23,6 +23,7 @@ from app.modules.hardening import (
 from app.modules.lti import LtiService
 from app.modules.oneroster import OneRosterService
 from app.modules.qti import QtiService
+from app.modules.telemetry import TelemetryService
 
 router = APIRouter(prefix="/api/v1")
 
@@ -66,6 +67,10 @@ def _admin(request: Request) -> AdminConsole:
 
 def _obs(request: Request) -> Observability:
     return request.app.state.observability
+
+
+def _telemetry(request: Request) -> TelemetryService:
+    return request.app.state.telemetry
 
 
 def _packages(request: Request) -> PackageLifecycle:
@@ -373,6 +378,26 @@ def privacy_retention(
 def diagnostics(request: Request, actor: Actor = Depends(require_actor)) -> dict[str, Any]:
     try:
         return _obs(request).diagnostics(actor)
+    except ServiceError as e:
+        raise _http(e) from e
+
+
+@router.get("/telemetry/counters")
+def telemetry_counters(request: Request, actor: Actor = Depends(require_actor)) -> dict[str, Any]:
+    try:
+        return _telemetry(request).counters(actor)
+    except ServiceError as e:
+        raise _http(e) from e
+
+
+@router.post("/telemetry/synthetic-smoke")
+def telemetry_synthetic_smoke(
+    request: Request, actor: Actor = Depends(require_actor)
+) -> dict[str, Any]:
+    """SYNTHETIC fixture endpoint — not learner evidence."""
+    require_site_admin(actor)
+    try:
+        return _telemetry(request).seed_synthetic_smoke(actor)
     except ServiceError as e:
         raise _http(e) from e
 
