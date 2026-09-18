@@ -12,6 +12,7 @@ from pydantic import BaseModel, Field
 from app.api.routes import router as api_router
 from app.api.routes_gate_c import router as gate_c_router
 from app.api.routes_gate_d import router as gate_d_router
+from app.cors_origins import hub_allow_origins
 from app.modules.guardian import GuardianService
 from app.db import connect, migrate
 from app.modules.activity_engine import ActivityEngine
@@ -153,18 +154,11 @@ def create_app(config: HubConfig | None = None, db_path: Path | None = None, see
             "pass seed=True or WAIKE_SEED_TEST_FIXTURES=true is set for a non-production path."
         ),
     )
-    # Additive CORS for Tauri custom-protocol WebView (Origin: http(s)://ipc.localhost)
-    # and Device Lab guest→Hub binds. Does not weaken auth; only unlocks browser preflight.
+    # Additive CORS for Tauri custom-protocol WebView and Pixel Chrome loopback/PWA.
+    # Exact origins only — hub_allow_origins() refuses "*".
     app.add_middleware(
         CORSMiddleware,
-        allow_origins=[
-            "http://ipc.localhost",
-            "https://ipc.localhost",
-            "http://tauri.localhost",
-            "https://tauri.localhost",
-            "tauri://localhost",
-            "null",
-        ],
+        allow_origins=hub_allow_origins(),
         allow_credentials=False,
         allow_methods=["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
         allow_headers=[
@@ -222,6 +216,8 @@ def create_app(config: HubConfig | None = None, db_path: Path | None = None, see
     guardian = GuardianService(conn)
 
     should_seed = bool(seed) or _fixture_seeding_allowed_by_env()
+    pixel_pilot = _env_truthy("WAIKE_PIXEL_PILOT")
+    curriculum_inventory: dict | None = None
     if should_seed:
         # Always keep PR2 actors table for assessment FK-ish references.
         assessment.seed_synthetic_actors()
@@ -268,6 +264,16 @@ def create_app(config: HubConfig | None = None, db_path: Path | None = None, see
     app.state.guardian = guardian
     app.state.waike_root = str(waike) if waike else None
     app.state.seeded_test_fixtures = should_seed
+    app.state.pixel_pilot = pixel_pilot
+    if pixel_pilot:
+        from app.pilot.full_curriculum_seed import seed_full_curriculum
+
+        curriculum_inventory = seed_full_curriculum(
+            conn,
+            identity=identity,
+            sections=sections,
+        )
+    app.state.curriculum_inventory = curriculum_inventory
 
     @app.get("/healthz")
     def healthz() -> dict:
@@ -293,6 +299,11 @@ def create_app(config: HubConfig | None = None, db_path: Path | None = None, see
             "deviceos_bridge": True,
             "hardening": True,
             "seeded_test_fixtures": should_seed,
+            "pixel_pilot": pixel_pilot,
+            "curriculum_tracks_loaded": (
+                (curriculum_inventory or {}).get("loaded_track_ids") or []
+            ),
+            "all_18_tracks_loaded": bool((curriculum_inventory or {}).get("all_18_loaded")),
         }
 
     @app.get("/config")

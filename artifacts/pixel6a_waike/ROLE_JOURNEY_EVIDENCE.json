@@ -1,0 +1,57 @@
+{
+  "gates": {
+    "PIXEL_LEARNER_18_TRACK_VISIBILITY_PASS": true,
+    "PIXEL_INSTRUCTOR_JOURNEY_PASS": true,
+    "PIXEL_GRADER_JOURNEY_PASS": true,
+    "PIXEL_GUARDIAN_JOURNEY_PASS": true,
+    "PIXEL_SITE_ADMIN_JOURNEY_PASS": true,
+    "PIXEL_CROSS_SITE_ISOLATION_PASS": true,
+    "PIXEL_ROLE_SESSION_ISOLATION_PASS": true
+  },
+  "evidence": {
+    "learner_sections_count": 19,
+    "learner_tracks": [
+      "AI_ML_EDGE",
+      "CLOUD_DEVOPS",
+      "COMM_PD_ETHICS",
+      "CYBER_SOC",
+      "DATA_DASHBOARDS",
+      "DATA_VIZ_BI",
+      "DIGITAL_CONFIDENCE",
+      "EMBEDDED_PROTOTYPING",
+      "GAME_DEV_INTERACTIVE",
+      "GUNNCHOS_PRODUCT_LAB",
+      "HARDWARE_ENGINEERING",
+      "IT_SUPPORT_HARDWARE",
+      "NETWORKING_INFRA",
+      "PM_AGILE_LSS",
+      "ROBOTICS_CONTROL",
+      "SEVEN_GC_APPRENTICESHIP",
+      "SOFTWARE_BUILDER",
+      "WIRELESS_6G"
+    ],
+    "PIXEL_INSTRUCTOR_JOURNEY_PASS": {
+      "status": 200,
+      "sample": "[{'section_id': 'sec_alpha_dc_w01', 'site_id': 'site-alpha', 'package_id': 'pkg_digital_confidence_w01', 'code': 'DC-W01-A', 'title': 'Digital Confidence \u2014 Alpha', 'published': 1, 'created_at': '2026-09-18T23:18:03Z', 'package': {'package_id': 'pkg_digital_confidence_w01', 'module_id': 'DIGITAL_CONF"
+    },
+    "PIXEL_GRADER_JOURNEY_PASS": {
+      "status": 200,
+      "sample": "[{'section_id': 'sec_alpha_dc_w01', 'site_id': 'site-alpha', 'package_id': 'pkg_digital_confidence_w01', 'code': 'DC-W01-A', 'title': 'Digital Confidence \u2014 Alpha', 'published': 1, 'created_at': '2026-09-18T23:18:03Z', 'package': {'package_id': 'pkg_digital_confidence_w01', 'module_id': 'DIGITAL_CONF"
+    },
+    "PIXEL_GUARDIAN_JOURNEY_PASS": {
+      "status": 200,
+      "sample": "{'user_id': 'pixel-guardian-alpha', 'username': 'pixel-guardian-alpha', 'display_name': 'Pixel Guardian Alpha', 'site_id': 'site-alpha', 'roles': ['guardian'], 'session_id': 'sess_aaad210f9f6811ad'}"
+    },
+    "PIXEL_SITE_ADMIN_JOURNEY_PASS": {
+      "status": 200,
+      "sample": "[{'user_id': 'admin-alpha', 'site_id': 'site-alpha', 'username': 'admin-alpha', 'display_name': 'Admin Alpha', 'disabled': 0, 'created_at': '2026-09-18T23:18:03Z', 'roles': ['site_admin']}, {'user_id': 'grader-1', 'site_id': 'site-alpha', 'username': 'grader-1', 'display_name': 'Grader One', 'disabl"
+    },
+    "cross_site": {
+      "admin_users_status": 200,
+      "beta_site_leak": false,
+      "foreign_usernames": [],
+      "beta_section": "sec_beta_dc_w01",
+      "roster_denied": true
+    }
+  }
+}

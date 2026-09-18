@@ -1,0 +1,4 @@
+{
+  "list": "UsbFfs tcp:8000 tcp:8000\nUsbFfs tcp:1420 tcp:1420\n\n",
+  "curl_code": ""
+}

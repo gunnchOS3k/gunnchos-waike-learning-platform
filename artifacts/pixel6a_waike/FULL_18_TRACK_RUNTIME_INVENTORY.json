@@ -1,0 +1,424 @@
+{
+  "expected_track_ids": [
+    "DIGITAL_CONFIDENCE",
+    "IT_SUPPORT_HARDWARE",
+    "SOFTWARE_BUILDER",
+    "NETWORKING_INFRA",
+    "CYBER_SOC",
+    "DATA_DASHBOARDS",
+    "AI_ML_EDGE",
+    "EMBEDDED_PROTOTYPING",
+    "WIRELESS_6G",
+    "PM_AGILE_LSS",
+    "GAME_DEV_INTERACTIVE",
+    "SEVEN_GC_APPRENTICESHIP",
+    "CLOUD_DEVOPS",
+    "COMM_PD_ETHICS",
+    "ROBOTICS_CONTROL",
+    "GUNNCHOS_PRODUCT_LAB",
+    "HARDWARE_ENGINEERING",
+    "DATA_VIZ_BI"
+  ],
+  "loaded_track_ids": [
+    "DIGITAL_CONFIDENCE",
+    "IT_SUPPORT_HARDWARE",
+    "SOFTWARE_BUILDER",
+    "NETWORKING_INFRA",
+    "CYBER_SOC",
+    "DATA_DASHBOARDS",
+    "AI_ML_EDGE",
+    "EMBEDDED_PROTOTYPING",
+    "WIRELESS_6G",
+    "PM_AGILE_LSS",
+    "GAME_DEV_INTERACTIVE",
+    "SEVEN_GC_APPRENTICESHIP",
+    "CLOUD_DEVOPS",
+    "COMM_PD_ETHICS",
+    "ROBOTICS_CONTROL",
+    "GUNNCHOS_PRODUCT_LAB",
+    "HARDWARE_ENGINEERING",
+    "DATA_VIZ_BI"
+  ],
+  "missing_track_ids": [],
+  "all_18_loaded": true,
+  "tracks": [
+    {
+      "track_id": "DIGITAL_CONFIDENCE",
+      "package_id": "pkg_digital_confidence_w01",
+      "title": "Digital Confidence W01",
+      "source_commit": "fbf7685bc5686201ccaa0128ee83346d59b3d584",
+      "sections": [
+        {
+          "section_id": "sec_alpha_dc_w01",
+          "site_id": "site-alpha",
+          "code": "DC-W01-A",
+          "published": true
+        },
+        {
+          "section_id": "sec_alpha_digital_confidence_pilot",
+          "site_id": "site-alpha",
+          "code": "PX-DIGITAL_CO-A",
+          "published": true
+        },
+        {
+          "section_id": "sec_beta_dc_w01",
+          "site_id": "site-beta",
+          "code": "DC-W01-B",
+          "published": true
+        },
+        {
+          "section_id": "sec_beta_digital_confidence_pilot",
+          "site_id": "site-beta",
+          "code": "PX-DIGITAL_CO-B",
+          "published": true
+        }
+      ]
+    },
+    {
+      "track_id": "IT_SUPPORT_HARDWARE",
+      "package_id": "pkg_pilot_it_support_hardware",
+      "title": "IT Support and Hardware Foundations",
+      "source_commit": "fbf7685bc5686201ccaa0128ee83346d59b3d584",
+      "sections": [
+        {
+          "section_id": "sec_alpha_it_support_hardware_pilot",
+          "site_id": "site-alpha",
+          "code": "PX-IT_SUPPORT-A",
+          "published": true
+        },
+        {
+          "section_id": "sec_beta_it_support_hardware_pilot",
+          "site_id": "site-beta",
+          "code": "PX-IT_SUPPORT-B",
+          "published": true
+        }
+      ]
+    },
+    {
+      "track_id": "SOFTWARE_BUILDER",
+      "package_id": "pkg_pilot_software_builder",
+      "title": "Software Builder Zero-to-Hero",
+      "source_commit": "fbf7685bc5686201ccaa0128ee83346d59b3d584",
+      "sections": [
+        {
+          "section_id": "sec_alpha_software_builder_pilot",
+          "site_id": "site-alpha",
+          "code": "PX-SOFTWARE_B-A",
+          "published": true
+        },
+        {
+          "section_id": "sec_beta_software_builder_pilot",
+          "site_id": "site-beta",
+          "code": "PX-SOFTWARE_B-B",
+          "published": true
+        }
+      ]
+    },
+    {
+      "track_id": "NETWORKING_INFRA",
+      "package_id": "pkg_pilot_networking_infra",
+      "title": "Networking and Internet Infrastructure",
+      "source_commit": "fbf7685bc5686201ccaa0128ee83346d59b3d584",
+      "sections": [
+        {
+          "section_id": "sec_alpha_networking_infra_pilot",
+          "site_id": "site-alpha",
+          "code": "PX-NETWORKING-A",
+          "published": true
+        },
+        {
+          "section_id": "sec_beta_networking_infra_pilot",
+          "site_id": "site-beta",
+          "code": "PX-NETWORKING-B",
+          "published": true
+        }
+      ]
+    },
+    {
+      "track_id": "CYBER_SOC",
+      "package_id": "pkg_pilot_cyber_soc",
+      "title": "Cybersecurity Foundations and SOC Readiness",
+      "source_commit": "fbf7685bc5686201ccaa0128ee83346d59b3d584",
+      "sections": [
+        {
+          "section_id": "sec_alpha_cyber_soc_pilot",
+          "site_id": "site-alpha",
+          "code": "PX-CYBER_SOC-A",
+          "published": true
+        },
+        {
+          "section_id": "sec_beta_cyber_soc_pilot",
+          "site_id": "site-beta",
+          "code": "PX-CYBER_SOC-B",
+          "published": true
+        }
+      ]
+    },
+    {
+      "track_id": "DATA_DASHBOARDS",
+      "package_id": "pkg_pilot_data_dashboards",
+      "title": "Data, Databases, and Dashboards",
+      "source_commit": "fbf7685bc5686201ccaa0128ee83346d59b3d584",
+      "sections": [
+        {
+          "section_id": "sec_alpha_data_dashboards_pilot",
+          "site_id": "site-alpha",
+          "code": "PX-DATA_DASHB-A",
+          "published": true
+        },
+        {
+          "section_id": "sec_beta_data_dashboards_pilot",
+          "site_id": "site-beta",
+          "code": "PX-DATA_DASHB-B",
+          "published": true
+        }
+      ]
+    },
+    {
+      "track_id": "AI_ML_EDGE",
+      "package_id": "pkg_pilot_ai_ml_edge",
+      "title": "AI/ML and Edge AI Foundations",
+      "source_commit": "fbf7685bc5686201ccaa0128ee83346d59b3d584",
+      "sections": [
+        {
+          "section_id": "sec_alpha_ai_ml_edge_pilot",
+          "site_id": "site-alpha",
+          "code": "PX-AI_ML_EDGE-A",
+          "published": true
+        },
+        {
+          "section_id": "sec_beta_ai_ml_edge_pilot",
+          "site_id": "site-beta",
+          "code": "PX-AI_ML_EDGE-B",
+          "published": true
+        }
+      ]
+    },
+    {
+      "track_id": "EMBEDDED_PROTOTYPING",
+      "package_id": "pkg_pilot_embedded_prototyping",
+      "title": "Embedded Systems and Device Prototyping",
+      "source_commit": "fbf7685bc5686201ccaa0128ee83346d59b3d584",
+      "sections": [
+        {
+          "section_id": "sec_alpha_embedded_prototyping_pilot",
+          "site_id": "site-alpha",
+          "code": "PX-EMBEDDED_P-A",
+          "published": true
+        },
+        {
+          "section_id": "sec_beta_embedded_prototyping_pilot",
+          "site_id": "site-beta",
+          "code": "PX-EMBEDDED_P-B",
+          "published": true
+        }
+      ]
+    },
+    {
+      "track_id": "WIRELESS_6G",
+      "package_id": "pkg_pilot_wireless_6g",
+      "title": "Wireless, DSP, and 6G Foundations",
+      "source_commit": "fbf7685bc5686201ccaa0128ee83346d59b3d584",
+      "sections": [
+        {
+          "section_id": "sec_alpha_wireless_6g_pilot",
+          "site_id": "site-alpha",
+          "code": "PX-WIRELESS_6-A",
+          "published": true
+        },
+        {
+          "section_id": "sec_beta_wireless_6g_pilot",
+          "site_id": "site-beta",
+          "code": "PX-WIRELESS_6-B",
+          "published": true
+        }
+      ]
+    },
+    {
+      "track_id": "PM_AGILE_LSS",
+      "package_id": "pkg_pilot_pm_agile_lss",
+      "title": "Project Management, Agile, and Lean Six Sigma",
+      "source_commit": "fbf7685bc5686201ccaa0128ee83346d59b3d584",
+      "sections": [
+        {
+          "section_id": "sec_alpha_pm_agile_lss_pilot",
+          "site_id": "site-alpha",
+          "code": "PX-PM_AGILE_L-A",
+          "published": true
+        },
+        {
+          "section_id": "sec_beta_pm_agile_lss_pilot",
+          "site_id": "site-beta",
+          "code": "PX-PM_AGILE_L-B",
+          "published": true
+        }
+      ]
+    },
+    {
+      "track_id": "GAME_DEV_INTERACTIVE",
+      "package_id": "pkg_pilot_game_dev_interactive",
+      "title": "Game Development and Interactive Media",
+      "source_commit": "fbf7685bc5686201ccaa0128ee83346d59b3d584",
+      "sections": [
+        {
+          "section_id": "sec_alpha_game_dev_interactive_pilot",
+          "site_id": "site-alpha",
+          "code": "PX-GAME_DEV_I-A",
+          "published": true
+        },
+        {
+          "section_id": "sec_beta_game_dev_interactive_pilot",
+          "site_id": "site-beta",
+          "code": "PX-GAME_DEV_I-B",
+          "published": true
+        }
+      ]
+    },
+    {
+      "track_id": "SEVEN_GC_APPRENTICESHIP",
+      "package_id": "pkg_pilot_seven_gc_apprenticeship",
+      "title": "7GC AI-RAN Research Apprenticeship",
+      "source_commit": "fbf7685bc5686201ccaa0128ee83346d59b3d584",
+      "sections": [
+        {
+          "section_id": "sec_alpha_seven_gc_apprenticeship_pilot",
+          "site_id": "site-alpha",
+          "code": "PX-SEVEN_GC_A-A",
+          "published": true
+        },
+        {
+          "section_id": "sec_beta_seven_gc_apprenticeship_pilot",
+          "site_id": "site-beta",
+          "code": "PX-SEVEN_GC_A-B",
+          "published": true
+        }
+      ]
+    },
+    {
+      "track_id": "CLOUD_DEVOPS",
+      "package_id": "pkg_pilot_cloud_devops",
+      "title": "Cloud and DevOps",
+      "source_commit": "fbf7685bc5686201ccaa0128ee83346d59b3d584",
+      "sections": [
+        {
+          "section_id": "sec_alpha_cloud_devops_pilot",
+          "site_id": "site-alpha",
+          "code": "PX-CLOUD_DEVO-A",
+          "published": true
+        },
+        {
+          "section_id": "sec_beta_cloud_devops_pilot",
+          "site_id": "site-beta",
+          "code": "PX-CLOUD_DEVO-B",
+          "published": true
+        }
+      ]
+    },
+    {
+      "track_id": "COMM_PD_ETHICS",
+      "package_id": "pkg_pilot_comm_pd_ethics",
+      "title": "Communication, Professional Development, and Ethics",
+      "source_commit": "fbf7685bc5686201ccaa0128ee83346d59b3d584",
+      "sections": [
+        {
+          "section_id": "sec_alpha_comm_pd_ethics_pilot",
+          "site_id": "site-alpha",
+          "code": "PX-COMM_PD_ET-A",
+          "published": true
+        },
+        {
+          "section_id": "sec_beta_comm_pd_ethics_pilot",
+          "site_id": "site-beta",
+          "code": "PX-COMM_PD_ET-B",
+          "published": true
+        }
+      ]
+    },
+    {
+      "track_id": "ROBOTICS_CONTROL",
+      "package_id": "pkg_pilot_robotics_control",
+      "title": "Robotics and Control",
+      "source_commit": "fbf7685bc5686201ccaa0128ee83346d59b3d584",
+      "sections": [
+        {
+          "section_id": "sec_alpha_robotics_control_pilot",
+          "site_id": "site-alpha",
+          "code": "PX-ROBOTICS_C-A",
+          "published": true
+        },
+        {
+          "section_id": "sec_beta_robotics_control_pilot",
+          "site_id": "site-beta",
+          "code": "PX-ROBOTICS_C-B",
+          "published": true
+        }
+      ]
+    },
+    {
+      "track_id": "GUNNCHOS_PRODUCT_LAB",
+      "package_id": "pkg_pilot_gunnchos_product_lab",
+      "title": "gunnchOS Device OS and Product Lab",
+      "source_commit": "fbf7685bc5686201ccaa0128ee83346d59b3d584",
+      "sections": [
+        {
+          "section_id": "sec_alpha_gunnchos_product_lab_pilot",
+          "site_id": "site-alpha",
+          "code": "PX-GUNNCHOS_P-A",
+          "published": true
+        },
+        {
+          "section_id": "sec_beta_gunnchos_product_lab_pilot",
+          "site_id": "site-beta",
+          "code": "PX-GUNNCHOS_P-B",
+          "published": true
+        }
+      ]
+    },
+    {
+      "track_id": "HARDWARE_ENGINEERING",
+      "package_id": "pkg_pilot_hardware_engineering",
+      "title": "Hardware Engineering",
+      "source_commit": "fbf7685bc5686201ccaa0128ee83346d59b3d584",
+      "sections": [
+        {
+          "section_id": "sec_alpha_hardware_engineering_pilot",
+          "site_id": "site-alpha",
+          "code": "PX-HARDWARE_E-A",
+          "published": true
+        },
+        {
+          "section_id": "sec_beta_hardware_engineering_pilot",
+          "site_id": "site-beta",
+          "code": "PX-HARDWARE_E-B",
+          "published": true
+        }
+      ]
+    },
+    {
+      "track_id": "DATA_VIZ_BI",
+      "package_id": "pkg_pilot_data_viz_bi",
+      "title": "Data Visualization and Business Intelligence",
+      "source_commit": "fbf7685bc5686201ccaa0128ee83346d59b3d584",
+      "sections": [
+        {
+          "section_id": "sec_alpha_data_viz_bi_pilot",
+          "site_id": "site-alpha",
+          "code": "PX-DATA_VIZ_B-A",
+          "published": true
+        },
+        {
+          "section_id": "sec_beta_data_viz_bi_pilot",
+          "site_id": "site-beta",
+          "code": "PX-DATA_VIZ_B-B",
+          "published": true
+        }
+      ]
+    }
+  ],
+  "registry": {
+    "path": "/Users/gunnchos/Downloads/gunnchos-7gc-research-product-spine/repos/gunnchos-waike-learning-platform/curriculum/registry/eighteen_tracks.json",
+    "pinned_commit": "fbf7685bc5686201ccaa0128ee83346d59b3d584",
+    "source_repo": "waike-research-ops"
+  },
+  "duplicate_sot": false
+}

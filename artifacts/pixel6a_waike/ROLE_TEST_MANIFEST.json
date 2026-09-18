@@ -1,0 +1,147 @@
+{
+  "roles": [
+    {
+      "username": "pixel-learner-alpha",
+      "role": "learner",
+      "site": "site-alpha",
+      "section_course_assignments": [
+        "sec_alpha_dc_w01",
+        "sec_alpha_digital_confidence_pilot",
+        "sec_alpha_it_support_hardware_pilot",
+        "sec_alpha_software_builder_pilot",
+        "sec_alpha_networking_infra_pilot",
+        "sec_alpha_cyber_soc_pilot",
+        "sec_alpha_data_dashboards_pilot",
+        "sec_alpha_ai_ml_edge_pilot",
+        "sec_alpha_embedded_prototyping_pilot",
+        "sec_alpha_wireless_6g_pilot",
+        "sec_alpha_pm_agile_lss_pilot",
+        "sec_alpha_game_dev_interactive_pilot",
+        "sec_alpha_seven_gc_apprenticeship_pilot",
+        "sec_alpha_cloud_devops_pilot",
+        "sec_alpha_comm_pd_ethics_pilot",
+        "sec_alpha_robotics_control_pilot",
+        "sec_alpha_gunnchos_product_lab_pilot",
+        "sec_alpha_hardware_engineering_pilot",
+        "sec_alpha_data_viz_bi_pilot"
+      ],
+      "password_present": true,
+      "display_name": "Pixel Learner Alpha"
+    },
+    {
+      "username": "pixel-instructor-alpha",
+      "role": "instructor",
+      "site": "site-alpha",
+      "section_course_assignments": [
+        "sec_alpha_dc_w01",
+        "sec_alpha_digital_confidence_pilot",
+        "sec_alpha_it_support_hardware_pilot",
+        "sec_alpha_software_builder_pilot",
+        "sec_alpha_networking_infra_pilot",
+        "sec_alpha_cyber_soc_pilot",
+        "sec_alpha_data_dashboards_pilot",
+        "sec_alpha_ai_ml_edge_pilot",
+        "sec_alpha_embedded_prototyping_pilot",
+        "sec_alpha_wireless_6g_pilot",
+        "sec_alpha_pm_agile_lss_pilot",
+        "sec_alpha_game_dev_interactive_pilot",
+        "sec_alpha_seven_gc_apprenticeship_pilot",
+        "sec_alpha_cloud_devops_pilot",
+        "sec_alpha_comm_pd_ethics_pilot",
+        "sec_alpha_robotics_control_pilot",
+        "sec_alpha_gunnchos_product_lab_pilot",
+        "sec_alpha_hardware_engineering_pilot",
+        "sec_alpha_data_viz_bi_pilot"
+      ],
+      "password_present": true,
+      "display_name": "Pixel Instructor Alpha"
+    },
+    {
+      "username": "pixel-grader-alpha",
+      "role": "grader",
+      "site": "site-alpha",
+      "section_course_assignments": [
+        "sec_alpha_dc_w01",
+        "sec_alpha_digital_confidence_pilot",
+        "sec_alpha_it_support_hardware_pilot",
+        "sec_alpha_software_builder_pilot",
+        "sec_alpha_networking_infra_pilot",
+        "sec_alpha_cyber_soc_pilot",
+        "sec_alpha_data_dashboards_pilot",
+        "sec_alpha_ai_ml_edge_pilot",
+        "sec_alpha_embedded_prototyping_pilot",
+        "sec_alpha_wireless_6g_pilot",
+        "sec_alpha_pm_agile_lss_pilot",
+        "sec_alpha_game_dev_interactive_pilot",
+        "sec_alpha_seven_gc_apprenticeship_pilot",
+        "sec_alpha_cloud_devops_pilot",
+        "sec_alpha_comm_pd_ethics_pilot",
+        "sec_alpha_robotics_control_pilot",
+        "sec_alpha_gunnchos_product_lab_pilot",
+        "sec_alpha_hardware_engineering_pilot",
+        "sec_alpha_data_viz_bi_pilot"
+      ],
+      "password_present": true,
+      "display_name": "Pixel Grader Alpha"
+    },
+    {
+      "username": "pixel-guardian-alpha",
+      "role": "guardian",
+      "site": "site-alpha",
+      "section_course_assignments": [],
+      "password_present": true,
+      "display_name": "Pixel Guardian Alpha"
+    },
+    {
+      "username": "pixel-admin-alpha",
+      "role": "site_admin",
+      "site": "site-alpha",
+      "section_course_assignments": [],
+      "password_present": true,
+      "display_name": "Pixel Admin Alpha"
+    },
+    {
+      "username": "pixel-learner-beta",
+      "role": "learner",
+      "site": "site-beta",
+      "section_course_assignments": [
+        "sec_beta_dc_w01"
+      ],
+      "password_present": true,
+      "display_name": "Pixel Learner Beta"
+    },
+    {
+      "username": "pixel-instructor-beta",
+      "role": "instructor",
+      "site": "site-beta",
+      "section_course_assignments": [],
+      "password_present": true,
+      "display_name": "Pixel Instructor Beta"
+    },
+    {
+      "username": "pixel-admin-beta",
+      "role": "site_admin",
+      "site": "site-beta",
+      "section_course_assignments": [],
+      "password_present": true,
+      "display_name": "Pixel Admin Beta"
+    }
+  ],
+  "sites": [
+    "site-alpha",
+    "site-beta"
+  ],
+  "expected_roles": [
+    "learner",
+    "instructor",
+    "grader",
+    "guardian",
+    "site_admin"
+  ],
+  "missing_roles": [],
+  "all_roles_seeded": true,
+  "learner_alpha_enrolled_section_count": 19,
+  "learner_alpha_enrolled_all_18": true,
+  "tracks_loaded": true,
+  "PIXEL_PILOT_ALL_ROLES_SEEDED": true
+}

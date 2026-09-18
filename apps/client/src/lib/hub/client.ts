@@ -6,7 +6,7 @@ import {
 } from "./activities";
 import { createAiClient, type AiClient } from "../../components/ai/AiPanels";
 
-export type ActorRole = "learner" | "instructor" | "grader" | "site_admin";
+export type ActorRole = "learner" | "instructor" | "grader" | "guardian" | "site_admin";
 
 export interface SessionUser {
   user_id: string;
@@ -202,6 +202,15 @@ export interface HubClient {
   }): Promise<{ event_id: string; action: string; track_id: string }>;
   onerosterImportStatus(): Promise<{ imports: Array<Record<string, unknown>> }>;
   deviceOsManifest(): Promise<Record<string, unknown>>;
+  /** Gate D guardian surfaces (least-privilege). */
+  guardianLearners(): Promise<Array<{ learner_user_id: string; display_name: string; username: string }>>;
+  guardianOverview(learnerUserId: string): Promise<Record<string, unknown>>;
+  curriculumInventory(): Promise<{
+    all_18_loaded: boolean;
+    loaded_track_ids: string[];
+    missing_track_ids: string[];
+    tracks: Array<{ track_id: string; package_id: string; title: string; sections: unknown[] }>;
+  }>;
 }
 
 function authHeaders(token: string | null, actor?: HubActor): HeadersInit {
@@ -334,5 +343,9 @@ export function createHttpHubClient(
       req("/api/v1/packages/lifecycle", { method: "POST", body: JSON.stringify(body) }),
     onerosterImportStatus: () => req("/api/v1/interop/oneroster/imports"),
     deviceOsManifest: () => req("/api/v1/deviceos/manifest"),
+    guardianLearners: () => req("/api/v1/guardian/learners"),
+    guardianOverview: (learnerUserId) =>
+      req(`/api/v1/guardian/learners/${encodeURIComponent(learnerUserId)}/overview`),
+    curriculumInventory: () => req("/api/v1/pilot/curriculum-inventory"),
   };
 }

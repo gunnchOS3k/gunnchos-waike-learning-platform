@@ -151,6 +151,17 @@ def logout(request: Request, actor: Actor = Depends(require_actor)) -> dict[str,
         raise _http(e) from e
 
 
+@router.get("/pilot/curriculum-inventory")
+def curriculum_inventory(request: Request, actor: Actor = Depends(require_actor)) -> dict[str, Any]:
+    """Runtime 18-track inventory. Auth required; not a public Hub dump."""
+    from app.pilot.full_curriculum_seed import inventory_from_db
+
+    inv = getattr(request.app.state, "curriculum_inventory", None)
+    if not isinstance(inv, dict):
+        inv = inventory_from_db(request.app.state.db)
+    return {**inv, "actor_id": actor.actor_id, "site_id": actor.site_id}
+
+
 @router.get("/auth/me")
 def me(actor: Actor = Depends(require_actor)) -> dict[str, Any]:
     return {

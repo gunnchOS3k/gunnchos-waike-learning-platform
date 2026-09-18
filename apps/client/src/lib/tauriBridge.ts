@@ -124,7 +124,24 @@ export const nativeOfflineStore: NativeOfflineStore = {
 };
 
 export function getOfflineStore(): NativeOfflineStore | null {
+  // Web must not silently mock durable offline — IndexedDB queue is unsupported.
   return isTauri() ? nativeOfflineStore : null;
+}
+
+/** Explicit web adapter status for Pixel pilot honesty surfaces. */
+export function offlineStoreSupport(): {
+  runtime: "TAURI_DESKTOP" | "WEB";
+  durable: boolean;
+  reason: string;
+} {
+  if (isTauri()) {
+    return { runtime: "TAURI_DESKTOP", durable: true, reason: "native_sqlite_outbox" };
+  }
+  return {
+    runtime: "WEB",
+    durable: false,
+    reason: "WEB_INDEXEDDB_OFFLINE_NOT_CLAIMED",
+  };
 }
 
 /** Device OS deep-link navigation intent (one-shot; never authenticates). */
