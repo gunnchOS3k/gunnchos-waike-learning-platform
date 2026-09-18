@@ -1,0 +1,8 @@
+{
+  "WAIKE_ANDROID_NATIVE_BUILD_PASS": false,
+  "WAIKE_ANDROID_NATIVE_INSTALL_PASS": false,
+  "WAIKE_ANDROID_NATIVE_ALL_ROLE_SMOKE_PASS": false,
+  "decision": "DEFER",
+  "rationale": "Web/PWA path is not yet fully green on physical Pixel (ADB flaky). Tauri 2 Android not investigated as prerequisite. Retain Chrome/PWA as primary Pixel delivery until owner reauth + physical gates pass.",
+  "next": "After WAIKE_ALL_CONTENT_ALL_ROLE_PIXEL_PILOT_PASS via PWA, evaluate Tauri 2 Android template maturity separately."
+}

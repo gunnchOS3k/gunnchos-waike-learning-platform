@@ -138,3 +138,66 @@ textarea, input[type="number"], input[type="text"], input[type="password"], sele
 @media (prefers-reduced-motion: reduce) {
   * { animation: none !important; transition: none !important; }
 }
+
+/* Pixel / mobile-web pilot */
+.pilot-banner {
+  margin: 0 0 1rem;
+  padding: 0.75rem 1rem;
+  border-radius: var(--radius);
+  background: rgba(61, 184, 160, 0.18);
+  border: 1px solid rgba(61, 184, 160, 0.45);
+  color: var(--ink);
+  font-size: 0.95rem;
+}
+.touch-ui button,
+.touch-ui .lesson-link,
+.touch-ui input,
+.touch-ui select,
+.touch-ui textarea {
+  min-height: 44px;
+  font-size: 1rem;
+}
+.touch-ui .mode-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+.touch-ui .mode-bar-collapsed {
+  display: none;
+}
+.login-form input {
+  width: 100%;
+  max-width: 28rem;
+  display: block;
+  margin: 0.35rem 0 0.85rem;
+  padding: 0.75rem 0.9rem;
+  border-radius: 10px;
+  border: 1px solid #3a5566;
+  background: rgba(0, 0, 0, 0.28);
+  color: var(--ink);
+}
+.field-label { display: block; color: var(--muted); margin-top: 0.5rem; }
+.guardian-overview {
+  overflow: auto;
+  max-height: 50vh;
+  padding: 0.75rem;
+  background: rgba(0, 0, 0, 0.28);
+  border-radius: 10px;
+  font-size: 0.85rem;
+}
+.gradebook-panel table,
+#main table {
+  width: 100%;
+  border-collapse: collapse;
+  display: block;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+@media (max-width: 860px) {
+  .app-shell { padding: 1rem; padding-bottom: calc(1rem + env(safe-area-inset-bottom, 0px)); }
+  .toolbar { position: sticky; top: 0; z-index: 5; background: rgba(15, 28, 36, 0.92); padding: 0.5rem 0; }
+  .lesson-reader { max-height: none; overflow: visible; }
+  .assessment-workspace,
+  .panel { overflow-x: auto; }
+}
+

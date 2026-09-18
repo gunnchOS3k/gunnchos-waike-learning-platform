@@ -39,3 +39,10 @@ curriculum/imports/*/build/
 reports/verify_pr1_run.log
 .gunnchos_app_data/
 results/
+.pixel-pilot/
+artifacts/pixel6a_waike/defects/
+artifacts/pixel6a_waike/hub_logs/
+artifacts/pixel6a_waike/screenshots/soak_*.png
+artifacts/pixel6a_waike/hub_launcher.py
+*.db.enc
+services/hub/data/pixel_pilot/

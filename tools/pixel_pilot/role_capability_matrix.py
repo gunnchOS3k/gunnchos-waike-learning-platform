@@ -1,0 +1,92 @@
+"""Role capability truth matrix for Pixel physical journeys (least-privilege)."""
+
+from __future__ import annotations
+
+ROLE_CAPABILITIES: dict[str, dict[str, bool]] = {
+    "learner": {
+        "login_password": True,
+        "view_enrolled_catalog": True,
+        "open_lessons": True,
+        "submit_quiz_assignment_lab": True,
+        "view_own_grades": True,
+        "view_roster": False,
+        "grade_submissions": False,
+        "site_admin": False,
+        "guardian_overview": False,
+        "cross_site_access": False,
+    },
+    "instructor": {
+        "login_password": True,
+        "view_assigned_courses": True,
+        "view_roster": True,
+        "view_grading_queue": True,
+        "grade_submissions": True,
+        "leave_feedback": True,
+        "view_gradebook": True,
+        "site_admin": False,
+        "cross_site_access": False,
+    },
+    "grader": {
+        "login_password": True,
+        "view_grading_queue": True,
+        "grade_assigned_submissions": True,
+        "leave_feedback": True,
+        "site_admin": False,
+        "unauthorized_roster": False,
+        "cross_site_access": False,
+    },
+    "guardian": {
+        "login_password": True,
+        "view_linked_overview": True,
+        "view_answer_keys": False,
+        "grade_submissions": False,
+        "site_admin": False,
+        "view_unlinked_learner": False,
+    },
+    "site_admin": {
+        "login_password": True,
+        "same_site_user_create": True,
+        "enrollment": True,
+        "duplicate_rejected": True,
+        "disable_reenable": True,
+        "privacy_diagnostics": True,
+        "cross_site_admin": False,
+    },
+}
+
+JOURNEY_CONTRACTS: dict[str, list[str]] = {
+    "learner": [
+        "login",
+        "catalog_18",
+        "open_each_track",
+        "lesson",
+        "quiz",
+        "assignment",
+        "lab_if_supported",
+        "receipt",
+        "own_grade_feedback",
+    ],
+    "instructor": [
+        "courses",
+        "roster",
+        "activities",
+        "queue",
+        "open_submission",
+        "grade",
+        "feedback",
+        "gradebook",
+        "learner_readback",
+    ],
+    "grader": ["queue", "grade", "feedback", "site_admin_denied", "unauthorized_roster_denied"],
+    "guardian": ["linked_overview", "allowed_summary", "no_keys_grading_admin", "unlinked_denied"],
+    "site_admin": [
+        "dashboard",
+        "same_site_user_create",
+        "enrollment",
+        "duplicate_rejected",
+        "disable_reenable",
+        "privacy_diagnostics",
+        "cross_site_denied",
+        "cleanup_disposable",
+    ],
+}

@@ -18,6 +18,7 @@ import { resolveHubClient } from "./lib/hub/resolveHub";
 import type { SyncTransport } from "./lib/offline/syncCoordinator";
 import { useOfflineSync } from "./lib/offline/useOfflineSync";
 import { browseInstallPack, getInitialDeviceOsLaunchContext, isTauri, modeForDeviceOsDeepLink } from "./lib/tauriBridge";
+import { detectRuntime } from "./platform/runtimeAdapter";
 import type { LessonContent, LessonInfo, ModuleView, TrustStatus } from "./lib/types";
 import {
   mockModule,
@@ -38,7 +39,8 @@ type Mode =
   | "gradebook"
   | "admin"
   | "roster"
-  | "interop";
+  | "interop"
+  | "guardian";
 
 const ADMIN_WORKFLOWS = [
   "backup_restore",
@@ -149,10 +151,10 @@ function makeSyncTransport(baseUrl: string, getToken: () => string | null): Sync
   };
 }
 
-/** Match hub primary-role precedence: site_admin > instructor > grader > learner. */
+/** Match hub primary-role precedence: site_admin > instructor > grader > guardian > learner. */
 function resolvePrimaryRole(roles: string[] | undefined | null): string | null {
   if (!roles || roles.length === 0) return null;
-  const order = ["site_admin", "instructor", "grader", "learner"];
+  const order = ["site_admin", "instructor", "grader", "guardian", "learner"];
   for (const r of order) {
     if (roles.includes(r)) return r;
   }
@@ -185,6 +187,12 @@ export default function App() {
   const [adminUsers, setAdminUsers] = useState<
     Array<{ user_id: string; username: string; display_name: string; disabled: number; roles: string[] }>
   >([]);
+  const [guardianLearners, setGuardianLearners] = useState<
+    Array<{ learner_user_id: string; display_name: string; username: string }>
+  >([]);
+  const [guardianOverview, setGuardianOverview] = useState<Record<string, unknown> | null>(null);
+  const [mobileNavOpen, setMobileNavOpen] = useState(false);
+  const runtime = useMemo(() => detectRuntime(import.meta.env), []);
   const [online, setOnline] = useState(
     typeof navigator === "undefined" ? true : navigator.onLine,
   );
@@ -219,7 +227,12 @@ export default function App() {
   const hubResolution = useMemo(
     () =>
       resolveHubClient(tokenRef, onAuthFailure, mockActor, {
-        ...(import.meta.env as { MODE?: string; VITE_HUB_URL?: string; VITE_WAIKE_MOCK_HUB?: string }),
+        ...(import.meta.env as {
+          MODE?: string;
+          VITE_HUB_URL?: string;
+          VITE_WAIKE_MOCK_HUB?: string;
+          VITE_PIXEL_PILOT?: string;
+        }),
         runtimeHubUrl,
         runtimeHubPolicyAuthorized,
       }),
@@ -438,7 +451,9 @@ export default function App() {
         setDeviceOsNavApplied(true);
         setPendingDeviceOsNav(null);
       } else {
-        setMode(role === "learner" ? "home" : "instruct");
+        if (role === "learner") setMode("home");
+        else if (role === "guardian") setMode("guardian");
+        else setMode("instruct");
       }
     } catch (err) {
       const detail = err instanceof HubAuthError ? err.detail : String(err);
@@ -498,7 +513,20 @@ export default function App() {
     if (mode === "admin" && primaryRole === "site_admin") {
       void hub.listUsers().then(setAdminUsers).catch((err) => setError(String(err)));
     }
-  }, [hub, session, isMock, mode, primaryRole, sectionId]);
+    if (mode === "guardian" && (primaryRole === "guardian" || user?.roles.includes("guardian" as never))) {
+      void hub
+        .guardianLearners()
+        .then(async (rows) => {
+          setGuardianLearners(rows);
+          if (rows[0]) {
+            setGuardianOverview(await hub.guardianOverview(rows[0].learner_user_id));
+          } else {
+            setGuardianOverview(null);
+          }
+        })
+        .catch((err) => setError(String(err)));
+    }
+  }, [hub, session, isMock, mode, primaryRole, sectionId, user]);
 
   function HubUnavailablePanel({ title }: { title: string }) {
     return (
@@ -518,17 +546,22 @@ export default function App() {
 
   if (needsLogin) {
     return (
-      <div className="app-shell">
+      <div className={`app-shell ${runtime.isTouchPrimary ? "touch-ui" : ""}`}>
         <header>
           <h1 className="brand">WAIKE Learning OS</h1>
           <p className="tagline">Sign in to your school hub session.</p>
+          {runtime.pilotBannerLabel.includes("Pixel") ? (
+            <div className="pilot-banner" data-testid="pilot-role-banner" role="status">
+              {runtime.pilotBannerLabel} · password auth · no fixture headers
+            </div>
+          ) : null}
         </header>
         {sessionExpired ? (
           <div className="error-box" role="alert" data-testid="session-expired">
             Session expired — please sign in again.
           </div>
         ) : null}
-        <form className="panel" onSubmit={(e) => void onLogin(e)} data-testid="login-form">
+        <form className="panel login-form" onSubmit={(e) => void onLogin(e)} data-testid="login-form">
           <h2>Sign in</h2>
           <label className="field-label" htmlFor="site-id">
             Site ID
@@ -578,7 +611,7 @@ export default function App() {
   }
 
   return (
-    <div className="app-shell">
+    <div className={`app-shell ${runtime.isTouchPrimary ? "touch-ui" : ""}`}>
       <a className="skip-link" href="#main">
         Skip to content
       </a>
@@ -588,7 +621,27 @@ export default function App() {
           Local-first learning client. Packages are verified before trust. Multi-user identity and
           gradebook are live for DIGITAL_CONFIDENCE.
         </p>
+        {user ? (
+          <div className="pilot-banner" data-testid="pilot-role-banner" role="status">
+            Role: <strong>{primaryRole}</strong> · {user.display_name} · site {user.site_id} ·{" "}
+            {runtime.kind}
+            {hubResolution.status === "http" ? " · live Hub" : ""}
+            {hubResolution.status === "mock" ? " · mock (dev/test only)" : ""}
+          </div>
+        ) : null}
         <div className="toolbar">
+          {runtime.isTouchPrimary ? (
+            <button
+              type="button"
+              className="ghost"
+              data-testid="mobile-nav-toggle"
+              aria-expanded={mobileNavOpen}
+              aria-controls="primary-nav"
+              onClick={() => setMobileNavOpen((v) => !v)}
+            >
+              Menu
+            </button>
+          ) : null}
           <button type="button" onClick={() => void onInstall()}>
             Install learner pack
           </button>
@@ -609,8 +662,12 @@ export default function App() {
             </button>
           ) : null}
         </div>
-        <div className="mode-bar" role="navigation" aria-label="Primary">
-          <button
+        <div
+          id="primary-nav"
+          className={`mode-bar ${runtime.isTouchPrimary && !mobileNavOpen ? "mode-bar-collapsed" : ""}`}
+          role="navigation"
+          aria-label="Primary"
+        >          <button
             type="button"
             className={mode === "lessons" ? "mode-active" : "ghost"}
             onClick={() => setMode("lessons")}
@@ -726,17 +783,36 @@ export default function App() {
               type="button"
               className={mode === "admin" ? "mode-active" : "ghost"}
               data-testid="mode-admin"
-              onClick={() => setMode("admin")}
+              onClick={() => {
+                setMode("admin");
+                setMobileNavOpen(false);
+              }}
             >
               Admin
             </button>
           ) : null}
+          {(primaryRole === "guardian" || user?.roles?.includes("guardian")) && (
+            <button
+              type="button"
+              className={mode === "guardian" ? "mode-active" : "ghost"}
+              data-testid="mode-guardian"
+              onClick={() => {
+                setMode("guardian");
+                setMobileNavOpen(false);
+              }}
+            >
+              Guardian
+            </button>
+          )}
           {(primaryRole === "site_admin" || primaryRole === "instructor" || isMock) && (
             <button
               type="button"
               className={mode === "interop" ? "mode-active" : "ghost"}
               data-testid="mode-interop"
-              onClick={() => setMode("interop")}
+              onClick={() => {
+                setMode("interop");
+                setMobileNavOpen(false);
+              }}
             >
               Interop
             </button>
@@ -988,6 +1064,44 @@ export default function App() {
             </section>
           ) : (
             <HubUnavailablePanel title="Admin" />
+          )
+        ) : null}
+        {mode === "guardian" ? (
+          hub ? (
+            <section className="panel" data-testid="guardian-panel">
+              <h2>Guardian overview</h2>
+              <p className="muted">
+                Linked learner progress only — no answer keys, grading, or admin controls.
+              </p>
+              {guardianLearners.length === 0 ? (
+                <p className="muted" data-testid="guardian-empty">
+                  No linked learners.
+                </p>
+              ) : (
+                <ul data-testid="guardian-learners">
+                  {guardianLearners.map((g) => (
+                    <li key={g.learner_user_id}>
+                      <button
+                        type="button"
+                        className="ghost"
+                        onClick={() =>
+                          void hub.guardianOverview(g.learner_user_id).then(setGuardianOverview)
+                        }
+                      >
+                        {g.display_name} ({g.username})
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              )}
+              {guardianOverview ? (
+                <pre className="guardian-overview" data-testid="guardian-overview">
+                  {JSON.stringify(guardianOverview, null, 2)}
+                </pre>
+              ) : null}
+            </section>
+          ) : (
+            <HubUnavailablePanel title="Guardian" />
           )
         ) : null}
         {mode === "interop" ? (
