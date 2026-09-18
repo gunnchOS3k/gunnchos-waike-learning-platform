@@ -61,9 +61,12 @@ def write_json(path: Path, data: dict) -> None:
 
 
 def bootstrap_hub_db() -> dict:
-    """Create app with pixel pilot + fixtures so curriculum + PR3 users exist, then overlay pixel users."""
+    """Prepare env + empty pilot DB path. Curriculum/users come from seed_pilot_users."""
+    sibling_waike = ROOT.parent / "waike-research-ops"
+    if "WAIKE_ROOT" not in os.environ and sibling_waike.is_dir():
+        os.environ["WAIKE_ROOT"] = str(sibling_waike)
     os.environ["WAIKE_PIXEL_PILOT"] = "true"
-    os.environ["WAIKE_SEED_TEST_FIXTURES"] = "true"
+    os.environ["WAIKE_SEED_TEST_FIXTURES"] = "false"
     os.environ["WAIKE_DEV_DB_KEY"] = os.environ.get(
         "WAIKE_DEV_DB_KEY",
         "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef",
@@ -71,26 +74,7 @@ def bootstrap_hub_db() -> dict:
     PILOT_DB.parent.mkdir(parents=True, exist_ok=True)
     if PILOT_DB.exists():
         PILOT_DB.unlink()
-
-    from app.main import HubConfig, create_app
-
-    app = create_app(
-        config=HubConfig(
-            production_auth_enabled=True,
-            fixture_auth_enabled=False,
-            version="pixel-pilot",
-        ),
-        db_path=PILOT_DB,
-        seed=True,
-    )
-    inv = getattr(app.state, "curriculum_inventory", None) or {}
-    write_json(ART / "FULL_18_TRACK_RUNTIME_INVENTORY.json", inv if isinstance(inv, dict) else {})
-    # Close connection before create_test_users reopens
-    try:
-        app.state.db.close()
-    except Exception:
-        pass
-    return inv if isinstance(inv, dict) else {}
+    return {}
 
 
 def seed_users() -> dict:
@@ -102,6 +86,8 @@ def seed_users() -> dict:
     cred_path.write_text(json.dumps(result["credentials"], indent=2) + "\n", encoding="utf-8")
     cred_path.chmod(0o600)
     write_json(ART / "ROLE_TEST_MANIFEST.json", result["manifest"])
+    if isinstance(result.get("inventory"), dict):
+        write_json(ART / "FULL_18_TRACK_RUNTIME_INVENTORY.json", result["inventory"])
     return result
 
 
@@ -271,10 +257,10 @@ def api_get(base: str, path: str, token: str) -> tuple[int, dict | list | str]:
             return e.code, raw
 
 
-def run_role_api_journeys(creds: dict) -> dict:
+def run_role_api_journeys(creds: dict, *, physical_eligible: bool) -> dict:
     base = f"http://127.0.0.1:{HUB_PORT}"
     gates: dict[str, bool] = {}
-    evidence: dict[str, object] = {}
+    evidence: dict[str, object] = {"evidence_mode": "mac_api_password_auth", "physical_eligible": physical_eligible}
 
     # Learner 18-track visibility
     try:
@@ -285,20 +271,30 @@ def run_role_api_journeys(creds: dict) -> dict:
             "site-alpha",
         )
         token = login["token"]
-        st, sections = api_get(base, "/api/v1/sections", token)
+        st, home = api_get(base, "/api/v1/learner/home", token)
         st2, inv = api_get(base, "/api/v1/pilot/curriculum-inventory", token)
         track_ids = set((inv or {}).get("loaded_track_ids") or []) if isinstance(inv, dict) else set()
         from app.pilot.full_curriculum_seed import EXPECTED_TRACK_IDS
 
-        gates["PIXEL_LEARNER_18_TRACK_VISIBILITY_PASS"] = (
+        home_tracks = set()
+        if isinstance(home, list):
+            for row in home:
+                pkg = (row or {}).get("package") or {}
+                mid = pkg.get("module_id")
+                if mid:
+                    home_tracks.add(mid)
+
+        api_ok = (
             st == 200
             and st2 == 200
             and track_ids == set(EXPECTED_TRACK_IDS)
-            and isinstance(sections, list)
-            and len(sections) >= 18
+            and home_tracks == set(EXPECTED_TRACK_IDS)
         )
-        evidence["learner_sections_count"] = len(sections) if isinstance(sections, list) else 0
-        evidence["learner_tracks"] = sorted(track_ids)
+        evidence["mac_api_learner_18"] = api_ok
+        evidence["learner_sections_count"] = len(home) if isinstance(home, list) else 0
+        evidence["learner_tracks"] = sorted(home_tracks)
+        # PIXEL_* requires authorized device path; Mac API alone is not physical proof.
+        gates["PIXEL_LEARNER_18_TRACK_VISIBILITY_PASS"] = bool(api_ok and physical_eligible)
         # logout
         import urllib.request
 
@@ -319,9 +315,9 @@ def run_role_api_journeys(creds: dict) -> dict:
             login = api_login(base, c["username"], c["password"], c["site_id"])
             token = login["token"]
             st, body = api_get(base, path, token)
-            ok = (200 <= st < 300) if expect_ok else (st in (401, 403))
-            gates[gate] = ok
-            evidence[gate] = {"status": st, "sample": str(body)[:300]}
+            api_ok = (200 <= st < 300) if expect_ok else (st in (401, 403))
+            gates[gate] = bool(api_ok and physical_eligible)
+            evidence[gate] = {"status": st, "sample": str(body)[:300], "mac_api_ok": api_ok}
             import urllib.request
 
             req = urllib.request.Request(
@@ -385,13 +381,15 @@ def run_role_api_journeys(creds: dict) -> dict:
         if beta_sec:
             st3, _ = api_get(base, f"/api/v1/sections/{beta_sec}/roster", token2)
             denied = st3 in (401, 403, 404)
-        gates["PIXEL_CROSS_SITE_ISOLATION_PASS"] = st == 200 and not beta_site_leak and denied
+        api_ok = st == 200 and not beta_site_leak and denied
+        gates["PIXEL_CROSS_SITE_ISOLATION_PASS"] = bool(api_ok and physical_eligible)
         evidence["cross_site"] = {
             "admin_users_status": st,
             "beta_site_leak": beta_site_leak,
             "foreign_usernames": foreign,
             "beta_section": beta_sec,
             "roster_denied": denied,
+            "mac_api_ok": api_ok,
         }
     except Exception as e:
         gates["PIXEL_CROSS_SITE_ISOLATION_PASS"] = False
@@ -427,7 +425,8 @@ def run_role_api_journeys(creds: dict) -> dict:
             st, _ = api_get(base, "/api/v1/auth/me", login["token"])
             if st not in (401, 403):
                 raise RuntimeError(f"token_not_revoked:{key}:{st}")
-        gates["PIXEL_ROLE_SESSION_ISOLATION_PASS"] = True
+        gates["PIXEL_ROLE_SESSION_ISOLATION_PASS"] = bool(physical_eligible)
+        evidence["mac_api_session_isolation"] = True
     except Exception as e:
         gates["PIXEL_ROLE_SESSION_ISOLATION_PASS"] = False
         evidence["session_isolation_error"] = str(e)
@@ -511,12 +510,13 @@ def main() -> int:
 
         print("Bootstrapping pilot Hub DB…")
         inv = bootstrap_hub_db()
-        gates["PIXEL_PILOT_ALL_18_TRACKS_LOADED"] = bool(inv.get("all_18_loaded"))
-        write_json(ART / "FULL_18_TRACK_RUNTIME_INVENTORY.json", inv)
 
         print("Seeding pixel pilot users…")
         seeded = seed_users()
+        inv = seeded.get("inventory") or inv
+        gates["PIXEL_PILOT_ALL_18_TRACKS_LOADED"] = bool(inv.get("all_18_loaded"))
         gates["PIXEL_PILOT_ALL_ROLES_SEEDED"] = bool(seeded["manifest"].get("PIXEL_PILOT_ALL_ROLES_SEEDED"))
+        write_json(ART / "FULL_18_TRACK_RUNTIME_INVENTORY.json", inv if isinstance(inv, dict) else {})
 
         print("Starting Hub…")
         hub = start_hub()
@@ -569,9 +569,13 @@ def main() -> int:
                 # Earn stability only after documented short sample without crash; full soak still false claim
                 gates["PIXEL_WAIKE_STABILITY_PASS"] = False  # require full 30-min soak per mission
 
-        # API journeys (password auth, no fixture headers)
+        # API journeys (password auth, no fixture headers).
+        # PIXEL_* journey gates require authorized Pixel + reverse eligibility.
         print("Running role API journeys…")
-        journey = run_role_api_journeys(seeded["credentials"])
+        physical_eligible = bool(gates.get("PIXEL6A_WAIKE_DEVICE_CONNECTED")) and bool(
+            gates.get("PIXEL_TO_REAL_HUB_CONNECTIVITY_PASS")
+        )
+        journey = run_role_api_journeys(seeded["credentials"], physical_eligible=physical_eligible)
         gates.update(journey["gates"])
         write_json(ART / "ROLE_JOURNEY_EVIDENCE.json", journey)
 

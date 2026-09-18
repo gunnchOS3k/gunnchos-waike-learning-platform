@@ -53,6 +53,19 @@ describe("resolveHubClient fail-closed", () => {
     }
   });
 
+  it("refuses mockHub when VITE_PIXEL_PILOT is set even if mock flag present", () => {
+    const r = resolveHubClient(getToken, undefined, actor, {
+      MODE: "production",
+      VITE_PIXEL_PILOT: "true",
+      VITE_WAIKE_MOCK_HUB: "true",
+    });
+    expect(r.status).toBe("unavailable");
+    expect(r.client).toBeNull();
+    if (r.status === "unavailable") {
+      expect(r.reason).toMatch(/Pixel pilot requires VITE_HUB_URL/i);
+    }
+  });
+
   it("creates HTTP hub client from policy-authorized Device OS runtimeHubUrl without enabling mock", () => {
     const r = resolveHubClient(getToken, undefined, actor, {
       MODE: "production",

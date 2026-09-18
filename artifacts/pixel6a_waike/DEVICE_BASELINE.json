@@ -16,5 +16,8 @@
   "gate_tokens": {
     "ADB_AUTHORIZED": true,
     "DEVICE_BASELINE_CAPTURED": true
-  }
+  },
+  "current_adb_status": "offline",
+  "current_checked_at": "2026-09-18T23:46:44Z",
+  "note": "Full props captured 2026-09-18T23:00:32Z while authorized. USB session is currently offline/flaky \u2014 re-approve USB debugging before physical retest."
 }

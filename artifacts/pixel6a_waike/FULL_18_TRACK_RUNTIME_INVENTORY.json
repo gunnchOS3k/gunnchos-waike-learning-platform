@@ -44,26 +44,14 @@
   "tracks": [
     {
       "track_id": "DIGITAL_CONFIDENCE",
-      "package_id": "pkg_digital_confidence_w01",
-      "title": "Digital Confidence W01",
+      "package_id": "pkg_pilot_digital_confidence",
+      "title": "Digital Confidence to Computer Operator",
       "source_commit": "fbf7685bc5686201ccaa0128ee83346d59b3d584",
       "sections": [
-        {
-          "section_id": "sec_alpha_dc_w01",
-          "site_id": "site-alpha",
-          "code": "DC-W01-A",
-          "published": true
-        },
         {
           "section_id": "sec_alpha_digital_confidence_pilot",
           "site_id": "site-alpha",
           "code": "PX-DIGITAL_CO-A",
-          "published": true
-        },
-        {
-          "section_id": "sec_beta_dc_w01",
-          "site_id": "site-beta",
-          "code": "DC-W01-B",
           "published": true
         },
         {

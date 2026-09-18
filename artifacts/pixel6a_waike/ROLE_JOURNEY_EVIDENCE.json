@@ -1,15 +1,18 @@
 {
   "gates": {
-    "PIXEL_LEARNER_18_TRACK_VISIBILITY_PASS": true,
-    "PIXEL_INSTRUCTOR_JOURNEY_PASS": true,
-    "PIXEL_GRADER_JOURNEY_PASS": true,
-    "PIXEL_GUARDIAN_JOURNEY_PASS": true,
-    "PIXEL_SITE_ADMIN_JOURNEY_PASS": true,
-    "PIXEL_CROSS_SITE_ISOLATION_PASS": true,
-    "PIXEL_ROLE_SESSION_ISOLATION_PASS": true
+    "PIXEL_LEARNER_18_TRACK_VISIBILITY_PASS": false,
+    "PIXEL_INSTRUCTOR_JOURNEY_PASS": false,
+    "PIXEL_GRADER_JOURNEY_PASS": false,
+    "PIXEL_GUARDIAN_JOURNEY_PASS": false,
+    "PIXEL_SITE_ADMIN_JOURNEY_PASS": false,
+    "PIXEL_CROSS_SITE_ISOLATION_PASS": false,
+    "PIXEL_ROLE_SESSION_ISOLATION_PASS": false
   },
   "evidence": {
-    "learner_sections_count": 19,
+    "evidence_mode": "mac_api_password_auth",
+    "physical_eligible": false,
+    "mac_api_learner_18": true,
+    "learner_sections_count": 18,
     "learner_tracks": [
       "AI_ML_EDGE",
       "CLOUD_DEVOPS",
@@ -32,26 +35,38 @@
     ],
     "PIXEL_INSTRUCTOR_JOURNEY_PASS": {
       "status": 200,
-      "sample": "[{'section_id': 'sec_alpha_dc_w01', 'site_id': 'site-alpha', 'package_id': 'pkg_digital_confidence_w01', 'code': 'DC-W01-A', 'title': 'Digital Confidence \u2014 Alpha', 'published': 1, 'created_at': '2026-09-18T23:18:03Z', 'package': {'package_id': 'pkg_digital_confidence_w01', 'module_id': 'DIGITAL_CONF"
+      "sample": "[{'section_id': 'sec_alpha_ai_ml_edge_pilot', 'site_id': 'site-alpha', 'package_id': 'pkg_pilot_ai_ml_edge', 'code': 'PX-AI_ML_EDGE-A', 'title': 'AI/ML and Edge AI Foundations \u2014 site-alpha', 'published': 1, 'created_at': '2026-09-18T23:46:04Z', 'package': {'package_id': 'pkg_pilot_ai_ml_edge', 'modu",
+      "mac_api_ok": true
     },
     "PIXEL_GRADER_JOURNEY_PASS": {
       "status": 200,
-      "sample": "[{'section_id': 'sec_alpha_dc_w01', 'site_id': 'site-alpha', 'package_id': 'pkg_digital_confidence_w01', 'code': 'DC-W01-A', 'title': 'Digital Confidence \u2014 Alpha', 'published': 1, 'created_at': '2026-09-18T23:18:03Z', 'package': {'package_id': 'pkg_digital_confidence_w01', 'module_id': 'DIGITAL_CONF"
+      "sample": "[{'section_id': 'sec_alpha_ai_ml_edge_pilot', 'site_id': 'site-alpha', 'package_id': 'pkg_pilot_ai_ml_edge', 'code': 'PX-AI_ML_EDGE-A', 'title': 'AI/ML and Edge AI Foundations \u2014 site-alpha', 'published': 1, 'created_at': '2026-09-18T23:46:04Z', 'package': {'package_id': 'pkg_pilot_ai_ml_edge', 'modu",
+      "mac_api_ok": true
     },
     "PIXEL_GUARDIAN_JOURNEY_PASS": {
       "status": 200,
-      "sample": "{'user_id': 'pixel-guardian-alpha', 'username': 'pixel-guardian-alpha', 'display_name': 'Pixel Guardian Alpha', 'site_id': 'site-alpha', 'roles': ['guardian'], 'session_id': 'sess_aaad210f9f6811ad'}"
+      "sample": "{'user_id': 'pixel-guardian-alpha', 'username': 'pixel-guardian-alpha', 'display_name': 'Pixel Guardian Alpha', 'site_id': 'site-alpha', 'roles': ['guardian'], 'session_id': 'sess_4295bb803a8d7337'}",
+      "mac_api_ok": true
     },
     "PIXEL_SITE_ADMIN_JOURNEY_PASS": {
       "status": 200,
-      "sample": "[{'user_id': 'admin-alpha', 'site_id': 'site-alpha', 'username': 'admin-alpha', 'display_name': 'Admin Alpha', 'disabled': 0, 'created_at': '2026-09-18T23:18:03Z', 'roles': ['site_admin']}, {'user_id': 'grader-1', 'site_id': 'site-alpha', 'username': 'grader-1', 'display_name': 'Grader One', 'disabl"
+      "sample": "[{'user_id': 'pixel-admin-alpha', 'site_id': 'site-alpha', 'username': 'pixel-admin-alpha', 'display_name': 'Pixel Site Admin Alpha', 'disabled': 0, 'created_at': '2026-09-18T23:46:03Z', 'roles': ['site_admin']}, {'user_id': 'pixel-grader-alpha', 'site_id': 'site-alpha', 'username': 'pixel-grader-al",
+      "mac_api_ok": true
     },
     "cross_site": {
       "admin_users_status": 200,
       "beta_site_leak": false,
       "foreign_usernames": [],
-      "beta_section": "sec_beta_dc_w01",
-      "roster_denied": true
+      "beta_section": "sec_beta_digital_confidence_pilot",
+      "roster_denied": true,
+      "mac_api_ok": true
+    },
+    "mac_api_session_isolation": true,
+    "mac_api_summary": {
+      "learner_18_tracks": true,
+      "mac_api_learner_18": true,
+      "mac_api_session_isolation": true,
+      "cross_site_mac_api_ok": true
     }
   }
 }
