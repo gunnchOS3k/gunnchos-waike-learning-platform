@@ -11,6 +11,8 @@ export type HubEnv = {
   MODE?: string;
   VITE_HUB_URL?: string;
   VITE_WAIKE_MOCK_HUB?: string;
+  /** Pixel physical pilot — production-shaped; never allow silent mockHub fallback. */
+  VITE_PIXEL_PILOT?: string;
   /**
    * Runtime Hub base URL from Device OS launch context (`hub_url`).
    * Only honored when `runtimeHubPolicyAuthorized` is true (native policy already passed).
@@ -120,11 +122,23 @@ export function resolveHubClient(
     };
   }
 
+  const pixelPilot =
+    String(env.VITE_PIXEL_PILOT || "").toLowerCase() === "true" ||
+    String(env.VITE_PIXEL_PILOT || "") === "1";
+  // Production-shaped Pixel pilot: refuse mock even if VITE_WAIKE_MOCK_HUB is set.
   const allowMock =
-    env.MODE === "test" || String(env.VITE_WAIKE_MOCK_HUB || "").toLowerCase() === "true";
+    !pixelPilot &&
+    (env.MODE === "test" || String(env.VITE_WAIKE_MOCK_HUB || "").toLowerCase() === "true");
   if (allowMock) {
     const mockActor = actor ?? { actorId: "learner-a", role: "learner" as const };
     return { status: "mock", client: createMockHubClient(mockActor) };
+  }
+  if (pixelPilot) {
+    return {
+      status: "unavailable",
+      client: null,
+      reason: "Pixel pilot requires VITE_HUB_URL (no mockHub fallback)",
+    };
   }
   return {
     status: "unavailable",

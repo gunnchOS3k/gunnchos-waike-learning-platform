@@ -1,0 +1,3 @@
+List of devices attached
+27211JEGR06194         offline usb:17825792X transport_id:18
+

@@ -1,0 +1,13 @@
+{
+  "defined_before_measure": true,
+  "budgets": {
+    "cold_start_to_login_ms": 5000,
+    "login_to_catalog_ms": 3000,
+    "open_course_ms": 2500,
+    "18_course_open_total_ms": 60000,
+    "30_min_soak_crash_count": 0,
+    "20_login_logout_cycles_max_fail": 0
+  },
+  "PIXEL_WAIKE_STABILITY_PASS": false,
+  "note": "Budgets defined; 30-min soak and full 18-course physical opens not executed while ADB offline."
+}

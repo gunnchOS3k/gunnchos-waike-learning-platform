@@ -1,4 +1,4 @@
-.PHONY: bootstrap lint test build verify-pr1 verify-pr2 verify-pr3 verify-gate-a verify-gate-b verify-gate-c verify-gate-d gate-c-test gate-d-test compile-dc compile-18 rust-test frontend-test hub-test python-test assessment-test pr3-test gate-a-test gate-b-test gate-b-ai-test clean
+.PHONY: bootstrap lint test build verify-pr1 verify-pr2 verify-pr3 verify-gate-a verify-gate-b verify-gate-c verify-gate-d gate-c-test gate-d-test compile-dc compile-18 rust-test frontend-test hub-test python-test assessment-test pr3-test gate-a-test gate-b-test gate-b-ai-test clean pixel-waike-full-pilot
 
 export PATH := $(HOME)/.cargo/bin:$(PATH)
 export SOURCE_DATE_EPOCH ?= 1700000000
@@ -147,3 +147,9 @@ verify-gate-d:
 	@mkdir -p reports
 	@WAIKE_ROOT=$(WAIKE_ROOT) DEVICE_OS_ROOT=$${DEVICE_OS_ROOT:-$(CURDIR)/../gunnchos-device-os} GUNNCHAI_ROOT=$${GUNNCHAI_ROOT:-$(CURDIR)/../gunnchAI3k} WAIKE_ALLOW_FAKE_AI=$${WAIKE_ALLOW_FAKE_AI:-1} $(PYTHON) scripts/verify_gate_d.py
 	@echo "verify-gate-d: see reports/GATE_D_VERIFICATION.md"
+
+pixel-waike-full-pilot: bootstrap
+	@mkdir -p artifacts/pixel6a_waike
+	WAIKE_PIXEL_PILOT=true WAIKE_DEV_DB_KEY=$(WAIKE_DEV_DB_KEY) \
+	  $(PYTHON) tools/pixel_pilot/run_pixel_pilot.py
+	@echo "pixel-waike-full-pilot: see artifacts/pixel6a_waike/GATE_TOKENS.json"

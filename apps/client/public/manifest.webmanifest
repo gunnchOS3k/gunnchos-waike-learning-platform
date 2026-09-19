@@ -1,0 +1,24 @@
+{
+  "name": "WAIKE Learning OS",
+  "short_name": "WAIKE",
+  "description": "WAIKE Learning OS — Pixel 6a pilot (web/PWA)",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0f1c24",
+  "theme_color": "#3db8a0",
+  "orientation": "any",
+  "icons": [
+    {
+      "src": "/icons/waike-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icons/waike-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

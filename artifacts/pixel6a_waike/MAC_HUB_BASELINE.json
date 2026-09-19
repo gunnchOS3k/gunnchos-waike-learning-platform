@@ -1,0 +1,10 @@
+{
+  "captured_at": "2026-09-18T23:46:44Z",
+  "platform": "macOS-26.6.2-arm64-arm-64bit-Mach-O",
+  "python": "3.14.7 (main, Aug  5 2026, 10:29:49) [Clang 21.0.0 (clang-2100.1.1.101)]",
+  "hub_bind": "127.0.0.1:8000",
+  "client_bind": "127.0.0.1:1420",
+  "cors": "exact origins only (pixel pilot loopback + Tauri)",
+  "auth": "password Argon2, fixture_auth_enabled=false",
+  "db": ".pixel-pilot/hub.sqlite3"
+}
