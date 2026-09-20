@@ -59,7 +59,7 @@ Device `27211JEGR06194`. Contact sheet: `pixel_evidence/contact_sheet/CDP_ROLES_
 Mechanically earned; **DRAFT ONLY — DO NOT MERGE** without owner checklist.
 
 ## Y — draft PR URL
-(child PR URL filled after `gh pr create`)
+https://github.com/gunnchOS3k/gunnchos-waike-learning-platform/pull/21
 
 ## Z — remaining human blockers
 1. Owner usability + disabled-user a11y validation (§27).
