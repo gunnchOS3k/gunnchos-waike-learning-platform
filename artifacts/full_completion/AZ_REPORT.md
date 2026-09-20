@@ -103,7 +103,7 @@ Key paths:
 `WAIKE_FULL_PLATFORM_COMPLETION_CANDIDATE_PASS=false` — blocked on physical role journeys + open S1/S2.
 
 ## Y — draft PR URL
-(filled after `gh pr create`)
+https://github.com/gunnchOS3k/gunnchos-waike-learning-platform/pull/20
 
 ## Z — exact remaining human/real-world blockers
 1. Physical Chrome WebView DOM automation (CDP/Appium) for all five roles — do not greenwash.
