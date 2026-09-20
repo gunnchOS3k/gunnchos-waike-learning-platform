@@ -1,13 +1,14 @@
 # Gate C Verification
 
-Generated: 2026-09-20T17:02:14Z
-Status: **AUTOMATED_PIPELINE_BLOCKED_BY_CODE**
+Generated: 2026-09-20T18:45:14Z
+Status: **AUTOMATED_PIPELINE_PASS**
 
 ## Claims earned
 - `INTEROPERABILITY_AND_DEVICEOS_DIGITAL_INTEGRATION_COMPLETE`
+- `PLATFORM_HARDENING_DIGITALLY_COMPLETE`
 
 ## Claims blocked
-- `PLATFORM_HARDENING_DIGITALLY_COMPLETE`
+- (none)
 
 ## Owner blockers
 - `C-OWNER-01`: **PASS**
@@ -26,7 +27,7 @@ Status: **AUTOMATED_PIPELINE_BLOCKED_BY_CODE**
 - `C-OWNER-14`: **PASS**
 
 ## Test counts
-- prior_regression: `{'passed': 219, 'failed': 1, 'skipped': 0, 'xfailed': 0, 'error': 0}`
+- prior_regression: `{'passed': 220, 'failed': 0, 'skipped': 0, 'xfailed': 0, 'error': 0}`
 - gate_c: `{'passed': 74, 'failed': 0, 'skipped': 0, 'xfailed': 0, 'error': 0}`
 - GATE_C_REQUIRED_TESTS_SKIPPED: `0`
 

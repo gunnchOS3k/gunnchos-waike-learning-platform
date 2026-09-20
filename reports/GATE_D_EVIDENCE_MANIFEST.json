@@ -1,6 +1,6 @@
 {
-  "generated_utc": "2026-09-20T17:07:40Z",
-  "platform_sha": "fea6027c64a886f516a2cf62640f150637c48d22",
+  "generated_utc": "2026-09-20T18:51:43Z",
+  "platform_sha": "700a6ac0f284d941e1b56fac38744ded526bd9f4",
   "files": [
     "GATE_D_ADVERSARIAL_REVIEW.json",
     "GATE_D_ADVERSARIAL_REVIEW.md",
@@ -12,6 +12,7 @@
     "GATE_D_DEPENDENCY_PROVENANCE.json",
     "GATE_D_DEVICEOS_ACCEPTANCE.json",
     "GATE_D_DEVICEOS_E2E_BINDING.json",
+    "GATE_D_EVIDENCE_MANIFEST.json",
     "GATE_D_FINAL_CLAIM_INTEGRITY_CLOSURE.md",
     "GATE_D_GUNNCHAI_ACCEPTANCE.json",
     "GATE_D_INSTRUCTOR_JOURNEY.json",
@@ -24,11 +25,13 @@
     "GATE_D_ROLE_JOURNEY_MATRIX.json",
     "GATE_D_ROLE_JOURNEY_MATRIX.md",
     "GATE_D_SECURITY_ADVERSARIAL_MATRIX.json",
-    "GATE_D_SECURITY_ADVERSARIAL_MATRIX.md"
+    "GATE_D_SECURITY_ADVERSARIAL_MATRIX.md",
+    "GATE_D_VERIFICATION.json",
+    "GATE_D_VERIFICATION.md"
   ],
   "pins": {
     "device_os": "4f02a48780d300a5d3a7758937b20e3bf9364d0d",
-    "waike": "fbf7685bc5686201ccaa0128ee83346d59b3d584",
+    "waike": "63ba9f25ac6b8d8d1b6dd118923566fd51c57b62",
     "gunnchai": "851e7916d6d5c7da23a8f30dba6bdfd389daa8ac"
   }
 }

@@ -1,29 +1,20 @@
 {
-  "generated_utc": "2026-09-20T17:07:41Z",
+  "generated_utc": "2026-09-20T18:57:26Z",
   "method": "fresh_workspace_from_pinned_shas_measured",
   "pins": {
     "device_os": "4f02a48780d300a5d3a7758937b20e3bf9364d0d",
-    "waike": "fbf7685bc5686201ccaa0128ee83346d59b3d584",
+    "waike": "63ba9f25ac6b8d8d1b6dd118923566fd51c57b62",
     "gunnchai": "851e7916d6d5c7da23a8f30dba6bdfd389daa8ac"
   },
   "observed": {
     "waike": "63ba9f25ac6b8d8d1b6dd118923566fd51c57b62",
-    "device_os": "a64f544e98bed00213d06ab2130f2729c7a784fa",
+    "device_os": "4f02a48780d300a5d3a7758937b20e3bf9364d0d",
     "gunnchai": "851e7916d6d5c7da23a8f30dba6bdfd389daa8ac",
-    "platform": "fea6027c64a886f516a2cf62640f150637c48d22"
+    "platform": "700a6ac0f284d941e1b56fac38744ded526bd9f4"
   },
-  "mismatches": {
-    "device_os": {
-      "expected": "4f02a48780d300a5d3a7758937b20e3bf9364d0d",
-      "observed": "a64f544e98bed00213d06ab2130f2729c7a784fa"
-    },
-    "waike": {
-      "expected": "fbf7685bc5686201ccaa0128ee83346d59b3d584",
-      "observed": "63ba9f25ac6b8d8d1b6dd118923566fd51c57b62"
-    }
-  },
+  "mismatches": {},
   "forbidden": {
-    "uncommitted_deps": true,
+    "uncommitted_deps": false,
     "stale_db_reuse": false,
     "prior_run_artifact_reuse": false,
     "fixture_only_production_proof": false
@@ -31,26 +22,7 @@
   "measurements": {
     "uncommitted_deps": {
       "waike": [],
-      "device_os": [
-        " M .worktrees/17g7-accepted-main-155",
-        " M .worktrees/cx2h3-browser-mail-offline",
-        " M .worktrees/cx3-education-career-digital-closure",
-        " M .worktrees/cx5-1-accepted-main-rebind",
-        " M .worktrees/device-lab-post-waike-closure",
-        " M .worktrees/eng/stream-g-support-engineering-prep",
-        " M .worktrees/wave002-shell-continuity",
-        " M apps/waike_learning/README.md",
-        " M artifacts/android_capsule/GATES.json",
-        " M artifacts/vxp/reports/VXP_GATES.json",
-        " M docs/android_capsule/ARCHITECTURE.md",
-        " M docs/vxp/README.md",
-        " M docs/vxp/VXP_GAME_VISUAL_AUDITS.md",
-        " M docs/vxp/VXP_INFORMATION_ARCHITECTURE.md",
-        "?? .worktrees/device-lab-current-pin-revalidation/",
-        "?? .worktrees/vxp-2-universal-parity-implementation/",
-        "?? artifacts/vxp2/",
-        "?? docs/product/"
-      ],
+      "device_os": [],
       "gunnchai": []
     },
     "stale_db_reuse": {
@@ -72,7 +44,7 @@
   },
   "reconstruction_steps": [
     "Checkout platform Gate D head into empty runner workspace",
-    "Checkout waike-research-ops @fbf7685bc5686201ccaa0128ee83346d59b3d584",
+    "Checkout waike-research-ops @63ba9f25ac6b8d8d1b6dd118923566fd51c57b62",
     "Checkout gunnchos-device-os @4f02a48780d300a5d3a7758937b20e3bf9364d0d",
     "Checkout gunnchAI3k @851e7916d6d5c7da23a8f30dba6bdfd389daa8ac",
     "Align curriculum/registry/PIN.json absolute_path_hint to checkout",
@@ -81,5 +53,5 @@
     "Require this-run native + Device OS Tauri E2E (not fixture-only production proof)"
   ],
   "ci_workspace": false,
-  "ok": false
+  "ok": true
 }

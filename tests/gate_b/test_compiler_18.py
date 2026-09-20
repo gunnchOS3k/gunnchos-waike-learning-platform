@@ -25,12 +25,18 @@ def compiled_18(tmp_path_factory):
     return out, results
 
 
+# Consumer pin: PR #60 tip. SEVEN_GC digital merge ancestry remains fbf7685 (PR #57).
+WAIKE_CONSUMER_PIN = "63ba9f25ac6b8d8d1b6dd118923566fd51c57b62"
+SEVEN_GC_DIGITAL_MERGE = "fbf7685bc5686201ccaa0128ee83346d59b3d584"
+
+
 def test_pin_allows_all_18():
     pin = load_pin()
     allowed = set(pin["module_ids_allowed"])
     assert allowed == set(CANONICAL_TRACK_IDS)
-    assert pin["pinned_commit"] == "fbf7685bc5686201ccaa0128ee83346d59b3d584"
-    assert pin.get("seven_gc_digital_merge_commit") == pin["pinned_commit"]
+    assert pin["pinned_commit"] == WAIKE_CONSUMER_PIN
+    assert pin.get("authoritative_pin_commit") == WAIKE_CONSUMER_PIN
+    assert pin.get("seven_gc_digital_merge_commit") == SEVEN_GC_DIGITAL_MERGE
 
 
 def test_aliases_map_package_ids():

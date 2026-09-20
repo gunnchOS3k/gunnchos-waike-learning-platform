@@ -1,6 +1,6 @@
 {
-  "generated_utc": "2026-09-20T17:07:40Z",
-  "platform_sha": "fea6027c64a886f516a2cf62640f150637c48d22",
+  "generated_utc": "2026-09-20T18:51:43Z",
+  "platform_sha": "700a6ac0f284d941e1b56fac38744ded526bd9f4",
   "this_run_only": true,
   "linux": {
     "meta": false,
@@ -22,7 +22,7 @@
   "signing_notarization": "EXTERNAL_UNSIGNED_CI_BUILD",
   "notarization_claimed": false,
   "notes": [
-    "linux this-run meta/sums/head/format binding failed (head='' expected='fea6027c64a886f516a2cf62640f150637c48d22' format='')",
+    "linux this-run meta/sums/head/format binding failed (head='' expected='700a6ac0f284d941e1b56fac38744ded526bd9f4' format='')",
     "MACOS_DMG_VERIFICATION ok!=true"
   ],
   "require_native": false,
