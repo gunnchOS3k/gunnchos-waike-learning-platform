@@ -1,6 +1,6 @@
 # Gate D Security / Adversarial Matrix
 
-Generated: 2026-09-07T00:07:09Z
+Generated: 2026-09-20T08:21:52Z
 
 - **authz_sabotage**: `PASS`
 - **tenancy**: `PASS`

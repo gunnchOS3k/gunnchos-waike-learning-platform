@@ -1,5 +1,5 @@
 {
-  "generated_utc": "2026-09-06T23:20:11Z",
+  "generated_utc": "2026-09-20T08:32:05Z",
   "status": "AUTOMATED_PIPELINE_PASS",
   "claims": [
     "INTEROPERABILITY_AND_DEVICEOS_DIGITAL_INTEGRATION_COMPLETE",
@@ -16,7 +16,7 @@
   },
   "test_counts": {
     "prior_regression": {
-      "passed": 405,
+      "passed": 410,
       "failed": 0,
       "skipped": 0,
       "xfailed": 0,
@@ -60,7 +60,7 @@
   },
   "pins": {
     "waike": "fbf7685bc5686201ccaa0128ee83346d59b3d584",
-    "gunnchai": "4b4f411710e8cdb8102a7e11502f8497f68156b1",
+    "gunnchai": "c429750ff83b2a5344a6e1f40f5c7d27a863bf4d",
     "device_os": "4f02a48780d300a5d3a7758937b20e3bf9364d0d",
     "device_os_accepted_main": "4f02a48780d300a5d3a7758937b20e3bf9364d0d"
   },
@@ -75,9 +75,7 @@
   "macos_dmg": {
     "checked": true,
     "ok": true,
-    "notes": [
-      "DMG verification ok:true"
-    ]
+    "notes": []
   },
   "owner_action": "MERGE_GATE_C_THEN_RERUN_ACCELERATED_MASTER_PROMPT"
 }

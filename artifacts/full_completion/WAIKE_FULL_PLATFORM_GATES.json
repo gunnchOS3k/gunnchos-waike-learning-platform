@@ -1,0 +1,159 @@
+{
+  "schema": "waike.full_platform_gates.v1",
+  "captured_at": "2026-09-20T09:18:17Z",
+  "main_sha": "e1fa0ee3205f57b7e1976b4aa437342f448aaece",
+  "branch": "device-lab/post-merge-full-platform-all-role-closure",
+  "gates": {
+    "WAIKE_MAIN_HEAD_VERIFIED": {
+      "pass": true,
+      "note": "origin/main == e1fa0ee (PR #19)"
+    },
+    "WAIKE_ALL_18_TRACKS_COMPILED_PASS": {
+      "pass": true,
+      "note": "compile-18 exit 0"
+    },
+    "WAIKE_ALL_18_TRACKS_RUNTIME_LOADED_PASS": {
+      "pass": true,
+      "note": null
+    },
+    "WAIKE_LEARNER_PHYSICAL_JOURNEY_PASS": {
+      "pass": false,
+      "note": "DEFECT-FC-0005"
+    },
+    "WAIKE_INSTRUCTOR_PHYSICAL_JOURNEY_PASS": {
+      "pass": false,
+      "note": "DEFECT-FC-0005"
+    },
+    "WAIKE_GRADER_PHYSICAL_JOURNEY_PASS": {
+      "pass": false,
+      "note": "DEFECT-FC-0005"
+    },
+    "WAIKE_GUARDIAN_PHYSICAL_JOURNEY_PASS": {
+      "pass": false,
+      "note": "DEFECT-FC-0005"
+    },
+    "WAIKE_SITE_ADMIN_PHYSICAL_JOURNEY_PASS": {
+      "pass": false,
+      "note": "DEFECT-FC-0005"
+    },
+    "WAIKE_ROLE_SESSION_ISOLATION_PASS": {
+      "pass": false,
+      "note": "Mac API proven; Pixel physical false"
+    },
+    "WAIKE_CROSS_SITE_ISOLATION_PASS": {
+      "pass": false,
+      "note": "Mac API proven; Pixel physical false"
+    },
+    "WAIKE_OFFLINE_RESTART_RECONNECT_PASS": {
+      "pass": true,
+      "note": null
+    },
+    "WAIKE_30_MIN_STABILITY_PASS": {
+      "pass": true,
+      "note": "elapsed_s=1800.038143157959 cycles=60"
+    },
+    "WAIKE_ACCESSIBILITY_MECHANICS_PASS": {
+      "pass": true,
+      "note": null
+    },
+    "WAIKE_AI_SURFACE_PASS": {
+      "pass": false,
+      "note": "DEFECT-FC-0006"
+    },
+    "WAIKE_GUNNCHAI_CONTRACT_PASS": {
+      "pass": true,
+      "note": "c429750 PASS"
+    },
+    "WAIKE_GUNNCHOS_FIRST_PARTY_CONTRACT_PASS": {
+      "pass": true,
+      "note": "docs/integration/GUNNCHOS_WAIKE_FIRST_PARTY_CONTRACT.md FULL_VIA_ADAPTER"
+    },
+    "WAIKE_ALL_ROLE_MATRIX_PASS": {
+      "pass": false,
+      "note": null
+    },
+    "WAIKE_18_TRACK_MATRIX_PASS": {
+      "pass": true,
+      "note": "mechanical inventory; pixel visibility false"
+    },
+    "WAIKE_NO_OPEN_S1_DEFECTS": {
+      "pass": false,
+      "note": "open_s1=1"
+    },
+    "WAIKE_NO_OPEN_S2_DIGITALLY_SOLVABLE_DEFECTS": {
+      "pass": false,
+      "note": "open_s2_digital=1 ids=['DEFECT-FC-0006']"
+    },
+    "WAIKE_ALL_CONTENT_ALL_ROLE_PIXEL_PILOT_PASS": {
+      "pass": false,
+      "note": null
+    },
+    "WAIKE_FULL_PLATFORM_COMPLETION_CANDIDATE_PASS": {
+      "pass": false,
+      "note": "blocked on physical journeys + open S1/S2"
+    },
+    "WAIKE_HUMAN_DISABLED_USER_ACCESSIBILITY_VALIDATION": {
+      "pass": false,
+      "note": null
+    },
+    "WAIKE_HUMAN_LEARNER_USABILITY_PASS": {
+      "pass": false,
+      "note": null
+    },
+    "WAIKE_HUMAN_INSTRUCTOR_USABILITY_PASS": {
+      "pass": false,
+      "note": null
+    },
+    "WAIKE_HUMAN_ADMIN_USABILITY_PASS": {
+      "pass": false,
+      "note": null
+    },
+    "WAIKE_MERGE_AUTHORIZED": {
+      "pass": false,
+      "note": null
+    }
+  },
+  "pixel_tokens": {
+    "PIXEL6A_WAIKE_DEVICE_CONNECTED": true,
+    "PIXEL_PILOT_ALL_18_TRACKS_LOADED": true,
+    "PIXEL_PILOT_ALL_ROLES_SEEDED": true,
+    "WAIKE_PIXEL_WEB_CLIENT_PASS": true,
+    "PIXEL_TO_REAL_HUB_CONNECTIVITY_PASS": true,
+    "WAIKE_PIXEL_PWA_INSTALL_PASS": true,
+    "PIXEL_LEARNER_18_TRACK_VISIBILITY_PASS": false,
+    "PIXEL_INSTRUCTOR_JOURNEY_PASS": false,
+    "PIXEL_GRADER_JOURNEY_PASS": false,
+    "PIXEL_GUARDIAN_JOURNEY_PASS": false,
+    "PIXEL_SITE_ADMIN_JOURNEY_PASS": false,
+    "PIXEL_ROLE_SESSION_ISOLATION_PASS": false,
+    "PIXEL_CROSS_SITE_ISOLATION_PASS": false,
+    "PIXEL_WAIKE_OFFLINE_RESTART_RECONNECT_PASS": true,
+    "PIXEL_ACCESSIBILITY_MECHANICS_PASS": true,
+    "PIXEL_WAIKE_STABILITY_PASS": true,
+    "PIXEL_WAIKE_AI_SURFACE_PASS": false,
+    "WAIKE_ANDROID_NATIVE_BUILD_PASS": false,
+    "WAIKE_ANDROID_NATIVE_INSTALL_PASS": false,
+    "WAIKE_ANDROID_NATIVE_ALL_ROLE_SMOKE_PASS": false,
+    "HUMAN_DISABLED_USER_ACCESSIBILITY_VALIDATION": false,
+    "WAIKE_ALL_CONTENT_ALL_ROLE_PIXEL_PILOT_PASS": false,
+    "captured_at": "2026-09-20T08:50:52Z"
+  },
+  "digital_matrix": {
+    "00_bootstrap": "0",
+    "01_test_initial": "2 # helpers collision pre-fix",
+    "01b_test_isolated": "2 # pre-pin-fix gate_d gunnchai mismatch",
+    "01c_gate_d_gunnchai": "0",
+    "02_verify_gate_a": "killed mid frontend (vitest hang); rust/python portion progressed",
+    "02b_gate_a_test": "0",
+    "03_verify_gate_b": "2 # WAIKE_ROOT not at PIN",
+    "03b_gate_b_ai": "0",
+    "03c_verify_gate_b_rerun": "2 # dirty ops HEAD",
+    "03d_verify_gate_b_pinwt": "0 # WAIKE_ROOT=@PIN fbf7685 AUTOMATED_PIPELINE_PASS",
+    "04_verify_gate_c": "0",
+    "05_verify_gate_d": "SKIPPED_TIMEOUT_RISK",
+    "06_compile_18": "0",
+    "08c_frontend_safe": "0 # 37 tests (resolveHub/a11y/sync/runtimeAdapter)",
+    "10b_verify_gunnchai_venv": "0 # c429750 PASS"
+  },
+  "delivery_model": "FULL_VIA_ADAPTER"
+}

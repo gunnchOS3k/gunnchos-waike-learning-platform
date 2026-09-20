@@ -9,7 +9,7 @@ Claim scope: **contract discovery + hub adapter** (not pedagogical effectiveness
 | Field | Value |
 | --- | --- |
 | Repo | https://github.com/gunnchOS3k/gunnchAI3k |
-| Accepted SHA (main at discovery) | `4b4f411710e8cdb8102a7e11502f8497f68156b1` |
+| Accepted SHA (main at discovery) | `c429750ff83b2a5344a6e1f40f5c7d27a863bf4d` |
 | Package name | `gunnchai3k` |
 | Hub adapter | `services/hub/app/modules/gunnchai_adapter.py` |
 

@@ -23,7 +23,7 @@ ANSI = re.compile(r"\x1b\[[0-9;]*m")
 PINS = {
     "device_os": "4f02a48780d300a5d3a7758937b20e3bf9364d0d",
     "waike": "fbf7685bc5686201ccaa0128ee83346d59b3d584",
-    "gunnchai": "4b4f411710e8cdb8102a7e11502f8497f68156b1",
+    "gunnchai": "c429750ff83b2a5344a6e1f40f5c7d27a863bf4d",
 }
 
 CLAIM_AUTO = "AUTOMATED_FULL_PLATFORM_PASS"

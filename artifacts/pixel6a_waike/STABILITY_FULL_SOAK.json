@@ -1,0 +1,17 @@
+{
+  "captured_at": "2026-09-20T08:50:47Z",
+  "requested_seconds": 1800,
+  "elapsed_s": 1800.038143157959,
+  "cycles": 60,
+  "hub_ok_throughout": true,
+  "full_30min_soak": true,
+  "screenshots_sample": [
+    "soak_full_000.png",
+    "soak_full_001.png",
+    "soak_full_002.png",
+    "soak_full_003.png",
+    "soak_full_004.png",
+    "\u2026"
+  ],
+  "screenshot_count": 60
+}

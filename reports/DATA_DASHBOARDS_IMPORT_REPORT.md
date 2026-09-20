@@ -9,7 +9,7 @@
 - instructor files: **14**
 - learner zip sha256: `158b689de08e7964862cea436205cb3df25133e07b163ab3aaf6f6dfba08167a`
 - instructor plaintext sha256: `d1b2c0113a29edc6186d8e2352388cf5842b6c125209c66cf19c4e7ec3da562e`
-- instructor ciphertext sha256 (non-reproducible): `4b0235bd16826b8784143302db39fc8194aa610857afc04df6c1abc3e5f7631b`
+- instructor ciphertext sha256 (non-reproducible): `d57f80e85895b82e8a1c8ff5dd8da4323d82f98710595c66ff228506488c1c94`
 - lessons indexed: 10
 - activity inventory: `{"assignments": 10, "discussions": 0, "groups": 1, "labs": 10, "lessons": 10, "outcomes": 4, "portfolio": 2, "quizzes": 10, "rubrics": 8}`
 

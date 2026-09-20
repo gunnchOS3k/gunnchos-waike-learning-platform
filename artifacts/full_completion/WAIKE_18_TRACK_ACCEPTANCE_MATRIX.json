@@ -1,0 +1,210 @@
+{
+  "schema": "waike.18_track_acceptance_matrix.v1",
+  "captured_at": "2026-09-20T09:18:17Z",
+  "all_18_loaded": true,
+  "missing_track_ids": [],
+  "tracks": {
+    "DIGITAL_CONFIDENCE": {
+      "compiled": true,
+      "loaded": true,
+      "visible_mac_api": true,
+      "visible_pixel_physical": false,
+      "launchable": "not_deep_sampled_on_pixel_ui",
+      "content_schema_valid": true,
+      "assessment_activity_coverage": "compiler/matrix",
+      "offline_package_behavior": "not_claimed_per_track",
+      "runtime_errors": null
+    },
+    "IT_SUPPORT_HARDWARE": {
+      "compiled": true,
+      "loaded": true,
+      "visible_mac_api": true,
+      "visible_pixel_physical": false,
+      "launchable": "not_deep_sampled_on_pixel_ui",
+      "content_schema_valid": true,
+      "assessment_activity_coverage": "compiler/matrix",
+      "offline_package_behavior": "not_claimed_per_track",
+      "runtime_errors": null
+    },
+    "SOFTWARE_BUILDER": {
+      "compiled": true,
+      "loaded": true,
+      "visible_mac_api": true,
+      "visible_pixel_physical": false,
+      "launchable": "not_deep_sampled_on_pixel_ui",
+      "content_schema_valid": true,
+      "assessment_activity_coverage": "compiler/matrix",
+      "offline_package_behavior": "not_claimed_per_track",
+      "runtime_errors": null
+    },
+    "NETWORKING_INFRA": {
+      "compiled": true,
+      "loaded": true,
+      "visible_mac_api": true,
+      "visible_pixel_physical": false,
+      "launchable": "not_deep_sampled_on_pixel_ui",
+      "content_schema_valid": true,
+      "assessment_activity_coverage": "compiler/matrix",
+      "offline_package_behavior": "not_claimed_per_track",
+      "runtime_errors": null
+    },
+    "CYBER_SOC": {
+      "compiled": true,
+      "loaded": true,
+      "visible_mac_api": true,
+      "visible_pixel_physical": false,
+      "launchable": "not_deep_sampled_on_pixel_ui",
+      "content_schema_valid": true,
+      "assessment_activity_coverage": "compiler/matrix",
+      "offline_package_behavior": "not_claimed_per_track",
+      "runtime_errors": null
+    },
+    "DATA_DASHBOARDS": {
+      "compiled": true,
+      "loaded": true,
+      "visible_mac_api": true,
+      "visible_pixel_physical": false,
+      "launchable": "not_deep_sampled_on_pixel_ui",
+      "content_schema_valid": true,
+      "assessment_activity_coverage": "compiler/matrix",
+      "offline_package_behavior": "not_claimed_per_track",
+      "runtime_errors": null
+    },
+    "AI_ML_EDGE": {
+      "compiled": true,
+      "loaded": true,
+      "visible_mac_api": true,
+      "visible_pixel_physical": false,
+      "launchable": "not_deep_sampled_on_pixel_ui",
+      "content_schema_valid": true,
+      "assessment_activity_coverage": "compiler/matrix",
+      "offline_package_behavior": "not_claimed_per_track",
+      "runtime_errors": null
+    },
+    "EMBEDDED_PROTOTYPING": {
+      "compiled": true,
+      "loaded": true,
+      "visible_mac_api": true,
+      "visible_pixel_physical": false,
+      "launchable": "not_deep_sampled_on_pixel_ui",
+      "content_schema_valid": true,
+      "assessment_activity_coverage": "compiler/matrix",
+      "offline_package_behavior": "not_claimed_per_track",
+      "runtime_errors": null
+    },
+    "WIRELESS_6G": {
+      "compiled": true,
+      "loaded": true,
+      "visible_mac_api": true,
+      "visible_pixel_physical": false,
+      "launchable": "not_deep_sampled_on_pixel_ui",
+      "content_schema_valid": true,
+      "assessment_activity_coverage": "compiler/matrix",
+      "offline_package_behavior": "not_claimed_per_track",
+      "runtime_errors": null
+    },
+    "PM_AGILE_LSS": {
+      "compiled": true,
+      "loaded": true,
+      "visible_mac_api": true,
+      "visible_pixel_physical": false,
+      "launchable": "not_deep_sampled_on_pixel_ui",
+      "content_schema_valid": true,
+      "assessment_activity_coverage": "compiler/matrix",
+      "offline_package_behavior": "not_claimed_per_track",
+      "runtime_errors": null
+    },
+    "GAME_DEV_INTERACTIVE": {
+      "compiled": true,
+      "loaded": true,
+      "visible_mac_api": true,
+      "visible_pixel_physical": false,
+      "launchable": "not_deep_sampled_on_pixel_ui",
+      "content_schema_valid": true,
+      "assessment_activity_coverage": "compiler/matrix",
+      "offline_package_behavior": "not_claimed_per_track",
+      "runtime_errors": null
+    },
+    "SEVEN_GC_APPRENTICESHIP": {
+      "compiled": true,
+      "loaded": true,
+      "visible_mac_api": true,
+      "visible_pixel_physical": false,
+      "launchable": "not_deep_sampled_on_pixel_ui",
+      "content_schema_valid": true,
+      "assessment_activity_coverage": "compiler/matrix",
+      "offline_package_behavior": "not_claimed_per_track",
+      "runtime_errors": null
+    },
+    "CLOUD_DEVOPS": {
+      "compiled": true,
+      "loaded": true,
+      "visible_mac_api": true,
+      "visible_pixel_physical": false,
+      "launchable": "not_deep_sampled_on_pixel_ui",
+      "content_schema_valid": true,
+      "assessment_activity_coverage": "compiler/matrix",
+      "offline_package_behavior": "not_claimed_per_track",
+      "runtime_errors": null
+    },
+    "COMM_PD_ETHICS": {
+      "compiled": true,
+      "loaded": true,
+      "visible_mac_api": true,
+      "visible_pixel_physical": false,
+      "launchable": "not_deep_sampled_on_pixel_ui",
+      "content_schema_valid": true,
+      "assessment_activity_coverage": "compiler/matrix",
+      "offline_package_behavior": "not_claimed_per_track",
+      "runtime_errors": null
+    },
+    "ROBOTICS_CONTROL": {
+      "compiled": true,
+      "loaded": true,
+      "visible_mac_api": true,
+      "visible_pixel_physical": false,
+      "launchable": "not_deep_sampled_on_pixel_ui",
+      "content_schema_valid": true,
+      "assessment_activity_coverage": "compiler/matrix",
+      "offline_package_behavior": "not_claimed_per_track",
+      "runtime_errors": null
+    },
+    "GUNNCHOS_PRODUCT_LAB": {
+      "compiled": true,
+      "loaded": true,
+      "visible_mac_api": true,
+      "visible_pixel_physical": false,
+      "launchable": "not_deep_sampled_on_pixel_ui",
+      "content_schema_valid": true,
+      "assessment_activity_coverage": "compiler/matrix",
+      "offline_package_behavior": "not_claimed_per_track",
+      "runtime_errors": null
+    },
+    "HARDWARE_ENGINEERING": {
+      "compiled": true,
+      "loaded": true,
+      "visible_mac_api": true,
+      "visible_pixel_physical": false,
+      "launchable": "not_deep_sampled_on_pixel_ui",
+      "content_schema_valid": true,
+      "assessment_activity_coverage": "compiler/matrix",
+      "offline_package_behavior": "not_claimed_per_track",
+      "runtime_errors": null
+    },
+    "DATA_VIZ_BI": {
+      "compiled": true,
+      "loaded": true,
+      "visible_mac_api": true,
+      "visible_pixel_physical": false,
+      "launchable": "not_deep_sampled_on_pixel_ui",
+      "content_schema_valid": true,
+      "assessment_activity_coverage": "compiler/matrix",
+      "offline_package_behavior": "not_claimed_per_track",
+      "runtime_errors": null
+    }
+  },
+  "aggregate_pass": true,
+  "mechanical_inventory_pass": true,
+  "pixel_physical_visibility_pass": false,
+  "note": "Mechanical inventory/compile/load proven (18/18). Pixel physical learner visibility gate remains false (UIAutomator)."
+}

@@ -1,5 +1,5 @@
 {
-  "generated_utc": "2026-09-06T23:20:11Z",
+  "generated_utc": "2026-09-20T08:32:05Z",
   "manifest": {
     "app_id": "com.gunnchos.waike.learning",
     "device_os_registry_id": "waike_learning_os",
@@ -70,9 +70,9 @@
         "sha256": "de0848b61972a896682ae941ed87ca9f95dff75d54567be68b6b58fb4cc045bd"
       },
       "integration_contract": {
-        "path": "/Users/gunnchos/dev/waike-learning-os-workspace/gunnchos-waike-learning-platform/contracts/deviceos/WAIKE_LEARNING_OS_INTEGRATION_CONTRACT.json",
+        "path": "/Users/gunnchos/Downloads/gunnchos-7gc-research-product-spine/repos/gunnchos-waike-learning-platform/.worktrees/post-merge-full-platform-all-role-closure/contracts/deviceos/WAIKE_LEARNING_OS_INTEGRATION_CONTRACT.json",
         "exists": true,
-        "sha256": "791c2eb51733ea1c59d023ded767dc1ec238dd2514a5ebf3ef5be527d12d1e93"
+        "sha256": "b8a12fbb154e2cdf04b4c5b1779120b2164d42c7680da2048433753da15193dc"
       }
     },
     "registry_sample": {

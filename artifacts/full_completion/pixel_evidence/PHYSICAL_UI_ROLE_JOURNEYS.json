@@ -1,0 +1,99 @@
+{
+  "captured_at": "2026-09-20T08:18:04Z",
+  "client_url": "http://127.0.0.1:1420/",
+  "roles": {
+    "learner": {
+      "ok": false,
+      "error": "sign_in_button_missing",
+      "steps": [
+        {
+          "t": "2026-09-20T08:18:10Z",
+          "step": "open",
+          "has_sign_in": true
+        }
+      ],
+      "username_redacted": true
+    },
+    "instructor": {
+      "ok": false,
+      "error": "physical_login_heuristic_failed",
+      "steps": [
+        {
+          "t": "2026-09-20T08:18:32Z",
+          "step": "open",
+          "has_sign_in": true
+        },
+        {
+          "t": "2026-09-20T08:18:58Z",
+          "step": "after_login",
+          "screenshot": "phys_instructor_03_after_login.png",
+          "logged_in_heuristic": true,
+          "still_on_login": true,
+          "xml_bytes": 17211
+        }
+      ],
+      "username_redacted": true
+    },
+    "grader": {
+      "ok": false,
+      "error": "physical_login_heuristic_failed",
+      "steps": [
+        {
+          "t": "2026-09-20T08:19:04Z",
+          "step": "open",
+          "has_sign_in": true
+        },
+        {
+          "t": "2026-09-20T08:19:30Z",
+          "step": "after_login",
+          "screenshot": "phys_grader_03_after_login.png",
+          "logged_in_heuristic": true,
+          "still_on_login": true,
+          "xml_bytes": 17199
+        }
+      ],
+      "username_redacted": true
+    },
+    "guardian": {
+      "ok": false,
+      "error": "physical_login_heuristic_failed",
+      "steps": [
+        {
+          "t": "2026-09-20T08:19:37Z",
+          "step": "open",
+          "has_sign_in": true
+        },
+        {
+          "t": "2026-09-20T08:19:59Z",
+          "step": "after_login",
+          "screenshot": "phys_guardian_03_after_login.png",
+          "logged_in_heuristic": true,
+          "still_on_login": true,
+          "xml_bytes": 17196
+        }
+      ],
+      "username_redacted": true
+    },
+    "site_admin": {
+      "ok": false,
+      "error": "physical_login_heuristic_failed",
+      "steps": [
+        {
+          "t": "2026-09-20T08:20:06Z",
+          "step": "open",
+          "has_sign_in": true
+        },
+        {
+          "t": "2026-09-20T08:20:27Z",
+          "step": "after_login",
+          "screenshot": "phys_site_admin_03_after_login.png",
+          "logged_in_heuristic": true,
+          "still_on_login": true,
+          "xml_bytes": 17204
+        }
+      ],
+      "username_redacted": true
+    }
+  },
+  "all_five_ok": false
+}

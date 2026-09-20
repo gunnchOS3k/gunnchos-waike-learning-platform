@@ -12,6 +12,8 @@ export default defineConfig({
     environment: "jsdom",
     setupFiles: ["./src/test/setup.ts"],
     globals: true,
+    testTimeout: 15000,
+    hookTimeout: 15000,
     // Live-hub tests own a server lifecycle; they run from vitest.live.config.ts.
     exclude: ["node_modules/**", "dist/**", "src/test/live/**"],
   },

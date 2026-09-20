@@ -1,0 +1,16 @@
+command|exit_code
+00_bootstrap|0
+01_test_initial|2 # helpers collision pre-fix
+01b_test_isolated|2 # pre-pin-fix gate_d gunnchai mismatch
+01c_gate_d_gunnchai|0
+02_verify_gate_a|killed mid frontend (vitest hang); rust/python portion progressed
+02b_gate_a_test|0
+03_verify_gate_b|2 # WAIKE_ROOT not at PIN
+03b_gate_b_ai|0
+03c_verify_gate_b_rerun|2 # dirty ops HEAD
+03d_verify_gate_b_pinwt|0 # WAIKE_ROOT=@PIN fbf7685 AUTOMATED_PIPELINE_PASS
+04_verify_gate_c|0
+05_verify_gate_d|SKIPPED_TIMEOUT_RISK
+06_compile_18|0
+08c_frontend_safe|0 # 37 tests (resolveHub/a11y/sync/runtimeAdapter)
+10b_verify_gunnchai_venv|0 # c429750 PASS

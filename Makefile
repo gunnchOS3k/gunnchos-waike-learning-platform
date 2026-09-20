@@ -25,8 +25,16 @@ lint:
 	cd $(TAURI) && cargo fmt --check || cargo fmt
 	cd $(TAURI) && cargo clippy --all-targets -- -D warnings || true
 
+# Gate dirs each ship a local helpers.py; collect them separately so
+# `from helpers import …` cannot resolve the wrong sibling package.
 python-test:
-	WAIKE_ROOT=$(WAIKE_ROOT) PYTHONPATH=services/hub $(PYTHON) -m pytest -q tests services/hub/tests
+	WAIKE_ROOT=$(WAIKE_ROOT) PYTHONPATH=services/hub $(PYTHON) -m pytest -q \
+	  tests/assessment tests/compatibility tests/exhaustion tests/integration \
+	  tests/pixel_pilot tests/pr3 tests/security services/hub/tests
+	WAIKE_ROOT=$(WAIKE_ROOT) PYTHONPATH=services/hub $(PYTHON) -m pytest -q tests/gate_a
+	WAIKE_ROOT=$(WAIKE_ROOT) PYTHONPATH=tools/course_compiler:services/hub $(PYTHON) -m pytest -q tests/gate_b
+	WAIKE_ROOT=$(WAIKE_ROOT) DEVICE_OS_ROOT=$${DEVICE_OS_ROOT:-$(CURDIR)/../gunnchos-device-os} PYTHONPATH=services/hub $(PYTHON) -m pytest -q tests/gate_c
+	WAIKE_ROOT=$(WAIKE_ROOT) DEVICE_OS_ROOT=$${DEVICE_OS_ROOT:-$(CURDIR)/../gunnchos-device-os} GUNNCHAI_ROOT=$${GUNNCHAI_ROOT:-$(CURDIR)/../gunnchAI3k} PYTHONPATH=tools/course_compiler:services/hub $(PYTHON) -m pytest -q tests/gate_d
 
 assessment-test:
 	WAIKE_ROOT=$(WAIKE_ROOT) PYTHONPATH=services/hub $(PYTHON) -m pytest -q services/hub/tests tests/assessment

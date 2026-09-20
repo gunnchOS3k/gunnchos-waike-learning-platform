@@ -10,7 +10,7 @@
 | Platform PR #6 head | `cursor/waike-learning-gate-c-interop-hardening` | `68fec7829305a8ba4b12f73526114206e43725dc` | YES |
 | Platform PR #6 base (`main`) | `main` | `797f5f4b50ff844eecdd068736ac660561910bb4` | YES |
 | WAIKE | `main` | `fbf7685bc5686201ccaa0128ee83346d59b3d584` | YES |
-| gunnchAI | detached/pin | `4b4f411710e8cdb8102a7e11502f8497f68156b1` | YES |
+| gunnchAI | detached/pin | `c429750ff83b2a5344a6e1f40f5c7d27a863bf4d` | YES |
 | Device OS | `main` | `4f02a48780d300a5d3a7758937b20e3bf9364d0d` | YES |
 
 ## PR #6 remote status (pre-closure)

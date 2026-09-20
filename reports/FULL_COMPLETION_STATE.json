@@ -25,7 +25,7 @@
   ],
   "device_os_accepted_main": "4f02a48780d300a5d3a7758937b20e3bf9364d0d",
   "waike_pin": "fbf7685bc5686201ccaa0128ee83346d59b3d584",
-  "gunnchai_pin": "4b4f411710e8cdb8102a7e11502f8497f68156b1",
+  "gunnchai_pin": "c429750ff83b2a5344a6e1f40f5c7d27a863bf4d",
   "owner_action": "GATE_D_NOT_READY",
   "honesty": "Committed baseline only. Claims are earned solely from this-run Gate D CI artifact (gate-d-reports-<HEAD>/FULL_COMPLETION_STATE.json written by verify-gate-d). Do not treat this committed file as earned proof. External/human/physical gates remain OPEN."
 }

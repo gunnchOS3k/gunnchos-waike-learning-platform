@@ -2,7 +2,7 @@
 
 ## Summary
 - Re-pinned Platform to WAIKE merged main `fbf7685bc5686201ccaa0128ee83346d59b3d584` (PR #57 SEVEN_GC digital course).
-- Canonical gunnchAI3k pin `4b4f411710e8cdb8102a7e11502f8497f68156b1` checked out in CI; adapter verified against real source files (`GATE_B_GUNNCHAI_CONTRACT_SNAPSHOT`); drift fails `GUNNCHAI_CONTRACT_DRIFT`.
+- Canonical gunnchAI3k pin `c429750ff83b2a5344a6e1f40f5c7d27a863bf4d` checked out in CI; adapter verified against real source files (`GATE_B_GUNNCHAI_CONTRACT_SNAPSHOT`); drift fails `GUNNCHAI_CONTRACT_DRIFT`.
 - **No fake AI in production defaults** (`DEFAULT_RUNTIME_HAS_NO_FAKE_AI`). Unset provider → unavailable 503. Fake only via explicit test injection or `GUNNCHAI_PROVIDER=fake` + `WAIKE_ALLOW_FAKE_AI=1`.
 - 18-track compiler matrix: **18 PASS / 0 BLOCKED**. `SEVEN_GC_APPRENTICESHIP` is first-class `COURSE_DIGITAL_RC` (10 lessons / 10 assignments / 10 quizzes / 10 labs).
 - Per-track learner/instructor/runtime/offline acceptance: **18/18 e2e PASS**; `GATE_B_REQUIRED_TESTS_SKIPPED=0`; no `PENDING_SUITE`.
@@ -20,7 +20,7 @@ EXTERNAL SEVEN_GC mentor/physical/field gates remain open and are **not** claime
 | Repo | SHA |
 |---|---|
 | waike-research-ops | `fbf7685bc5686201ccaa0128ee83346d59b3d584` |
-| gunnchAI3k | `4b4f411710e8cdb8102a7e11502f8497f68156b1` |
+| gunnchAI3k | `c429750ff83b2a5344a6e1f40f5c7d27a863bf4d` |
 | Platform main (base) | `43e770772b97a0d6900893ea7428df91f2acdb93` |
 
 ## Not claimed

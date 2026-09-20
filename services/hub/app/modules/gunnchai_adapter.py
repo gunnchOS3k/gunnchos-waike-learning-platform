@@ -1,6 +1,6 @@
 """gunnchAI adapter for WAIKE Learning Hub (Gate B).
 
-Adapts canonical contracts from gunnchAI3k @ 4b4f411710e8cdb8102a7e11502f8497f68156b1:
+Adapts canonical contracts from gunnchAI3k @ c429750ff83b2a5344a6e1f40f5c7d27a863bf4d:
 - MODE_PERMISSIONS (src/waike-mastery/modes.ts)
 - academicIntegrityPolicy (src/tutor/academicIntegrityPolicy.ts)
 - privacy fail-closed (src/system-layer/privacy_policy.ts)
@@ -29,7 +29,7 @@ from typing import Any, Protocol
 from app.modules.assessment_lifecycle import ServiceError
 
 GUNNCHAI_REPO = "https://github.com/gunnchOS3k/gunnchAI3k"
-GUNNCHAI_SHA = "4b4f411710e8cdb8102a7e11502f8497f68156b1"
+GUNNCHAI_SHA = "c429750ff83b2a5344a6e1f40f5c7d27a863bf4d"
 GUNNCHAI_PACKAGE = "gunnchai3k"
 
 # CI / contract label: default production runtime path must not select Fake.

@@ -270,7 +270,7 @@ def main() -> int:
         },
         "pins": {
             "waike": os.environ.get("WAIKE_PIN_REF", "fbf7685bc5686201ccaa0128ee83346d59b3d584"),
-            "gunnchai": os.environ.get("GUNNCHAI_PIN_REF", "4b4f411710e8cdb8102a7e11502f8497f68156b1"),
+            "gunnchai": os.environ.get("GUNNCHAI_PIN_REF", "c429750ff83b2a5344a6e1f40f5c7d27a863bf4d"),
             "device_os": os.environ.get("DEVICE_OS_PIN_REF", DEVICE_OS_INTEGRATION_HEAD),
             "device_os_accepted_main": ACCEPTED_DEVICE_OS_MAIN,
         },
