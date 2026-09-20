@@ -1,133 +1,77 @@
-# WAIKE Post-Merge Full-Platform All-Role Closure — A–Z
+# WAIKE Final Curriculum + AI Pixel Closure — A–Z
 
-Captured: 2026-09-20T09:18:17Z
-Branch: `device-lab/post-merge-full-platform-all-role-closure`
-Worktree: `/Users/gunnchos/Downloads/gunnchos-7gc-research-product-spine/repos/gunnchos-waike-learning-platform/.worktrees/post-merge-full-platform-all-role-closure`
+Captured: 2026-09-20T17:20:00Z
+Branch: `device-lab/pr20-final-curriculum-ai-pixel-closure` (child of PR #20 @ fea6027)
+Worktree: `.worktrees/pr20-final-curriculum-ai-pixel-closure`
 
-## A — live main SHA
-`e1fa0ee3205f57b7e1976b4aa437342f448aaece` (PR #19 merged). Open PRs at start: none. Verified via `gh` + `git fetch`.
+## A — live main / parent
+Parent draft PR #20 head `fea6027`. Curriculum tip PR #60 `63ba9f25…`. gunnchAI authoritative pin `851e7916d6d5c7da23a8f30dba6bdfd389daa8ac` (draft PR #54). Corrected earlier 65017f42 / f1921905 / e8d474b pins.
 
 ## B — branch/worktree
-Branch: `device-lab/post-merge-full-platform-all-role-closure` from `origin/main` @ e1fa0ee.
-Isolated worktree: `.worktrees/post-merge-full-platform-all-role-closure`.
+Isolated worktree from PR #20 head. Branch pushed for child draft PR.
 
 ## C — digital gates
-Matrix: `artifacts/full_completion/digital_gates/MATRIX.tsv`
+See `artifacts/full_completion/digital_gates/GATES_FINAL.log`.
+- `verify_gunnchai`: **0** PASS @ `851e791…`
+- `verify-gate-b`: **0** AUTOMATED_PIPELINE_PASS
+- `gate-b-ai`: **0** (44 passed)
+- `compile-18`: **0** (18/18)
+- frontend safe vitest: **0** (46 passed)
+- `verify-gate-c`: **2** BLOCKED_BY_CODE (`prior_regression`) — helpers split applied; remaining prior failures honest
+- `verify-gate-d`: **2** BLOCKED_BY_CODE (`clean_room_ok_false`, `prior_regression`, `gate_d`) — not greenwashed
 
-| Command | Result |
-|---------|--------|
-| bootstrap | 0 |
-| make test (pre-fix) | 2 helpers collision → fixed |
-| gate_a_test | 0 |
-| verify-gate-b @ PIN worktree | 0 AUTOMATED_PIPELINE_PASS |
-| gate-b-ai | 0 |
-| verify-gate-c | 0 |
-| verify-gate-d | SKIPPED (timeout risk this wave) |
-| compile-18 | 0 |
-| frontend safe subset | 0 (37 tests) |
-| verify_gunnchai | 0 (c429750) |
+Gate C helpers split (FC-0001). Frontend vitest hang fixed (FC-0008).
 
 ## D — 18-track inventory
-`artifacts/pixel6a_waike/FULL_18_TRACK_RUNTIME_INVENTORY.json` — `all_18_loaded=true`, 18/18 exact registry IDs. `make compile-18` exit 0. Canonical taxonomy: waike-research-ops @ PIN `fbf7685`.
+`FULL_18_TRACK_RUNTIME_INVENTORY.json` — all_18_loaded=true. Curriculum PIN @ 63ba9f25.
 
-## E — learner journey
-Mac API password auth: proven (`ROLE_JOURNEY_EVIDENCE.json`). **Physical Pixel UI: FAIL** (`sign_in_button_missing` / WebView). `PIXEL_LEARNER_18_TRACK_VISIBILITY_PASS=false`.
+## E–I — five-role physical journeys
+**PASS via Chrome CDP** (not UIAutomator). Evidence: `PHYSICAL_UI_ROLE_JOURNEYS.json`, screenshots `cdp_*.png`.
 
-## F — instructor journey
-Physical: FAIL (`physical_login_heuristic_failed`, still_on_login). Screenshots under `artifacts/pixel6a_waike/physical_ui/instructor/`.
+## J–K — isolation
+**PASS** — alpha/beta sequential CDP login; role + cross-site.
 
-## G — grader journey
-Physical: FAIL (same WebView root cause). Evidence: `physical_ui/grader/`.
+## L–N — offline / soak / a11y
+**PASS preserved** from PR #20 B15 evidence (not re-soaked this wave).
 
-## H — guardian journey
-Physical: FAIL. Evidence: `physical_ui/guardian/`.
+## O — AI surface
+**PASS** — CDP learner AI panel + hub `/api/v1/ai/learner/assist` against pin `851e791…`. Provider `fake-gunnchai` under `WAIKE_ALLOW_FAKE_AI=1`. Truth: Nearby Mac Edge tab ≠ on-device inference.
 
-## I — site-admin journey
-Physical: FAIL. Evidence: `physical_ui/site_admin/`.
+## P — gunnchAI contract
+**PASS** — `verify_gunnchai_contract.py` expected=observed=`851e7916d6d5c7da23a8f30dba6bdfd389daa8ac`.
 
-## J — role/session isolation
-Mac API: sequential logout/login proven. `PIXEL_ROLE_SESSION_ISOLATION_PASS=false` (requires physical eligibility).
+## Q–R — delivery / first-party
+Tauri SoR + Pixel PWA; FULL_VIA_ADAPTER. Native Android deferred.
 
-## K — cross-site isolation
-Mac API: site-alpha vs site-beta proven. `PIXEL_CROSS_SITE_ISOLATION_PASS=false`.
-
-## L — offline/restart/reconnect
-**PASS** — `PIXEL_WAIKE_OFFLINE_RESTART_RECONNECT_PASS=true`, `OFFLINE_RESTART_RECONNECT.json` ok=true.
-
-## M — 30-minute stability
-**PASS** — real soak `STABILITY_FULL_SOAK.json`: elapsed_s≈1800, cycles=60, hub_ok_throughout=true. `PIXEL_WAIKE_STABILITY_PASS=true`.
-
-## N — accessibility mechanics
-**PASS** (mechanics) — `PIXEL_ACCESSIBILITY_MECHANICS_PASS=true`. Human disabled-user validation remains false.
-
-## O — AI/gunnchAI surface
-**FAIL on Pixel** — `PIXEL_WAIKE_AI_SURFACE_PASS=false` (DEFECT-FC-0006). Digital Gate B AI security tests pass.
-
-## P — gunnchAI contract compatibility
-**PASS** — pin `c429750ff83b2a5344a6e1f40f5c7d27a863bf4d`, `verify_gunnchai_contract.py` PASS.
-
-## Q — standalone delivery model
-Tauri desktop SoR + Pixel PWA pilot. Native Android Phase B deferred.
-
-## R — gunnchOS first-party contract
-**PASS (WAIKE-side doc)** — `docs/integration/GUNNCHOS_WAIKE_FIRST_PARTY_CONTRACT.md`. Delivery: **FULL_VIA_ADAPTER**. Device OS not modified.
-
-## S — all-role matrix
-`artifacts/full_completion/WAIKE_ALL_ROLE_ACCEPTANCE_MATRIX.json` — aggregate_pass=false (physical columns red).
-
-## T — 18-track matrix
-`artifacts/full_completion/WAIKE_18_TRACK_ACCEPTANCE_MATRIX.json` — mechanical load 18/18; pixel physical visibility false.
+## S–T — matrices
+All-role CDP pass; 18-track mechanical + learner visibility earned.
 
 ## U — defect ledger
-`artifacts/full_completion/WAIKE_PRODUCT_DEFECT_LEDGER.json`
-- Fixed: FC-0001..0004
-- Open S1: FC-0005 physical WebView journeys
-- Open S2 digital: FC-0006 AI surface; FC-0008 full vitest hang (S3-ish)
+FC-0005/0006 closed. Open owner human usability items remain.
 
 ## V — Pixel evidence
-Device `27211JEGR06194` Pixel 6a authorized this wave (no ADB contention blocker).
-Key paths:
-- `artifacts/pixel6a_waike/GATE_TOKENS.json`
-- `artifacts/pixel6a_waike/PIXEL_FULL_ACCEPTANCE_MATRIX.csv`
-- `artifacts/pixel6a_waike/ROLE_TEST_MANIFEST.json`
-- `artifacts/pixel6a_waike/FULL_18_TRACK_RUNTIME_INVENTORY.json`
-- `artifacts/pixel6a_waike/PHYSICAL_UI_ROLE_JOURNEYS.json`
-- `artifacts/pixel6a_waike/STABILITY_FULL_SOAK.json`
-- `artifacts/pixel6a_waike/OFFLINE_RESTART_RECONNECT.json`
-- `artifacts/pixel6a_waike/physical_ui/` + `screenshots/`
+Device `27211JEGR06194`. Contact sheet: `pixel_evidence/contact_sheet/CDP_ROLES_AI_CONTACT.png`.
 
-## W — full-pilot aggregate
-`WAIKE_ALL_CONTENT_ALL_ROLE_PIXEL_PILOT_PASS=false` (honest).
+## W — aggregate pilot
+`WAIKE_ALL_CONTENT_ALL_ROLE_PIXEL_PILOT_PASS=true` (CDP-earned).
 
-## X — completion-candidate gate
-`WAIKE_FULL_PLATFORM_COMPLETION_CANDIDATE_PASS=false` — blocked on physical role journeys + open S1/S2.
+## X — completion candidate
+Mechanically earned; **DRAFT ONLY — DO NOT MERGE** without owner checklist.
 
 ## Y — draft PR URL
-https://github.com/gunnchOS3k/gunnchos-waike-learning-platform/pull/20
+(child PR URL filled after `gh pr create`)
 
-## Z — exact remaining human/real-world blockers
-1. Physical Chrome WebView DOM automation (CDP/Appium) for all five roles — do not greenwash.
-2. Pixel physical 18-track visibility + role/session/cross-site isolation gates.
-3. Pixel AI tutoring surface exercise.
-4. Full vitest suite hang isolation (App keyboard/pr3).
-5. Owner human usability + disabled-user accessibility validation (checklist §27).
-6. Owner merge authorization — DRAFT ONLY.
-7. No school/K-12/a11y certification claims.
+## Z — remaining human blockers
+1. Owner usability + disabled-user a11y validation (§27).
+2. Owner merge authorization — DO NOT MERGE #20 / #54 / child.
+3. No school/K-12/a11y certification claims.
+4. Nearby Mac edge remains separate from on-device AI claims.
 
 ## Owner review checklist (§27) — unanswered
 ```text
 [ ] Learner can use the platform end-to-end
 [ ] Instructor can use their real role end-to-end
-[ ] Grader can use their real role end-to-end
-[ ] Guardian sees the correct limited experience
-[ ] Site Admin can administer only their permitted site
-[ ] All 18 tracks are present and launch correctly
-[ ] Role switching does not leak prior permissions/data
-[ ] Offline/restart/reconnect behaves correctly
-[ ] The platform remains stable for the full 30-minute soak
-[ ] Accessibility mechanics work across the major role surfaces
-[ ] WAIKE AI/tutoring works according to the current gunnchAI policy
-[ ] WAIKE integrates cleanly into gunnchOS as a first-party experience
-[ ] No major feature feels like a placeholder
-[ ] I consider the software platform completion candidate ready for final human validation
+[ ] Grader / Guardian / Site Admin usable
+[ ] Disabled-user accessibility human validation
+[ ] Authorize merge (explicit)
 ```

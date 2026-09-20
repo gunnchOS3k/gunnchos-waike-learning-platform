@@ -1,5 +1,5 @@
 {
-  "generated_utc": "2026-09-20T09:00:12Z",
+  "generated_utc": "2026-09-20T17:02:14Z",
   "status": "AUTOMATED_PIPELINE_PASS",
   "claims": [
     "GUNNCHAI_PLATFORM_INTEGRATION_DIGITALLY_COMPLETE",
@@ -34,7 +34,7 @@
   "GATE_B_REQUIRED_TESTS_SKIPPED": 0,
   "gunnchai": {
     "repo": "https://github.com/gunnchOS3k/gunnchAI3k",
-    "discovered_sha": "c429750ff83b2a5344a6e1f40f5c7d27a863bf4d",
+    "discovered_sha": "851e7916d6d5c7da23a8f30dba6bdfd389daa8ac",
     "ci_provider": "FakeGunnchAIProvider"
   },
   "claim_boundary": {
@@ -54,16 +54,16 @@
       "EXTERNAL physical/mentor/field gates for SEVEN_GC apprenticeship"
     ]
   },
-  "declared_pinned_commit": "fbf7685bc5686201ccaa0128ee83346d59b3d584",
-  "observed_source_commit": "fbf7685bc5686201ccaa0128ee83346d59b3d584",
+  "declared_pinned_commit": "63ba9f25ac6b8d8d1b6dd118923566fd51c57b62",
+  "observed_source_commit": "63ba9f25ac6b8d8d1b6dd118923566fd51c57b62",
   "matrix_summary": {
     "track_count": 18,
     "pass_count": 18,
     "blocked_count": 0,
-    "source_sha": "fbf7685bc5686201ccaa0128ee83346d59b3d584",
+    "source_sha": "63ba9f25ac6b8d8d1b6dd118923566fd51c57b62",
     "SEVEN_GC_SOURCE_BLOCKS_18_OF_18": false,
     "full_18_course_digital_rc": true,
     "SEVEN_GC_DIGITAL_RC_PRESENT": true
   },
-  "report_generated_from_sha": "e1fa0ee3205f57b7e1976b4aa437342f448aaece"
+  "report_generated_from_sha": "fea6027c64a886f516a2cf62640f150637c48d22"
 }

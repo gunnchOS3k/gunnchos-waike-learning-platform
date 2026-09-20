@@ -5,10 +5,10 @@
 - Claims blocked: none
 - Source blockers: none
 - GATE_B_REQUIRED_TESTS_SKIPPED: `0`
-- report_generated_from_sha: `e1fa0ee3205f57b7e1976b4aa437342f448aaece`
-- declared_pinned_commit: `fbf7685bc5686201ccaa0128ee83346d59b3d584`
-- observed_source_commit: `fbf7685bc5686201ccaa0128ee83346d59b3d584`
-- gunnchAI discovered SHA: `c429750ff83b2a5344a6e1f40f5c7d27a863bf4d`
+- report_generated_from_sha: `fea6027c64a886f516a2cf62640f150637c48d22`
+- declared_pinned_commit: `63ba9f25ac6b8d8d1b6dd118923566fd51c57b62`
+- observed_source_commit: `63ba9f25ac6b8d8d1b6dd118923566fd51c57b62`
+- gunnchAI discovered SHA: `851e7916d6d5c7da23a8f30dba6bdfd389daa8ac`
 
 ## Checks
 

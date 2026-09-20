@@ -1,0 +1,72 @@
+{
+  "generated_utc": "2026-09-20T17:07:40Z",
+  "status": "AUTOMATED_PIPELINE_BLOCKED_BY_CODE",
+  "claims": [],
+  "claims_blocked": [
+    "AUTOMATED_FULL_PLATFORM_PASS",
+    "ALL_18_WAIKE_TRACKS_DIGITALLY_AVAILABLE",
+    "LEARNER_AND_INSTRUCTOR_WORKFLOWS_DIGITALLY_COMPLETE",
+    "READY_FOR_STAFF_ALPHA_AND_HUMAN_VALIDATION"
+  ],
+  "checks": {
+    "clean_room": false,
+    "prior_regression": false,
+    "gate_d": false,
+    "native_artifacts": true,
+    "deviceos_e2e_binding": true,
+    "required_artifacts": true,
+    "all_18_tracks": true,
+    "journeys": true,
+    "clean_room_semantic": false,
+    "adversarial": true
+  },
+  "test_counts": {
+    "prior_regression": {
+      "passed": 483,
+      "failed": 1,
+      "skipped": 0,
+      "xfailed": 0,
+      "error": 0
+    },
+    "gate_d": {
+      "passed": 13,
+      "failed": 3,
+      "skipped": 0,
+      "xfailed": 0,
+      "error": 0
+    }
+  },
+  "blocked": [
+    "clean_room_ok_false",
+    "prior_regression",
+    "gate_d"
+  ],
+  "pins": {
+    "device_os": "4f02a48780d300a5d3a7758937b20e3bf9364d0d",
+    "waike": "fbf7685bc5686201ccaa0128ee83346d59b3d584",
+    "gunnchai": "851e7916d6d5c7da23a8f30dba6bdfd389daa8ac"
+  },
+  "GATE_D_REQUIRED_TESTS_SKIPPED": 0,
+  "claim_boundary": {
+    "does_not_claim": [
+      "physical Device Quartet",
+      "production signing/notarization",
+      "WCAG certification",
+      "FERPA certification",
+      "OneRoster/QTI/LTI certification",
+      "field pilot / manufacturing"
+    ]
+  },
+  "exit_codes": {
+    "clean_room": 1,
+    "prior_regression": 1,
+    "gate_d": 1
+  },
+  "journey_semantic": {
+    "learner_ok": true,
+    "instructor_ok": true,
+    "role_matrix_ok": true,
+    "detail_count": 0
+  },
+  "owner_action": "GATE_D_NOT_READY"
+}

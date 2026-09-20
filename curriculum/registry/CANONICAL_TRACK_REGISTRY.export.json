@@ -2,8 +2,8 @@
   "schema": "waike.taxonomy.canonical_track_registry.export.v1",
   "schema_version": "1.0.0",
   "compatibility_version": "waike.taxonomy.consumer.v1",
-  "source_commit_sha": "fbf7685bc5686201ccaa0128ee83346d59b3d584",
-  "registry_hash": "aee5e4726adfbdab9d036efa1687dceb51efa28bb020603bb84fd8486d5b2942",
+  "source_commit_sha": "34bfdc9f5048b85e1dbc1b232e01ea743b01cb9a",
+  "registry_hash": "7c72905b45ca2bbe55650b89ef0ccd66ae15269be84b5cf18a2b89e896d9c4ac",
   "track_count": 18,
   "tracks": [
     {
@@ -396,27 +396,24 @@
       "authoritative_source_paths": [
         "curriculum/taxonomy/eighteen_tracks.json",
         "curriculum/taxonomy/academy_map_18_to_7.json",
-        "programs/seven_gc_apprenticeship.md",
-        "curriculum/digital_rc/SEVEN_GC_APPRENTICESHIP/course.json"
+        "programs/seven_gc_apprenticeship.md"
       ],
       "prerequisites": [],
       "outcome_refs": [
         "programs/seven_gc_apprenticeship.md#learning-outcomes"
       ],
       "content_maturity": {
-        "state": "digital_rc_present",
+        "state": "program_shell_only",
         "facets": {
-          "covering_package_ids": [
-            "SEVEN_GC_APPRENTICESHIP"
-          ],
+          "covering_package_ids": [],
           "has_owner_program": true,
           "has_lessons_snake_folder": false,
-          "standalone_1to1_package": true
+          "standalone_1to1_package": false
         }
       },
-      "latest_compatible_package_version": "1.0.0",
+      "latest_compatible_package_version": null,
       "deprecation": null,
-      "note": "First-class digital COURSE_DIGITAL_RC. RESEARCH_APPRENTICESHIP retained; EXTERNAL human/physical/field gates remain open. Not collapsed into another academy."
+      "note": "Not collapsed into another academy. Remains an advanced overlay."
     },
     {
       "stable_uuid": "eaed7226-c6a4-5049-8ffc-6abc382d69d4",

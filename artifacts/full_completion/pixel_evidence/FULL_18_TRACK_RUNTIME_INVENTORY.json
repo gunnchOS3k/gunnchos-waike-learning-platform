@@ -46,7 +46,7 @@
       "track_id": "DIGITAL_CONFIDENCE",
       "package_id": "pkg_pilot_digital_confidence",
       "title": "Digital Confidence to Computer Operator",
-      "source_commit": "fbf7685bc5686201ccaa0128ee83346d59b3d584",
+      "source_commit": "63ba9f25ac6b8d8d1b6dd118923566fd51c57b62",
       "sections": [
         {
           "section_id": "sec_alpha_digital_confidence_pilot",
@@ -66,7 +66,7 @@
       "track_id": "IT_SUPPORT_HARDWARE",
       "package_id": "pkg_pilot_it_support_hardware",
       "title": "IT Support and Hardware Foundations",
-      "source_commit": "fbf7685bc5686201ccaa0128ee83346d59b3d584",
+      "source_commit": "63ba9f25ac6b8d8d1b6dd118923566fd51c57b62",
       "sections": [
         {
           "section_id": "sec_alpha_it_support_hardware_pilot",
@@ -86,7 +86,7 @@
       "track_id": "SOFTWARE_BUILDER",
       "package_id": "pkg_pilot_software_builder",
       "title": "Software Builder Zero-to-Hero",
-      "source_commit": "fbf7685bc5686201ccaa0128ee83346d59b3d584",
+      "source_commit": "63ba9f25ac6b8d8d1b6dd118923566fd51c57b62",
       "sections": [
         {
           "section_id": "sec_alpha_software_builder_pilot",
@@ -106,7 +106,7 @@
       "track_id": "NETWORKING_INFRA",
       "package_id": "pkg_pilot_networking_infra",
       "title": "Networking and Internet Infrastructure",
-      "source_commit": "fbf7685bc5686201ccaa0128ee83346d59b3d584",
+      "source_commit": "63ba9f25ac6b8d8d1b6dd118923566fd51c57b62",
       "sections": [
         {
           "section_id": "sec_alpha_networking_infra_pilot",
@@ -126,7 +126,7 @@
       "track_id": "CYBER_SOC",
       "package_id": "pkg_pilot_cyber_soc",
       "title": "Cybersecurity Foundations and SOC Readiness",
-      "source_commit": "fbf7685bc5686201ccaa0128ee83346d59b3d584",
+      "source_commit": "63ba9f25ac6b8d8d1b6dd118923566fd51c57b62",
       "sections": [
         {
           "section_id": "sec_alpha_cyber_soc_pilot",
@@ -146,7 +146,7 @@
       "track_id": "DATA_DASHBOARDS",
       "package_id": "pkg_pilot_data_dashboards",
       "title": "Data, Databases, and Dashboards",
-      "source_commit": "fbf7685bc5686201ccaa0128ee83346d59b3d584",
+      "source_commit": "63ba9f25ac6b8d8d1b6dd118923566fd51c57b62",
       "sections": [
         {
           "section_id": "sec_alpha_data_dashboards_pilot",
@@ -166,7 +166,7 @@
       "track_id": "AI_ML_EDGE",
       "package_id": "pkg_pilot_ai_ml_edge",
       "title": "AI/ML and Edge AI Foundations",
-      "source_commit": "fbf7685bc5686201ccaa0128ee83346d59b3d584",
+      "source_commit": "63ba9f25ac6b8d8d1b6dd118923566fd51c57b62",
       "sections": [
         {
           "section_id": "sec_alpha_ai_ml_edge_pilot",
@@ -186,7 +186,7 @@
       "track_id": "EMBEDDED_PROTOTYPING",
       "package_id": "pkg_pilot_embedded_prototyping",
       "title": "Embedded Systems and Device Prototyping",
-      "source_commit": "fbf7685bc5686201ccaa0128ee83346d59b3d584",
+      "source_commit": "63ba9f25ac6b8d8d1b6dd118923566fd51c57b62",
       "sections": [
         {
           "section_id": "sec_alpha_embedded_prototyping_pilot",
@@ -206,7 +206,7 @@
       "track_id": "WIRELESS_6G",
       "package_id": "pkg_pilot_wireless_6g",
       "title": "Wireless, DSP, and 6G Foundations",
-      "source_commit": "fbf7685bc5686201ccaa0128ee83346d59b3d584",
+      "source_commit": "63ba9f25ac6b8d8d1b6dd118923566fd51c57b62",
       "sections": [
         {
           "section_id": "sec_alpha_wireless_6g_pilot",
@@ -226,7 +226,7 @@
       "track_id": "PM_AGILE_LSS",
       "package_id": "pkg_pilot_pm_agile_lss",
       "title": "Project Management, Agile, and Lean Six Sigma",
-      "source_commit": "fbf7685bc5686201ccaa0128ee83346d59b3d584",
+      "source_commit": "63ba9f25ac6b8d8d1b6dd118923566fd51c57b62",
       "sections": [
         {
           "section_id": "sec_alpha_pm_agile_lss_pilot",
@@ -246,7 +246,7 @@
       "track_id": "GAME_DEV_INTERACTIVE",
       "package_id": "pkg_pilot_game_dev_interactive",
       "title": "Game Development and Interactive Media",
-      "source_commit": "fbf7685bc5686201ccaa0128ee83346d59b3d584",
+      "source_commit": "63ba9f25ac6b8d8d1b6dd118923566fd51c57b62",
       "sections": [
         {
           "section_id": "sec_alpha_game_dev_interactive_pilot",
@@ -266,7 +266,7 @@
       "track_id": "SEVEN_GC_APPRENTICESHIP",
       "package_id": "pkg_pilot_seven_gc_apprenticeship",
       "title": "7GC AI-RAN Research Apprenticeship",
-      "source_commit": "fbf7685bc5686201ccaa0128ee83346d59b3d584",
+      "source_commit": "63ba9f25ac6b8d8d1b6dd118923566fd51c57b62",
       "sections": [
         {
           "section_id": "sec_alpha_seven_gc_apprenticeship_pilot",
@@ -286,7 +286,7 @@
       "track_id": "CLOUD_DEVOPS",
       "package_id": "pkg_pilot_cloud_devops",
       "title": "Cloud and DevOps",
-      "source_commit": "fbf7685bc5686201ccaa0128ee83346d59b3d584",
+      "source_commit": "63ba9f25ac6b8d8d1b6dd118923566fd51c57b62",
       "sections": [
         {
           "section_id": "sec_alpha_cloud_devops_pilot",
@@ -306,7 +306,7 @@
       "track_id": "COMM_PD_ETHICS",
       "package_id": "pkg_pilot_comm_pd_ethics",
       "title": "Communication, Professional Development, and Ethics",
-      "source_commit": "fbf7685bc5686201ccaa0128ee83346d59b3d584",
+      "source_commit": "63ba9f25ac6b8d8d1b6dd118923566fd51c57b62",
       "sections": [
         {
           "section_id": "sec_alpha_comm_pd_ethics_pilot",
@@ -326,7 +326,7 @@
       "track_id": "ROBOTICS_CONTROL",
       "package_id": "pkg_pilot_robotics_control",
       "title": "Robotics and Control",
-      "source_commit": "fbf7685bc5686201ccaa0128ee83346d59b3d584",
+      "source_commit": "63ba9f25ac6b8d8d1b6dd118923566fd51c57b62",
       "sections": [
         {
           "section_id": "sec_alpha_robotics_control_pilot",
@@ -346,7 +346,7 @@
       "track_id": "GUNNCHOS_PRODUCT_LAB",
       "package_id": "pkg_pilot_gunnchos_product_lab",
       "title": "gunnchOS Device OS and Product Lab",
-      "source_commit": "fbf7685bc5686201ccaa0128ee83346d59b3d584",
+      "source_commit": "63ba9f25ac6b8d8d1b6dd118923566fd51c57b62",
       "sections": [
         {
           "section_id": "sec_alpha_gunnchos_product_lab_pilot",
@@ -366,7 +366,7 @@
       "track_id": "HARDWARE_ENGINEERING",
       "package_id": "pkg_pilot_hardware_engineering",
       "title": "Hardware Engineering",
-      "source_commit": "fbf7685bc5686201ccaa0128ee83346d59b3d584",
+      "source_commit": "63ba9f25ac6b8d8d1b6dd118923566fd51c57b62",
       "sections": [
         {
           "section_id": "sec_alpha_hardware_engineering_pilot",
@@ -386,7 +386,7 @@
       "track_id": "DATA_VIZ_BI",
       "package_id": "pkg_pilot_data_viz_bi",
       "title": "Data Visualization and Business Intelligence",
-      "source_commit": "fbf7685bc5686201ccaa0128ee83346d59b3d584",
+      "source_commit": "63ba9f25ac6b8d8d1b6dd118923566fd51c57b62",
       "sections": [
         {
           "section_id": "sec_alpha_data_viz_bi_pilot",
@@ -404,8 +404,8 @@
     }
   ],
   "registry": {
-    "path": "/Users/gunnchos/Downloads/gunnchos-7gc-research-product-spine/repos/gunnchos-waike-learning-platform/.worktrees/post-merge-full-platform-all-role-closure/curriculum/registry/eighteen_tracks.json",
-    "pinned_commit": "fbf7685bc5686201ccaa0128ee83346d59b3d584",
+    "path": "/Users/gunnchos/Downloads/gunnchos-7gc-research-product-spine/repos/gunnchos-waike-learning-platform/.worktrees/pr20-final-curriculum-ai-pixel-closure/curriculum/registry/eighteen_tracks.json",
+    "pinned_commit": "63ba9f25ac6b8d8d1b6dd118923566fd51c57b62",
     "source_repo": "waike-research-ops"
   },
   "duplicate_sot": false

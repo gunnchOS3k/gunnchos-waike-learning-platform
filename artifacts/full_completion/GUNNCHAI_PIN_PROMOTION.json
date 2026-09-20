@@ -1,0 +1,19 @@
+{
+  "schema": "waike.gunnchai_pin_promotion.v1",
+  "generated_at": "2026-09-20T16:51:00Z",
+  "agent": "B",
+  "previous_pin": "c429750ff83b2a5344a6e1f40f5c7d27a863bf4d",
+  "corrected_from": [
+    "65017f4206a5e665fb4599dac25edb411da01eeb",
+    "f1921905f0d3c97cc55c02ed8aa4c33d6504f5e9",
+    "e8d474be663f9ebd5211c7befd83c7afade90140"
+  ],
+  "new_pin": "851e7916d6d5c7da23a8f30dba6bdfd389daa8ac",
+  "agent_a_branch": "integration/kirby-controlled-stack-main-reconciliation",
+  "agent_a_draft_pr": "https://github.com/gunnchOS3k/gunnchAI3k/pull/54",
+  "pin_policy": "Authoritative Agent A final candidate only; never pin aa61e9.",
+  "not_used_aa61e9": "aa61e924793672f40a3720a6799b6ecd6d6e6a82",
+  "adb_released_by_a": true,
+  "nearby_edge_physical_pass": true,
+  "nearby_mac_is_not_on_device": true
+}

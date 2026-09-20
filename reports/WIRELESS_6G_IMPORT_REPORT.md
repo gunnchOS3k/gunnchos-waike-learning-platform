@@ -1,17 +1,17 @@
 # WIRELESS_6G Import Report
 
 - module_id: `WIRELESS_6G`
-- declared_pinned_commit: `fbf7685bc5686201ccaa0128ee83346d59b3d584`
-- observed_source_commit: `fbf7685bc5686201ccaa0128ee83346d59b3d584`
+- declared_pinned_commit: `63ba9f25ac6b8d8d1b6dd118923566fd51c57b62`
+- observed_source_commit: `63ba9f25ac6b8d8d1b6dd118923566fd51c57b62`
 - provenance_match: `true`
 - package_version: `1.0.0`
-- learner files: **77**
+- learner files: **78**
 - instructor files: **12**
-- learner zip sha256: `fccf3bcef86534e81a86552017f9cab6838df1bbc28e95f185ea0ab700bed870`
-- instructor plaintext sha256: `4a03bb9e71a3698ca8fa55589d237c2d502774007b18500c8d73a5558684c1f2`
-- instructor ciphertext sha256 (non-reproducible): `baa79cb0abd1a7871f05e478199e6e9bfa0a8be4742677c020e401879ca2d69c`
+- learner zip sha256: `991584533e1019c219c993aa0381bb52618c6a58ba994ed1f17e609d76306f42`
+- instructor plaintext sha256: `d3ca9cbdf39b3549696df1a4b2b999406207756b90340fad1089169eef7e0d71`
+- instructor ciphertext sha256 (non-reproducible): `941534ac2b4e87c5cec7f93a24a4a2657d9c563d4d877426bad0fbf7d92a7e3b`
 - lessons indexed: 10
-- activity inventory: `{"assignments": 10, "discussions": 0, "groups": 1, "labs": 10, "lessons": 10, "outcomes": 4, "portfolio": 2, "quizzes": 10, "rubrics": 8}`
+- activity inventory: `{"assignments": 10, "discussions": 0, "groups": 1, "labs": 10, "lessons": 10, "outcomes": 4, "portfolio": 3, "quizzes": 10, "rubrics": 8}`
 
 ## Lessons
 

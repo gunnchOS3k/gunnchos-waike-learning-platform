@@ -1,16 +1,16 @@
 {
-  "generated_utc": "2026-09-20T08:21:44Z",
+  "generated_utc": "2026-09-20T17:07:41Z",
   "method": "fresh_workspace_from_pinned_shas_measured",
   "pins": {
     "device_os": "4f02a48780d300a5d3a7758937b20e3bf9364d0d",
     "waike": "fbf7685bc5686201ccaa0128ee83346d59b3d584",
-    "gunnchai": "c429750ff83b2a5344a6e1f40f5c7d27a863bf4d"
+    "gunnchai": "851e7916d6d5c7da23a8f30dba6bdfd389daa8ac"
   },
   "observed": {
-    "waike": "0c627ab700cf72a89a9aad06369e5dedb8fb9b82",
+    "waike": "63ba9f25ac6b8d8d1b6dd118923566fd51c57b62",
     "device_os": "a64f544e98bed00213d06ab2130f2729c7a784fa",
-    "gunnchai": "c429750ff83b2a5344a6e1f40f5c7d27a863bf4d",
-    "platform": "e1fa0ee3205f57b7e1976b4aa437342f448aaece"
+    "gunnchai": "851e7916d6d5c7da23a8f30dba6bdfd389daa8ac",
+    "platform": "fea6027c64a886f516a2cf62640f150637c48d22"
   },
   "mismatches": {
     "device_os": {
@@ -19,11 +19,7 @@
     },
     "waike": {
       "expected": "fbf7685bc5686201ccaa0128ee83346d59b3d584",
-      "observed": "0c627ab700cf72a89a9aad06369e5dedb8fb9b82"
-    },
-    "gunnchai": {
-      "expected": "c429750ff83b2a5344a6e1f40f5c7d27a863bf4d",
-      "observed": "c429750ff83b2a5344a6e1f40f5c7d27a863bf4d"
+      "observed": "63ba9f25ac6b8d8d1b6dd118923566fd51c57b62"
     }
   },
   "forbidden": {
@@ -34,20 +30,7 @@
   },
   "measurements": {
     "uncommitted_deps": {
-      "waike": [
-        " M Makefile",
-        " M README.md",
-        " M knowledge_maps/course_repo_map.yaml",
-        " M scripts/export_course_repo_map.py",
-        " M scripts/generate_all_campus_tracks.py",
-        " M scripts/generate_campus_tracks.py",
-        " M scripts/validate_waike_artifacts.py",
-        " M src/waike_ops/__init__.py",
-        " M src/waike_ops/campus_tracks.py",
-        " M src/waike_ops/reports.py",
-        " M tests/test_campus_tracks.py",
-        "?? .worktrees/"
-      ],
+      "waike": [],
       "device_os": [
         " M .worktrees/17g7-accepted-main-155",
         " M .worktrees/cx2h3-browser-mail-offline",
@@ -68,28 +51,7 @@
         "?? artifacts/vxp2/",
         "?? docs/product/"
       ],
-      "gunnchai": [
-        " M docs/16_DISCORD_INTENTS_AND_PRIVACY.md",
-        " M prompts/system_prompt_gunnchai3k.md",
-        " M src/tutor/academicIntegrityPolicy.ts",
-        " M src/tutor/assessmentGenerator.ts",
-        " M src/tutor/curriculumIndex.ts",
-        " M src/tutor/discordInteractionRouter.ts",
-        " M src/tutor/masteryTracker.ts",
-        " M src/tutor/responseModes.ts",
-        " M src/tutor/safetyFilters.ts",
-        " M src/tutor/skillRouter.ts",
-        " M src/tutor/socraticPrompts.ts",
-        " M src/tutor/sourcePolicy.ts",
-        " M src/tutor/tutorProfile.ts",
-        " M src/tutor/waikeTutorCards.ts",
-        " M tests/tutor/academicIntegrityPolicy.test.ts",
-        " M tests/tutor/responseModes.test.ts",
-        " M tests/tutor/skillRouter.test.ts",
-        " M tests/tutor/sourcePolicy.test.ts",
-        " M tests/tutor/waikeTutorCards.test.ts",
-        "?? .worktrees/"
-      ]
+      "gunnchai": []
     },
     "stale_db_reuse": {
       "suspicious_db_paths": [],
@@ -98,7 +60,7 @@
     },
     "prior_run_artifact_reuse": {
       "checked": [
-        "/Users/gunnchos/Downloads/gunnchos-7gc-research-product-spine/repos/gunnchos-waike-learning-platform/.worktrees/post-merge-full-platform-all-role-closure/.gate_d_prior_artifacts"
+        "/Users/gunnchos/Downloads/gunnchos-7gc-research-product-spine/repos/gunnchos-waike-learning-platform/.worktrees/pr20-final-curriculum-ai-pixel-closure/.gate_d_prior_artifacts"
       ]
     },
     "fixture_only_production_proof": {
@@ -112,7 +74,7 @@
     "Checkout platform Gate D head into empty runner workspace",
     "Checkout waike-research-ops @fbf7685bc5686201ccaa0128ee83346d59b3d584",
     "Checkout gunnchos-device-os @4f02a48780d300a5d3a7758937b20e3bf9364d0d",
-    "Checkout gunnchAI3k @c429750ff83b2a5344a6e1f40f5c7d27a863bf4d",
+    "Checkout gunnchAI3k @851e7916d6d5c7da23a8f30dba6bdfd389daa8ac",
     "Align curriculum/registry/PIN.json absolute_path_hint to checkout",
     "Install Python/Node/Rust toolchains without reusing prior pack_out/DBs",
     "Run Gate D acceptance suites; fail closed on skip/xfail masks",

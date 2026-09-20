@@ -43,7 +43,7 @@
         "lessons": 10,
         "assignments": 10,
         "quizzes": 10,
-        "labs": 7,
+        "labs": 10,
         "rubrics": 8
       },
       "e2e": {
@@ -101,8 +101,8 @@
         "lessons": 10,
         "assignments": 10,
         "quizzes": 10,
-        "labs": 6,
-        "rubrics": 8
+        "labs": 14,
+        "rubrics": 11
       },
       "e2e": {
         "install": "PASS",
@@ -130,8 +130,8 @@
         "lessons": 10,
         "assignments": 10,
         "quizzes": 10,
-        "labs": 7,
-        "rubrics": 8
+        "labs": 13,
+        "rubrics": 11
       },
       "e2e": {
         "install": "PASS",

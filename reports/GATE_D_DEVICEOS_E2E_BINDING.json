@@ -1,0 +1,9 @@
+{
+  "generated_utc": "2026-09-20T17:07:40Z",
+  "platform_sha": "fea6027c64a886f516a2cf62640f150637c48d22",
+  "ok": false,
+  "notes": [
+    "Device OS E2E platform_source_sha 'PENDING_CI_HEAD_SHA' != head 'fea6027c64a886f516a2cf62640f150637c48d22'"
+  ],
+  "require_deviceos": false
+}

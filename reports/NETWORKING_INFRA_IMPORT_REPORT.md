@@ -1,17 +1,17 @@
 # NETWORKING_INFRA Import Report
 
 - module_id: `NETWORKING_INFRA`
-- declared_pinned_commit: `fbf7685bc5686201ccaa0128ee83346d59b3d584`
-- observed_source_commit: `fbf7685bc5686201ccaa0128ee83346d59b3d584`
+- declared_pinned_commit: `63ba9f25ac6b8d8d1b6dd118923566fd51c57b62`
+- observed_source_commit: `63ba9f25ac6b8d8d1b6dd118923566fd51c57b62`
 - provenance_match: `true`
 - package_version: `1.0.0`
-- learner files: **72**
+- learner files: **109**
 - instructor files: **12**
-- learner zip sha256: `85a72541163ece2fbb07b7e930d5a40c6f9581140a0860df90bfe42d05556061`
-- instructor plaintext sha256: `87efc070753e73e02f50135920827b99f93a8812f5057d38c1d64d46ad12c7b7`
-- instructor ciphertext sha256 (non-reproducible): `7ed07acd1538f0a77b1c732b75f43878e0e0e513f769866080636af4dc255d62`
+- learner zip sha256: `72cafa8ed6ee00e29475622ffe6785e1d1708c37ef037b85da94b2e2ec57c601`
+- instructor plaintext sha256: `28180a1eac43a20729c73036bb07035d824a442e8bc5ae44321bfcc86b602f21`
+- instructor ciphertext sha256 (non-reproducible): `2aeed57babaffb1ff3d38efe0a4c61704d82ca505b2a0422663f1199986a47bc`
 - lessons indexed: 10
-- activity inventory: `{"assignments": 10, "discussions": 0, "groups": 1, "labs": 6, "lessons": 10, "outcomes": 4, "portfolio": 2, "quizzes": 10, "rubrics": 8}`
+- activity inventory: `{"assignments": 10, "discussions": 0, "groups": 1, "labs": 14, "lessons": 10, "outcomes": 4, "portfolio": 3, "quizzes": 10, "rubrics": 11}`
 
 ## Lessons
 

@@ -5,8 +5,8 @@
   "accepted_platform_main": "58daf1a0cc22b60c4246eb4195b74bcb0a714a38",
   "gate_c_merge_commit": "58daf1a0cc22b60c4246eb4195b74bcb0a714a38",
   "current_wave": "GATE_D_FULL_ACCEPTANCE",
-  "status": "PENDING_FINAL_EXACT_HEAD_CI",
-  "source": "committed_baseline_not_ci_artifact",
+  "status": "AUTOMATED_PIPELINE_BLOCKED_BY_CODE",
+  "source": "verify_gate_d_this_run",
   "waves": {
     "PR1_FOUNDATION": "MERGED",
     "PR2_ASSESSMENT_LIFECYCLE": "MERGED",
@@ -23,9 +23,17 @@
     "LEARNER_AND_INSTRUCTOR_WORKFLOWS_DIGITALLY_COMPLETE",
     "READY_FOR_STAFF_ALPHA_AND_HUMAN_VALIDATION"
   ],
+  "claims_withdrawn_until_reproof": [
+    "AUTOMATED_FULL_PLATFORM_PASS",
+    "ALL_18_WAIKE_TRACKS_DIGITALLY_AVAILABLE",
+    "LEARNER_AND_INSTRUCTOR_WORKFLOWS_DIGITALLY_COMPLETE",
+    "READY_FOR_STAFF_ALPHA_AND_HUMAN_VALIDATION"
+  ],
   "device_os_accepted_main": "4f02a48780d300a5d3a7758937b20e3bf9364d0d",
   "waike_pin": "fbf7685bc5686201ccaa0128ee83346d59b3d584",
-  "gunnchai_pin": "c429750ff83b2a5344a6e1f40f5c7d27a863bf4d",
+  "gunnchai_pin": "851e7916d6d5c7da23a8f30dba6bdfd389daa8ac",
   "owner_action": "GATE_D_NOT_READY",
-  "honesty": "Committed baseline only. Claims are earned solely from this-run Gate D CI artifact (gate-d-reports-<HEAD>/FULL_COMPLETION_STATE.json written by verify-gate-d). Do not treat this committed file as earned proof. External/human/physical gates remain OPEN."
+  "last_verified_utc": "2026-09-20T17:07:40Z",
+  "platform_sha": "fea6027c64a886f516a2cf62640f150637c48d22",
+  "honesty": "Gate D not ready \u2014 see GATE_D_VERIFICATION.json blocked list / journey_semantic_failures. Owner action: GATE_D_NOT_READY."
 }

@@ -1,13 +1,14 @@
 {
-  "generated_utc": "2026-09-20T08:32:05Z",
-  "status": "AUTOMATED_PIPELINE_PASS",
+  "generated_utc": "2026-09-20T17:02:14Z",
+  "status": "AUTOMATED_PIPELINE_BLOCKED_BY_CODE",
   "claims": [
-    "INTEROPERABILITY_AND_DEVICEOS_DIGITAL_INTEGRATION_COMPLETE",
+    "INTEROPERABILITY_AND_DEVICEOS_DIGITAL_INTEGRATION_COMPLETE"
+  ],
+  "claims_blocked": [
     "PLATFORM_HARDENING_DIGITALLY_COMPLETE"
   ],
-  "claims_blocked": [],
   "checks": {
-    "prior_regression": true,
+    "prior_regression": false,
     "gate_c": true,
     "GATE_C_DISCOVERY.json": true,
     "GATE_C_DEVICEOS_CONTRACT_DISCOVERY.json": true,
@@ -16,8 +17,8 @@
   },
   "test_counts": {
     "prior_regression": {
-      "passed": 410,
-      "failed": 0,
+      "passed": 219,
+      "failed": 1,
       "skipped": 0,
       "xfailed": 0,
       "error": 0
@@ -30,7 +31,9 @@
       "error": 0
     }
   },
-  "blocked": [],
+  "blocked": [
+    "prior_regression"
+  ],
   "owner_blockers": {
     "C-OWNER-01": "PASS",
     "C-OWNER-02": "PASS",
@@ -60,16 +63,16 @@
   },
   "pins": {
     "waike": "fbf7685bc5686201ccaa0128ee83346d59b3d584",
-    "gunnchai": "c429750ff83b2a5344a6e1f40f5c7d27a863bf4d",
+    "gunnchai": "851e7916d6d5c7da23a8f30dba6bdfd389daa8ac",
     "device_os": "4f02a48780d300a5d3a7758937b20e3bf9364d0d",
     "device_os_accepted_main": "4f02a48780d300a5d3a7758937b20e3bf9364d0d"
   },
   "device_os_pr_required": false,
   "tested_against": "accepted_device_os_main",
   "exit_codes": {
-    "prior_regression": 0,
+    "prior_regression": 1,
     "prior_a": 0,
-    "prior_b": 0,
+    "prior_b": 1,
     "gate_c": 0
   },
   "macos_dmg": {
@@ -77,5 +80,5 @@
     "ok": true,
     "notes": []
   },
-  "owner_action": "MERGE_GATE_C_THEN_RERUN_ACCELERATED_MASTER_PROMPT"
+  "owner_action": "GATE_C_NOT_READY"
 }
