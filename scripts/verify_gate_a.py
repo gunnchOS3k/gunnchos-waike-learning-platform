@@ -81,21 +81,43 @@ def main() -> int:
         "SOURCE_DATE_EPOCH": SOURCE_DATE_EPOCH,
     }
     pytest = ROOT / ".venv/bin/pytest"
-    pt = run(
-        [str(pytest), "-q", str(ROOT / "tests"), str(ROOT / "services/hub/tests")],
-        env=env,
-    )
-    results["exit_codes"]["pytest"] = pt.returncode
-    results["checks"]["python_tests"] = pt.returncode == 0
-    out = plain(pt)
-    m = re.search(r"(\d+) passed", out)
-    results["test_counts"]["python_passed"] = int(m.group(1)) if m else 0
-    if pt.returncode != 0:
+    # Collect non-gate dirs separately from gate_* (each ships helpers.py; FC-0001).
+    # Gate B/C/D suites are owned by their dedicated verify scripts.
+    py_dirs = [
+        ROOT / "tests" / "assessment",
+        ROOT / "tests" / "compatibility",
+        ROOT / "tests" / "exhaustion",
+        ROOT / "tests" / "integration",
+        ROOT / "tests" / "pixel_pilot",
+        ROOT / "tests" / "pr3",
+        ROOT / "tests" / "security",
+        ROOT / "services" / "hub" / "tests",
+    ]
+    py_codes: list[int] = []
+    py_passed = 0
+    py_skipped = 0
+    py_out_chunks: list[str] = []
+    for d in py_dirs:
+        if not d.exists():
+            continue
+        pt = run([str(pytest), "-q", str(d)], env=env)
+        py_codes.append(pt.returncode)
+        chunk = plain(pt)
+        py_out_chunks.append(chunk)
+        m = re.search(r"(\d+) passed", chunk)
+        py_passed += int(m.group(1)) if m else 0
+        sk = re.search(r"(\d+) skipped", chunk)
+        py_skipped += int(sk.group(1)) if sk else 0
+
+    results["exit_codes"]["pytest"] = 0 if all(c == 0 for c in py_codes) else 1
+    results["checks"]["python_tests"] = results["exit_codes"]["pytest"] == 0
+    out = "\n".join(py_out_chunks)
+    results["test_counts"]["python_passed"] = py_passed
+    if results["exit_codes"]["pytest"] != 0:
         results["blocked"].append("python_tests_failed")
         print(out[-4000:])
 
-    skipped = re.search(r"(\d+) skipped", out)
-    results["test_counts"]["python_skipped"] = int(skipped.group(1)) if skipped else 0
+    results["test_counts"]["python_skipped"] = py_skipped
     if results["test_counts"]["python_skipped"]:
         # A skip is an unproven claim; Gate A evidence has to be executed.
         results["blocked"].append("python_tests_skipped")
