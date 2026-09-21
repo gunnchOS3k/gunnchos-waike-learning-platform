@@ -1,0 +1,33 @@
+{
+  "schema": "waike.ai_fixture_surface_reclassification.v1",
+  "captured_at": "2026-09-21T13:57:38Z",
+  "agent": "evidence-coherence",
+  "branch": "device-lab/pr21-real-gunnchai-ai-final-closure",
+  "statement": "Prior Pixel AI evidence under WAIKE_ALLOW_FAKE_AI=1 / provider fake-gunnchai is fixture-only and MUST NOT satisfy product REAL gunnchAI gates.",
+  "fixture_evidence": {
+    "AI_SURFACE_CDP": "artifacts/full_completion/pixel_evidence/AI_SURFACE_CDP.json",
+    "AI_SURFACE_API": "artifacts/full_completion/pixel_evidence/AI_SURFACE_API.json",
+    "provider_id": "fake-gunnchai",
+    "env": "WAIKE_ALLOW_FAKE_AI=1",
+    "gunnchai_pin_at_fixture_time": "851e7916d6d5c7da23a8f30dba6bdfd389daa8ac"
+  },
+  "real_evidence": {
+    "authority": "artifacts/pixel6a_waike/final/REAL_GUNNCHAI_AI_JOURNEY.json",
+    "env": "WAIKE_ALLOW_FAKE_AI=0",
+    "provider_id": "nearby-edge",
+    "gunnchai_pin": "e2d1adcb5847cf00282fb7fa64970254b14e344e",
+    "status": "EXECUTED_PASS"
+  },
+  "gates": {
+    "WAIKE_AI_FIXTURE_SURFACE_PASS": true,
+    "PIXEL_WAIKE_AI_SURFACE_PASS": true,
+    "WAIKE_AI_SURFACE_PASS": true,
+    "WAIKE_REAL_GUNNCHAI_SURFACE_PASS": true,
+    "reason": "Fixture history preserved. Product AI surface gates now satisfied by REAL Nearby Edge journey @ e2d1adc, not by fixture evidence."
+  },
+  "truth_labels": {
+    "nearby_mac_is_not_on_device": true,
+    "on_device_inference": false,
+    "fake_provider_is_not_product_ai": true
+  }
+}
