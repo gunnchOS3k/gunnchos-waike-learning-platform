@@ -1,0 +1,31 @@
+{
+  "schema": "accepted_main_recovery.v1",
+  "generated_at_utc": "2026-09-21T14:36:59Z",
+  "repo": "gunnchos-waike-learning-platform",
+  "original_pr": 22,
+  "recovery_branch": "recovery/pr22-accepted-main-convergence",
+  "merge_authorized": false,
+  "method": "git merge --no-ff <exact-missing-child-tip> onto current origin/main",
+  "history_rewrite": false,
+  "force_push": false,
+  "main_sha": "29d34eded509f3e8120f7742fc7b4a112b75ebc9",
+  "missing_child_sha": "efe21df092c7230e7bf756764976faf2ee42b79d",
+  "merge_base": "8577e15a74edd07df7b3d159a195d8fe57d1c6b5",
+  "commits_missing_before": 17,
+  "recovery_branch_sha": "1a5d8267f423885d721a66a22afcca48f191fb00",
+  "child_tip_is_ancestor_of_recovery": true,
+  
+  "diff_summary": {
+    "files_changed": 38,
+    "insertions": 1514,
+    "deletions": 136,
+    "shortstat": "38 files changed, 1514 insertions(+), 136 deletions(-)"
+  },
+  "duplicate_work_check": "PR21_already_on_main_via_4bdd257; PR22_tip_includes_PR21_head_8577e15; recovering_PR22_only_no_duplicate_PR21_branch",
+  "conflicts": "none",
+  "ci": {
+    "status": "pending_local_then_github",
+    "notes": "Local required tests run in recovery worktree; GitHub CI will run on draft PR."
+  },
+  "owner_landing_note": "DO NOT MERGE until owner approval. Prefer normal merge commit (no squash/rebase)."
+}
