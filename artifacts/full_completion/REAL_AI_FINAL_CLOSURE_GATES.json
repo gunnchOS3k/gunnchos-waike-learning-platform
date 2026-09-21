@@ -1,78 +1,79 @@
 {
   "schema": "waike.real_ai_final_closure_gates.v1",
-  "captured_at": "2026-09-21T04:22:30Z",
+  "captured_at": "2026-09-21T04:17:00Z",
   "agent": "B",
   "branch": "device-lab/pr21-real-gunnchai-ai-final-closure",
   "parent_pr": 21,
+  "parent_pr_head": "8577e15a74edd07df7b3d159a195d8fe57d1c6b5",
   "child_pr": "https://github.com/gunnchOS3k/gunnchos-waike-learning-platform/pull/22",
   "curriculum_pin": "63ba9f25ac6b8d8d1b6dd118923566fd51c57b62",
   "gunnchai_candidate_sha": "e2d1adcb5847cf00282fb7fa64970254b14e344e",
-  "gunnchai_candidate_status": "REQUIRED_CI_GREEN_ON_E2D1ADC",
+  "gunnchai_candidate_status": "PINNED_PR55_TIP_CI_GREEN",
   "agent_a_draft_pr": "https://github.com/gunnchOS3k/gunnchAI3k/pull/55",
   "gates": {
     "GUNNCHAI_LLAMA_CPP_CLI_COMPAT_PASS": {
       "pass": true,
-      "note": "e2d1adc user-ready CI success; llama-completion --log-disable path"
+      "note": "e2d1adc PR #55 tip; llama-completion compat fix merged"
     },
     "GUNNCHAI_USER_READY_002_CI_PASS": {
       "pass": true,
-      "run_id": 35558185933
+      "note": "PR #55 AI-USER-READY-002 green at e2d1adc"
     },
     "GUNNCHAI_USER_READY_003_CI_PASS": {
       "pass": true,
-      "run_id": 35558185930
+      "note": "PR #55 AI-USER-READY-003 green at e2d1adc"
     },
     "GUNNCHAI_USER_READY_004_CI_PASS": {
       "pass": true,
-      "run_id": 35558185916
+      "note": "PR #55 AI-USER-READY-004 green at e2d1adc"
     },
     "GUNNCHAI_REQUIRED_CI_GREEN": {
       "pass": true,
-      "note": "002/003/004 + Gate 1 + Deploy success on e2d1adc. Windows Pilot 0 not required for this CLI-compat child."
+      "note": "Agent A PR #55 required workflows green at e2d1adc"
     },
     "WAIKE_REAL_GUNNCHAI_CONTRACT_PASS": {
       "pass": true,
-      "note": "pin rebased to e2d1adc"
+      "note": "verify_gunnchai_contract PASS @ e2d1adc with GUNNCHAI_ROOT=pr54 worktree"
     },
     "WAIKE_REAL_GUNNCHAI_PIXEL_EXECUTION_PASS": {
       "pass": true,
-      "note": "Hub provider nearby-edge; provenance compute_host=mac_nearby_edge on_device_local=false"
+      "note": "Full Hub→NearbyEdge→llama.cpp REAL; CDP UI + API provenance @ e2d1adc"
     },
     "WAIKE_AI_ASSESSMENT_GUARDRAIL_PASS": {
       "pass": true,
-      "note": "AI_INTEGRITY_REFUSED on answer-key request"
+      "note": "AI_INTEGRITY_REFUSED under nearby-edge real provider"
     },
     "WAIKE_AI_FALLBACK_HONESTY_PASS": {
       "pass": true,
-      "note": "provider disconnect returned 503 AI_PROVIDER_UNAVAILABLE"
+      "note": "503 AI_PROVIDER_UNAVAILABLE when provider nulled; no fake provenance"
     },
     "WAIKE_DEVICE_EVIDENCE_REDACTION_PASS": {
       "pass": true,
-      "note": "PIXEL_USB_DEVICE_1; no raw serial in new evidence"
+      "note": "PIXEL_USB_DEVICE_1 alias only; no raw serial"
     },
     "WAIKE_FINAL_EXACT_HEAD_CI_PASS": {
       "pass": false,
-      "note": "awaiting exact-head CI on this child tip after push"
+      "note": "PR #22 exact-head: adversarial-final, clean-room, gunnchai-acceptance FAIL; verify-gate-c pending"
     },
     "WAIKE_FULL_PLATFORM_COMPLETION_CANDIDATE_PASS": {
       "pass": false,
-      "note": "REAL Nearby Edge route earned; completion stays false until exact-head WAIKE CI is green on this tip"
+      "note": "Real Nearby Edge proof earned; blocked by PR #22 exact-head CI failures"
     },
     "WAIKE_AI_FIXTURE_SURFACE_PASS": {
       "pass": true,
-      "note": "fixture-only; not the product gate"
+      "note": "prior fake-gunnchai reclassified"
     },
     "WAIKE_REAL_GUNNCHAI_SURFACE_PASS": {
       "pass": true,
-      "note": "CDP UI result plus Nearby Edge provenance under WAIKE_ALLOW_FAKE_AI=0"
+      "note": "REAL_GUNNCHAI_AI_JOURNEY pass @ e2d1adc; Hub→NearbyEdge→Mac llama.cpp proven"
     },
     "PIXEL_WAIKE_AI_SURFACE_PASS": {
       "pass": true,
-      "note": "Pixel Chrome CDP tutoring UI; Nearby Mac is not on-device inference"
+      "note": "CDP learner-ai panel PASS with nearby-edge provenance"
     },
     "WAIKE_AI_SURFACE_PASS": {
       "pass": true,
-      "note": "product surface uses nearby-edge, not fake"
+      "note": "real nearby-edge surface proven on Pixel"
     },
     "WAIKE_HUMAN_DISABLED_USER_ACCESSIBILITY_VALIDATION": {
       "pass": false,
@@ -95,5 +96,13 @@
       "note": "DRAFT ONLY DO NOT MERGE"
     }
   },
-  "do_not_merge": true
+  "partial_real_observation": {
+    "provider_id": "nearby-edge",
+    "llama_cpp_real_local_inference": true,
+    "nearby_edge_up": true,
+    "compute_host": "mac_nearby_edge",
+    "model_id": "smollm2-135m-instruct-q4_k_m"
+  },
+  "do_not_merge": true,
+  "child_tip": "25cea362d19f8bd566ff38ac71b2edecc274bde4"
 }
