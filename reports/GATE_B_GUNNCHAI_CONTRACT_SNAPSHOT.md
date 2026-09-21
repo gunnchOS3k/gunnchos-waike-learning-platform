@@ -1,9 +1,9 @@
 # Gate B — gunnchAI canonical contract snapshot
 
 - Status: `PASS`
-- Expected SHA: `851e7916d6d5c7da23a8f30dba6bdfd389daa8ac`
-- Observed SHA: `851e7916d6d5c7da23a8f30dba6bdfd389daa8ac`
-- GUNNCHAI_ROOT: `/private/tmp/gunnchai-pin-candidate-final`
+- Expected SHA: `e2d1adcb5847cf00282fb7fa64970254b14e344e`
+- Observed SHA: `e2d1adcb5847cf00282fb7fa64970254b14e344e`
+- GUNNCHAI_ROOT: `/Users/gunnchos/Downloads/gunnchos-7gc-research-product-spine/repos/gunnchAI3k/.worktrees/pr54-llamacpp-cli-compat-closure`
 - DEFAULT_RUNTIME_HAS_NO_FAKE_AI: `True`
 
 ## Key file SHA-256

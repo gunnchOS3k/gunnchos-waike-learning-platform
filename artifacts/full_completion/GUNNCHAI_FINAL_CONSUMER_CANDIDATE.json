@@ -1,0 +1,67 @@
+{
+  "schema": "gunnchai.final_consumer_candidate.v1",
+  "captured_at": "2026-09-21T13:57:38Z",
+  "note": "Reconciled to proven consumer SHA e2d1adc used by WAIKE REAL Nearby Edge proof. PR #55 tip may later move (e.g. docs-only); WAIKE product pin remains e2d1adc.",
+  "parent_pr": {
+    "number": 54,
+    "head": "851e7916d6d5c7da23a8f30dba6bdfd389daa8ac",
+    "base": "main",
+    "branch": "integration/kirby-controlled-stack-main-reconciliation",
+    "policy": "DRAFT_ONLY_DO_NOT_MERGE"
+  },
+  "child_pr": {
+    "number": 55,
+    "branch": "integration/pr54-llamacpp-cli-compat-closure",
+    "base": "integration/kirby-controlled-stack-main-reconciliation",
+    "url": "https://github.com/gunnchOS3k/gunnchAI3k/pull/55",
+    "policy": "DRAFT_ONLY_DO_NOT_MERGE"
+  },
+  "exact_candidate_sha_for_waike": "e2d1adcb5847cf00282fb7fa64970254b14e344e",
+  "not_used": {
+    "aa61e9": "aa61e924793672f40a3720a6799b6ecd6d6e6a82",
+    "docs_only_tip_example": "d4a5c6d857c303b6a8d1ed564d6cbedb4dfc6343",
+    "fixture_era_pin": "851e7916d6d5c7da23a8f30dba6bdfd389daa8ac"
+  },
+  "user_ready": {
+    "002": {
+      "AI_USER_READY_002_DIGITAL_PASS": true,
+      "run_id": 35558185933
+    },
+    "003": {
+      "AI_USER_READY_003_DIGITAL_PASS": true,
+      "run_id": 35558185930
+    },
+    "004": {
+      "AI_USER_READY_004_DIGITAL_PASS": true,
+      "run_id": 35558185916
+    }
+  },
+  "nearby_edge": {
+    "status": "PHYSICAL_REAL_PROOF_EARNED_ON_WAIKE",
+    "physical_reproof": true,
+    "waike_authority": "artifacts/pixel6a_waike/final/REAL_GUNNCHAI_AI_JOURNEY.json",
+    "gates": {
+      "PIXEL_NEARBY_EDGE_PHYSICAL_JOURNEY_PASS": true,
+      "PRODUCTION_DEFAULT_PROVIDER_FROZEN": false,
+      "PIXEL6A_LIVE_LOCAL_MODEL_PASS": false
+    }
+  },
+  "truth_boundaries": {
+    "PRODUCTION_DEFAULT_PROVIDER_FROZEN": false,
+    "PIXEL6A_LIVE_LOCAL_MODEL_PASS": false,
+    "nearby_mac_is_not_on_device": true
+  },
+  "ci": {
+    "status": "GREEN_AT_E2D1ADC",
+    "required_workflows": [
+      "AI-USER-READY-002 market packet",
+      "AI-USER-READY-003 market packet",
+      "AI-USER-READY-004 market packet"
+    ],
+    "run_ids": {
+      "AI-USER-READY-002": 35558185933,
+      "AI-USER-READY-003": 35558185930,
+      "AI-USER-READY-004": 35558185916
+    }
+  }
+}

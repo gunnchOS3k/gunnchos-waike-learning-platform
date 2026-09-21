@@ -1,6 +1,6 @@
 # Owner action required — USB debugging authorization
 
-Device serial: `27211JEGR06194` (Pixel 6a / bluejay)
+Device serial: `PIXEL_USB_DEVICE_1` (Pixel 6a / bluejay)
 
 ADB currently reports: **unauthorized**
 
@@ -18,7 +18,7 @@ The Mac already captured a successful baseline earlier in this session, but the 
    ```
 5. Confirm `adb devices -l` shows:
    ```text
-   27211JEGR06194         device ... model:Pixel_6a ...
+   PIXEL_USB_DEVICE_1         device ... model:Pixel_6a ...
    ```
    (must say `device`, not `unauthorized`)
 

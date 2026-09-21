@@ -1,0 +1,110 @@
+{
+  "schema": "waike.real_ai_final_closure_gates.v1",
+  "captured_at": "2026-09-21T13:57:38Z",
+  "agent": "evidence-coherence",
+  "branch": "device-lab/pr21-real-gunnchai-ai-final-closure",
+  "parent_pr": 21,
+  "parent_pr_head": "8577e15a74edd07df7b3d159a195d8fe57d1c6b5",
+  "child_pr": "https://github.com/gunnchOS3k/gunnchos-waike-learning-platform/pull/22",
+  "tested_code_head": "7ed3371255b51f3f69a5af6aab026ffd8ff22e03",
+  "evidence_head": "3ff85223bc87837d7e84ce13b0ea29dd8c0d3e23",
+  "curriculum_pin": "63ba9f25ac6b8d8d1b6dd118923566fd51c57b62",
+  "gunnchai_candidate_sha": "e2d1adcb5847cf00282fb7fa64970254b14e344e",
+  "gunnchai_candidate_status": "PINNED_PR55_CONSUMER_CI_GREEN",
+  "agent_a_draft_pr": "https://github.com/gunnchOS3k/gunnchAI3k/pull/55",
+  "real_ai_authority": "artifacts/pixel6a_waike/final/REAL_GUNNCHAI_AI_JOURNEY.json",
+  "gates": {
+    "GUNNCHAI_LLAMA_CPP_CLI_COMPAT_PASS": {
+      "pass": true,
+      "note": "e2d1adc PR #55 tip; llama-completion compat"
+    },
+    "GUNNCHAI_USER_READY_002_CI_PASS": {
+      "pass": true,
+      "note": "PR #55 AI-USER-READY-002 green at e2d1adc run 35558185933"
+    },
+    "GUNNCHAI_USER_READY_003_CI_PASS": {
+      "pass": true,
+      "note": "PR #55 AI-USER-READY-003 green at e2d1adc run 35558185930"
+    },
+    "GUNNCHAI_USER_READY_004_CI_PASS": {
+      "pass": true,
+      "note": "PR #55 AI-USER-READY-004 green at e2d1adc run 35558185916"
+    },
+    "GUNNCHAI_REQUIRED_CI_GREEN": {
+      "pass": true,
+      "note": "Required consumer workflows green at e2d1adc"
+    },
+    "WAIKE_REAL_GUNNCHAI_CONTRACT_PASS": {
+      "pass": true,
+      "note": "verify_gunnchai_contract PASS @ e2d1adc"
+    },
+    "WAIKE_REAL_GUNNCHAI_PIXEL_EXECUTION_PASS": {
+      "pass": true,
+      "note": "Full Hub→NearbyEdge→llama.cpp REAL; CDP UI + API @ e2d1adc"
+    },
+    "WAIKE_AI_ASSESSMENT_GUARDRAIL_PASS": {
+      "pass": true,
+      "note": "AI_INTEGRITY_REFUSED under nearby-edge real provider"
+    },
+    "WAIKE_AI_FALLBACK_HONESTY_PASS": {
+      "pass": true,
+      "note": "503 AI_PROVIDER_UNAVAILABLE when provider nulled; no fake provenance"
+    },
+    "WAIKE_DEVICE_EVIDENCE_REDACTION_PASS": {
+      "pass": true,
+      "note": "PIXEL_USB_DEVICE_1 alias only; no raw serial in working-tree tip text"
+    },
+    "WAIKE_FINAL_CI_PASS": {
+      "pass": true,
+      "note": "Gate C/D + Windows Pilot + Device Lab green on tested_code_head 7ed3371. Evidence tip Device Lab = Model B inheritance (FINAL_CI_PROVENANCE.json). Not claimed as Device Lab exact-head on evidence-only tip."
+    },
+    "WAIKE_FULL_PLATFORM_COMPLETION_CANDIDATE_PASS": {
+      "pass": true,
+      "note": "Consistent with WAIKE_FULL_PLATFORM_GATES.json. Human gates and MERGE_AUTHORIZED remain false. DO NOT MERGE."
+    },
+    "WAIKE_AI_FIXTURE_SURFACE_PASS": {
+      "pass": true,
+      "note": "prior fake-gunnchai reclassified; not product AI"
+    },
+    "WAIKE_REAL_GUNNCHAI_SURFACE_PASS": {
+      "pass": true,
+      "note": "REAL_GUNNCHAI_AI_JOURNEY pass @ e2d1adc; Hub→NearbyEdge→Mac llama.cpp proven"
+    },
+    "PIXEL_WAIKE_AI_SURFACE_PASS": {
+      "pass": true,
+      "note": "CDP learner-ai panel PASS with nearby-edge provenance"
+    },
+    "WAIKE_AI_SURFACE_PASS": {
+      "pass": true,
+      "note": "product gate depends on REAL nearby-edge surface"
+    },
+    "WAIKE_HUMAN_DISABLED_USER_ACCESSIBILITY_VALIDATION": {
+      "pass": false,
+      "note": "owner / disabled-user evaluator"
+    },
+    "WAIKE_HUMAN_LEARNER_USABILITY_PASS": {
+      "pass": false,
+      "note": "owner"
+    },
+    "WAIKE_HUMAN_INSTRUCTOR_USABILITY_PASS": {
+      "pass": false,
+      "note": "owner"
+    },
+    "WAIKE_HUMAN_ADMIN_USABILITY_PASS": {
+      "pass": false,
+      "note": "owner"
+    },
+    "WAIKE_MERGE_AUTHORIZED": {
+      "pass": false,
+      "note": "DRAFT ONLY DO NOT MERGE"
+    }
+  },
+  "partial_real_observation": {
+    "provider_id": "nearby-edge",
+    "llama_cpp_real_local_inference": true,
+    "nearby_edge_up": true,
+    "compute_host": "mac_nearby_edge",
+    "model_id": "smollm2-135m-instruct-q4_k_m"
+  },
+  "do_not_merge": true
+}

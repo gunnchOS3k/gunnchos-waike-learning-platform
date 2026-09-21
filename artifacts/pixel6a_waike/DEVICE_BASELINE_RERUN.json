@@ -1,5 +1,5 @@
 {
-  "adb_line": "27211JEGR06194         device usb:17825792X product:bluejay model:Pixel_6a device:bluejay transport_id:7",
+  "adb_line": "PIXEL_USB_DEVICE_1         device usb:17825792X product:bluejay model:Pixel_6a device:bluejay transport_id:7",
   "authorized": true,
   "captured_at": "2026-09-20T08:17:45Z"
 }

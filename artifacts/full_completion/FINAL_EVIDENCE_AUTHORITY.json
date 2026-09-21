@@ -1,0 +1,74 @@
+{
+  "schema": "waike.final_evidence_authority.v1",
+  "captured_at": "2026-09-21T13:57:38Z",
+  "branch": "device-lab/pr21-real-gunnchai-ai-final-closure",
+  "child_pr": "https://github.com/gunnchOS3k/gunnchos-waike-learning-platform/pull/22",
+  "policy": {
+    "one_canonical_value_per_gate": true,
+    "no_disagreeing_committed_json": true,
+    "product_ai_depends_on_real_not_fixture": true,
+    "human_and_merge_gates_remain_false": true,
+    "do_not_merge": true
+  },
+  "heads": {
+    "tested_code_head": "7ed3371255b51f3f69a5af6aab026ffd8ff22e03",
+    "tested_code_head_note": "Last tip with Gate C/D + Windows Pilot + Device Lab aarch64 Linux + glibc236 green (Device Lab via workflow_dispatch).",
+    "evidence_head": "3ff85223bc87837d7e84ce13b0ea29dd8c0d3e23",
+    "evidence_head_note": "Evidence-coherence tip on PR #22; stamped to live HEAD after this packet lands. Device Lab-relevant source unchanged vs tested_code_head."
+  },
+  "pins": {
+    "curriculum_pin": {
+      "value": "63ba9f25ac6b8d8d1b6dd118923566fd51c57b62",
+      "authority": "artifacts/full_completion/CURRICULUM_PIN_PROMOTION.json",
+      "ops_pr": "https://github.com/gunnchOS3k/waike-research-ops/pull/60"
+    },
+    "gunnchai_pin": {
+      "value": "e2d1adcb5847cf00282fb7fa64970254b14e344e",
+      "authority": "artifacts/full_completion/GUNNCHAI_PIN_PROMOTION.json",
+      "consumer_pr": "https://github.com/gunnchOS3k/gunnchAI3k/pull/55",
+      "not_final_proof": [
+        "851e7916d6d5c7da23a8f30dba6bdfd389daa8ac",
+        "164bdb7e55b6cac305baee49e72ca70795c472c4",
+        "d4a5c6d857c303b6a8d1ed564d6cbedb4dfc6343",
+        "aa61e924793672f40a3720a6799b6ecd6d6e6a82"
+      ]
+    }
+  },
+  "authorities": {
+    "physical_role_journeys": "artifacts/full_completion/pixel_evidence/PHYSICAL_UI_ROLE_JOURNEYS.json",
+    "real_ai_journey": "artifacts/pixel6a_waike/final/REAL_GUNNCHAI_AI_JOURNEY.json",
+    "offline_reconnect": "artifacts/full_completion/pixel_evidence/OFFLINE_RESTART_RECONNECT.json",
+    "stability_soak": "artifacts/full_completion/pixel_evidence/STABILITY_FULL_SOAK.json",
+    "accessibility_mechanics": "artifacts/full_completion/pixel_evidence/PHYSICAL_UI_ROLE_JOURNEYS.json",
+    "gate_c": "FINAL_CI_PROVENANCE.json → Gate C run on tested_code_head",
+    "gate_d": "FINAL_CI_PROVENANCE.json → Gate D run on tested_code_head",
+    "platform_completion_candidate": "artifacts/full_completion/WAIKE_FULL_PLATFORM_GATES.json",
+    "real_ai_closure_mirror": "artifacts/full_completion/REAL_AI_FINAL_CLOSURE_GATES.json",
+    "ci_provenance": "artifacts/full_completion/FINAL_CI_PROVENANCE.json",
+    "defect_ledger": "artifacts/full_completion/WAIKE_PRODUCT_DEFECT_LEDGER.json",
+    "redaction_audit": "artifacts/full_completion/DEVICE_EVIDENCE_REDACTION_AUDIT.json",
+    "owner_review": "artifacts/full_completion/OWNER_FINAL_REVIEW.md",
+    "az_report": "artifacts/full_completion/AZ_REPORT.md",
+    "human_gates": "artifacts/full_completion/WAIKE_FULL_PLATFORM_GATES.json"
+  },
+  "canonical_gates": {
+    "WAIKE_AI_FIXTURE_SURFACE_PASS": true,
+    "WAIKE_REAL_GUNNCHAI_SURFACE_PASS": true,
+    "PIXEL_WAIKE_AI_SURFACE_PASS": true,
+    "WAIKE_AI_SURFACE_PASS": true,
+    "WAIKE_FULL_PLATFORM_COMPLETION_CANDIDATE_PASS": true,
+    "WAIKE_FINAL_CI_PASS": true,
+    "DEVICE_LAB_MODEL": "B_INHERITED_FROM_TESTED_CODE_HEAD_FOR_EVIDENCE_TIP",
+    "DEVICE_LAB_EXACT_HEAD_GREEN_ON_TESTED_CODE_HEAD": true,
+    "WAIKE_HUMAN_LEARNER_USABILITY_PASS": false,
+    "WAIKE_HUMAN_INSTRUCTOR_USABILITY_PASS": false,
+    "WAIKE_HUMAN_ADMIN_USABILITY_PASS": false,
+    "WAIKE_HUMAN_DISABLED_USER_ACCESSIBILITY_VALIDATION": false,
+    "WAIKE_MERGE_AUTHORIZED": false
+  },
+  "notes": [
+    "Product AI surface gates depend on REAL Nearby Edge proof at gunnchAI e2d1adc, not fixture/fake-gunnchai at 851e791.",
+    "Completion candidate is true for engineering gates only; human usability/a11y and merge authorization remain false.",
+    "After evidence-only tip lands, Device Lab is Model B inherited from tested_code_head 7ed3371 (path-filtered; apps/client/** unchanged)."
+  ]
+}

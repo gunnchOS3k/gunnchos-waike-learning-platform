@@ -1,8 +1,8 @@
 {
   "captured_at": "2026-09-18T23:00:32Z",
-  "serial": "27211JEGR06194",
+  "serial": "PIXEL_USB_DEVICE_1",
   "authorization": "device",
-  "adb_devices_l": "List of devices attached\n27211JEGR06194         device usb:17825792X product:bluejay model:Pixel_6a device:bluejay transport_id:1",
+  "adb_devices_l": "List of devices attached\nPIXEL_USB_DEVICE_1         device usb:17825792X product:bluejay model:Pixel_6a device:bluejay transport_id:1",
   "ro.product.manufacturer": "Google",
   "ro.product.model": "Pixel 6a",
   "ro.build.version.release": "17",

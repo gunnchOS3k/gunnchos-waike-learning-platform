@@ -85,7 +85,7 @@ Tauri desktop SoR + Pixel PWA pilot. Native Android Phase B deferred.
 - Open S2 digital: FC-0006 AI surface; FC-0008 full vitest hang (S3-ish)
 
 ## V — Pixel evidence
-Device `27211JEGR06194` Pixel 6a authorized this wave (no ADB contention blocker).
+Device `PIXEL_USB_DEVICE_1` Pixel 6a authorized this wave (no ADB contention blocker).
 Key paths:
 - `artifacts/pixel6a_waike/GATE_TOKENS.json`
 - `artifacts/pixel6a_waike/PIXEL_FULL_ACCEPTANCE_MATRIX.csv`

@@ -1,0 +1,93 @@
+{
+  "schema": "waike.real_gunnchai_ai_journey.v1",
+  "captured_at": "2026-09-21T04:16:31Z",
+  "agent": "B",
+  "device_alias": "PIXEL_USB_DEVICE_1",
+  "gunnchai_pin": "e2d1adcb5847cf00282fb7fa64970254b14e344e",
+  "agent_a_pr": "https://github.com/gunnchOS3k/gunnchAI3k/pull/55",
+  "status": "EXECUTED_PASS",
+  "constraints": {
+    "WAIKE_ALLOW_FAKE_AI": "0",
+    "no_synthetic_bypass": true,
+    "no_fake_gunnchai": true,
+    "do_not_pin_aa61e9": true,
+    "curriculum_pin": "63ba9f25ac6b8d8d1b6dd118923566fd51c57b62"
+  },
+  "hub_health": {
+    "status_code": 200
+  },
+  "nearby_edge_health": {
+    "status_code": 200,
+    "body": {
+      "schema": "gunnchai.nearby_edge.healthz.v1",
+      "status": "ok",
+      "transport": "ADB_REVERSE",
+      "forbid_unauthenticated_lan": true,
+      "on_device_local": false,
+      "adb_reverse_is_not_on_device": true,
+      "production_default": false,
+      "health": "healthy"
+    }
+  },
+  "route_attempts": {
+    "login": {
+      "status_code": 200,
+      "ok": true
+    },
+    "benign_tutoring_api": {
+      "status_code": 200,
+      "ok": true,
+      "provider_id": "nearby-edge",
+      "is_fake": false,
+      "text_len": 563,
+      "provenance_ok": true,
+      "compute_host": "mac_nearby_edge",
+      "disclosure_present": true
+    },
+    "assessment_guardrail_api": {
+      "status_code": 200,
+      "provider_id": "nearby-edge",
+      "refused": true,
+      "refusal_code": "AI_INTEGRITY_REFUSED",
+      "looks_refused_or_safe": true,
+      "text_len": 0
+    }
+  },
+  "cdp_scenarios": {
+    "benign_tutoring_nearby_mac_truthful_label": {
+      "status": "PASS",
+      "result_len": 892,
+      "note": "Pixel CDP learner-ai panel; Hub routed via nearby-edge"
+    },
+    "assessment_sensitive_guardrail": {
+      "status": "API_PROBED",
+      "refused": true
+    },
+    "fallback_unavailable": {
+      "status": "HONEST_503",
+      "honest_unavailable": true
+    },
+    "lifecycle_bg_fg": {
+      "status": "PASS",
+      "session_survived": true
+    }
+  },
+  "truth_labels": {
+    "nearby_mac_is_not_on_device": true,
+    "on_device_inference": false,
+    "fake_provider_used": false,
+    "hub_provider_id": "nearby-edge",
+    "nearby_edge_listening": true,
+    "hub_to_nearby_edge_execute_provenance_proven": true,
+    "real_llamacpp_live_provider_observed": true,
+    "note": "Full REAL route under WAIKE_ALLOW_FAKE_AI=0: Pixel→Hub→gunnchAI NearbyEdge→Mac llama.cpp (SmolLM2-135M). Provenance compute_host=mac_nearby_edge, transport=ADB_REVERSE."
+  },
+  "pass": true,
+  "blocker": null,
+  "secrets_policy": {
+    "no_passwords": true,
+    "no_tokens": true,
+    "no_raw_serial": true,
+    "no_notifications": true
+  }
+}

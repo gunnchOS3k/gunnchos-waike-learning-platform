@@ -10,7 +10,7 @@ Branch: `device-lab/pixel6a-full-waike-pilot`
 ## C. Pixel baseline
 `/Users/gunnchos/Downloads/gunnchos-7gc-research-product-spine/repos/gunnchos-waike-learning-platform/artifacts/pixel6a_waike/DEVICE_BASELINE.json`
 
-- Serial `27211JEGR06194`, Google Pixel 6a (`bluejay`)
+- Serial `PIXEL_USB_DEVICE_1`, Google Pixel 6a (`bluejay`)
 - Android 17 / SDK 37, 1080×2400 @ 420dpi
 - Captured while ADB status was `device` (2026-09-18T23:00:32Z)
 - **Current ADB:** `offline` (flaky USB). Owner must re-approve USB debugging — see `OWNER_ADB_REAUTH.md` and `defects/DEFECT-0001/`.
