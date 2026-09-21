@@ -1,0 +1,89 @@
+{
+  "schema": "waike.final_ci_provenance.v1",
+  "captured_at": "2026-09-21T13:57:38Z",
+  "branch": "device-lab/pr21-real-gunnchai-ai-final-closure",
+  "child_pr": 22,
+  "tested_code_head": "7ed3371255b51f3f69a5af6aab026ffd8ff22e03",
+  "evidence_head": "POST_COMMIT_TIP",
+  "device_lab_model": "B",
+  "device_lab_model_name": "path-filtered_inheritance",
+  "device_lab_rationale": [
+    "Device Lab aarch64 Linux + glibc236 are path-filtered to apps/client/**, workflow YAML, and selected docs/scripts.",
+    "Evidence-coherence tip changes only artifacts/full_completion/** (+ PR body via gh); no Device Lab-relevant source vs tested_code_head.",
+    "Therefore evidence tip uses DEVICE_LAB_GREEN_INHERITED_FROM_RELEVANT_CODE_HEAD — not DEVICE_LAB_EXACT_HEAD_GREEN.",
+    "On tested_code_head 7ed3371 itself, Device Lab DID run green via workflow_dispatch (Model A at that SHA)."
+  ],
+  "DEVICE_LAB_GREEN_INHERITED_FROM_RELEVANT_CODE_HEAD": "7ed3371255b51f3f69a5af6aab026ffd8ff22e03",
+  "DEVICE_LAB_EXACT_HEAD_GREEN": false,
+  "DEVICE_LAB_EXACT_HEAD_GREEN_ON_TESTED_CODE_HEAD": true,
+  "workflows": {
+    "gate_c": {
+      "name": "Gate C",
+      "run_id": 35564543121,
+      "sha": "7ed3371255b51f3f69a5af6aab026ffd8ff22e03",
+      "result": "success",
+      "event": "pull_request",
+      "url": "https://github.com/gunnchOS3k/gunnchos-waike-learning-platform/actions/runs/35564543121",
+      "inheritance": "exact_on_tested_code_head; evidence tip may re-run on push"
+    },
+    "gate_d": {
+      "name": "Gate D",
+      "run_id": 35564543118,
+      "sha": "7ed3371255b51f3f69a5af6aab026ffd8ff22e03",
+      "result": "success",
+      "event": "pull_request",
+      "url": "https://github.com/gunnchOS3k/gunnchos-waike-learning-platform/actions/runs/35564543118",
+      "inheritance": "exact_on_tested_code_head; evidence tip may re-run on push"
+    },
+    "windows_pilot_0": {
+      "name": "Windows Pilot 0",
+      "run_id": 35564543156,
+      "sha": "7ed3371255b51f3f69a5af6aab026ffd8ff22e03",
+      "result": "success",
+      "event": "pull_request",
+      "url": "https://github.com/gunnchOS3k/gunnchos-waike-learning-platform/actions/runs/35564543156",
+      "inheritance": "exact_on_tested_code_head; evidence tip may re-run on push"
+    },
+    "device_lab_aarch64_linux": {
+      "name": "Device Lab aarch64 Linux",
+      "run_id": 35564330982,
+      "sha": "7ed3371255b51f3f69a5af6aab026ffd8ff22e03",
+      "result": "success",
+      "event": "workflow_dispatch",
+      "url": "https://github.com/gunnchOS3k/gunnchos-waike-learning-platform/actions/runs/35564330982",
+      "inheritance": "Model B for evidence tip — inherited from tested_code_head; path filter would skip evidence-only PR push"
+    },
+    "device_lab_aarch64_glibc236": {
+      "name": "Device Lab aarch64 glibc236",
+      "run_id": 35564332343,
+      "sha": "7ed3371255b51f3f69a5af6aab026ffd8ff22e03",
+      "result": "success",
+      "event": "workflow_dispatch",
+      "url": "https://github.com/gunnchOS3k/gunnchos-waike-learning-platform/actions/runs/35564332343",
+      "inheritance": "Model B for evidence tip — inherited from tested_code_head; path filter would skip evidence-only PR push"
+    }
+  },
+  "gunnchai_required_ci_at_pin": {
+    "sha": "e2d1adcb5847cf00282fb7fa64970254b14e344e",
+    "AI-USER-READY-002": {
+      "run_id": 35558185933,
+      "result": "success"
+    },
+    "AI-USER-READY-003": {
+      "run_id": 35558185930,
+      "result": "success"
+    },
+    "AI-USER-READY-004": {
+      "run_id": 35558185916,
+      "result": "success"
+    }
+  },
+  "claims_allowed": [
+    "Gate C/D/Windows Pilot green on tested_code_head 7ed3371",
+    "Device Lab aarch64 Linux + glibc236 green on tested_code_head 7ed3371 (workflow_dispatch)",
+    "Device Lab green inherited to evidence-only tip (Model B)"
+  ],
+  "claims_forbidden": [
+    "DEVICE_LAB_EXACT_HEAD_GREEN on evidence-only tip without a new run on that SHA"
+  ]
+}

@@ -1,11 +1,15 @@
 {
   "schema": "waike.full_platform_gates.v1",
-  "captured_at": "2026-09-21T03:31:09Z",
+  "captured_at": "2026-09-21T13:57:38Z",
   "branch": "device-lab/pr21-real-gunnchai-ai-final-closure",
-  "parent_pr": 20,
+  "parent_pr": 21,
+  "child_pr": 22,
+  "tested_code_head": "7ed3371255b51f3f69a5af6aab026ffd8ff22e03",
+  "evidence_head": "POST_COMMIT_TIP",
   "curriculum_pin": "63ba9f25ac6b8d8d1b6dd118923566fd51c57b62",
   "gunnchai_pin": "e2d1adcb5847cf00282fb7fa64970254b14e344e",
   "gunnchai_draft_pr": "https://github.com/gunnchOS3k/gunnchAI3k/pull/55",
+  "real_ai_authority": "artifacts/pixel6a_waike/final/REAL_GUNNCHAI_AI_JOURNEY.json",
   "gates": {
     "WAIKE_ALL_18_TRACKS_COMPILED_PASS": {
       "pass": true,
@@ -53,15 +57,27 @@
     },
     "WAIKE_ACCESSIBILITY_MECHANICS_PASS": {
       "pass": true,
-      "note": null
+      "note": "mechanics only; not disabled-user validation"
+    },
+    "WAIKE_AI_FIXTURE_SURFACE_PASS": {
+      "pass": true,
+      "note": "prior fake-gunnchai / WAIKE_ALLOW_FAKE_AI=1 reclassified; not product AI"
+    },
+    "WAIKE_REAL_GUNNCHAI_SURFACE_PASS": {
+      "pass": true,
+      "note": "REAL Hub→NearbyEdge→Mac llama.cpp @ e2d1adcb5847cf00282fb7fa64970254b14e344e"
+    },
+    "PIXEL_WAIKE_AI_SURFACE_PASS": {
+      "pass": true,
+      "note": "CDP learner-ai panel with nearby-edge provenance; depends on REAL"
     },
     "WAIKE_AI_SURFACE_PASS": {
-      "pass": false,
-      "note": "awaiting full Nearby Edge REAL route"
+      "pass": true,
+      "note": "product gate depends on REAL, not fixture"
     },
     "WAIKE_GUNNCHAI_CONTRACT_PASS": {
       "pass": true,
-      "note": "e2d1adcb5847cf00282fb7fa64970254b14e344e"
+      "note": "e2d1adcb5847cf00282fb7fa64970254b14e344e (not 851e791)"
     },
     "WAIKE_GUNNCHOS_FIRST_PARTY_CONTRACT_PASS": {
       "pass": true,
@@ -81,43 +97,35 @@
     },
     "WAIKE_NO_OPEN_S2_DIGITALLY_SOLVABLE_DEFECTS": {
       "pass": true,
-      "note": "FC-0006 closed"
+      "note": "FC-0006 closed as real Nearby Edge @ e2d1adc"
     },
     "WAIKE_ALL_CONTENT_ALL_ROLE_PIXEL_PILOT_PASS": {
       "pass": true,
       "note": null
     },
     "WAIKE_FULL_PLATFORM_COMPLETION_CANDIDATE_PASS": {
-      "pass": false,
-      "note": "REAL incomplete; Agent A CI not green"
+      "pass": true,
+      "note": "Engineering gates true incl. REAL AI + CI provenance. Human gates + MERGE_AUTHORIZED remain false. DO NOT MERGE."
     },
     "WAIKE_HUMAN_DISABLED_USER_ACCESSIBILITY_VALIDATION": {
       "pass": false,
-      "note": "owner checklist"
+      "note": "owner / disabled-user evaluator; not auto-checked"
     },
     "WAIKE_HUMAN_LEARNER_USABILITY_PASS": {
       "pass": false,
-      "note": "owner checklist"
+      "note": "owner checklist; not auto-checked"
     },
     "WAIKE_HUMAN_INSTRUCTOR_USABILITY_PASS": {
       "pass": false,
-      "note": "owner checklist"
+      "note": "owner checklist; not auto-checked"
     },
     "WAIKE_HUMAN_ADMIN_USABILITY_PASS": {
       "pass": false,
-      "note": "owner checklist"
+      "note": "owner checklist; not auto-checked"
     },
     "WAIKE_MERGE_AUTHORIZED": {
       "pass": false,
       "note": "DRAFT ONLY DO NOT MERGE"
-    },
-    "WAIKE_AI_FIXTURE_SURFACE_PASS": {
-      "pass": true,
-      "note": "fixture reclassified"
-    },
-    "WAIKE_REAL_GUNNCHAI_SURFACE_PASS": {
-      "pass": false,
-      "note": "full route not proven"
     }
   },
   "pixel_tokens": {
@@ -137,28 +145,30 @@
     "PIXEL_WAIKE_OFFLINE_RESTART_RECONNECT_PASS": true,
     "PIXEL_ACCESSIBILITY_MECHANICS_PASS": true,
     "PIXEL_WAIKE_STABILITY_PASS": true,
-    "PIXEL_WAIKE_AI_SURFACE_PASS": false,
+    "PIXEL_WAIKE_AI_SURFACE_PASS": true,
     "WAIKE_ALL_CONTENT_ALL_ROLE_PIXEL_PILOT_PASS": true,
     "gunnchai_pin": "e2d1adcb5847cf00282fb7fa64970254b14e344e",
     "driver": "chrome_cdp",
     "WAIKE_AI_FIXTURE_SURFACE_PASS": true,
-    "WAIKE_REAL_GUNNCHAI_SURFACE_PASS": false
+    "WAIKE_REAL_GUNNCHAI_SURFACE_PASS": true
   },
   "delivery_model": "FULL_VIA_ADAPTER",
   "truth_labels": {
     "nearby_mac_is_not_on_device": true,
     "on_device_inference": false,
-    "ai_surface": "fixture-only prior; REAL pending Agent A candidate",
+    "ai_surface": "REAL nearby-edge @ e2d1adc; fixture history preserved separately",
     "fake_provider_is_not_product_ai": true
   },
   "gate_c_status": "AUTOMATED_PIPELINE_PASS",
   "gate_d_status": "AUTOMATED_PIPELINE_PASS",
   "gate_c_verification": "reports/GATE_C_VERIFICATION.json",
   "gate_d_verification": "reports/GATE_D_VERIFICATION.json",
+  "ci_provenance": "artifacts/full_completion/FINAL_CI_PROVENANCE.json",
   "native_this_run": {
     "linux_ok": false,
     "macos_ok": false,
     "note": "GATE_D_NATIVE_ARTIFACT_MANIFEST this-run linux/macos false on this host; Gate D require_native unset so automation still passes"
   },
-  "real_ai_wave": "pr21-real-gunnchai-ai-final-closure"
+  "real_ai_wave": "pr21-real-gunnchai-ai-final-closure",
+  "do_not_merge": true
 }

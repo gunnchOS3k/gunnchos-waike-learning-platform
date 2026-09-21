@@ -1,8 +1,10 @@
 {
   "schema": "waike.device_evidence_redaction_audit.v1",
-  "captured_at": "2026-09-21T03:00:22Z",
-  "agent": "B",
+  "captured_at": "2026-09-21T13:57:38Z",
+  "agent": "evidence-coherence",
   "branch": "device-lab/pr21-real-gunnchai-ai-final-closure",
+  "tested_code_head": "7ed3371255b51f3f69a5af6aab026ffd8ff22e03",
+  "evidence_head": "POST_COMMIT_TIP",
   "parent_pr21_head": "8577e15a74edd07df7b3d159a195d8fe57d1c6b5",
   "replacement_token": "PIXEL_USB_DEVICE_1",
   "policy": {
@@ -10,6 +12,13 @@
     "no_history_rewrite": true,
     "prior_git_history_may_retain_raw_serial": true,
     "new_commits_must_use_PIXEL_USB_DEVICE_1": true
+  },
+  "recheck_method": {
+    "working_tree_text_scan": true,
+    "adb_devices_line_pattern": true,
+    "serial_field_pattern": true,
+    "history_secret_recovery": false,
+    "note": "Working-tree tip recheck only. No recovery of raw serial from git history. Alias PIXEL_USB_DEVICE_1 present in tip artifacts; no non-alias adb 'device' lines found under artifacts/."
   },
   "files_redacted_in_this_branch": [
     {
@@ -42,17 +51,17 @@
     }
   ],
   "pr_body_redaction": {
-    "target": "https://github.com/gunnchOS3k/gunnchos-waike-learning-platform/pull/21",
-    "status": "redacted_PIXEL_USB_DEVICE_1",
-    "note": "Replace raw Pixel serial with PIXEL_USB_DEVICE_1 in editable PR body; do not rewrite commit history."
+    "target": "https://github.com/gunnchOS3k/gunnchos-waike-learning-platform/pull/22",
+    "status": "uses_PIXEL_USB_DEVICE_1_only",
+    "note": "PR #22 body must not expose raw Pixel serial."
   },
   "screenshots": {
     "contact_sheet": "artifacts/full_completion/pixel_evidence/contact_sheet/CDP_ROLES_AI_CONTACT.png",
     "serial_visible_in_artifact_bytes": false,
-    "note": "No ASCII raw serial found in contact sheet bytes; OCR not claimed."
+    "note": "No ASCII raw serial claimed in contact sheet bytes; OCR not claimed."
   },
   "remaining_paths_with_raw_serial": [],
   "remaining_raw_serial_in_working_tree_text": false,
   "WAIKE_DEVICE_EVIDENCE_REDACTION_PASS": true,
-  "caveat": "Prior commits on #20/#21 history may still contain the raw serial; this audit covers new tip content only."
+  "caveat": "Prior commits on #20/#21 history may still contain the raw serial; this audit covers tip working-tree text only. No history rewrite."
 }
