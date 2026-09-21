@@ -1,75 +1,101 @@
-# WAIKE Final Curriculum + AI Pixel Closure — A–Z
+# WAIKE Final Evidence Coherence — A–Z
 
-Captured: 2026-09-20T20:15:00Z
-Tip: `b2c7977` (post Gate C/D pin alignment)
-Branch: `device-lab/pr20-final-curriculum-ai-pixel-closure` (child of PR #20 @ fea6027)
-Worktree: `.worktrees/pr20-final-curriculum-ai-pixel-closure`
+Captured: 2026-09-21T13:57:38Z  
+Tested code head: `7ed3371255b51f3f69a5af6aab026ffd8ff22e03`  
+Evidence head: `3ff85223bc87837d7e84ce13b0ea29dd8c0d3e23` (stamped to live PR #22 tip after coherence commit)  
+Branch: `device-lab/pr21-real-gunnchai-ai-final-closure`  
+Device alias: `PIXEL_USB_DEVICE_1`  
+Policy: **DO NOT MERGE**
 
-## A — live main / parent
-Parent draft PR #20 head `fea6027`. Curriculum tip PR #60 `63ba9f25…`. gunnchAI authoritative pin `851e7916d6d5c7da23a8f30dba6bdfd389daa8ac` (draft PR #54). Corrected earlier 65017f42 / f1921905 / e8d474b pins.
+## A — live PR #22 head
+Live tip is the evidence-coherence commit on `device-lab/pr21-real-gunnchai-ai-final-closure` (parent tested-code head `7ed3371…`). See `FINAL_EVIDENCE_AUTHORITY.json`.
 
-## B — branch/worktree
-Isolated worktree from PR #20 head. Branch pushed for child draft PR.
+## B — tested code head
+`7ed3371255b51f3f69a5af6aab026ffd8ff22e03` — Gate C, Gate D, Windows Pilot 0, and Device Lab (dispatch) green.
 
-## C — digital gates
-- `verify_gunnchai`: **0** PASS @ `851e791…`
-- `verify-gate-b`: **0** AUTOMATED_PIPELINE_PASS
-- `gate-b-ai`: **0** (44 passed)
-- `compile-18`: **0** (18/18)
-- frontend safe vitest: **0** (46 passed)
-- `verify-gate-c`: **0** AUTOMATED_PIPELINE_PASS (prior_b fixed: pin assert → `63ba9f25`; SEVEN_GC ancestry `fbf7685` retained)
-- `verify-gate-d`: **0** AUTOMATED_PIPELINE_PASS (clean-room pins + clean device-os checkout; linux/macos this-run native left false on Mac-only host)
+## C — evidence head
+Evidence-coherence tip on PR #22 (artifacts/gates only). Device Lab-relevant source unchanged vs tested code head.
 
-## D — 18-track inventory
-`FULL_18_TRACK_RUNTIME_INVENTORY.json` — all_18_loaded=true. Curriculum PIN @ 63ba9f25.
+## D — curriculum pin
+`63ba9f25ac6b8d8d1b6dd118923566fd51c57b62` (waike-research-ops PR #60).
 
-## E–I — five-role physical journeys
-**PASS via Chrome CDP** (not UIAutomator). Evidence: `PHYSICAL_UI_ROLE_JOURNEYS.json`, screenshots `cdp_*.png`.
+## E — gunnchAI consumer pin
+`e2d1adcb5847cf00282fb7fa64970254b14e344e` (PR #55 consumer candidate). **Not** `851e791` as final product AI proof.
 
-## J–K — isolation
-**PASS** — alpha/beta sequential CDP login; role + cross-site.
+## F — real AI journey authority
+`artifacts/pixel6a_waike/final/REAL_GUNNCHAI_AI_JOURNEY.json` — `EXECUTED_PASS` under `WAIKE_ALLOW_FAKE_AI=0`, provider `nearby-edge`, compute_host `mac_nearby_edge`.
 
-## L–N — offline / soak / a11y
-**PASS preserved** from PR #20 B15 evidence (not re-soaked this wave).
+## G — five-role physical PASS
+Learner / Instructor / Grader / Guardian / Site Admin CDP journeys **PASS**.
 
-## O — AI surface
-**PASS** — CDP learner AI panel + hub `/api/v1/ai/learner/assist` against pin `851e791…`. Provider `fake-gunnchai` under `WAIKE_ALLOW_FAKE_AI=1`. Truth: Nearby Mac Edge tab ≠ on-device inference.
+## H — 18-track physical visibility PASS
+`PIXEL_LEARNER_18_TRACK_VISIBILITY_PASS` / inventory **18/18 PASS**.
 
-## P — gunnchAI contract
-**PASS** — `verify_gunnchai_contract.py` expected=observed=`851e7916d6d5c7da23a8f30dba6bdfd389daa8ac`.
+## I — real Nearby Edge route PASS
+Hub → gunnchAI Nearby Edge → Mac llama.cpp (SmolLM2) **PASS** @ `e2d1adc`.
 
-## Q–R — delivery / first-party
-Tauri SoR + Pixel PWA; FULL_VIA_ADAPTER. Native Android deferred.
+## J — assessment guardrail PASS
+`AI_INTEGRITY_REFUSED` under real nearby-edge provider.
 
-## S–T — matrices
-All-role CDP pass; 18-track mechanical + learner visibility earned.
+## K — fallback honesty PASS
+`503 AI_PROVIDER_UNAVAILABLE` when provider cleared; no fake provenance.
 
-## U — defect ledger
-FC-0005/0006 closed. Open owner human usability items remain.
+## L — lifecycle PASS
+Background/foreground; learner session survived.
 
-## V — Pixel evidence
-Device `27211JEGR06194`. Contact sheet: `pixel_evidence/contact_sheet/CDP_ROLES_AI_CONTACT.png`.
+## M — serial redaction PASS
+Working-tree tip uses `PIXEL_USB_DEVICE_1` only. Prior git history may retain raw serial; no history rewrite. See `DEVICE_EVIDENCE_REDACTION_AUDIT.json`.
 
-## W — aggregate pilot
-`WAIKE_ALL_CONTENT_ALL_ROLE_PIXEL_PILOT_PASS=true` (CDP-earned).
+## N — Gate C
+Run `35564543121` on tested code head `7ed3371` — **success**.
 
-## X — completion candidate
-`WAIKE_FULL_PLATFORM_COMPLETION_CANDIDATE_PASS=true` only after Gate C+D AUTOMATED_PIPELINE_PASS this-run. **DRAFT ONLY — DO NOT MERGE** without owner checklist. Linux/macos native this-run artifacts still false (host cannot earn them).
+## O — Gate D
+Run `35564543118` on tested code head `7ed3371` — **success**.
 
-## Y — draft PR URL
-https://github.com/gunnchOS3k/gunnchos-waike-learning-platform/pull/21
+## P — Windows Pilot 0
+Run `35564543156` on tested code head `7ed3371` — **success**.
 
-## Z — remaining blockers
-1. Owner usability + disabled-user a11y validation (§27).
-2. Owner merge authorization — DO NOT MERGE #20 / #21 / #54 / #59 / #60.
-3. Linux/macos Gate D native this-run artifacts (CI/other OS hosts).
-4. No school/K-12/a11y certification claims; Nearby Mac ≠ on-device AI.
+## Q — Device Lab CI semantics (Model B on evidence tip)
+- aarch64 Linux run `35564330982` on `7ed3371` (workflow_dispatch) — **success**
+- glibc236 run `35564332343` on `7ed3371` (workflow_dispatch) — **success**
+- Evidence-only tip: **Model B inheritance** from tested code head (`DEVICE_LAB_GREEN_INHERITED_FROM_RELEVANT_CODE_HEAD`). **Not** claimed as Device Lab exact-head green on the evidence tip.
 
-## Owner review checklist (§27) — unanswered
+## R — fixture vs REAL distinction
+- `WAIKE_AI_FIXTURE_SURFACE_PASS=true` (historical fake-gunnchai preserved as fixture)
+- `WAIKE_REAL_GUNNCHAI_SURFACE_PASS=true` / `PIXEL_WAIKE_AI_SURFACE_PASS=true` / `WAIKE_AI_SURFACE_PASS=true` (product gates depend on REAL)
+
+## S — completion candidate
+`WAIKE_FULL_PLATFORM_COMPLETION_CANDIDATE_PASS=true` (engineering). Human gates + `WAIKE_MERGE_AUTHORIZED` remain **false**.
+
+## T — human learner usability
+**false** — owner review open (`OWNER_FINAL_REVIEW.md`).
+
+## U — human instructor usability
+**false** — owner review open.
+
+## V — human admin usability
+**false** — owner review open.
+
+## W — disabled-user accessibility validation
+**false** — separate from mechanics PASS; requires genuine disabled-user / a11y evaluator.
+
+## X — merge authorization
+**false** — **DO NOT MERGE** #20 / #21 / #22 / #54 / #55 / ops #60.
+
+## Y — draft PR URLs
+- This child #22: https://github.com/gunnchOS3k/gunnchos-waike-learning-platform/pull/22
+- Parent #21: https://github.com/gunnchOS3k/gunnchos-waike-learning-platform/pull/21
+- gunnchAI #54 / Agent A #55: https://github.com/gunnchOS3k/gunnchAI3k/pull/54 · https://github.com/gunnchOS3k/gunnchAI3k/pull/55
+- Curriculum ops #60: https://github.com/gunnchOS3k/waike-research-ops/pull/60
+
+## Z — exact next owner action
+Run the 16-step journey in `artifacts/full_completion/OWNER_FINAL_REVIEW.md` on a human-review build; leave all human gates unchecked until genuine review; authorize merge only explicitly.
+
+## Owner review checklist — unanswered
 ```text
 [ ] Learner can use the platform end-to-end
 [ ] Instructor can use their real role end-to-end
 [ ] Grader / Guardian / Site Admin usable
-[ ] Disabled-user accessibility human validation
+[ ] Disabled-user accessibility human validation (separate from usability)
 [ ] Authorize merge (explicit)
 ```

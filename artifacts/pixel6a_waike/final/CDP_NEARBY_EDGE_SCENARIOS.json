@@ -1,0 +1,59 @@
+{
+  "schema": "waike.cdp_nearby_edge_scenarios.v1",
+  "captured_at": "2026-09-21T04:21:59Z",
+  "device_alias": "PIXEL_USB_DEVICE_1",
+  "WAIKE_ALLOW_FAKE_AI": "0",
+  "scenarios": {
+    "1_benign_tutoring_nearby_provenance": {
+      "status": 200,
+      "provider_id": "nearby-edge",
+      "ok": true,
+      "provenance_ok": true,
+      "provenance": {
+        "compute_host": "mac_nearby_edge",
+        "on_device_local": false,
+        "transport": "ADB_REVERSE",
+        "model_id": "smollm2-135m-instruct-q4_k_m"
+      },
+      "text_len": 851,
+      "disclosure_present": true
+    },
+    "2_assessment_guardrail": {
+      "status": 200,
+      "refused": true,
+      "refusal_code": "AI_INTEGRITY_REFUSED",
+      "ok": true
+    },
+    "3_fallback_unavailable": {
+      "status": 503,
+      "honest_unavailable": true,
+      "body_snippet": "{\"detail\": \"AI_PROVIDER_UNAVAILABLE\"}"
+    },
+    "4_cdp_ui_and_lifecycle": {
+      "cdp": {
+        "status": "PASS",
+        "logged_in": true,
+        "fill": {
+          "ok": true
+        },
+        "ask": {
+          "ok": true
+        },
+        "result_len": 619,
+        "error": "",
+        "has_logout": true
+      },
+      "lifecycle": {
+        "status": "RUN",
+        "after_bg_fg": {
+          "hasLogout": true,
+          "hasLogin": false,
+          "body": "Skip to content\nWAIKE Learning OS\n\nLocal-first learning client. Packages are verified before trust. Multi-user identity and gradebook are live for DIGITAL_CONFIDENCE.\n\nRole: learner \u00b7 Pixel Learner Al"
+        },
+        "session_survived_or_relogin_available": true,
+        "pass": true
+      }
+    }
+  },
+  "pass": true
+}

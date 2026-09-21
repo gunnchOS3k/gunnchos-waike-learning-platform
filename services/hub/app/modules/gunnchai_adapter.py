@@ -1,6 +1,6 @@
 """gunnchAI adapter for WAIKE Learning Hub (Gate B).
 
-Adapts canonical contracts from gunnchAI3k @ 851e7916d6d5c7da23a8f30dba6bdfd389daa8ac:
+Adapts canonical contracts from gunnchAI3k @ e2d1adcb5847cf00282fb7fa64970254b14e344e:
 - MODE_PERMISSIONS (src/waike-mastery/modes.ts)
 - academicIntegrityPolicy (src/tutor/academicIntegrityPolicy.ts)
 - privacy fail-closed (src/system-layer/privacy_policy.ts)
@@ -22,6 +22,8 @@ import json
 import os
 import re
 import subprocess
+import urllib.error
+import urllib.request
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any, Protocol
@@ -29,7 +31,7 @@ from typing import Any, Protocol
 from app.modules.assessment_lifecycle import ServiceError
 
 GUNNCHAI_REPO = "https://github.com/gunnchOS3k/gunnchAI3k"
-GUNNCHAI_SHA = "851e7916d6d5c7da23a8f30dba6bdfd389daa8ac"
+GUNNCHAI_SHA = "e2d1adcb5847cf00282fb7fa64970254b14e344e"
 GUNNCHAI_PACKAGE = "gunnchai3k"
 
 # CI / contract label: default production runtime path must not select Fake.
@@ -359,6 +361,15 @@ def _select_provider_from_env() -> GunnchAIProvider:
         if _allow_fake_ai():
             return FakeGunnchAIProvider()
         return ForbiddenFakeProvider()
+    if prefer in {"nearby", "nearby_edge", "nearby-edge"}:
+        nearby = NearbyEdgeGunnchAIProvider()
+        return nearby if nearby.available() else UnavailableProvider()
+    # Auto may prefer Nearby only when explicitly opted in (avoid CI healthz probes).
+    prefer_nearby = os.environ.get("GUNNCHAI_PREFER_NEARBY_EDGE", "").strip() == "1"
+    if prefer in {"", "auto"} and prefer_nearby:
+        nearby = NearbyEdgeGunnchAIProvider()
+        if nearby.available():
+            return nearby
     if prefer in {"", "auto", "local"}:
         local = LocalGunnchAIProvider()
         return local if local.available() else UnavailableProvider()
@@ -521,6 +532,193 @@ class CloudProviderStub:
         raise ServiceError("CLOUD_NOT_IMPLEMENTED", 501)
 
 
+class NearbyEdgeGunnchAIProvider:
+    """Hub → Mac NearbyEdgeServer → live provider (ADB_REVERSE / loopback).
+
+    Requires NearbyEdgeServer on GUNNCHAI_NEARBY_EDGE_URL (default :8799) and a
+    loopback mint helper on GUNNCHAI_NEARBY_MINT_URL (default :8798). Earns REAL
+    only when execute provenance shows compute_host=mac_nearby_edge and
+    on_device_local=false. Never claims on-device inference.
+    """
+
+    provider_id = "nearby-edge"
+    forbidden_fake = False
+    _assist_executed = False
+    _last_provenance: dict[str, Any] | None = None
+
+    def __init__(
+        self,
+        edge_url: str | None = None,
+        mint_url: str | None = None,
+    ) -> None:
+        self.edge_url = (
+            edge_url
+            or os.environ.get("GUNNCHAI_NEARBY_EDGE_URL")
+            or "http://127.0.0.1:8799"
+        ).rstrip("/")
+        self.mint_url = (
+            mint_url
+            or os.environ.get("GUNNCHAI_NEARBY_MINT_URL")
+            or "http://127.0.0.1:8798"
+        ).rstrip("/")
+        self._assist_executed = False
+        self._last_provenance = None
+        self._session_token: str | None = None
+
+    def _http_json(
+        self,
+        url: str,
+        *,
+        method: str = "GET",
+        body: dict[str, Any] | None = None,
+        token: str | None = None,
+        timeout: float = 60.0,
+    ) -> tuple[int, dict[str, Any]]:
+        data = None if body is None else json.dumps(body).encode("utf-8")
+        headers = {"Content-Type": "application/json", "Accept": "application/json"}
+        if token:
+            headers["Authorization"] = f"Bearer {token}"
+        req = urllib.request.Request(url, data=data, headers=headers, method=method)
+        try:
+            with urllib.request.urlopen(req, timeout=timeout) as resp:
+                raw = resp.read().decode("utf-8")
+                payload = json.loads(raw or "{}")
+                if not isinstance(payload, dict):
+                    payload = {"value": payload}
+                return int(resp.status), payload
+        except urllib.error.HTTPError as e:
+            raw = e.read().decode("utf-8", errors="replace")
+            try:
+                payload = json.loads(raw or "{}")
+            except json.JSONDecodeError:
+                payload = {"error": raw[:500]}
+            if not isinstance(payload, dict):
+                payload = {"error": str(payload)}
+            return int(e.code), payload
+        except (OSError, urllib.error.URLError, TimeoutError, json.JSONDecodeError):
+            return 0, {}
+
+    def available(self) -> bool:
+        status, body = self._http_json(f"{self.edge_url}/v1/healthz", timeout=3.0)
+        if status != 200:
+            return False
+        # Prefer healthy gateway; still "available" if edge process is up so
+        # fallback honesty can surface PROVIDER_UNAVAILABLE on execute.
+        return body.get("on_device_local") is False or body.get("schema") == (
+            "gunnchai.nearby_edge.healthz.v1"
+        )
+
+    def _ensure_session(self) -> str:
+        if self._session_token:
+            return self._session_token
+        mint_status, mint_body = self._http_json(
+            f"{self.mint_url}/v1/admin/mint-pair",
+            method="POST",
+            body={},
+            timeout=5.0,
+        )
+        code = mint_body.get("code") if mint_status == 200 else None
+        if not code:
+            raise ServiceError("AI_PROVIDER_UNAVAILABLE", 503)
+        pair_status, pair_body = self._http_json(
+            f"{self.edge_url}/v1/session/pair",
+            method="POST",
+            body={"code": code, "client_label": "waike_hub_nearby"},
+            timeout=10.0,
+        )
+        token = pair_body.get("session_token") if pair_status == 200 else None
+        if not token or not pair_body.get("ok"):
+            raise ServiceError("AI_PROVIDER_UNAVAILABLE", 503)
+        self._session_token = str(token)
+        return self._session_token
+
+    def assist(self, req: AssistRequest) -> AssistResponse:
+        disclosure = evaluate_cloud_disclosure(req)
+        token = self._ensure_session()
+        status, payload = self._http_json(
+            f"{self.edge_url}/v1/execute",
+            method="POST",
+            token=token,
+            body={
+                "task_class": "short_assist",
+                "prompt": req.query[:2000],
+                "max_tokens": 96,
+            },
+            timeout=90.0,
+        )
+        if status == 401:
+            self._session_token = None
+            token = self._ensure_session()
+            status, payload = self._http_json(
+                f"{self.edge_url}/v1/execute",
+                method="POST",
+                token=token,
+                body={
+                    "task_class": "short_assist",
+                    "prompt": req.query[:2000],
+                    "max_tokens": 96,
+                },
+                timeout=90.0,
+            )
+        if status != 200 or not payload.get("ok"):
+            err = str(payload.get("error") or "NEARBY_EDGE_EXECUTE_FAILED")
+            if "PROVIDER_UNAVAILABLE" in err.upper():
+                raise ServiceError("AI_PROVIDER_UNAVAILABLE", 503)
+            raise ServiceError("AI_PROVIDER_ERROR", 502)
+
+        provenance = payload.get("provenance")
+        if not isinstance(provenance, dict):
+            provenance = {}
+        self._last_provenance = provenance
+        provenance_ok = (
+            provenance.get("on_device_local") is False
+            and provenance.get("compute_host") == "mac_nearby_edge"
+        )
+        if not provenance_ok:
+            raise ServiceError("AI_PROVIDER_ERROR", 502)
+
+        self._assist_executed = True
+        text = str(payload.get("text") or payload.get("output") or payload.get("message") or "")
+        if req.learner_facing:
+            text = strip_answer_keys(text)
+        citations: list[dict[str, str]] = []
+        if req.course_materials:
+            for m in req.course_materials[:3]:
+                t = m.get("text") or ""
+                path = m.get("path") or m.get("id") or "course"
+                if t and material_path_allowed(path):
+                    citations.append(
+                        {
+                            "source": path,
+                            "snippet": t[:120],
+                            "content_hash": m.get("content_hash") or content_hash(t),
+                        }
+                    )
+        return AssistResponse(
+            ok=True,
+            text=text,
+            grounded=bool(citations),
+            citations=citations,
+            provider_id=self.provider_id,
+            mode=req.mode,
+            capability=req.capability,
+            disclosure=disclosure["userVisibleDisclosure"],
+            suggestion_only=True,
+            mutates_grades=False,
+            detail={
+                "cloud": disclosure,
+                "nearby_edge_execute": True,
+                "provenance": provenance,
+                "provenance_ok": provenance_ok,
+                "transport": provenance.get("transport"),
+                "compute_host": provenance.get("compute_host"),
+                "on_device_local": provenance.get("on_device_local"),
+                "nearby_mac_is_not_on_device": True,
+                "local_inference_executed": True,
+            },
+        )
+
+
 class LocalGunnchAIProvider:
     """Optional local loopback via product-service assist CLI.
 
@@ -655,13 +853,22 @@ class GunnchAIAdapter:
         self.cloud_stub = CloudProviderStub()
 
     def contract_meta(self) -> dict[str, Any]:
-        real_available = self.local.available()
+        real_available = self.local.available() or (
+            isinstance(self.provider, NearbyEdgeGunnchAIProvider) and self.provider.available()
+        )
         active_id = getattr(self.provider, "provider_id", "unknown")
         local_inference_executed = bool(
             getattr(self.provider, "_assist_executed", False)
-            if active_id == "local-product-service"
+            if active_id in {"local-product-service", "nearby-edge"}
             else False
         )
+        nearby_detail: dict[str, Any] = {}
+        if isinstance(self.provider, NearbyEdgeGunnchAIProvider):
+            nearby_detail = {
+                "edge_url": self.provider.edge_url,
+                "mint_url": self.provider.mint_url,
+                "last_provenance": getattr(self.provider, "_last_provenance", None),
+            }
         return {
             "repo": GUNNCHAI_REPO,
             "sha": GUNNCHAI_SHA,
@@ -675,6 +882,7 @@ class GunnchAIAdapter:
                 "active": active_id,
                 "available": self.provider.available(),
                 "local": self.local.status(),
+                "nearby_edge": nearby_detail,
                 "cloud_stub_available": self.cloud_stub.available(),
                 "claims": {
                     "contract_integration_complete": GUNNCHAI_CONTRACT_INTEGRATION_COMPLETE,
