@@ -5,8 +5,10 @@ import uvicorn
 
 db = Path(r'''/Users/gunnchos/Downloads/gunnchos-7gc-research-product-spine/repos/gunnchos-waike-learning-platform/.worktrees/pr21-real-gunnchai-ai-final-closure/services/hub/data/pixel_pilot/pilot.db''')
 os.environ.pop("WAIKE_ALLOW_FAKE_AI", None)
-os.environ.pop("GUNNCHAI_PROVIDER", None)
 os.environ["WAIKE_ALLOW_FAKE_AI"] = "0"
+os.environ["GUNNCHAI_PROVIDER"] = "nearby_edge"
+os.environ["GUNNCHAI_NEARBY_EDGE_URL"] = "http://127.0.0.1:8799"
+os.environ["GUNNCHAI_NEARBY_MINT_URL"] = "http://127.0.0.1:8798"
 os.environ["GUNNCHAI_ROOT"] = r'''/Users/gunnchos/Downloads/gunnchos-7gc-research-product-spine/repos/gunnchAI3k/.worktrees/pr54-llamacpp-cli-compat-closure'''
 os.environ["WAIKE_PIXEL_PILOT"] = "true"
 app = create_app(

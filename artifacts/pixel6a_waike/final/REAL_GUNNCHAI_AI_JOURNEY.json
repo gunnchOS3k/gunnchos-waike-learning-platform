@@ -1,84 +1,79 @@
 {
   "schema": "waike.real_gunnchai_ai_journey.v1",
-  "captured_at": "2026-09-21T03:31:09Z",
+  "captured_at": "2026-09-21T04:22:30Z",
   "agent": "B",
   "device_alias": "PIXEL_USB_DEVICE_1",
-  "gunnchai_pin": "164bdb7e55b6cac305baee49e72ca70795c472c4",
+  "gunnchai_pin": "e2d1adcb5847cf00282fb7fa64970254b14e344e",
   "agent_a_pr": "https://github.com/gunnchOS3k/gunnchAI3k/pull/55",
-  "status": "EXECUTED_PARTIAL",
+  "status": "EXECUTED",
   "constraints": {
     "WAIKE_ALLOW_FAKE_AI": "0",
     "no_synthetic_bypass": true,
     "no_fake_gunnchai": true,
     "do_not_pin_aa61e9": true,
+    "do_not_pin_164bdb7": true,
+    "do_not_pin_d4a5c6d": true,
     "curriculum_pin": "63ba9f25ac6b8d8d1b6dd118923566fd51c57b62"
   },
-  "hub_health": {
-    "status_code": 200
-  },
+  "route": "Pixel WAIKE UI -> Hub -> gunnchAI NearbyEdge provider -> Mac NearbyEdgeServer -> llama.cpp live provider -> provenance -> UI",
   "nearby_edge_health": {
     "status_code": 200,
-    "body": {
-      "schema": "gunnchai.nearby_edge.healthz.v1",
-      "status": "ok",
-      "transport": "ADB_REVERSE",
-      "forbid_unauthenticated_lan": true,
-      "on_device_local": false,
-      "adb_reverse_is_not_on_device": true,
-      "production_default": false,
-      "health": "down"
-    }
+    "health": "healthy",
+    "on_device_local": false,
+    "transport": "ADB_REVERSE"
   },
   "route_attempts": {
-    "login": {
-      "status_code": 200,
-      "ok": true
-    },
     "benign_tutoring_api": {
       "status_code": 200,
       "ok": true,
-      "provider_id": "local-product-service",
+      "provider_id": "nearby-edge",
       "is_fake": false,
-      "text_len": 1075,
-      "mentions_llama_cpp_real": true,
-      "disclosure_present": true
+      "provenance_ok": true,
+      "compute_host": "mac_nearby_edge",
+      "on_device_local": false,
+      "transport": "ADB_REVERSE",
+      "model_id": "smollm2-135m-instruct-q4_k_m"
     },
     "assessment_guardrail_api": {
       "status_code": 200,
-      "provider_id": "local-product-service",
       "refused": true,
-      "looks_refused_or_safe": true,
-      "text_len": 138
+      "refusal_code": "AI_INTEGRITY_REFUSED"
+    },
+    "fallback_unavailable_api": {
+      "status_code": 503,
+      "detail": "AI_PROVIDER_UNAVAILABLE",
+      "honest": true
     }
   },
   "cdp_scenarios": {
     "benign_tutoring_nearby_mac_truthful_label": {
-      "status": "NOT_STABLE",
-      "note": "CDP deferred due to service drop; API path earned real local-product-service+llama.cpp"
+      "status": "PASS",
+      "ui_result_len": 619,
+      "logged_in": true
     },
     "assessment_sensitive_guardrail": {
-      "status": "API_PROBED"
+      "status": "PASS",
+      "refused": true
     },
     "fallback_unavailable": {
-      "status": "OBSERVED_NEARBY_GATEWAY_DOWN",
-      "nearby_edge_gateway_health": "down"
+      "status": "PASS",
+      "honest_unavailable": true
     },
     "lifecycle_bg_fg": {
-      "status": "NOT_RUN"
+      "status": "PASS",
+      "session_still_logged_in_after_home_and_chrome_resume": true
     }
   },
   "truth_labels": {
     "nearby_mac_is_not_on_device": true,
     "on_device_inference": false,
     "fake_provider_used": false,
-    "hub_provider_id": "local-product-service",
-    "nearby_edge_listening": true,
-    "hub_to_nearby_edge_execute_provenance_proven": false,
-    "real_local_product_service_llama_observed": true,
-    "note": "Partial real path: Hub\u2192local-product-service\u2192llama.cpp REAL under WAIKE_ALLOW_FAKE_AI=0. NearbyEdgeServer listening with on_device_local=false but gateway health down; Hub did not use Nearby execute. Full required route NOT claimed."
+    "hub_provider_id": "nearby-edge",
+    "hub_to_nearby_edge_execute_provenance_proven": true,
+    "compute_host": "mac_nearby_edge"
   },
-  "pass": false,
-  "blocker": "Full Pixel\u2192Hub\u2192gunnchAI\u2192NearbyEdge\u2192qualified-provider provenance route not proven; partial real local-product-service+llama.cpp observed.",
+  "pass": true,
+  "blocker": null,
   "secrets_policy": {
     "no_passwords": true,
     "no_tokens": true,

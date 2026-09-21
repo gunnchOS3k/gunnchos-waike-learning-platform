@@ -1,15 +1,21 @@
 {
   "schema": "waike.gunnchai_pin_promotion.v1",
-  "generated_at": "2026-09-21T03:13:54Z",
+  "generated_at": "2026-09-21T04:22:30Z",
   "agent": "B",
-  "previous_pin": "851e7916d6d5c7da23a8f30dba6bdfd389daa8ac",
-  "new_pin": "164bdb7e55b6cac305baee49e72ca70795c472c4",
-  "exact_candidate_sha_for_waike_field": "e2460342648026b0569fc9c5547474ee44b2497d",
-  "pin_policy": "Live Agent A draft child PR #55 tip; never pin aa61e9; never use fake-gunnchai for product gate.",
+  "previous_pin": "164bdb7e55b6cac305baee49e72ca70795c472c4",
+  "new_pin": "e2d1adcb5847cf00282fb7fa64970254b14e344e",
+  "exact_candidate_sha_for_waike_field": "e2d1adcb5847cf00282fb7fa64970254b14e344e",
+  "pin_policy": "Agent A required-CI-green consumer SHA e2d1adc. Do not pin 164bdb7 or docs-only d4a5c6d. Never pin aa61e9. Never use fake-gunnchai for the product gate.",
   "agent_a_branch": "integration/pr54-llamacpp-cli-compat-closure",
   "agent_a_draft_pr": "https://github.com/gunnchOS3k/gunnchAI3k/pull/55",
   "parent_gunnchai_pr": "https://github.com/gunnchOS3k/gunnchAI3k/pull/54",
   "not_used_aa61e9": "aa61e924793672f40a3720a6799b6ecd6d6e6a82",
+  "not_used_docs_only_tip": "d4a5c6d857c303b6a8d1ed564d6cbedb4dfc6343",
   "adb_released_by_a": true,
-  "agent_a_ci_status_at_pin": "PUSHED_AWAITING_ACTIONS"
+  "agent_a_ci_status_at_pin": "GREEN",
+  "required_run_ids": {
+    "AI-USER-READY-002": 35558185933,
+    "AI-USER-READY-003": 35558185930,
+    "AI-USER-READY-004": 35558185916
+  }
 }

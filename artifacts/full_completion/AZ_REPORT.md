@@ -23,19 +23,19 @@ Owned/documented by Agent A (`LLAMACPP_CLI_COMPAT_REPRO.json`).
 Owned by Agent A (`llamacpp_cli_compat.ts` on PR #55).
 
 ## F — user-ready 002 result
-Candidate artifact claims digital PASS; **CI not green yet** on PR #55.
+**CI success** run `35558185933` on `e2d1adc`.
 
 ## G — user-ready 003 result
-Candidate artifact claims digital PASS; **CI not green yet** on PR #55.
+**CI success** run `35558185930` on `e2d1adc`.
 
 ## H — user-ready 004 result
-Candidate artifact claims digital PASS; **CI not green yet** on PR #55.
+**CI success** run `35558185916` on `e2d1adc`.
 
 ## I — gunnchAI final CI
-`GUNNCHAI_REQUIRED_CI_GREEN=false` (queued/awaiting at capture).
+`GUNNCHAI_REQUIRED_CI_GREEN=true` on `e2d1adcb5847cf00282fb7fa64970254b14e344e`.
 
 ## J — gunnchAI candidate SHA
-Pinned live tip `164bdb7e55b6cac305baee49e72ca70795c472c4` (PR #55). Field `exact_candidate_sha_for_waike` also recorded `e246034…` (functional fix ancestor). Never `aa61e9`.
+Pinned **`e2d1adcb5847cf00282fb7fa64970254b14e344e`**. Not `164bdb7`, not docs-only `d4a5c6d`, never `aa61e9`.
 
 ## K — live #21 head
 Verified `8577e15a74edd07df7b3d159a195d8fe57d1c6b5`.
@@ -47,37 +47,37 @@ https://github.com/gunnchOS3k/gunnchos-waike-learning-platform/pull/22 (draft) �
 **DONE** → `WAIKE_AI_FIXTURE_SURFACE_PASS=true`. Product AI surface gates cleared pending REAL.
 
 ## N — real WAIKE→gunnchAI→Nearby Edge execution
-**PARTIAL** — Hub assist with `WAIKE_ALLOW_FAKE_AI=0` returned `provider_id=local-product-service` with `[llama.cpp REAL local inference]`. NearbyEdgeServer up on `:8799` (`on_device_local=false`) but gateway `health=down`; Hub→Nearby execute provenance **not** proven. Journey `pass=false`.
+**PASS** — `WAIKE_ALLOW_FAKE_AI=0`, pin `e2d1adcb5847cf00282fb7fa64970254b14e344e`. Hub `provider_id=nearby-edge` execute provenance `compute_host=mac_nearby_edge`, `on_device_local=false`, transport `ADB_REVERSE`, model `smollm2-135m-instruct-q4_k_m`. Nearby Mac is not on-device inference.
 
 ## O — benign tutoring result
-API **PASS** (real local-product-service + llama.cpp). CDP Pixel UI not stably earned this wave (service drop under CDP).
+API **PASS** (provenance above). Pixel CDP UI **PASS** (logged in, result length 619, no error).
 
 ## P — assessment guardrail
-API probe `looks_refused_or_safe=true` under real provider.
+**PASS** — answer-key request refused `AI_INTEGRITY_REFUSED`.
 
 ## Q — fallback/unavailable result
-Nearby gateway health=down observed honestly; no fake Nearby provenance claimed.
+**PASS** — live provider cleared; Hub returned `503 AI_PROVIDER_UNAVAILABLE` (honest, not a fake answer).
 
 ## R — lifecycle result
-**NOT RUN** (CDP unstable).
+**PASS** — Home then Chrome resume; learner session still signed in (`hasLogout=true`).
 
 ## S — provenance truth
-Nearby Mac ≠ on-device = true. Full Hub→NearbyEdge provenance = false. Partial real llama via product-service observed.
+Nearby Mac ≠ on-device = true. Hub→NearbyEdge execute provenance = true.
 
 ## T — serial/evidence redaction audit
-**PASS (tip)** — `DEVICE_EVIDENCE_REDACTION_AUDIT.json`; PR #21 body redacted to `PIXEL_USB_DEVICE_1`. Prior history may retain raw serial.
+**PASS** — device alias `PIXEL_USB_DEVICE_1`. New journey/CDP artifacts contain no raw serial.
 
 ## U — Gate C
-Exact-head CI on #22 tip: see checks (do not rely on earlier #21 greens).
+Exact-head CI on this child tip: **not yet green** (awaiting the push that records this proof).
 
 ## V — Gate D
-Exact-head CI on #22 tip: see checks.
+Exact-head CI on this child tip: **not yet green**.
 
 ## W — device-lab workflows
-aarch64 Linux + glibc236 + Windows Pilot 0: see #22 checks.
+aarch64 Linux + glibc236 + Windows Pilot 0: **awaiting** exact-head runs on the proof tip.
 
 ## X — final completion gate
-`WAIKE_FULL_PLATFORM_COMPLETION_CANDIDATE_PASS=false` — REAL Nearby Edge route incomplete + Agent A CI not green. Human gates + MERGE_AUTHORIZED false.
+`WAIKE_FULL_PLATFORM_COMPLETION_CANDIDATE_PASS=false`. REAL Nearby Edge route is earned and Agent A required CI is green on `e2d1adc`, but completion stays false until exact-head WAIKE CI is green on this tip. Human gates + MERGE_AUTHORIZED remain false.
 
 ## Y — draft PR URLs
 - Parent #21: https://github.com/gunnchOS3k/gunnchos-waike-learning-platform/pull/21
@@ -86,11 +86,9 @@ aarch64 Linux + glibc236 + Windows Pilot 0: see #22 checks.
 - Agent A child #55: https://github.com/gunnchOS3k/gunnchAI3k/pull/55
 
 ## Z — remaining human blockers
-1. Agent A required CI green on PR #55.
-2. Full Hub→Nearby Edge execute provenance on Pixel CDP.
-3. Exact-head WAIKE CI green on final child tip.
-4. Owner usability + disabled-user a11y validation.
-5. Owner merge authorization — **DO NOT MERGE** #20 / #21 / #22 / #54 / #55.
+1. Exact-head WAIKE CI green (Gate C/D, device-lab, Windows Pilot) on the proof tip.
+2. Owner usability + disabled-user accessibility validation.
+3. Owner merge authorization — **DO NOT MERGE** #20 / #21 / #22 / #54 / #55.
 
 ## Owner review checklist — unanswered
 ```text
