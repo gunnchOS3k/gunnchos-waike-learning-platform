@@ -1,6 +1,6 @@
 {
   "schema": "waike.real_ai_final_closure_gates.v1",
-  "captured_at": "2026-09-21T03:00:22Z",
+  "captured_at": "2026-09-21T03:06:56Z",
   "agent": "B",
   "branch": "device-lab/pr21-real-gunnchai-ai-final-closure",
   "parent_pr": 21,
@@ -95,5 +95,7 @@
     }
   },
   "do_not_merge": true,
-  "adb_owner": "Agent A first; Agent B second after candidate handoff"
+  "adb_owner": "Agent A first; Agent B second after candidate handoff",
+  "child_pr": "https://github.com/gunnchOS3k/gunnchos-waike-learning-platform/pull/22",
+  "child_tip": "4d4aff7ef18ef90859955dabc13dd5c015fbba99"
 }
