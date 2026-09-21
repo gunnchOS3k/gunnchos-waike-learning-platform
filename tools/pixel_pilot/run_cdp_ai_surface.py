@@ -35,7 +35,7 @@ from pixel_pilot.run_pixel_pilot import (  # noqa: E402
     wait_http,
 )
 
-GUNNCHAI_PIN = "851e7916d6d5c7da23a8f30dba6bdfd389daa8ac"
+GUNNCHAI_PIN = "164bdb7e55b6cac305baee49e72ca70795c472c4"
 SECTION_ID = "sec_alpha_digital_confidence_pilot"
 CLIENT_URL = f"http://127.0.0.1:{CLIENT_PORT}/"
 EVIDENCE = ROOT / "artifacts" / "full_completion" / "pixel_evidence"

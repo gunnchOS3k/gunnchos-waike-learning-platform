@@ -1,97 +1,96 @@
 # WAIKE Real gunnchAI Final Closure — A–Z (Agent B)
 
-Captured: 2026-09-21T02:05:00Z
-Child tip: `940b29365fdf7c8c15396e1af3aac74a4576dc8c`
+Captured: 2026-09-21T03:32:15Z
+Child tip: `47495e05794c2c7b92b33d7f8a8b965a6f16a2bc` (pre-final-commit; see tip after push)
 Parent #21 tip: `8577e15a74edd07df7b3d159a195d8fe57d1c6b5`
 Branch: `device-lab/pr21-real-gunnchai-ai-final-closure`
 Base: `device-lab/pr20-final-curriculum-ai-pixel-closure`
-Worktree: `.worktrees/pr21-real-gunnchai-ai-final-closure`
-Device alias: `PIXEL_USB_DEVICE_1` (raw serial redacted in new tip; prior history may retain)
+Device alias: `PIXEL_USB_DEVICE_1`
 
 ## A — live #54 head
-Still `851e7916d6d5c7da23a8f30dba6bdfd389daa8ac` on draft PR #54 at handoff start. Agent A child `integration/pr54-llamacpp-cli-compat-closure` in progress; **no** `GUNNCHAI_FINAL_CONSUMER_CANDIDATE.json` yet. Do not pin `aa61e9`.
+`851e7916d6d5c7da23a8f30dba6bdfd389daa8ac` (parent draft PR #54).
 
 ## B — gunnchAI child branch/PR
-Agent A owns. Not published as consumer candidate at this capture.
+`integration/pr54-llamacpp-cli-compat-closure` → draft PR https://github.com/gunnchOS3k/gunnchAI3k/pull/55
 
 ## C — llama.cpp detected version
-Deferred to Agent A handoff (host probe observed elsewhere: llama-cli 10310 / cb26014d9 — not adopted as WAIKE pin).
+Host probe (Agent A): version 10310 (cb26014d9). Compat adapter routes `-no-cnv` to `llama-completion`.
 
 ## D — old invalid flag reproduction
-Deferred to Agent A.
+Owned/documented by Agent A (`LLAMACPP_CLI_COMPAT_REPRO.json`).
 
 ## E — compatibility fix
-Deferred to Agent A.
+Owned by Agent A (`llamacpp_cli_compat.ts` on PR #55).
 
 ## F — user-ready 002 result
-**NOT GREEN / NOT HANDOFFED** (Agent A).
+Candidate artifact claims digital PASS; **CI not green yet** on PR #55.
 
 ## G — user-ready 003 result
-**NOT GREEN / NOT HANDOFFED** (Agent A).
+Candidate artifact claims digital PASS; **CI not green yet** on PR #55.
 
 ## H — user-ready 004 result
-**NOT GREEN / NOT HANDOFFED** (Agent A).
+Candidate artifact claims digital PASS; **CI not green yet** on PR #55.
 
 ## I — gunnchAI final CI
-**NOT GREEN / NOT HANDOFFED** (Agent A).
+`GUNNCHAI_REQUIRED_CI_GREEN=false` (queued/awaiting at capture).
 
 ## J — gunnchAI candidate SHA
-**NONE** — waiting on Agent A. WAIKE will not invent a pin.
+Pinned live tip `164bdb7e55b6cac305baee49e72ca70795c472c4` (PR #55). Field `exact_candidate_sha_for_waike` also recorded `e246034…` (functional fix ancestor). Never `aa61e9`.
 
 ## K — live #21 head
-Verified `8577e15a74edd07df7b3d159a195d8fe57d1c6b5` (matched verified head).
+Verified `8577e15a74edd07df7b3d159a195d8fe57d1c6b5`.
 
 ## L — WAIKE child branch/PR
-Branch `device-lab/pr21-real-gunnchai-ai-final-closure` created from #21 head. Draft child PR URL filled after push.
+https://github.com/gunnchOS3k/gunnchos-waike-learning-platform/pull/22 (draft) · branch `device-lab/pr21-real-gunnchai-ai-final-closure`
 
 ## M — fake-provider evidence reclassification
-**DONE** — prior `fake-gunnchai` / `WAIKE_ALLOW_FAKE_AI=1` Pixel CDP+API → `WAIKE_AI_FIXTURE_SURFACE_PASS=true`. Product `PIXEL_WAIKE_AI_SURFACE_PASS` / `WAIKE_AI_SURFACE_PASS` cleared to **false**. See `WAIKE_AI_FIXTURE_RECLASSIFICATION.json`.
+**DONE** → `WAIKE_AI_FIXTURE_SURFACE_PASS=true`. Product AI surface gates cleared pending REAL.
 
 ## N — real WAIKE→gunnchAI→Nearby Edge execution
-**NOT EXECUTED** — blocked on Agent A candidate. Evidence stub: `artifacts/pixel6a_waike/final/REAL_GUNNCHAI_AI_JOURNEY.json` (`status=NOT_EXECUTED`).
+**PARTIAL** — Hub assist with `WAIKE_ALLOW_FAKE_AI=0` returned `provider_id=local-product-service` with `[llama.cpp REAL local inference]`. NearbyEdgeServer up on `:8799` (`on_device_local=false`) but gateway `health=down`; Hub→Nearby execute provenance **not** proven. Journey `pass=false`.
 
 ## O — benign tutoring result
-**NOT RUN** (requires real provider + truthful Nearby Mac label).
+API **PASS** (real local-product-service + llama.cpp). CDP Pixel UI not stably earned this wave (service drop under CDP).
 
 ## P — assessment guardrail
-**NOT RUN**.
+API probe `looks_refused_or_safe=true` under real provider.
 
 ## Q — fallback/unavailable result
-**NOT RUN**.
+Nearby gateway health=down observed honestly; no fake Nearby provenance claimed.
 
 ## R — lifecycle result
-**NOT RUN**.
+**NOT RUN** (CDP unstable).
 
 ## S — provenance truth
-Nearby Mac ≠ on-device remains true as standing truth label. Real qualified-provider provenance **not earned**.
+Nearby Mac ≠ on-device = true. Full Hub→NearbyEdge provenance = false. Partial real llama via product-service observed.
 
 ## T — serial/evidence redaction audit
-**PASS (tip)** — `DEVICE_EVIDENCE_REDACTION_AUDIT.json`. Working tree uses `PIXEL_USB_DEVICE_1`. No force-push; prior history may retain raw serial.
+**PASS (tip)** — `DEVICE_EVIDENCE_REDACTION_AUDIT.json`; PR #21 body redacted to `PIXEL_USB_DEVICE_1`. Prior history may retain raw serial.
 
 ## U — Gate C
-Not re-run on this child tip yet (`WAIKE_FINAL_EXACT_HEAD_CI_PASS=false`).
+Exact-head CI on #22 tip: see checks (do not rely on earlier #21 greens).
 
 ## V — Gate D
-Not re-run on this child tip yet.
+Exact-head CI on #22 tip: see checks.
 
 ## W — device-lab workflows
-Not re-run on this child tip yet (aarch64 Linux + glibc236 + Windows Pilot 0 pending push).
+aarch64 Linux + glibc236 + Windows Pilot 0: see #22 checks.
 
 ## X — final completion gate
-`WAIKE_FULL_PLATFORM_COMPLETION_CANDIDATE_PASS=false` — depends on REAL, not fixture. Human gates + `WAIKE_MERGE_AUTHORIZED` remain **false**.
+`WAIKE_FULL_PLATFORM_COMPLETION_CANDIDATE_PASS=false` — REAL Nearby Edge route incomplete + Agent A CI not green. Human gates + MERGE_AUTHORIZED false.
 
 ## Y — draft PR URLs
 - Parent #21: https://github.com/gunnchOS3k/gunnchos-waike-learning-platform/pull/21
-- This child: https://github.com/gunnchOS3k/gunnchos-waike-learning-platform/pull/22
+- This child #22: https://github.com/gunnchOS3k/gunnchos-waike-learning-platform/pull/22
 - gunnchAI #54: https://github.com/gunnchOS3k/gunnchAI3k/pull/54
-- Agent A child: *(pending Agent A)*
+- Agent A child #55: https://github.com/gunnchOS3k/gunnchAI3k/pull/55
 
 ## Z — remaining human blockers
-1. Agent A final consumer candidate SHA + required CI green.
-2. Real Pixel WAIKE→Hub→gunnchAI→Nearby Edge journey (ADB after Agent A).
-3. Owner usability + disabled-user a11y validation.
-4. Owner merge authorization — **DO NOT MERGE** #20 / #21 / this child / #54.
-5. Exact-head WAIKE CI on final child tip.
+1. Agent A required CI green on PR #55.
+2. Full Hub→Nearby Edge execute provenance on Pixel CDP.
+3. Exact-head WAIKE CI green on final child tip.
+4. Owner usability + disabled-user a11y validation.
+5. Owner merge authorization — **DO NOT MERGE** #20 / #21 / #22 / #54 / #55.
 
 ## Owner review checklist — unanswered
 ```text

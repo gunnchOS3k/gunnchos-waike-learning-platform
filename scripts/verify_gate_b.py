@@ -72,7 +72,7 @@ def main() -> int:
         "GATE_B_REQUIRED_TESTS_SKIPPED": None,
         "gunnchai": {
             "repo": "https://github.com/gunnchOS3k/gunnchAI3k",
-            "discovered_sha": "851e7916d6d5c7da23a8f30dba6bdfd389daa8ac",
+            "discovered_sha": "164bdb7e55b6cac305baee49e72ca70795c472c4",
             "ci_provider": "FakeGunnchAIProvider",
         },
         "claim_boundary": {

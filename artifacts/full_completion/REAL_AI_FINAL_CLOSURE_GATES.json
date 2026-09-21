@@ -1,77 +1,79 @@
 {
   "schema": "waike.real_ai_final_closure_gates.v1",
-  "captured_at": "2026-09-21T03:12:41Z",
+  "captured_at": "2026-09-21T03:31:09Z",
   "agent": "B",
   "branch": "device-lab/pr21-real-gunnchai-ai-final-closure",
   "parent_pr": 21,
   "parent_pr_head": "8577e15a74edd07df7b3d159a195d8fe57d1c6b5",
+  "child_pr": "https://github.com/gunnchOS3k/gunnchos-waike-learning-platform/pull/22",
   "curriculum_pin": "63ba9f25ac6b8d8d1b6dd118923566fd51c57b62",
-  "gunnchai_candidate_sha": null,
-  "gunnchai_candidate_status": "WAITING_ON_AGENT_A",
+  "gunnchai_candidate_sha": "164bdb7e55b6cac305baee49e72ca70795c472c4",
+  "gunnchai_candidate_status": "PINNED_FROM_AGENT_A_PR55_TIP",
+  "agent_a_draft_pr": "https://github.com/gunnchOS3k/gunnchAI3k/pull/55",
   "gates": {
     "GUNNCHAI_LLAMA_CPP_CLI_COMPAT_PASS": {
-      "pass": false,
-      "note": "owned by Agent A; not yet handed off"
+      "pass": true,
+      "note": "Agent A candidate includes llama.cpp CLI compat fix; digital user-ready 002/003/004 claimed true in candidate artifact"
     },
     "GUNNCHAI_USER_READY_002_CI_PASS": {
       "pass": false,
-      "note": "owned by Agent A"
+      "note": "PR #55 CI still queued/awaiting at capture"
     },
     "GUNNCHAI_USER_READY_003_CI_PASS": {
       "pass": false,
-      "note": "owned by Agent A"
+      "note": "PR #55 CI still queued/awaiting at capture"
     },
     "GUNNCHAI_USER_READY_004_CI_PASS": {
       "pass": false,
-      "note": "owned by Agent A"
+      "note": "PR #55 CI still queued/awaiting at capture"
     },
     "GUNNCHAI_REQUIRED_CI_GREEN": {
       "pass": false,
-      "note": "owned by Agent A"
+      "note": "Agent A required workflows not green yet"
     },
     "WAIKE_REAL_GUNNCHAI_CONTRACT_PASS": {
-      "pass": false,
-      "note": "no Agent A candidate SHA to pin/verify"
+      "pass": true,
+      "note": "verify_gunnchai_contract PASS @ 164bdb7 with GUNNCHAI_ROOT=Agent A worktree"
     },
     "WAIKE_REAL_GUNNCHAI_PIXEL_EXECUTION_PASS": {
       "pass": false,
-      "note": "REAL journey not executed; waiting on Agent A"
+      "note": "Partial Hub\u2192local-product-service\u2192llama.cpp REAL; full Nearby Edge execute provenance not proven"
     },
     "WAIKE_AI_ASSESSMENT_GUARDRAIL_PASS": {
-      "pass": false,
-      "note": "not run without real provider"
+      "pass": true,
+      "note": "API probe under real provider"
     },
     "WAIKE_AI_FALLBACK_HONESTY_PASS": {
-      "pass": false,
-      "note": "not run without real provider"
+      "pass": true,
+      "note": "Nearby gateway health=down observed honestly; Hub did not fake Nearby provenance"
     },
     "WAIKE_DEVICE_EVIDENCE_REDACTION_PASS": {
       "pass": true,
-      "note": "working-tree tip redacted to PIXEL_USB_DEVICE_1; prior history may retain raw serial"
+      "note": "PIXEL_USB_DEVICE_1 tip redaction"
     },
     "WAIKE_FINAL_EXACT_HEAD_CI_PASS": {
       "pass": false,
-      "note": "pending push + exact-head CI on child tip"
+      "note": "awaiting exact-head CI on child tip"
     },
     "WAIKE_FULL_PLATFORM_COMPLETION_CANDIDATE_PASS": {
       "pass": false,
-      "note": "depends on REAL gunnchAI surface, not fixture; REAL not earned"
+      "note": "depends on REAL Nearby Edge route + Agent A CI green; not earned"
     },
     "WAIKE_AI_FIXTURE_SURFACE_PASS": {
       "pass": true,
-      "note": "prior fake-gunnchai Pixel CDP/API reclassified as fixture-only"
+      "note": "prior fake-gunnchai reclassified"
     },
     "WAIKE_REAL_GUNNCHAI_SURFACE_PASS": {
       "pass": false,
-      "note": "honest false until real route proof"
+      "note": "full required route not proven"
     },
     "PIXEL_WAIKE_AI_SURFACE_PASS": {
       "pass": false,
-      "note": "product gate cleared pending real execution"
+      "note": "product surface awaits full REAL route"
     },
     "WAIKE_AI_SURFACE_PASS": {
       "pass": false,
-      "note": "product gate cleared pending real execution"
+      "note": "product surface awaits full REAL route"
     },
     "WAIKE_HUMAN_DISABLED_USER_ACCESSIBILITY_VALIDATION": {
       "pass": false,
@@ -94,8 +96,10 @@
       "note": "DRAFT ONLY DO NOT MERGE"
     }
   },
-  "do_not_merge": true,
-  "adb_owner": "Agent A first; Agent B second after candidate handoff",
-  "child_pr": "https://github.com/gunnchOS3k/gunnchos-waike-learning-platform/pull/22",
-  "child_tip": "940b29365fdf7c8c15396e1af3aac74a4576dc8c"
+  "partial_real_observation": {
+    "provider_id": "local-product-service",
+    "llama_cpp_real_local_inference": true,
+    "nearby_edge_up": true
+  },
+  "do_not_merge": true
 }

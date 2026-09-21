@@ -1,10 +1,10 @@
 {
   "schema": "gate_b_gunnchai_contract_snapshot_v1",
-  "generated_utc": "2026-09-20T17:02:14Z",
+  "generated_utc": "2026-09-21T03:14:13Z",
   "status": "PASS",
-  "expected_sha": "851e7916d6d5c7da23a8f30dba6bdfd389daa8ac",
-  "observed_sha": "851e7916d6d5c7da23a8f30dba6bdfd389daa8ac",
-  "gunnchai_root": "/private/tmp/gunnchai-pin-candidate-final",
+  "expected_sha": "164bdb7e55b6cac305baee49e72ca70795c472c4",
+  "observed_sha": "164bdb7e55b6cac305baee49e72ca70795c472c4",
+  "gunnchai_root": "/Users/gunnchos/Downloads/gunnchos-7gc-research-product-spine/repos/gunnchAI3k/.worktrees/pr54-llamacpp-cli-compat-closure",
   "repo": "https://github.com/gunnchOS3k/gunnchAI3k",
   "package": "gunnchai3k",
   "key_file_sha256": {
@@ -84,7 +84,7 @@
   "adapter_cheat_pattern_count": 8,
   "provider_status": {
     "repo": "https://github.com/gunnchOS3k/gunnchAI3k",
-    "sha": "851e7916d6d5c7da23a8f30dba6bdfd389daa8ac",
+    "sha": "164bdb7e55b6cac305baee49e72ca70795c472c4",
     "package": "gunnchai3k",
     "modes": [
       "EDUCATOR_COPILOT",
@@ -129,13 +129,13 @@
       "local": {
         "provider_id": "local-product-service",
         "available": true,
-        "gunnchai_root": "/tmp/gunnchai-pin-candidate-final",
-        "cli": "/tmp/gunnchai-pin-candidate-final/src/system-layer/product_service/cli.ts",
+        "gunnchai_root": "/Users/gunnchos/Downloads/gunnchos-7gc-research-product-spine/repos/gunnchAI3k/.worktrees/pr54-llamacpp-cli-compat-closure",
+        "cli": "/Users/gunnchos/Downloads/gunnchos-7gc-research-product-spine/repos/gunnchAI3k/.worktrees/pr54-llamacpp-cli-compat-closure/src/system-layer/product_service/cli.ts",
         "probe": {
           "cli_present": true,
-          "cli": "/tmp/gunnchai-pin-candidate-final/src/system-layer/product_service/cli.ts",
-          "gunnchai_root": "/tmp/gunnchai-pin-candidate-final",
-          "gunnchai_sha_expected": "851e7916d6d5c7da23a8f30dba6bdfd389daa8ac",
+          "cli": "/Users/gunnchos/Downloads/gunnchos-7gc-research-product-spine/repos/gunnchAI3k/.worktrees/pr54-llamacpp-cli-compat-closure/src/system-layer/product_service/cli.ts",
+          "gunnchai_root": "/Users/gunnchos/Downloads/gunnchos-7gc-research-product-spine/repos/gunnchAI3k/.worktrees/pr54-llamacpp-cli-compat-closure",
+          "gunnchai_sha_expected": "164bdb7e55b6cac305baee49e72ca70795c472c4",
           "assist_executed": false,
           "claims_local_inference": false
         },
@@ -151,9 +151,9 @@
     },
     "probe": {
       "cli_present": true,
-      "cli": "/tmp/gunnchai-pin-candidate-final/src/system-layer/product_service/cli.ts",
-      "gunnchai_root": "/tmp/gunnchai-pin-candidate-final",
-      "gunnchai_sha_expected": "851e7916d6d5c7da23a8f30dba6bdfd389daa8ac",
+      "cli": "/Users/gunnchos/Downloads/gunnchos-7gc-research-product-spine/repos/gunnchAI3k/.worktrees/pr54-llamacpp-cli-compat-closure/src/system-layer/product_service/cli.ts",
+      "gunnchai_root": "/Users/gunnchos/Downloads/gunnchos-7gc-research-product-spine/repos/gunnchAI3k/.worktrees/pr54-llamacpp-cli-compat-closure",
+      "gunnchai_sha_expected": "164bdb7e55b6cac305baee49e72ca70795c472c4",
       "assist_executed": false,
       "claims_local_inference": false
     }

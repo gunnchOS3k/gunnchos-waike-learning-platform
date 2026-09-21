@@ -1,49 +1,88 @@
 {
   "schema": "waike.real_gunnchai_ai_journey.v1",
-  "captured_at": "2026-09-21T03:00:22Z",
+  "captured_at": "2026-09-21T03:31:09Z",
   "agent": "B",
   "device_alias": "PIXEL_USB_DEVICE_1",
-  "status": "NOT_EXECUTED",
-  "blocker": "WAITING_ON_AGENT_A_FINAL_CONSUMER_CANDIDATE",
-  "agent_a_branch": "integration/pr54-llamacpp-cli-compat-closure",
-  "agent_a_candidate_sha": null,
-  "agent_a_candidate_artifact": "GUNNCHAI_FINAL_CONSUMER_CANDIDATE.json",
-  "required_route": [
-    "Pixel WAIKE UI",
-    "Hub AI",
-    "gunnchAI gateway",
-    "Nearby Edge",
-    "Mac NearbyEdgeServer",
-    "real qualified provider",
-    "provenance",
-    "UI"
-  ],
+  "gunnchai_pin": "164bdb7e55b6cac305baee49e72ca70795c472c4",
+  "agent_a_pr": "https://github.com/gunnchOS3k/gunnchAI3k/pull/55",
+  "status": "EXECUTED_PARTIAL",
   "constraints": {
-    "WAIKE_ALLOW_FAKE_AI": "0_or_unset",
+    "WAIKE_ALLOW_FAKE_AI": "0",
     "no_synthetic_bypass": true,
     "no_fake_gunnchai": true,
     "do_not_pin_aa61e9": true,
     "curriculum_pin": "63ba9f25ac6b8d8d1b6dd118923566fd51c57b62"
   },
+  "hub_health": {
+    "status_code": 200
+  },
+  "nearby_edge_health": {
+    "status_code": 200,
+    "body": {
+      "schema": "gunnchai.nearby_edge.healthz.v1",
+      "status": "ok",
+      "transport": "ADB_REVERSE",
+      "forbid_unauthenticated_lan": true,
+      "on_device_local": false,
+      "adb_reverse_is_not_on_device": true,
+      "production_default": false,
+      "health": "down"
+    }
+  },
+  "route_attempts": {
+    "login": {
+      "status_code": 200,
+      "ok": true
+    },
+    "benign_tutoring_api": {
+      "status_code": 200,
+      "ok": true,
+      "provider_id": "local-product-service",
+      "is_fake": false,
+      "text_len": 1075,
+      "mentions_llama_cpp_real": true,
+      "disclosure_present": true
+    },
+    "assessment_guardrail_api": {
+      "status_code": 200,
+      "provider_id": "local-product-service",
+      "refused": true,
+      "looks_refused_or_safe": true,
+      "text_len": 138
+    }
+  },
   "cdp_scenarios": {
     "benign_tutoring_nearby_mac_truthful_label": {
-      "status": "NOT_RUN"
+      "status": "NOT_STABLE",
+      "note": "CDP deferred due to service drop; API path earned real local-product-service+llama.cpp"
     },
     "assessment_sensitive_guardrail": {
-      "status": "NOT_RUN"
+      "status": "API_PROBED"
     },
     "fallback_unavailable": {
-      "status": "NOT_RUN"
+      "status": "OBSERVED_NEARBY_GATEWAY_DOWN",
+      "nearby_edge_gateway_health": "down"
     },
     "lifecycle_bg_fg": {
       "status": "NOT_RUN"
     }
   },
+  "truth_labels": {
+    "nearby_mac_is_not_on_device": true,
+    "on_device_inference": false,
+    "fake_provider_used": false,
+    "hub_provider_id": "local-product-service",
+    "nearby_edge_listening": true,
+    "hub_to_nearby_edge_execute_provenance_proven": false,
+    "real_local_product_service_llama_observed": true,
+    "note": "Partial real path: Hub\u2192local-product-service\u2192llama.cpp REAL under WAIKE_ALLOW_FAKE_AI=0. NearbyEdgeServer listening with on_device_local=false but gateway health down; Hub did not use Nearby execute. Full required route NOT claimed."
+  },
+  "pass": false,
+  "blocker": "Full Pixel\u2192Hub\u2192gunnchAI\u2192NearbyEdge\u2192qualified-provider provenance route not proven; partial real local-product-service+llama.cpp observed.",
   "secrets_policy": {
     "no_passwords": true,
     "no_tokens": true,
     "no_raw_serial": true,
     "no_notifications": true
-  },
-  "pass": false
+  }
 }
