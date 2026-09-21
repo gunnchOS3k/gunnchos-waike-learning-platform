@@ -1,7 +1,7 @@
 {
   "schema": "waike.full_platform_gates.v1",
-  "captured_at": "2026-09-20T18:58:08Z",
-  "branch": "device-lab/pr20-final-curriculum-ai-pixel-closure",
+  "captured_at": "2026-09-21T03:00:22Z",
+  "branch": "device-lab/pr21-real-gunnchai-ai-final-closure",
   "parent_pr": 20,
   "curriculum_pin": "63ba9f25ac6b8d8d1b6dd118923566fd51c57b62",
   "gunnchai_pin": "851e7916d6d5c7da23a8f30dba6bdfd389daa8ac",
@@ -56,8 +56,8 @@
       "note": null
     },
     "WAIKE_AI_SURFACE_PASS": {
-      "pass": true,
-      "note": "hub-served on Pixel; Nearby Mac \u2260 on-device"
+      "pass": false,
+      "note": "reclassified: prior fake-gunnchai evidence is fixture-only; REAL not earned"
     },
     "WAIKE_GUNNCHAI_CONTRACT_PASS": {
       "pass": true,
@@ -88,8 +88,8 @@
       "note": null
     },
     "WAIKE_FULL_PLATFORM_COMPLETION_CANDIDATE_PASS": {
-      "pass": true,
-      "note": "Gate C+D AUTOMATED_PIPELINE_PASS this-run; owner human validation + MERGE_AUTHORIZED still open; linux/macos native this-run artifacts not produced on this host"
+      "pass": false,
+      "note": "completion candidate depends on REAL gunnchAI surface, not fixture"
     },
     "WAIKE_HUMAN_DISABLED_USER_ACCESSIBILITY_VALIDATION": {
       "pass": false,
@@ -110,6 +110,14 @@
     "WAIKE_MERGE_AUTHORIZED": {
       "pass": false,
       "note": "DRAFT ONLY DO NOT MERGE"
+    },
+    "WAIKE_AI_FIXTURE_SURFACE_PASS": {
+      "pass": true,
+      "note": "prior WAIKE_ALLOW_FAKE_AI=1 / fake-gunnchai CDP+API evidence"
+    },
+    "WAIKE_REAL_GUNNCHAI_SURFACE_PASS": {
+      "pass": false,
+      "note": "waiting on Agent A candidate + real Nearby Edge journey"
     }
   },
   "pixel_tokens": {
@@ -129,16 +137,19 @@
     "PIXEL_WAIKE_OFFLINE_RESTART_RECONNECT_PASS": true,
     "PIXEL_ACCESSIBILITY_MECHANICS_PASS": true,
     "PIXEL_WAIKE_STABILITY_PASS": true,
-    "PIXEL_WAIKE_AI_SURFACE_PASS": true,
+    "PIXEL_WAIKE_AI_SURFACE_PASS": false,
     "WAIKE_ALL_CONTENT_ALL_ROLE_PIXEL_PILOT_PASS": true,
     "gunnchai_pin": "851e7916d6d5c7da23a8f30dba6bdfd389daa8ac",
-    "driver": "chrome_cdp"
+    "driver": "chrome_cdp",
+    "WAIKE_AI_FIXTURE_SURFACE_PASS": true,
+    "WAIKE_REAL_GUNNCHAI_SURFACE_PASS": false
   },
   "delivery_model": "FULL_VIA_ADAPTER",
   "truth_labels": {
     "nearby_mac_is_not_on_device": true,
     "on_device_inference": false,
-    "ai_surface": "hub-served tutor via adb reverse + CDP DOM"
+    "ai_surface": "fixture-only prior; REAL pending Agent A candidate",
+    "fake_provider_is_not_product_ai": true
   },
   "gate_c_status": "AUTOMATED_PIPELINE_PASS",
   "gate_d_status": "AUTOMATED_PIPELINE_PASS",
@@ -148,5 +159,6 @@
     "linux_ok": false,
     "macos_ok": false,
     "note": "GATE_D_NATIVE_ARTIFACT_MANIFEST this-run linux/macos false on this host; Gate D require_native unset so automation still passes"
-  }
+  },
+  "real_ai_wave": "pr21-real-gunnchai-ai-final-closure"
 }

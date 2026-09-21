@@ -1,0 +1,99 @@
+{
+  "schema": "waike.real_ai_final_closure_gates.v1",
+  "captured_at": "2026-09-21T03:00:22Z",
+  "agent": "B",
+  "branch": "device-lab/pr21-real-gunnchai-ai-final-closure",
+  "parent_pr": 21,
+  "parent_pr_head": "8577e15a74edd07df7b3d159a195d8fe57d1c6b5",
+  "curriculum_pin": "63ba9f25ac6b8d8d1b6dd118923566fd51c57b62",
+  "gunnchai_candidate_sha": null,
+  "gunnchai_candidate_status": "WAITING_ON_AGENT_A",
+  "gates": {
+    "GUNNCHAI_LLAMA_CPP_CLI_COMPAT_PASS": {
+      "pass": false,
+      "note": "owned by Agent A; not yet handed off"
+    },
+    "GUNNCHAI_USER_READY_002_CI_PASS": {
+      "pass": false,
+      "note": "owned by Agent A"
+    },
+    "GUNNCHAI_USER_READY_003_CI_PASS": {
+      "pass": false,
+      "note": "owned by Agent A"
+    },
+    "GUNNCHAI_USER_READY_004_CI_PASS": {
+      "pass": false,
+      "note": "owned by Agent A"
+    },
+    "GUNNCHAI_REQUIRED_CI_GREEN": {
+      "pass": false,
+      "note": "owned by Agent A"
+    },
+    "WAIKE_REAL_GUNNCHAI_CONTRACT_PASS": {
+      "pass": false,
+      "note": "no Agent A candidate SHA to pin/verify"
+    },
+    "WAIKE_REAL_GUNNCHAI_PIXEL_EXECUTION_PASS": {
+      "pass": false,
+      "note": "REAL journey not executed; waiting on Agent A"
+    },
+    "WAIKE_AI_ASSESSMENT_GUARDRAIL_PASS": {
+      "pass": false,
+      "note": "not run without real provider"
+    },
+    "WAIKE_AI_FALLBACK_HONESTY_PASS": {
+      "pass": false,
+      "note": "not run without real provider"
+    },
+    "WAIKE_DEVICE_EVIDENCE_REDACTION_PASS": {
+      "pass": true,
+      "note": "working-tree tip redacted to PIXEL_USB_DEVICE_1; prior history may retain raw serial"
+    },
+    "WAIKE_FINAL_EXACT_HEAD_CI_PASS": {
+      "pass": false,
+      "note": "pending push + exact-head CI on child tip"
+    },
+    "WAIKE_FULL_PLATFORM_COMPLETION_CANDIDATE_PASS": {
+      "pass": false,
+      "note": "depends on REAL gunnchAI surface, not fixture; REAL not earned"
+    },
+    "WAIKE_AI_FIXTURE_SURFACE_PASS": {
+      "pass": true,
+      "note": "prior fake-gunnchai Pixel CDP/API reclassified as fixture-only"
+    },
+    "WAIKE_REAL_GUNNCHAI_SURFACE_PASS": {
+      "pass": false,
+      "note": "honest false until real route proof"
+    },
+    "PIXEL_WAIKE_AI_SURFACE_PASS": {
+      "pass": false,
+      "note": "product gate cleared pending real execution"
+    },
+    "WAIKE_AI_SURFACE_PASS": {
+      "pass": false,
+      "note": "product gate cleared pending real execution"
+    },
+    "WAIKE_HUMAN_DISABLED_USER_ACCESSIBILITY_VALIDATION": {
+      "pass": false,
+      "note": "owner"
+    },
+    "WAIKE_HUMAN_LEARNER_USABILITY_PASS": {
+      "pass": false,
+      "note": "owner"
+    },
+    "WAIKE_HUMAN_INSTRUCTOR_USABILITY_PASS": {
+      "pass": false,
+      "note": "owner"
+    },
+    "WAIKE_HUMAN_ADMIN_USABILITY_PASS": {
+      "pass": false,
+      "note": "owner"
+    },
+    "WAIKE_MERGE_AUTHORIZED": {
+      "pass": false,
+      "note": "DRAFT ONLY DO NOT MERGE"
+    }
+  },
+  "do_not_merge": true,
+  "adb_owner": "Agent A first; Agent B second after candidate handoff"
+}

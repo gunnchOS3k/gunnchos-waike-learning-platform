@@ -1,0 +1,49 @@
+{
+  "schema": "waike.real_gunnchai_ai_journey.v1",
+  "captured_at": "2026-09-21T03:00:22Z",
+  "agent": "B",
+  "device_alias": "PIXEL_USB_DEVICE_1",
+  "status": "NOT_EXECUTED",
+  "blocker": "WAITING_ON_AGENT_A_FINAL_CONSUMER_CANDIDATE",
+  "agent_a_branch": "integration/pr54-llamacpp-cli-compat-closure",
+  "agent_a_candidate_sha": null,
+  "agent_a_candidate_artifact": "GUNNCHAI_FINAL_CONSUMER_CANDIDATE.json",
+  "required_route": [
+    "Pixel WAIKE UI",
+    "Hub AI",
+    "gunnchAI gateway",
+    "Nearby Edge",
+    "Mac NearbyEdgeServer",
+    "real qualified provider",
+    "provenance",
+    "UI"
+  ],
+  "constraints": {
+    "WAIKE_ALLOW_FAKE_AI": "0_or_unset",
+    "no_synthetic_bypass": true,
+    "no_fake_gunnchai": true,
+    "do_not_pin_aa61e9": true,
+    "curriculum_pin": "63ba9f25ac6b8d8d1b6dd118923566fd51c57b62"
+  },
+  "cdp_scenarios": {
+    "benign_tutoring_nearby_mac_truthful_label": {
+      "status": "NOT_RUN"
+    },
+    "assessment_sensitive_guardrail": {
+      "status": "NOT_RUN"
+    },
+    "fallback_unavailable": {
+      "status": "NOT_RUN"
+    },
+    "lifecycle_bg_fg": {
+      "status": "NOT_RUN"
+    }
+  },
+  "secrets_policy": {
+    "no_passwords": true,
+    "no_tokens": true,
+    "no_raw_serial": true,
+    "no_notifications": true
+  },
+  "pass": false
+}

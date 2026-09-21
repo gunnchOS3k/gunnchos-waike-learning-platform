@@ -1,6 +1,6 @@
 {
   "captured_at": "2026-09-20T17:01:07Z",
-  "pixel_ai_surface_pass": true,
+  "pixel_ai_surface_pass": false,
   "api": {
     "policy": {
       "policy": "AI_ALLOWED",
@@ -89,5 +89,16 @@
     }
   },
   "nearby_mac_is_not_on_device": true,
-  "on_device_inference": false
+  "on_device_inference": false,
+  "reclassification": {
+    "captured_at": "2026-09-21T03:00:42Z",
+    "surface_class": "FIXTURE_ONLY",
+    "WAIKE_AI_FIXTURE_SURFACE_PASS": true,
+    "counts_for_product_PIXEL_WAIKE_AI_SURFACE_PASS": false,
+    "counts_for_WAIKE_REAL_GUNNCHAI_SURFACE_PASS": false,
+    "provider_id": "fake-gunnchai",
+    "env": "WAIKE_ALLOW_FAKE_AI=1",
+    "note": "Retained as fixture evidence; not product REAL gunnchAI proof."
+  },
+  "fixture_ai_surface_pass": true
 }
