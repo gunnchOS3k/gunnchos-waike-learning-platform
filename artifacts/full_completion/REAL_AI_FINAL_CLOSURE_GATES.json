@@ -1,6 +1,6 @@
 {
   "schema": "waike.real_ai_final_closure_gates.v1",
-  "captured_at": "2026-09-21T04:17:00Z",
+  "captured_at": "2026-09-21T05:21:52Z",
   "agent": "B",
   "branch": "device-lab/pr21-real-gunnchai-ai-final-closure",
   "parent_pr": 21,
@@ -52,12 +52,12 @@
       "note": "PIXEL_USB_DEVICE_1 alias only; no raw serial"
     },
     "WAIKE_FINAL_EXACT_HEAD_CI_PASS": {
-      "pass": false,
-      "note": "PR #22 exact-head: adversarial-final, clean-room, gunnchai-acceptance FAIL; verify-gate-c pending"
+      "pass": true,
+      "note": "PR #22 ccccfaf: Gate C, Gate D/verify-gate-d, clean-room, gunnchai-acceptance, adversarial-final, Device Lab aarch64 Linux + glibc236, Windows Pilot 0 green. Pin e2d1adc."
     },
     "WAIKE_FULL_PLATFORM_COMPLETION_CANDIDATE_PASS": {
-      "pass": false,
-      "note": "Real Nearby Edge proof earned; blocked by PR #22 exact-head CI failures"
+      "pass": true,
+      "note": "Exact-head CI green and real Nearby Edge AI gates true. Human gates and MERGE_AUTHORIZED remain false. DO NOT MERGE."
     },
     "WAIKE_AI_FIXTURE_SURFACE_PASS": {
       "pass": true,
@@ -104,5 +104,5 @@
     "model_id": "smollm2-135m-instruct-q4_k_m"
   },
   "do_not_merge": true,
-  "child_tip": "5a87ee709960ac939d483f5f2c7699f1e3f15807"
+  "child_tip": "ccccfafcfeb634cfafb9cdaf87582ac3769e827f"
 }
