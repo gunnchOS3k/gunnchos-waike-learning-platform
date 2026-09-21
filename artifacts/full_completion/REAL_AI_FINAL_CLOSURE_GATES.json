@@ -1,6 +1,6 @@
 {
   "schema": "waike.real_ai_final_closure_gates.v1",
-  "captured_at": "2026-09-21T03:32:34Z",
+  "captured_at": "2026-09-21T03:32:46Z",
   "agent": "B",
   "branch": "device-lab/pr21-real-gunnchai-ai-final-closure",
   "parent_pr": 21,
@@ -102,5 +102,5 @@
     "nearby_edge_up": true
   },
   "do_not_merge": true,
-  "child_tip": "3dd13a43e98423cc79f3cd364dcd8f57977862fa"
+  "child_tip": "f71d1c5dd023b69e6072dc0d3e71d217db5932cf"
 }
