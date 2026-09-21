@@ -14,7 +14,6 @@
   "commits_missing_before": 17,
   "recovery_branch_sha": "1a5d8267f423885d721a66a22afcca48f191fb00",
   "child_tip_is_ancestor_of_recovery": true,
-  
   "diff_summary": {
     "files_changed": 38,
     "insertions": 1514,
@@ -24,8 +23,11 @@
   "duplicate_work_check": "PR21_already_on_main_via_4bdd257; PR22_tip_includes_PR21_head_8577e15; recovering_PR22_only_no_duplicate_PR21_branch",
   "conflicts": "none",
   "ci": {
-    "status": "pending_local_then_github",
-    "notes": "Local required tests run in recovery worktree; GitHub CI will run on draft PR."
+    "status": "partial",
+    "command": "make python-test / hub tests",
+    "detail": "full python-test needs full bootstrap; hub/contract checks attempted in recovery worktree",
+    "updated_at_utc": "2026-09-21T14:38:59Z",
+    "github_ci": "will_run_on_draft_pr"
   },
   "owner_landing_note": "DO NOT MERGE until owner approval. Prefer normal merge commit (no squash/rebase)."
 }
