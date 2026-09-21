@@ -1,8 +1,8 @@
 # Gate B — gunnchAI canonical contract snapshot
 
 - Status: `PASS`
-- Expected SHA: `164bdb7e55b6cac305baee49e72ca70795c472c4`
-- Observed SHA: `164bdb7e55b6cac305baee49e72ca70795c472c4`
+- Expected SHA: `e2d1adcb5847cf00282fb7fa64970254b14e344e`
+- Observed SHA: `e2d1adcb5847cf00282fb7fa64970254b14e344e`
 - GUNNCHAI_ROOT: `/Users/gunnchos/Downloads/gunnchos-7gc-research-product-spine/repos/gunnchAI3k/.worktrees/pr54-llamacpp-cli-compat-closure`
 - DEFAULT_RUNTIME_HAS_NO_FAKE_AI: `True`
 

@@ -4,7 +4,7 @@
   "branch": "device-lab/pr21-real-gunnchai-ai-final-closure",
   "parent_pr": 20,
   "curriculum_pin": "63ba9f25ac6b8d8d1b6dd118923566fd51c57b62",
-  "gunnchai_pin": "164bdb7e55b6cac305baee49e72ca70795c472c4",
+  "gunnchai_pin": "e2d1adcb5847cf00282fb7fa64970254b14e344e",
   "gunnchai_draft_pr": "https://github.com/gunnchOS3k/gunnchAI3k/pull/55",
   "gates": {
     "WAIKE_ALL_18_TRACKS_COMPILED_PASS": {
@@ -61,7 +61,7 @@
     },
     "WAIKE_GUNNCHAI_CONTRACT_PASS": {
       "pass": true,
-      "note": "164bdb7e55b6cac305baee49e72ca70795c472c4"
+      "note": "e2d1adcb5847cf00282fb7fa64970254b14e344e"
     },
     "WAIKE_GUNNCHOS_FIRST_PARTY_CONTRACT_PASS": {
       "pass": true,
@@ -139,7 +139,7 @@
     "PIXEL_WAIKE_STABILITY_PASS": true,
     "PIXEL_WAIKE_AI_SURFACE_PASS": false,
     "WAIKE_ALL_CONTENT_ALL_ROLE_PIXEL_PILOT_PASS": true,
-    "gunnchai_pin": "164bdb7e55b6cac305baee49e72ca70795c472c4",
+    "gunnchai_pin": "e2d1adcb5847cf00282fb7fa64970254b14e344e",
     "driver": "chrome_cdp",
     "WAIKE_AI_FIXTURE_SURFACE_PASS": true,
     "WAIKE_REAL_GUNNCHAI_SURFACE_PASS": false

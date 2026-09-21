@@ -2,8 +2,8 @@
   "schema": "gate_b_gunnchai_contract_snapshot_v1",
   "generated_utc": "2026-09-21T03:14:13Z",
   "status": "PASS",
-  "expected_sha": "164bdb7e55b6cac305baee49e72ca70795c472c4",
-  "observed_sha": "164bdb7e55b6cac305baee49e72ca70795c472c4",
+  "expected_sha": "e2d1adcb5847cf00282fb7fa64970254b14e344e",
+  "observed_sha": "e2d1adcb5847cf00282fb7fa64970254b14e344e",
   "gunnchai_root": "/Users/gunnchos/Downloads/gunnchos-7gc-research-product-spine/repos/gunnchAI3k/.worktrees/pr54-llamacpp-cli-compat-closure",
   "repo": "https://github.com/gunnchOS3k/gunnchAI3k",
   "package": "gunnchai3k",
@@ -84,7 +84,7 @@
   "adapter_cheat_pattern_count": 8,
   "provider_status": {
     "repo": "https://github.com/gunnchOS3k/gunnchAI3k",
-    "sha": "164bdb7e55b6cac305baee49e72ca70795c472c4",
+    "sha": "e2d1adcb5847cf00282fb7fa64970254b14e344e",
     "package": "gunnchai3k",
     "modes": [
       "EDUCATOR_COPILOT",
@@ -135,7 +135,7 @@
           "cli_present": true,
           "cli": "/Users/gunnchos/Downloads/gunnchos-7gc-research-product-spine/repos/gunnchAI3k/.worktrees/pr54-llamacpp-cli-compat-closure/src/system-layer/product_service/cli.ts",
           "gunnchai_root": "/Users/gunnchos/Downloads/gunnchos-7gc-research-product-spine/repos/gunnchAI3k/.worktrees/pr54-llamacpp-cli-compat-closure",
-          "gunnchai_sha_expected": "164bdb7e55b6cac305baee49e72ca70795c472c4",
+          "gunnchai_sha_expected": "e2d1adcb5847cf00282fb7fa64970254b14e344e",
           "assist_executed": false,
           "claims_local_inference": false
         },
@@ -153,7 +153,7 @@
       "cli_present": true,
       "cli": "/Users/gunnchos/Downloads/gunnchos-7gc-research-product-spine/repos/gunnchAI3k/.worktrees/pr54-llamacpp-cli-compat-closure/src/system-layer/product_service/cli.ts",
       "gunnchai_root": "/Users/gunnchos/Downloads/gunnchos-7gc-research-product-spine/repos/gunnchAI3k/.worktrees/pr54-llamacpp-cli-compat-closure",
-      "gunnchai_sha_expected": "164bdb7e55b6cac305baee49e72ca70795c472c4",
+      "gunnchai_sha_expected": "e2d1adcb5847cf00282fb7fa64970254b14e344e",
       "assist_executed": false,
       "claims_local_inference": false
     }
