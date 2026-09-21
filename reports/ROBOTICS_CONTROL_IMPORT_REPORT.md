@@ -1,17 +1,17 @@
 # ROBOTICS_CONTROL Import Report
 
 - module_id: `ROBOTICS_CONTROL`
-- declared_pinned_commit: `fbf7685bc5686201ccaa0128ee83346d59b3d584`
-- observed_source_commit: `fbf7685bc5686201ccaa0128ee83346d59b3d584`
+- declared_pinned_commit: `63ba9f25ac6b8d8d1b6dd118923566fd51c57b62`
+- observed_source_commit: `63ba9f25ac6b8d8d1b6dd118923566fd51c57b62`
 - provenance_match: `true`
 - package_version: `1.0.0`
-- learner files: **76**
+- learner files: **77**
 - instructor files: **12**
-- learner zip sha256: `7fff901dc4f85e0197c238577cb6e23df8bbec40755fd4b6d26fc3d967d2ff4f`
-- instructor plaintext sha256: `adad2d42620a8ea5c06a82ebf6c5201de557937e5870d29098de8007939ff85d`
-- instructor ciphertext sha256 (non-reproducible): `a545fcf3d5e89bd316fb6ad4aa81df57305487a878d9ac3caedcf7e8eaf13da8`
+- learner zip sha256: `8715d1d929c91014847b68e80fb2fbacc4e766e5b45779ef306cda30e913fe97`
+- instructor plaintext sha256: `7a8857c61e6537d56357555f139ca96616b1dfd303f0a7cd32397a3188e283e3`
+- instructor ciphertext sha256 (non-reproducible): `173083dc9f5fbd144409ed0b489fd03c9a604b4b663a20b983894451cd41078c`
 - lessons indexed: 10
-- activity inventory: `{"assignments": 10, "discussions": 0, "groups": 1, "labs": 10, "lessons": 10, "outcomes": 4, "portfolio": 2, "quizzes": 10, "rubrics": 8}`
+- activity inventory: `{"assignments": 10, "discussions": 0, "groups": 1, "labs": 10, "lessons": 10, "outcomes": 4, "portfolio": 3, "quizzes": 10, "rubrics": 8}`
 
 ## Lessons
 

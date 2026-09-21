@@ -1,6 +1,6 @@
 # GATE_C_QTI_MATRIX
 
-Generated: 2026-09-20T08:32:05Z
+Generated: 2026-09-20T18:45:14Z
 
 - **standard**: `QTI 3 ASI subset for Gate A quiz engine`
 - **claim**: `NOT_FULL_QTI`

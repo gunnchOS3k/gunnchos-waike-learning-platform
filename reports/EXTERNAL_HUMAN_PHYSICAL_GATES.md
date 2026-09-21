@@ -1,6 +1,6 @@
 # External / Human / Physical Gates
 
-Generated: 2026-09-07T00:10:00Z
+Generated: 2026-09-20T18:51:43Z
 
 Gate D digital completion does **not** clear these:
 

@@ -176,7 +176,11 @@ export default function App() {
   const [password, setPassword] = useState("");
   const [siteId, setSiteId] = useState("site-alpha");
   const [homeCards, setHomeCards] = useState<SectionCard[]>([]);
-  const [sectionId] = useState("sec_alpha_dc_w01");
+  const [sectionId, setSectionId] = useState(
+    import.meta.env.VITE_PIXEL_PILOT === "true"
+      ? "sec_alpha_digital_confidence_pilot"
+      : "sec_alpha_dc_w01",
+  );
   const [dashboard, setDashboard] = useState<{
     metrics: { active_enrollments: number; submissions: number; ungraded: number };
   } | null>(null);
@@ -242,15 +246,19 @@ export default function App() {
   const hubUnavailable =
     hubResolution.status === "unavailable" ? hubResolution.reason : null;
   const isMock = hubResolution.status === "mock";
-  const user: SessionUser | null = session?.user ?? (isMock
-    ? {
-        user_id: mockActor.actorId,
-        username: mockActor.actorId,
-        display_name: mockActor.actorId,
-        site_id: "site-alpha",
-        roles: [mockActor.role],
-      }
-    : null);
+  // Stabilize mock SessionUser identity. A fresh object each render re-triggers the
+  // mode data-load effect (deps include user) and livelocks jsdom under Vitest.
+  const user: SessionUser | null = useMemo(() => {
+    if (session?.user) return session.user;
+    if (!isMock) return null;
+    return {
+      user_id: mockActor.actorId,
+      username: mockActor.actorId,
+      display_name: mockActor.actorId,
+      site_id: "site-alpha",
+      roles: [mockActor.role],
+    };
+  }, [session, isMock, mockActor.actorId, mockActor.role]);
   const primaryRole = resolvePrimaryRole(user?.roles);
   const needsLogin = hubResolution.status === "http" && !session;
   const isStaff =
@@ -271,6 +279,12 @@ export default function App() {
     online,
   });
   const syncUx = sync.ux;
+
+  const setMockActorRole = useCallback((actorId: string, role: HubActor["role"]) => {
+    setMockActor((prev) =>
+      prev.actorId === actorId && prev.role === role ? prev : { actorId, role },
+    );
+  }, []);
 
   useEffect(() => {
     if (!isTauri() || deviceOsNavApplied) return;
@@ -484,39 +498,74 @@ export default function App() {
 
   useEffect(() => {
     if (!hub || (!session && !isMock)) return;
+    let cancelled = false;
     if (mode === "home" && (primaryRole === "learner" || isMock)) {
-      void hub.learnerHome().then(setHomeCards).catch((err) => setError(String(err)));
+      void hub
+        .learnerHome()
+        .then((cards) => {
+          if (cancelled) return;
+          setHomeCards(cards);
+          const first = cards[0]?.section_id;
+          if (first) setSectionId(first);
+        })
+        .catch((err) => {
+          if (!cancelled) setError(String(err));
+        });
     }
     if (mode === "instruct") {
       void hub
         .instructorDashboard(sectionId)
-        .then((d) => setDashboard(d))
-        .catch((err) => setError(String(err)));
+        .then((d) => {
+          if (!cancelled) setDashboard(d);
+        })
+        .catch((err) => {
+          if (!cancelled) setError(String(err));
+        });
     }
     if (mode === "roster") {
-      void hub.roster(sectionId).then(setRoster).catch((err) => setError(String(err)));
+      void hub
+        .roster(sectionId)
+        .then((rows) => {
+          if (!cancelled) setRoster(rows);
+        })
+        .catch((err) => {
+          if (!cancelled) setError(String(err));
+        });
     }
     if (mode === "gradebook") {
       void hub
         .sectionGradebook(sectionId)
-        .then((g) =>
+        .then((g) => {
+          if (cancelled) return;
           setGradebookRows(
             g.rows.map((r) => ({
               learner_id: r.learner_id,
               display_name: r.display_name,
               overall_percent: r.overall_percent,
             })),
-          ),
-        )
-        .catch((err) => setError(String(err)));
+          );
+        })
+        .catch((err) => {
+          if (!cancelled) setError(String(err));
+        });
     }
     if (mode === "admin" && primaryRole === "site_admin") {
-      void hub.listUsers().then(setAdminUsers).catch((err) => setError(String(err)));
+      void hub
+        .listUsers()
+        .then((rows) => {
+          if (!cancelled) setAdminUsers(rows);
+        })
+        .catch((err) => {
+          if (!cancelled) setError(String(err));
+        });
     }
-    if (mode === "guardian" && (primaryRole === "guardian" || user?.roles.includes("guardian" as never))) {
+    const isGuardian =
+      primaryRole === "guardian" || Boolean(user?.roles?.includes("guardian" as never));
+    if (mode === "guardian" && isGuardian) {
       void hub
         .guardianLearners()
         .then(async (rows) => {
+          if (cancelled) return;
           setGuardianLearners(rows);
           if (rows[0]) {
             setGuardianOverview(await hub.guardianOverview(rows[0].learner_user_id));
@@ -524,9 +573,14 @@ export default function App() {
             setGuardianOverview(null);
           }
         })
-        .catch((err) => setError(String(err)));
+        .catch((err) => {
+          if (!cancelled) setError(String(err));
+        });
     }
-  }, [hub, session, isMock, mode, primaryRole, sectionId, user]);
+    return () => {
+      cancelled = true;
+    };
+  }, [hub, session, isMock, mode, primaryRole, sectionId, user?.user_id, user?.roles]);
 
   function HubUnavailablePanel({ title }: { title: string }) {
     return (
@@ -681,7 +735,7 @@ export default function App() {
                 className={mode === "home" ? "mode-active" : "ghost"}
                 data-testid="mode-home"
                 onClick={() => {
-                  if (isMock) setMockActor({ actorId: "learner-a", role: "learner" });
+                  if (isMock) setMockActorRole("learner-a", "learner");
                   setMode("home");
                 }}
               >
@@ -692,7 +746,7 @@ export default function App() {
                 className={mode === "assignments" ? "mode-active" : "ghost"}
                 data-testid="mode-assignments"
                 onClick={() => {
-                  if (isMock) setMockActor({ actorId: "learner-a", role: "learner" });
+                  if (isMock) setMockActorRole("learner-a", "learner");
                   setMode("assignments");
                 }}
               >
@@ -703,7 +757,7 @@ export default function App() {
                 className={mode === "activities" ? "mode-active" : "ghost"}
                 data-testid="mode-activities"
                 onClick={() => {
-                  if (isMock) setMockActor({ actorId: "learner-a", role: "learner" });
+                  if (isMock) setMockActorRole("learner-a", "learner");
                   setMode("activities");
                 }}
               >
@@ -714,7 +768,7 @@ export default function App() {
                 className={mode === "ai" ? "mode-active" : "ghost"}
                 data-testid="mode-ai"
                 onClick={() => {
-                  if (isMock) setMockActor({ actorId: "learner-a", role: "learner" });
+                  if (isMock) setMockActorRole("learner-a", "learner");
                   setMode("ai");
                 }}
               >
@@ -732,7 +786,7 @@ export default function App() {
                 className={mode === "instruct" ? "mode-active" : "ghost"}
                 data-testid="mode-instruct"
                 onClick={() => {
-                  if (isMock) setMockActor({ actorId: "instructor-1", role: "instructor" });
+                  if (isMock) setMockActorRole("instructor-1", "instructor");
                   setMode("instruct");
                 }}
               >
@@ -751,7 +805,7 @@ export default function App() {
                 className={mode === "instruct-activities" ? "mode-active" : "ghost"}
                 data-testid="mode-instruct-activities"
                 onClick={() => {
-                  if (isMock) setMockActor({ actorId: "instructor-1", role: "instructor" });
+                  if (isMock) setMockActorRole("instructor-1", "instructor");
                   setMode("instruct-activities");
                 }}
               >
@@ -762,7 +816,7 @@ export default function App() {
                 className={mode === "instruct-ai" ? "mode-active" : "ghost"}
                 data-testid="mode-instruct-ai"
                 onClick={() => {
-                  if (isMock) setMockActor({ actorId: "instructor-1", role: "instructor" });
+                  if (isMock) setMockActorRole("instructor-1", "instructor");
                   setMode("instruct-ai");
                 }}
               >

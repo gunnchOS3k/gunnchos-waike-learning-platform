@@ -99,6 +99,8 @@ def start_hub() -> subprocess.Popen:
             "WAIKE_PIXEL_PILOT": "true",
             "WAIKE_SEED_TEST_FIXTURES": "false",  # DB already seeded
             "PYTHONPATH": str(ROOT / "services" / "hub"),
+            "WAIKE_ALLOW_FAKE_AI": env.get("WAIKE_ALLOW_FAKE_AI", "1"),
+            "GUNNCHAI_PROVIDER": env.get("GUNNCHAI_PROVIDER", "fake"),
             "WAIKE_DEV_DB_KEY": env.get(
                 "WAIKE_DEV_DB_KEY",
                 "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef",

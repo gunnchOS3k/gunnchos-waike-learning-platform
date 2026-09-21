@@ -1,6 +1,6 @@
 {
-  "generated_utc": "2026-09-20T08:21:43Z",
-  "waike_pin": "fbf7685bc5686201ccaa0128ee83346d59b3d584",
+  "generated_utc": "2026-09-20T18:57:26Z",
+  "waike_pin": "63ba9f25ac6b8d8d1b6dd118923566fd51c57b62",
   "track_count": 18,
   "rows": [
     {
@@ -48,7 +48,7 @@
         "lessons": 10,
         "assignments": 10,
         "quizzes": 10,
-        "labs": 7,
+        "labs": 10,
         "rubrics": 8
       },
       "e2e": {
@@ -106,8 +106,8 @@
         "lessons": 10,
         "assignments": 10,
         "quizzes": 10,
-        "labs": 6,
-        "rubrics": 8
+        "labs": 14,
+        "rubrics": 11
       },
       "e2e": {
         "install": "PASS",
@@ -135,8 +135,8 @@
         "lessons": 10,
         "assignments": 10,
         "quizzes": 10,
-        "labs": 7,
-        "rubrics": 8
+        "labs": 13,
+        "rubrics": 11
       },
       "e2e": {
         "install": "PASS",

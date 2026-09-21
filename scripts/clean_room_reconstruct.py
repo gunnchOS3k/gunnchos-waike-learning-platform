@@ -15,8 +15,9 @@ REPORTS = ROOT / "reports"
 
 PINS = {
     "device_os": "4f02a48780d300a5d3a7758937b20e3bf9364d0d",
-    "waike": "fbf7685bc5686201ccaa0128ee83346d59b3d584",
-    "gunnchai": "c429750ff83b2a5344a6e1f40f5c7d27a863bf4d",
+    # Consumer curriculum pin: waike-research-ops PR #60 tip (not SEVEN_GC merge fbf7685).
+    "waike": "63ba9f25ac6b8d8d1b6dd118923566fd51c57b62",
+    "gunnchai": "851e7916d6d5c7da23a8f30dba6bdfd389daa8ac",
 }
 
 

@@ -1,6 +1,6 @@
 {
-  "observed_source_commit": "fbf7685bc5686201ccaa0128ee83346d59b3d584",
-  "pinned_commit": "fbf7685bc5686201ccaa0128ee83346d59b3d584",
+  "observed_source_commit": "63ba9f25ac6b8d8d1b6dd118923566fd51c57b62",
+  "pinned_commit": "63ba9f25ac6b8d8d1b6dd118923566fd51c57b62",
   "tracks": [
     {
       "activity_counts": {
@@ -57,10 +57,10 @@
         "assignments": 10,
         "discussions": 0,
         "groups": 1,
-        "labs": 7,
+        "labs": 10,
         "lessons": 10,
         "outcomes": 4,
-        "portfolio": 2,
+        "portfolio": 3,
         "quizzes": 10,
         "rubrics": 8
       },
@@ -69,7 +69,7 @@
       "has_ai_policy": false,
       "has_offline_pack": true,
       "instructor_file_count": 12,
-      "learner_file_count": 71,
+      "learner_file_count": 78,
       "rubric_outcome_coverage": {
         "has_outcomes": true,
         "has_portfolio": true,
@@ -110,7 +110,7 @@
         "labs": 10,
         "lessons": 10,
         "outcomes": 4,
-        "portfolio": 2,
+        "portfolio": 3,
         "quizzes": 10,
         "rubrics": 8
       },
@@ -119,7 +119,7 @@
       "has_ai_policy": true,
       "has_offline_pack": true,
       "instructor_file_count": 12,
-      "learner_file_count": 74,
+      "learner_file_count": 75,
       "rubric_outcome_coverage": {
         "has_outcomes": true,
         "has_portfolio": true,
@@ -157,19 +157,19 @@
         "assignments": 10,
         "discussions": 0,
         "groups": 1,
-        "labs": 6,
+        "labs": 14,
         "lessons": 10,
         "outcomes": 4,
-        "portfolio": 2,
+        "portfolio": 3,
         "quizzes": 10,
-        "rubrics": 8
+        "rubrics": 11
       },
       "digital_rc_package": "COMPUTER_NETWORKING",
       "digital_rc_package_exists": true,
-      "has_ai_policy": false,
+      "has_ai_policy": true,
       "has_offline_pack": true,
       "instructor_file_count": 12,
-      "learner_file_count": 69,
+      "learner_file_count": 106,
       "rubric_outcome_coverage": {
         "has_outcomes": true,
         "has_portfolio": true,
@@ -186,6 +186,7 @@
         "curriculum/digital_rc/COMPUTER_NETWORKING/instructor/week_06_notes.md"
       ],
       "sample_learner_paths": [
+        "curriculum/digital_rc/COMPUTER_NETWORKING/ai_use_policy.json",
         "curriculum/digital_rc/COMPUTER_NETWORKING/assessments/final_knowledge.json",
         "curriculum/digital_rc/COMPUTER_NETWORKING/assessments/final_practical.json",
         "curriculum/digital_rc/COMPUTER_NETWORKING/assessments/mid_course.json",
@@ -196,8 +197,7 @@
         "curriculum/digital_rc/COMPUTER_NETWORKING/assignments/a05.md",
         "curriculum/digital_rc/COMPUTER_NETWORKING/assignments/a06.md",
         "curriculum/digital_rc/COMPUTER_NETWORKING/assignments/a07.md",
-        "curriculum/digital_rc/COMPUTER_NETWORKING/assignments/a08.md",
-        "curriculum/digital_rc/COMPUTER_NETWORKING/assignments/a09.md"
+        "curriculum/digital_rc/COMPUTER_NETWORKING/assignments/a08.md"
       ],
       "source_kind": "digital_rc",
       "track": "NETWORKING_INFRA"
@@ -207,19 +207,19 @@
         "assignments": 10,
         "discussions": 0,
         "groups": 1,
-        "labs": 7,
+        "labs": 13,
         "lessons": 10,
         "outcomes": 4,
-        "portfolio": 2,
+        "portfolio": 3,
         "quizzes": 10,
-        "rubrics": 8
+        "rubrics": 11
       },
       "digital_rc_package": "CYBERSECURITY",
       "digital_rc_package_exists": true,
-      "has_ai_policy": false,
+      "has_ai_policy": true,
       "has_offline_pack": true,
       "instructor_file_count": 12,
-      "learner_file_count": 70,
+      "learner_file_count": 104,
       "rubric_outcome_coverage": {
         "has_outcomes": true,
         "has_portfolio": true,
@@ -236,6 +236,7 @@
         "curriculum/digital_rc/CYBERSECURITY/instructor/week_06_notes.md"
       ],
       "sample_learner_paths": [
+        "curriculum/digital_rc/CYBERSECURITY/ai_use_policy.json",
         "curriculum/digital_rc/CYBERSECURITY/assessments/final_knowledge.json",
         "curriculum/digital_rc/CYBERSECURITY/assessments/final_practical.json",
         "curriculum/digital_rc/CYBERSECURITY/assessments/mid_course.json",
@@ -246,8 +247,7 @@
         "curriculum/digital_rc/CYBERSECURITY/assignments/a05.md",
         "curriculum/digital_rc/CYBERSECURITY/assignments/a06.md",
         "curriculum/digital_rc/CYBERSECURITY/assignments/a07.md",
-        "curriculum/digital_rc/CYBERSECURITY/assignments/a08.md",
-        "curriculum/digital_rc/CYBERSECURITY/assignments/a09.md"
+        "curriculum/digital_rc/CYBERSECURITY/assignments/a08.md"
       ],
       "source_kind": "digital_rc",
       "track": "CYBER_SOC"
@@ -260,7 +260,7 @@
         "labs": 10,
         "lessons": 10,
         "outcomes": 4,
-        "portfolio": 2,
+        "portfolio": 3,
         "quizzes": 10,
         "rubrics": 8
       },
@@ -269,7 +269,7 @@
       "has_ai_policy": true,
       "has_offline_pack": true,
       "instructor_file_count": 14,
-      "learner_file_count": 74,
+      "learner_file_count": 75,
       "rubric_outcome_coverage": {
         "has_outcomes": true,
         "has_portfolio": true,
@@ -310,7 +310,7 @@
         "labs": 10,
         "lessons": 10,
         "outcomes": 4,
-        "portfolio": 2,
+        "portfolio": 3,
         "quizzes": 10,
         "rubrics": 8
       },
@@ -319,7 +319,7 @@
       "has_ai_policy": true,
       "has_offline_pack": true,
       "instructor_file_count": 12,
-      "learner_file_count": 75,
+      "learner_file_count": 76,
       "rubric_outcome_coverage": {
         "has_outcomes": true,
         "has_portfolio": true,
@@ -360,7 +360,7 @@
         "labs": 10,
         "lessons": 10,
         "outcomes": 4,
-        "portfolio": 2,
+        "portfolio": 3,
         "quizzes": 10,
         "rubrics": 8
       },
@@ -369,7 +369,7 @@
       "has_ai_policy": true,
       "has_offline_pack": true,
       "instructor_file_count": 12,
-      "learner_file_count": 73,
+      "learner_file_count": 84,
       "rubric_outcome_coverage": {
         "has_outcomes": true,
         "has_portfolio": true,
@@ -410,7 +410,7 @@
         "labs": 10,
         "lessons": 10,
         "outcomes": 4,
-        "portfolio": 2,
+        "portfolio": 3,
         "quizzes": 10,
         "rubrics": 8
       },
@@ -419,7 +419,7 @@
       "has_ai_policy": true,
       "has_offline_pack": true,
       "instructor_file_count": 12,
-      "learner_file_count": 74,
+      "learner_file_count": 75,
       "rubric_outcome_coverage": {
         "has_outcomes": true,
         "has_portfolio": true,
@@ -460,7 +460,7 @@
         "labs": 10,
         "lessons": 10,
         "outcomes": 4,
-        "portfolio": 2,
+        "portfolio": 3,
         "quizzes": 10,
         "rubrics": 8
       },
@@ -469,7 +469,7 @@
       "has_ai_policy": true,
       "has_offline_pack": true,
       "instructor_file_count": 12,
-      "learner_file_count": 74,
+      "learner_file_count": 75,
       "rubric_outcome_coverage": {
         "has_outcomes": true,
         "has_portfolio": true,
@@ -510,7 +510,7 @@
         "labs": 10,
         "lessons": 10,
         "outcomes": 4,
-        "portfolio": 2,
+        "portfolio": 3,
         "quizzes": 10,
         "rubrics": 8
       },
@@ -519,7 +519,7 @@
       "has_ai_policy": true,
       "has_offline_pack": true,
       "instructor_file_count": 12,
-      "learner_file_count": 73,
+      "learner_file_count": 74,
       "rubric_outcome_coverage": {
         "has_outcomes": true,
         "has_portfolio": true,
@@ -560,7 +560,7 @@
         "labs": 10,
         "lessons": 10,
         "outcomes": 4,
-        "portfolio": 2,
+        "portfolio": 3,
         "quizzes": 10,
         "rubrics": 8
       },
@@ -569,7 +569,7 @@
       "has_ai_policy": true,
       "has_offline_pack": true,
       "instructor_file_count": 12,
-      "learner_file_count": 77,
+      "learner_file_count": 78,
       "rubric_outcome_coverage": {
         "has_outcomes": true,
         "has_portfolio": true,
@@ -610,7 +610,7 @@
         "labs": 10,
         "lessons": 10,
         "outcomes": 4,
-        "portfolio": 2,
+        "portfolio": 3,
         "quizzes": 10,
         "rubrics": 8
       },
@@ -619,7 +619,7 @@
       "has_ai_policy": true,
       "has_offline_pack": true,
       "instructor_file_count": 12,
-      "learner_file_count": 73,
+      "learner_file_count": 74,
       "rubric_outcome_coverage": {
         "has_outcomes": true,
         "has_portfolio": true,
@@ -660,7 +660,7 @@
         "labs": 10,
         "lessons": 10,
         "outcomes": 4,
-        "portfolio": 2,
+        "portfolio": 3,
         "quizzes": 10,
         "rubrics": 8
       },
@@ -669,7 +669,7 @@
       "has_ai_policy": true,
       "has_offline_pack": true,
       "instructor_file_count": 14,
-      "learner_file_count": 75,
+      "learner_file_count": 76,
       "rubric_outcome_coverage": {
         "has_outcomes": true,
         "has_portfolio": true,
@@ -710,7 +710,7 @@
         "labs": 10,
         "lessons": 10,
         "outcomes": 4,
-        "portfolio": 2,
+        "portfolio": 3,
         "quizzes": 10,
         "rubrics": 8
       },
@@ -719,7 +719,7 @@
       "has_ai_policy": true,
       "has_offline_pack": true,
       "instructor_file_count": 12,
-      "learner_file_count": 73,
+      "learner_file_count": 74,
       "rubric_outcome_coverage": {
         "has_outcomes": true,
         "has_portfolio": true,
@@ -760,7 +760,7 @@
         "labs": 10,
         "lessons": 10,
         "outcomes": 4,
-        "portfolio": 2,
+        "portfolio": 3,
         "quizzes": 10,
         "rubrics": 8
       },
@@ -769,7 +769,7 @@
       "has_ai_policy": true,
       "has_offline_pack": true,
       "instructor_file_count": 12,
-      "learner_file_count": 73,
+      "learner_file_count": 84,
       "rubric_outcome_coverage": {
         "has_outcomes": true,
         "has_portfolio": true,
@@ -810,7 +810,7 @@
         "labs": 10,
         "lessons": 10,
         "outcomes": 4,
-        "portfolio": 2,
+        "portfolio": 3,
         "quizzes": 10,
         "rubrics": 8
       },
@@ -819,7 +819,7 @@
       "has_ai_policy": true,
       "has_offline_pack": true,
       "instructor_file_count": 12,
-      "learner_file_count": 73,
+      "learner_file_count": 74,
       "rubric_outcome_coverage": {
         "has_outcomes": true,
         "has_portfolio": true,
@@ -860,7 +860,7 @@
         "labs": 10,
         "lessons": 10,
         "outcomes": 4,
-        "portfolio": 2,
+        "portfolio": 3,
         "quizzes": 10,
         "rubrics": 8
       },
@@ -869,7 +869,7 @@
       "has_ai_policy": true,
       "has_offline_pack": true,
       "instructor_file_count": 12,
-      "learner_file_count": 73,
+      "learner_file_count": 74,
       "rubric_outcome_coverage": {
         "has_outcomes": true,
         "has_portfolio": true,
@@ -903,5 +903,5 @@
       "track": "DATA_VIZ_BI"
     }
   ],
-  "waike_root": "/Users/gunnchos/dev/waike-learning-os-workspace/waike-research-ops"
+  "waike_root": "/tmp/waike-ops-pin-candidate-63ba9f25"
 }

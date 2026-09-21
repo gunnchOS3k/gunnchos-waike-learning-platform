@@ -20,7 +20,7 @@ env:
   # Same documented development DB key used by Gate C/D / PR3 workflows (not production).
   WAIKE_DEV_DB_KEY: "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef"
   CARGO_TERM_COLOR: always
-  WAIKE_PIN_REF: "fbf7685bc5686201ccaa0128ee83346d59b3d584"
+  WAIKE_PIN_REF: "63ba9f25ac6b8d8d1b6dd118923566fd51c57b62"
 
 jobs:
   windows-pilot0-windows-2025:

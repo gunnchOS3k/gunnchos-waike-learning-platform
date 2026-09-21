@@ -21,7 +21,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 REPORTS = ROOT / "reports"
-EXPECTED_SHA = "c429750ff83b2a5344a6e1f40f5c7d27a863bf4d"
+EXPECTED_SHA = "851e7916d6d5c7da23a8f30dba6bdfd389daa8ac"
 EXPECTED_PACKAGE = "gunnchai3k"
 EXPECTED_REPO = "https://github.com/gunnchOS3k/gunnchAI3k"
 

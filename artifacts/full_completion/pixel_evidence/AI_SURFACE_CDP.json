@@ -1,0 +1,93 @@
+{
+  "captured_at": "2026-09-20T17:01:07Z",
+  "pixel_ai_surface_pass": true,
+  "api": {
+    "policy": {
+      "policy": "AI_ALLOWED",
+      "scope": "default",
+      "section_id": "sec_alpha_digital_confidence_pilot",
+      "assessment_id": null,
+      "activity_id": null,
+      "instructor_defined": {},
+      "allowed_learner_capabilities": [
+        "citation",
+        "explain",
+        "hint",
+        "lab_troubleshoot",
+        "misconception",
+        "navigate",
+        "reflect",
+        "remediation"
+      ],
+      "allowed_instructor_capabilities": [
+        "feedback_suggest",
+        "grading_triage",
+        "lesson_adapt",
+        "misconception_cluster",
+        "remediation_suggest",
+        "rubric_refine"
+      ],
+      "source": "default"
+    },
+    "assist_ok": true,
+    "assist": {
+      "ok": true,
+      "refused": false,
+      "provider_id": "fake-gunnchai",
+      "disclosure": "DISCLOSURE: LOCAL-ONLY for hint. No cloud model call is permitted (processingMode=local-only; userCloudConsent=false).",
+      "text_len": 121
+    },
+    "truth_labels": {
+      "gunnchai_pin": "851e7916d6d5c7da23a8f30dba6bdfd389daa8ac",
+      "hub_served_via_adb_reverse": true,
+      "on_device_inference": false,
+      "nearby_mac_edge_tab_observed": true,
+      "nearby_mac_is_not_on_device": true,
+      "claim": "PIXEL_WAIKE_AI_SURFACE = hub-served tutor UI/API on Pixel; NOT on-device gunnchAI"
+    }
+  },
+  "learner_cdp": {
+    "role": "learner",
+    "ok": true,
+    "steps": [
+      {
+        "step": "login",
+        "fill": {
+          "ok": true
+        },
+        "state": {
+          "hasLogout": true,
+          "hasLogin": false,
+          "banner": "Role: learner \u00b7 Pixel Learner Alpha \u00b7 site site-alpha \u00b7 WEB_MOBILE \u00b7 live Hub",
+          "body": "Skip to content\nWAIKE Learning OS\n\nLocal-first learning client. Packages are verified before trust. Multi-user identity and gradebook are live for DIGITAL_CONFIDENCE.\n\nRole: learner \u00b7 Pixel Learner Alpha \u00b7 site site-alpha \u00b7 WEB_MOBILE \u00b7 live Hub\nMenu\nInstall learner pack\nBack to module\nSign out (Pixel Learner Alpha)\nNot trusted\n\nVERIFY_BEFORE_TRUST\n\nOnline\nMy sections\nAI/ML and Edge AI Foundations"
+        },
+        "ok": true
+      },
+      {
+        "step": "home",
+        "cards": 0,
+        "body": "Skip to content\nWAIKE Learning OS\n\nLocal-first learning client. Packages are verified before trust. Multi-user identity and gradebook are live for DIGITAL_CONFIDENCE.\n\nRole: learner \u00b7 Pixel Learner Alpha \u00b7 site site-alpha \u00b7 WEB_MOBILE \u00b7 live Hub\nMenu\nInstall learner pack\nBack to module\nSign out (Pixel Learner Alpha)\nNot trusted\n\nVERIFY_BEFORE_TRUST\n\nOnline\nMy sections\nAI/ML and Edge AI Foundations \u2014 site-alpha (PX-AI_ML_EDGE-A)\nCloud and DevOps \u2014 site-alpha (PX-CLOUD_DEVO-A)\nCommunication, Profe"
+      },
+      {
+        "step": "ai",
+        "ask": {
+          "ok": true
+        },
+        "result": {
+          "result": "[fake:c5ee0afdf968] Hint: revisit the course materials for this section and try the next small step. (mode=LEARNER_TUTOR)\n\nprograms/ai_ml.md: # Ai Ml Apprenticeship track outline.\nprograms/ai_ml_edge.md: # AI/ML and Edge AI Foundations ## Course purpose Prepare WAIKE learners for industry-ready competence in **ai/ml and\nprograms/edge_ai_and_embedded_systems.md: # Edge Ai And Embedded Systems See `00_program_index.md` and flagship courses.\n\nDISCLOSURE: LOCAL-ONLY for hint. No cloud model call is permitted (processingMode=local-only; userCloudConsent=false).",
+          "error": "",
+          "policy": "Policy: AI_ALLOWED (default)",
+          "bodyHas18Hint": true
+        }
+      }
+    ],
+    "tracks_hint": {
+      "result": "[fake:c5ee0afdf968] Hint: revisit the course materials for this section and try the next small step. (mode=LEARNER_TUTOR)\n\nprograms/ai_ml.md: # Ai Ml Apprenticeship track outline.\nprograms/ai_ml_edge.md: # AI/ML and Edge AI Foundations ## Course purpose Prepare WAIKE learners for industry-ready competence in **ai/ml and\nprograms/edge_ai_and_embedded_systems.md: # Edge Ai And Embedded Systems See `00_program_index.md` and flagship courses.\n\nDISCLOSURE: LOCAL-ONLY for hint. No cloud model call is permitted (processingMode=local-only; userCloudConsent=false).",
+      "error": "",
+      "policy": "Policy: AI_ALLOWED (default)",
+      "bodyHas18Hint": true
+    }
+  },
+  "nearby_mac_is_not_on_device": true,
+  "on_device_inference": false
+}

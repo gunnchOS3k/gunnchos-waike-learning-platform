@@ -2,8 +2,8 @@
   "schema_version": "1.0.0",
   "source_repo": "waike-research-ops",
   "source_path": "../waike-research-ops",
-  "absolute_path_hint": "/Users/gunnchos/dev/waike-learning-os-workspace/waike-research-ops",
-  "pinned_commit": "fbf7685bc5686201ccaa0128ee83346d59b3d584",
+  "absolute_path_hint": "/tmp/waike-ops-pin-candidate-63ba9f25",
+  "pinned_commit": "63ba9f25ac6b8d8d1b6dd118923566fd51c57b62",
   "taxonomy_paths": [
     "curriculum/taxonomy/eighteen_tracks.json",
     "artifacts/taxonomy/CANONICAL_TRACK_REGISTRY.export.json"
@@ -71,13 +71,13 @@
     "data_viz_bi": "DATA_VIZ_BI",
     "WAIKE_COURSE_DATA_VIZ_BI": "DATA_VIZ_BI"
   },
-  "note": "Pinned to waike-research-ops origin/main after SEVEN_GC digital course PR #57 merge (includes taxonomy PR #56).",
+  "note": "Pinned to waike-research-ops PR #60 tip (curriculum/pr59-ci-depth-quality-closure) after CI green run 35522241481.",
   "package_aliases_evidence_backed": {
     "COMPUTER_NETWORKING": "NETWORKING_INFRA",
     "CYBERSECURITY": "CYBER_SOC"
   },
   "non_aliases": {
-    "GENERAL_IT": "Multi-track package id covering DIGITAL_CONFIDENCE+IT_SUPPORT_HARDWARE — NOT a unique track alias"
+    "GENERAL_IT": "Multi-track package id covering DIGITAL_CONFIDENCE+IT_SUPPORT_HARDWARE \u2014 NOT a unique track alias"
   },
   "notes": [
     "Prefer DIGITAL_CONFIDENCE lessons path for PR1 module import, not GENERAL_IT package.",
@@ -86,7 +86,8 @@
     "SEVEN_GC_APPRENTICESHIP is first-class COURSE_DIGITAL_RC at curriculum/digital_rc/SEVEN_GC_APPRENTICESHIP/ (content_maturity digital_rc_present).",
     "SEVEN_GC_SOURCE_BLOCKS_18_OF_18 cleared on WAIKE main fbf7685bc5686201ccaa0128ee83346d59b3d584 after PR #57.",
     "GENERAL_IT shared coverage valid only where canonical taxonomy package_mappings explicitly map those tracks.",
-    "Authoritative WAIKE truth is merged main fbf7685bc5686201ccaa0128ee83346d59b3d584."
+    "Authoritative WAIKE truth is merged main fbf7685bc5686201ccaa0128ee83346d59b3d584.",
+    "Promoted from fbf7685bc5686201ccaa0128ee83346d59b3d584 to 63ba9f25ac6b8d8d1b6dd118923566fd51c57b62 for Final WAIKE Consumer Closure (Agent B). No track-ID drift (18/18)."
   ],
   "taxonomy_pr": "https://github.com/gunnchOS3k/waike-research-ops/pull/56",
   "taxonomy_pr_status": "merged",
@@ -94,5 +95,17 @@
   "seven_gc_digital_pr": "https://github.com/gunnchOS3k/waike-research-ops/pull/57",
   "seven_gc_digital_pr_status": "merged",
   "seven_gc_digital_merge_commit": "fbf7685bc5686201ccaa0128ee83346d59b3d584",
-  "platform_pr": "https://github.com/gunnchOS3k/gunnchos-waike-learning-platform/pull/5"
+  "platform_pr": "https://github.com/gunnchOS3k/gunnchos-waike-learning-platform/pull/5",
+  "registry_hash": "7c72905b45ca2bbe55650b89ef0ccd66ae15269be84b5cf18a2b89e896d9c4ac",
+  "compatibility_version": "waike.taxonomy.consumer.v1",
+  "taxonomy_source_commit_sha": "34bfdc9f5048b85e1dbc1b232e01ea743b01cb9a",
+  "ops_pr": "https://github.com/gunnchOS3k/waike-research-ops/pull/60",
+  "ops_pr_status": "draft_open_ci_green",
+  "ops_ci_run": "https://github.com/gunnchOS3k/waike-research-ops/actions/runs/35522241481",
+  "shared_package_aliases_handoff": {
+    "DIGITAL_CONFIDENCE+IT_SUPPORT_HARDWARE": "GENERAL_IT",
+    "NETWORKING_INFRA": "COMPUTER_NETWORKING",
+    "CYBER_SOC": "CYBERSECURITY"
+  },
+  "authoritative_pin_commit": "63ba9f25ac6b8d8d1b6dd118923566fd51c57b62"
 }

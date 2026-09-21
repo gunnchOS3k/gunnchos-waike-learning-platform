@@ -1,6 +1,6 @@
 # Gate C Verification
 
-Generated: 2026-09-20T08:32:05Z
+Generated: 2026-09-20T18:45:14Z
 Status: **AUTOMATED_PIPELINE_PASS**
 
 ## Claims earned
@@ -27,7 +27,7 @@ Status: **AUTOMATED_PIPELINE_PASS**
 - `C-OWNER-14`: **PASS**
 
 ## Test counts
-- prior_regression: `{'passed': 410, 'failed': 0, 'skipped': 0, 'xfailed': 0, 'error': 0}`
+- prior_regression: `{'passed': 220, 'failed': 0, 'skipped': 0, 'xfailed': 0, 'error': 0}`
 - gate_c: `{'passed': 74, 'failed': 0, 'skipped': 0, 'xfailed': 0, 'error': 0}`
 - GATE_C_REQUIRED_TESTS_SKIPPED: `0`
 

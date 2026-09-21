@@ -1,17 +1,17 @@
 # COMM_PD_ETHICS Import Report
 
 - module_id: `COMM_PD_ETHICS`
-- declared_pinned_commit: `fbf7685bc5686201ccaa0128ee83346d59b3d584`
-- observed_source_commit: `fbf7685bc5686201ccaa0128ee83346d59b3d584`
+- declared_pinned_commit: `63ba9f25ac6b8d8d1b6dd118923566fd51c57b62`
+- observed_source_commit: `63ba9f25ac6b8d8d1b6dd118923566fd51c57b62`
 - provenance_match: `true`
 - package_version: `1.0.0`
-- learner files: **78**
+- learner files: **79**
 - instructor files: **14**
-- learner zip sha256: `38badf0c0c82a7eebd235e7fd0535767a89c545f9b2dacf089c1485f77825169`
-- instructor plaintext sha256: `d485d1d46819006c9e8195447166d0f9ddea5c7b8a5cfe69a46dc07c56cde708`
-- instructor ciphertext sha256 (non-reproducible): `c8ad2182298ef19c325fb0352d852ae4ebd2135a6cd4a2010b0b845987bb3efa`
+- learner zip sha256: `7670811d1d1fcfaa6bcef537b913e66907a2365fd45bb8f9ac3602bd0dec2d59`
+- instructor plaintext sha256: `4e56c3630a390fe404788d089869cc812fdc99813594363feb258ef97e3d63db`
+- instructor ciphertext sha256 (non-reproducible): `4f64d5df9a5f21a0dec3b7753b22ff9160978bdf9f48d50707dad47ac78f4f5c`
 - lessons indexed: 10
-- activity inventory: `{"assignments": 10, "discussions": 0, "groups": 1, "labs": 10, "lessons": 10, "outcomes": 4, "portfolio": 2, "quizzes": 10, "rubrics": 8}`
+- activity inventory: `{"assignments": 10, "discussions": 0, "groups": 1, "labs": 10, "lessons": 10, "outcomes": 4, "portfolio": 3, "quizzes": 10, "rubrics": 8}`
 
 ## Lessons
 

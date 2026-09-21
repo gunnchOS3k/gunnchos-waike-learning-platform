@@ -1,0 +1,45 @@
+{
+  "policy": {
+    "policy": "AI_ALLOWED",
+    "scope": "default",
+    "section_id": "sec_alpha_digital_confidence_pilot",
+    "assessment_id": null,
+    "activity_id": null,
+    "instructor_defined": {},
+    "allowed_learner_capabilities": [
+      "citation",
+      "explain",
+      "hint",
+      "lab_troubleshoot",
+      "misconception",
+      "navigate",
+      "reflect",
+      "remediation"
+    ],
+    "allowed_instructor_capabilities": [
+      "feedback_suggest",
+      "grading_triage",
+      "lesson_adapt",
+      "misconception_cluster",
+      "remediation_suggest",
+      "rubric_refine"
+    ],
+    "source": "default"
+  },
+  "assist_ok": true,
+  "assist": {
+    "ok": true,
+    "refused": false,
+    "provider_id": "fake-gunnchai",
+    "disclosure": "DISCLOSURE: LOCAL-ONLY for hint. No cloud model call is permitted (processingMode=local-only; userCloudConsent=false).",
+    "text_len": 121
+  },
+  "truth_labels": {
+    "gunnchai_pin": "851e7916d6d5c7da23a8f30dba6bdfd389daa8ac",
+    "hub_served_via_adb_reverse": true,
+    "on_device_inference": false,
+    "nearby_mac_edge_tab_observed": true,
+    "nearby_mac_is_not_on_device": true,
+    "claim": "PIXEL_WAIKE_AI_SURFACE = hub-served tutor UI/API on Pixel; NOT on-device gunnchAI"
+  }
+}

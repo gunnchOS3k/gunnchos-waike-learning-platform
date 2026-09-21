@@ -1,17 +1,17 @@
 # IT_SUPPORT_HARDWARE Import Report
 
 - module_id: `IT_SUPPORT_HARDWARE`
-- declared_pinned_commit: `fbf7685bc5686201ccaa0128ee83346d59b3d584`
-- observed_source_commit: `fbf7685bc5686201ccaa0128ee83346d59b3d584`
+- declared_pinned_commit: `63ba9f25ac6b8d8d1b6dd118923566fd51c57b62`
+- observed_source_commit: `63ba9f25ac6b8d8d1b6dd118923566fd51c57b62`
 - provenance_match: `true`
 - package_version: `1.0.0`
-- learner files: **74**
+- learner files: **81**
 - instructor files: **12**
-- learner zip sha256: `9fde4bb9a755632058aea800674948a2d9858ee77326276fbdc4ec1b4a70086a`
-- instructor plaintext sha256: `4baf461db4cd2c51abce34dfe2dbd9f4e02ad43e8bd06aa3307803f8d0492856`
-- instructor ciphertext sha256 (non-reproducible): `9f80c2b26d51298631fb5d6ddd29bf3206718a0fa331e8e2aae924af84cd8047`
+- learner zip sha256: `8c76b172855d219369f096ae992a042e0e2404a3b0da63be156328cb23c8b9a5`
+- instructor plaintext sha256: `adeb6a64578e5c230c55189be96a6ae0cb44c5db029a887acdbac4f8cb04a281`
+- instructor ciphertext sha256 (non-reproducible): `994291d2bb9fe0b5df4ef6ccaffbb80834ca8fd8f20996974dfd12db887d9ed2`
 - lessons indexed: 10
-- activity inventory: `{"assignments": 10, "discussions": 0, "groups": 1, "labs": 7, "lessons": 10, "outcomes": 4, "portfolio": 2, "quizzes": 10, "rubrics": 8}`
+- activity inventory: `{"assignments": 10, "discussions": 0, "groups": 1, "labs": 10, "lessons": 10, "outcomes": 4, "portfolio": 3, "quizzes": 10, "rubrics": 8}`
 
 ## Lessons
 

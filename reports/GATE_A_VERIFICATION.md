@@ -1,11 +1,11 @@
 # Gate A Verification — Offline-first sync + activity engine
 
-- Status: `AUTOMATED_PIPELINE_PASS`
-- Claim: `OFFLINE_AND_ACTIVITY_ENGINE_DIGITALLY_COMPLETE`
-- report_generated_from_sha: `4e4d1fb8c381aa1c36c14c5cbdfae6292ec07731`
-- declared_pinned_commit: `e97e74fc9bfb44b1cdc26b272dc4848264f15fe0`
-- observed_source_commit: `e97e74fc9bfb44b1cdc26b272dc4848264f15fe0`
-- python_passed: 204
+- Status: `AUTOMATED_PIPELINE_BLOCKED_BY_CODE`
+- Claim: `None`
+- report_generated_from_sha: `fea6027c64a886f516a2cf62640f150637c48d22`
+- declared_pinned_commit: `63ba9f25ac6b8d8d1b6dd118923566fd51c57b62`
+- observed_source_commit: `63ba9f25ac6b8d8d1b6dd118923566fd51c57b62`
+- python_passed: 0
 - python_skipped: 0
 - gate_a_passed: 99
 - rust_offline_passed: 6
@@ -14,7 +14,7 @@
 ## Checks
 
 - PASS `provenance_match`
-- PASS `python_tests`
+- FAIL `python_tests`
 - PASS `gate_a_tests`
 - PASS `native_offline_tests`
 - PASS `client_live_tests`
@@ -22,7 +22,7 @@
 
 ## Blockers
 
-- none
+- python_tests_failed
 
 ## Claim boundary
 
