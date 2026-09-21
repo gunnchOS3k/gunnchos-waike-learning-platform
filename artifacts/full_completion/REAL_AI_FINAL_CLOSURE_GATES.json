@@ -37,7 +37,7 @@
     },
     "WAIKE_REAL_GUNNCHAI_PIXEL_EXECUTION_PASS": {
       "pass": true,
-      "note": "Full Hub→NearbyEdge→llama.cpp REAL; CDP UI + API provenance @ e2d1adc"
+      "note": "Full Hub\u2192NearbyEdge\u2192llama.cpp REAL; CDP UI + API provenance @ e2d1adc"
     },
     "WAIKE_AI_ASSESSMENT_GUARDRAIL_PASS": {
       "pass": true,
@@ -65,7 +65,7 @@
     },
     "WAIKE_REAL_GUNNCHAI_SURFACE_PASS": {
       "pass": true,
-      "note": "REAL_GUNNCHAI_AI_JOURNEY pass @ e2d1adc; Hub→NearbyEdge→Mac llama.cpp proven"
+      "note": "REAL_GUNNCHAI_AI_JOURNEY pass @ e2d1adc; Hub\u2192NearbyEdge\u2192Mac llama.cpp proven"
     },
     "PIXEL_WAIKE_AI_SURFACE_PASS": {
       "pass": true,
@@ -104,5 +104,5 @@
     "model_id": "smollm2-135m-instruct-q4_k_m"
   },
   "do_not_merge": true,
-  "child_tip": "25cea362d19f8bd566ff38ac71b2edecc274bde4"
+  "child_tip": "5a87ee709960ac939d483f5f2c7699f1e3f15807"
 }
