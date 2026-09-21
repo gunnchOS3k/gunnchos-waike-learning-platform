@@ -13,7 +13,7 @@
   "heads": {
     "tested_code_head": "7ed3371255b51f3f69a5af6aab026ffd8ff22e03",
     "tested_code_head_note": "Last tip with Gate C/D + Windows Pilot + Device Lab aarch64 Linux + glibc236 green (Device Lab via workflow_dispatch).",
-    "evidence_head": "POST_COMMIT_TIP",
+    "evidence_head": "3ff85223bc87837d7e84ce13b0ea29dd8c0d3e23",
     "evidence_head_note": "Evidence-coherence tip on PR #22; stamped to live HEAD after this packet lands. Device Lab-relevant source unchanged vs tested_code_head."
   },
   "pins": {

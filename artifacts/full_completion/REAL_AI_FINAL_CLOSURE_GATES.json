@@ -7,7 +7,7 @@
   "parent_pr_head": "8577e15a74edd07df7b3d159a195d8fe57d1c6b5",
   "child_pr": "https://github.com/gunnchOS3k/gunnchos-waike-learning-platform/pull/22",
   "tested_code_head": "7ed3371255b51f3f69a5af6aab026ffd8ff22e03",
-  "evidence_head": "POST_COMMIT_TIP",
+  "evidence_head": "3ff85223bc87837d7e84ce13b0ea29dd8c0d3e23",
   "curriculum_pin": "63ba9f25ac6b8d8d1b6dd118923566fd51c57b62",
   "gunnchai_candidate_sha": "e2d1adcb5847cf00282fb7fa64970254b14e344e",
   "gunnchai_candidate_status": "PINNED_PR55_CONSUMER_CI_GREEN",

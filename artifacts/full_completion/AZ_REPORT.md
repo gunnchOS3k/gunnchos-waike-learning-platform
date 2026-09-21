@@ -2,7 +2,7 @@
 
 Captured: 2026-09-21T13:57:38Z  
 Tested code head: `7ed3371255b51f3f69a5af6aab026ffd8ff22e03`  
-Evidence head: `POST_COMMIT_TIP` (stamped to live PR #22 tip after coherence commit)  
+Evidence head: `3ff85223bc87837d7e84ce13b0ea29dd8c0d3e23` (stamped to live PR #22 tip after coherence commit)  
 Branch: `device-lab/pr21-real-gunnchai-ai-final-closure`  
 Device alias: `PIXEL_USB_DEVICE_1`  
 Policy: **DO NOT MERGE**

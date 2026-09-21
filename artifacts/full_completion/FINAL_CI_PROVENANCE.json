@@ -4,7 +4,7 @@
   "branch": "device-lab/pr21-real-gunnchai-ai-final-closure",
   "child_pr": 22,
   "tested_code_head": "7ed3371255b51f3f69a5af6aab026ffd8ff22e03",
-  "evidence_head": "POST_COMMIT_TIP",
+  "evidence_head": "3ff85223bc87837d7e84ce13b0ea29dd8c0d3e23",
   "device_lab_model": "B",
   "device_lab_model_name": "path-filtered_inheritance",
   "device_lab_rationale": [

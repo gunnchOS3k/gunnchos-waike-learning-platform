@@ -5,7 +5,7 @@
   "parent_pr": 21,
   "child_pr": 22,
   "tested_code_head": "7ed3371255b51f3f69a5af6aab026ffd8ff22e03",
-  "evidence_head": "POST_COMMIT_TIP",
+  "evidence_head": "3ff85223bc87837d7e84ce13b0ea29dd8c0d3e23",
   "curriculum_pin": "63ba9f25ac6b8d8d1b6dd118923566fd51c57b62",
   "gunnchai_pin": "e2d1adcb5847cf00282fb7fa64970254b14e344e",
   "gunnchai_draft_pr": "https://github.com/gunnchOS3k/gunnchAI3k/pull/55",

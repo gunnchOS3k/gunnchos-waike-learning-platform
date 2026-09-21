@@ -4,7 +4,7 @@
   "agent": "evidence-coherence",
   "branch": "device-lab/pr21-real-gunnchai-ai-final-closure",
   "tested_code_head": "7ed3371255b51f3f69a5af6aab026ffd8ff22e03",
-  "evidence_head": "POST_COMMIT_TIP",
+  "evidence_head": "3ff85223bc87837d7e84ce13b0ea29dd8c0d3e23",
   "parent_pr21_head": "8577e15a74edd07df7b3d159a195d8fe57d1c6b5",
   "replacement_token": "PIXEL_USB_DEVICE_1",
   "policy": {
