@@ -1,6 +1,6 @@
 # Gate B — AI security matrix
 
-Isolation and sabotage coverage for Gate B. Adapter enforces gunnchAI modes from SHA `4b4f411710e8cdb8102a7e11502f8497f68156b1`.
+Isolation and sabotage coverage for Gate B. Adapter enforces gunnchAI modes from SHA `c429750ff83b2a5344a6e1f40f5c7d27a863bf4d`.
 
 ## Threat → control → test
 

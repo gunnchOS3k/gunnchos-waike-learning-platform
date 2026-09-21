@@ -1,17 +1,17 @@
 # CYBER_SOC Import Report
 
 - module_id: `CYBER_SOC`
-- declared_pinned_commit: `fbf7685bc5686201ccaa0128ee83346d59b3d584`
-- observed_source_commit: `fbf7685bc5686201ccaa0128ee83346d59b3d584`
+- declared_pinned_commit: `63ba9f25ac6b8d8d1b6dd118923566fd51c57b62`
+- observed_source_commit: `63ba9f25ac6b8d8d1b6dd118923566fd51c57b62`
 - provenance_match: `true`
 - package_version: `1.0.0`
-- learner files: **73**
+- learner files: **107**
 - instructor files: **12**
-- learner zip sha256: `9b031fb5a0ffc0cb7b7ee34200794335d29cbf117acf2b8def0d1c6746bcd6d9`
-- instructor plaintext sha256: `3fbe60cdecd5eaaf97f9e324f514bb4adc8c3eb8d4222216ce61c5c6ef1eefca`
-- instructor ciphertext sha256 (non-reproducible): `222887fb4872ee3aa7152046a9efa8b28c798e31240ddc165dac9a679322eb98`
+- learner zip sha256: `cbaafcdc24f71de229829cd54b2146ba3be509d65ae2edadf98ee3e80313b517`
+- instructor plaintext sha256: `8e06d61e73e9fb5295495f38dfdd65030b8515480b93bdc503e6fe48d34198d5`
+- instructor ciphertext sha256 (non-reproducible): `acad27e21cd480867ba8969768d8b905fe916105b4850d248d83bf60bdc685e4`
 - lessons indexed: 10
-- activity inventory: `{"assignments": 10, "discussions": 0, "groups": 1, "labs": 7, "lessons": 10, "outcomes": 4, "portfolio": 2, "quizzes": 10, "rubrics": 8}`
+- activity inventory: `{"assignments": 10, "discussions": 0, "groups": 1, "labs": 13, "lessons": 10, "outcomes": 4, "portfolio": 3, "quizzes": 10, "rubrics": 11}`
 
 ## Lessons
 

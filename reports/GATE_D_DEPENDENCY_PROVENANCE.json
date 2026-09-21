@@ -1,0 +1,16 @@
+{
+  "generated_utc": "2026-09-20T18:51:43Z",
+  "platform_sha": "700a6ac0f284d941e1b56fac38744ded526bd9f4",
+  "accepted_platform_main_merge_gate_c": "58daf1a0cc22b60c4246eb4195b74bcb0a714a38",
+  "pins": {
+    "device_os": "4f02a48780d300a5d3a7758937b20e3bf9364d0d",
+    "waike": "63ba9f25ac6b8d8d1b6dd118923566fd51c57b62",
+    "gunnchai": "851e7916d6d5c7da23a8f30dba6bdfd389daa8ac"
+  },
+  "sources": {
+    "waike": "https://github.com/gunnchOS3k/waike-research-ops",
+    "device_os": "https://github.com/gunnchOS3k/gunnchos-device-os",
+    "gunnchai": "https://github.com/gunnchOS3k/gunnchAI3k",
+    "platform": "https://github.com/gunnchOS3k/gunnchos-waike-learning-platform"
+  }
+}

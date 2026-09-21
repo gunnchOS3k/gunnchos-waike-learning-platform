@@ -99,6 +99,8 @@ def start_hub() -> subprocess.Popen:
             "WAIKE_PIXEL_PILOT": "true",
             "WAIKE_SEED_TEST_FIXTURES": "false",  # DB already seeded
             "PYTHONPATH": str(ROOT / "services" / "hub"),
+            "WAIKE_ALLOW_FAKE_AI": env.get("WAIKE_ALLOW_FAKE_AI", "1"),
+            "GUNNCHAI_PROVIDER": env.get("GUNNCHAI_PROVIDER", "fake"),
             "WAIKE_DEV_DB_KEY": env.get(
                 "WAIKE_DEV_DB_KEY",
                 "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef",
@@ -257,10 +259,10 @@ def api_get(base: str, path: str, token: str) -> tuple[int, dict | list | str]:
             return e.code, raw
 
 
-def run_role_api_journeys(creds: dict, *, physical_eligible: bool) -> dict:
+def run_role_api_journeys(creds: dict, *, physical_eligible: bool, physical_ui: bool = False) -> dict:
     base = f"http://127.0.0.1:{HUB_PORT}"
     gates: dict[str, bool] = {}
-    evidence: dict[str, object] = {"evidence_mode": "mac_api_password_auth", "physical_eligible": physical_eligible}
+    evidence: dict[str, object] = {"evidence_mode": "mac_api_password_auth", "physical_eligible": physical_eligible, "physical_ui": physical_ui}
 
     # Learner 18-track visibility
     try:
@@ -293,8 +295,8 @@ def run_role_api_journeys(creds: dict, *, physical_eligible: bool) -> dict:
         evidence["mac_api_learner_18"] = api_ok
         evidence["learner_sections_count"] = len(home) if isinstance(home, list) else 0
         evidence["learner_tracks"] = sorted(home_tracks)
-        # PIXEL_* requires authorized device path; Mac API alone is not physical proof.
-        gates["PIXEL_LEARNER_18_TRACK_VISIBILITY_PASS"] = bool(api_ok and physical_eligible)
+        # PIXEL_* requires authorized device path AND physical UI evidence (not Mac API alone).
+        gates["PIXEL_LEARNER_18_TRACK_VISIBILITY_PASS"] = bool(api_ok and physical_eligible and physical_ui)
         # logout
         import urllib.request
 
@@ -316,7 +318,7 @@ def run_role_api_journeys(creds: dict, *, physical_eligible: bool) -> dict:
             token = login["token"]
             st, body = api_get(base, path, token)
             api_ok = (200 <= st < 300) if expect_ok else (st in (401, 403))
-            gates[gate] = bool(api_ok and physical_eligible)
+            gates[gate] = bool(api_ok and physical_eligible and physical_ui)
             evidence[gate] = {"status": st, "sample": str(body)[:300], "mac_api_ok": api_ok}
             import urllib.request
 
@@ -382,7 +384,7 @@ def run_role_api_journeys(creds: dict, *, physical_eligible: bool) -> dict:
             st3, _ = api_get(base, f"/api/v1/sections/{beta_sec}/roster", token2)
             denied = st3 in (401, 403, 404)
         api_ok = st == 200 and not beta_site_leak and denied
-        gates["PIXEL_CROSS_SITE_ISOLATION_PASS"] = bool(api_ok and physical_eligible)
+        gates["PIXEL_CROSS_SITE_ISOLATION_PASS"] = bool(api_ok and physical_eligible and physical_ui)
         evidence["cross_site"] = {
             "admin_users_status": st,
             "beta_site_leak": beta_site_leak,
@@ -425,7 +427,7 @@ def run_role_api_journeys(creds: dict, *, physical_eligible: bool) -> dict:
             st, _ = api_get(base, "/api/v1/auth/me", login["token"])
             if st not in (401, 403):
                 raise RuntimeError(f"token_not_revoked:{key}:{st}")
-        gates["PIXEL_ROLE_SESSION_ISOLATION_PASS"] = bool(physical_eligible)
+        gates["PIXEL_ROLE_SESSION_ISOLATION_PASS"] = bool(physical_eligible and physical_ui)
         evidence["mac_api_session_isolation"] = True
     except Exception as e:
         gates["PIXEL_ROLE_SESSION_ISOLATION_PASS"] = False
@@ -566,17 +568,51 @@ def main() -> int:
                     ART / "STABILITY_SAMPLE.json",
                     {"cycles": 5, "elapsed_s": elapsed, "full_30min_soak": False},
                 )
-                # Earn stability only after documented short sample without crash; full soak still false claim
-                gates["PIXEL_WAIKE_STABILITY_PASS"] = False  # require full 30-min soak per mission
+                # Short sample must not claim soak; full soak may earn PIXEL_WAIKE_STABILITY_PASS later.
+                gates["PIXEL_WAIKE_STABILITY_PASS"] = False
 
         # API journeys (password auth, no fixture headers).
-        # PIXEL_* journey gates require authorized Pixel + reverse eligibility.
+        # PIXEL_* journey gates require authorized Pixel + reverse + physical UI evidence.
         print("Running role API journeys…")
         physical_eligible = bool(gates.get("PIXEL6A_WAIKE_DEVICE_CONNECTED")) and bool(
             gates.get("PIXEL_TO_REAL_HUB_CONNECTIVITY_PASS")
         )
-        journey = run_role_api_journeys(seeded["credentials"], physical_eligible=physical_eligible)
+        physical_ui_ok = False
+        physical_payload = {"skipped": True}
+        if physical_eligible and not args.skip_physical_ui:
+            print("Running physical UI role journeys on Pixel…")
+            from tools.pixel_pilot.physical_ui_journeys import (
+                run_all_role_physical_ui,
+                run_offline_restart_reconnect,
+                run_stability_soak,
+            )
+            client_url = f"http://127.0.0.1:{CLIENT_PORT}/"
+            physical_payload = run_all_role_physical_ui(ART, seeded["credentials"], client_url)
+            write_json(ART / "PHYSICAL_UI_ROLE_JOURNEYS.json", physical_payload)
+            physical_ui_ok = bool(physical_payload.get("all_five_ok"))
+            offline = run_offline_restart_reconnect(ART, client_url)
+            write_json(ART / "OFFLINE_RESTART_RECONNECT.json", offline)
+            gates["PIXEL_WAIKE_OFFLINE_RESTART_RECONNECT_PASS"] = bool(offline.get("ok"))
+            soak_s = int(os.environ.get("WAIKE_PIXEL_SOAK_SECONDS", "1800"))
+            print(f"Running stability soak ({soak_s}s)…")
+            soak = run_stability_soak(ART, client_url, seconds=soak_s)
+            write_json(ART / "STABILITY_FULL_SOAK.json", soak)
+            gates["PIXEL_WAIKE_STABILITY_PASS"] = bool(soak.get("full_30min_soak"))
+        journey = run_role_api_journeys(
+            seeded["credentials"],
+            physical_eligible=physical_eligible,
+            physical_ui=physical_ui_ok,
+        )
+        journey["physical_ui"] = physical_payload
         gates.update(journey["gates"])
+        # Per-role physical overrides: learner visibility also needs tracks API (already in gates)
+        if physical_ui_ok and physical_eligible:
+            roles = (physical_payload.get("roles") or {})
+            gates["PIXEL_INSTRUCTOR_JOURNEY_PASS"] = bool(gates.get("PIXEL_INSTRUCTOR_JOURNEY_PASS")) and bool((roles.get("instructor") or {}).get("ok"))
+            gates["PIXEL_GRADER_JOURNEY_PASS"] = bool(gates.get("PIXEL_GRADER_JOURNEY_PASS")) and bool((roles.get("grader") or {}).get("ok"))
+            gates["PIXEL_GUARDIAN_JOURNEY_PASS"] = bool(gates.get("PIXEL_GUARDIAN_JOURNEY_PASS")) and bool((roles.get("guardian") or {}).get("ok"))
+            gates["PIXEL_SITE_ADMIN_JOURNEY_PASS"] = bool(gates.get("PIXEL_SITE_ADMIN_JOURNEY_PASS")) and bool((roles.get("site_admin") or {}).get("ok"))
+            gates["PIXEL_LEARNER_18_TRACK_VISIBILITY_PASS"] = bool(gates.get("PIXEL_LEARNER_18_TRACK_VISIBILITY_PASS")) and bool((roles.get("learner") or {}).get("ok"))
         write_json(ART / "ROLE_JOURNEY_EVIDENCE.json", journey)
 
         # Offline / stability / AI — honest false unless earned on device

@@ -1,6 +1,6 @@
 # GATE_C_ONEROSTER_MATRIX
 
-Generated: 2026-09-06T23:20:11Z
+Generated: 2026-09-20T18:45:14Z
 
 - **standard**: `OneRoster pilot subset`
 - **claim**: `NOT_FULL_ONEROSTER`

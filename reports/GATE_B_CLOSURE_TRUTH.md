@@ -4,7 +4,7 @@
 **Platform PR:** #5 (do not merge until remote CI green)  
 **WAIKE pin:** `fbf7685bc5686201ccaa0128ee83346d59b3d584` (PR #57 merge)  
 **Platform main:** `43e770772b97a0d6900893ea7428df91f2acdb93`  
-**gunnchAI pin:** `4b4f411710e8cdb8102a7e11502f8497f68156b1`
+**gunnchAI pin:** `c429750ff83b2a5344a6e1f40f5c7d27a863bf4d`
 
 ## What changed in this closure pass
 

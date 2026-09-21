@@ -1,17 +1,17 @@
 # PM_AGILE_LSS Import Report
 
 - module_id: `PM_AGILE_LSS`
-- declared_pinned_commit: `fbf7685bc5686201ccaa0128ee83346d59b3d584`
-- observed_source_commit: `fbf7685bc5686201ccaa0128ee83346d59b3d584`
+- declared_pinned_commit: `63ba9f25ac6b8d8d1b6dd118923566fd51c57b62`
+- observed_source_commit: `63ba9f25ac6b8d8d1b6dd118923566fd51c57b62`
 - provenance_match: `true`
 - package_version: `1.0.0`
-- learner files: **77**
+- learner files: **78**
 - instructor files: **12**
-- learner zip sha256: `bf0cc94e7ec5eea022c732ae1c1f685382cc8e83d6dc7e4ba9d544a75883c7fd`
-- instructor plaintext sha256: `26e3f4b44f9334aec347cc273bdb8a7d630515db363a49108696ec270731e8d8`
-- instructor ciphertext sha256 (non-reproducible): `e3173382cbabec9f77ccd5539d999080150e654dfc78791434cf09f9ac2f14e8`
+- learner zip sha256: `f427094e454d51c47a0a4be09d08b492fcec0573e7e0ee5e91096fea3f146b1f`
+- instructor plaintext sha256: `f6fa349820357771c1fbab7636e2c5f0a4c6e8e9d4e3998f1d2bed23bc7d9ab1`
+- instructor ciphertext sha256 (non-reproducible): `b085de6bf8c632d7d479f2601daee22fe7569322bd936bb38f73d1b0258a7884`
 - lessons indexed: 10
-- activity inventory: `{"assignments": 10, "discussions": 0, "groups": 1, "labs": 10, "lessons": 10, "outcomes": 4, "portfolio": 2, "quizzes": 10, "rubrics": 8}`
+- activity inventory: `{"assignments": 10, "discussions": 0, "groups": 1, "labs": 10, "lessons": 10, "outcomes": 4, "portfolio": 3, "quizzes": 10, "rubrics": 8}`
 
 ## Lessons
 

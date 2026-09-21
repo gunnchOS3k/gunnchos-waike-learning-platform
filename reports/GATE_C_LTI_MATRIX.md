@@ -1,6 +1,6 @@
 # GATE_C_LTI_MATRIX
 
-Generated: 2026-09-06T23:20:11Z
+Generated: 2026-09-20T18:45:14Z
 
 - **standard**: `LTI 1.3 foundation`
 - **claim**: `NOT_LTI_CERTIFIED`

@@ -1,0 +1,260 @@
+{
+  "schema": "waike.all_role_acceptance_matrix.v1",
+  "captured_at": "2026-09-20T09:18:17Z",
+  "columns": [
+    "auth",
+    "landing",
+    "primary_route",
+    "read",
+    "write/action",
+    "persistence",
+    "logout",
+    "session_isolation",
+    "offline_behavior",
+    "accessibility_mechanics",
+    "Pixel_physical"
+  ],
+  "rows": {
+    "learner": {
+      "auth": {
+        "pass": true,
+        "evidence": "mac_api_password_auth",
+        "note": "physical UI login not earned"
+      },
+      "landing": {
+        "pass": false,
+        "note": "physical UI not earned"
+      },
+      "primary_route": {
+        "pass": false,
+        "note": "physical UI not earned"
+      },
+      "read": {
+        "pass": false,
+        "note": "physical UI not earned"
+      },
+      "write/action": {
+        "pass": false,
+        "note": "physical UI not earned"
+      },
+      "persistence": {
+        "pass": false,
+        "note": "physical UI not earned"
+      },
+      "logout": {
+        "pass": false,
+        "note": "physical UI not earned"
+      },
+      "session_isolation": {
+        "pass": false,
+        "evidence": "PIXEL_ROLE_SESSION_ISOLATION_PASS"
+      },
+      "offline_behavior": {
+        "pass": true,
+        "evidence": "OFFLINE_RESTART_RECONNECT.json"
+      },
+      "accessibility_mechanics": {
+        "pass": true,
+        "evidence": "accessibility/"
+      },
+      "Pixel_physical": {
+        "pass": false,
+        "error": "sign_in_button_missing",
+        "evidence": "PHYSICAL_UI_ROLE_JOURNEYS.json"
+      }
+    },
+    "instructor": {
+      "auth": {
+        "pass": true,
+        "evidence": "mac_api_password_auth",
+        "note": "physical UI login not earned"
+      },
+      "landing": {
+        "pass": false,
+        "note": "physical UI not earned"
+      },
+      "primary_route": {
+        "pass": false,
+        "note": "physical UI not earned"
+      },
+      "read": {
+        "pass": false,
+        "note": "physical UI not earned"
+      },
+      "write/action": {
+        "pass": false,
+        "note": "physical UI not earned"
+      },
+      "persistence": {
+        "pass": false,
+        "note": "physical UI not earned"
+      },
+      "logout": {
+        "pass": false,
+        "note": "physical UI not earned"
+      },
+      "session_isolation": {
+        "pass": false,
+        "evidence": "PIXEL_ROLE_SESSION_ISOLATION_PASS"
+      },
+      "offline_behavior": {
+        "pass": true,
+        "evidence": "OFFLINE_RESTART_RECONNECT.json"
+      },
+      "accessibility_mechanics": {
+        "pass": true,
+        "evidence": "accessibility/"
+      },
+      "Pixel_physical": {
+        "pass": false,
+        "error": "physical_login_heuristic_failed",
+        "evidence": "PHYSICAL_UI_ROLE_JOURNEYS.json"
+      }
+    },
+    "grader": {
+      "auth": {
+        "pass": true,
+        "evidence": "mac_api_password_auth",
+        "note": "physical UI login not earned"
+      },
+      "landing": {
+        "pass": false,
+        "note": "physical UI not earned"
+      },
+      "primary_route": {
+        "pass": false,
+        "note": "physical UI not earned"
+      },
+      "read": {
+        "pass": false,
+        "note": "physical UI not earned"
+      },
+      "write/action": {
+        "pass": false,
+        "note": "physical UI not earned"
+      },
+      "persistence": {
+        "pass": false,
+        "note": "physical UI not earned"
+      },
+      "logout": {
+        "pass": false,
+        "note": "physical UI not earned"
+      },
+      "session_isolation": {
+        "pass": false,
+        "evidence": "PIXEL_ROLE_SESSION_ISOLATION_PASS"
+      },
+      "offline_behavior": {
+        "pass": true,
+        "evidence": "OFFLINE_RESTART_RECONNECT.json"
+      },
+      "accessibility_mechanics": {
+        "pass": true,
+        "evidence": "accessibility/"
+      },
+      "Pixel_physical": {
+        "pass": false,
+        "error": "physical_login_heuristic_failed",
+        "evidence": "PHYSICAL_UI_ROLE_JOURNEYS.json"
+      }
+    },
+    "guardian": {
+      "auth": {
+        "pass": true,
+        "evidence": "mac_api_password_auth",
+        "note": "physical UI login not earned"
+      },
+      "landing": {
+        "pass": false,
+        "note": "physical UI not earned"
+      },
+      "primary_route": {
+        "pass": false,
+        "note": "physical UI not earned"
+      },
+      "read": {
+        "pass": false,
+        "note": "physical UI not earned"
+      },
+      "write/action": {
+        "pass": false,
+        "note": "physical UI not earned"
+      },
+      "persistence": {
+        "pass": false,
+        "note": "physical UI not earned"
+      },
+      "logout": {
+        "pass": false,
+        "note": "physical UI not earned"
+      },
+      "session_isolation": {
+        "pass": false,
+        "evidence": "PIXEL_ROLE_SESSION_ISOLATION_PASS"
+      },
+      "offline_behavior": {
+        "pass": true,
+        "evidence": "OFFLINE_RESTART_RECONNECT.json"
+      },
+      "accessibility_mechanics": {
+        "pass": true,
+        "evidence": "accessibility/"
+      },
+      "Pixel_physical": {
+        "pass": false,
+        "error": "physical_login_heuristic_failed",
+        "evidence": "PHYSICAL_UI_ROLE_JOURNEYS.json"
+      }
+    },
+    "site_admin": {
+      "auth": {
+        "pass": true,
+        "evidence": "mac_api_password_auth",
+        "note": "physical UI login not earned"
+      },
+      "landing": {
+        "pass": false,
+        "note": "physical UI not earned"
+      },
+      "primary_route": {
+        "pass": false,
+        "note": "physical UI not earned"
+      },
+      "read": {
+        "pass": false,
+        "note": "physical UI not earned"
+      },
+      "write/action": {
+        "pass": false,
+        "note": "physical UI not earned"
+      },
+      "persistence": {
+        "pass": false,
+        "note": "physical UI not earned"
+      },
+      "logout": {
+        "pass": false,
+        "note": "physical UI not earned"
+      },
+      "session_isolation": {
+        "pass": false,
+        "evidence": "PIXEL_ROLE_SESSION_ISOLATION_PASS"
+      },
+      "offline_behavior": {
+        "pass": true,
+        "evidence": "OFFLINE_RESTART_RECONNECT.json"
+      },
+      "accessibility_mechanics": {
+        "pass": true,
+        "evidence": "accessibility/"
+      },
+      "Pixel_physical": {
+        "pass": false,
+        "error": "physical_login_heuristic_failed",
+        "evidence": "PHYSICAL_UI_ROLE_JOURNEYS.json"
+      }
+    }
+  },
+  "aggregate_pass": false
+}

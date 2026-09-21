@@ -1,17 +1,17 @@
 # SEVEN_GC_APPRENTICESHIP Import Report
 
 - module_id: `SEVEN_GC_APPRENTICESHIP`
-- declared_pinned_commit: `fbf7685bc5686201ccaa0128ee83346d59b3d584`
-- observed_source_commit: `fbf7685bc5686201ccaa0128ee83346d59b3d584`
+- declared_pinned_commit: `63ba9f25ac6b8d8d1b6dd118923566fd51c57b62`
+- observed_source_commit: `63ba9f25ac6b8d8d1b6dd118923566fd51c57b62`
 - provenance_match: `true`
 - package_version: `1.0.0`
-- learner files: **80**
+- learner files: **81**
 - instructor files: **12**
-- learner zip sha256: `0d9196098faacc7efd48392801adf1fe8e6ee2ba15ae2629db08b8503fea9ad6`
-- instructor plaintext sha256: `74dbf4086a0360967d5cab5b0827da27dcc7f72fd7cf7ea87710153fe1ea61df`
-- instructor ciphertext sha256 (non-reproducible): `bb5ce1dd44cf126d52aedd65c207b014f62dcb18d12d321cab384161fff39aaf`
+- learner zip sha256: `773e0e4f82a61e17b73a31f8a7faca2581e69745e14b4d57dcbf9d67f63badcc`
+- instructor plaintext sha256: `51e237a5c17aeea76a035a93a216f7a16545857ccfce88937573992d4e2e2067`
+- instructor ciphertext sha256 (non-reproducible): `14701a3f9246397f56d27827038d4edca377a90c7190556262a028909f179160`
 - lessons indexed: 10
-- activity inventory: `{"assignments": 10, "discussions": 0, "groups": 1, "labs": 10, "lessons": 10, "outcomes": 4, "portfolio": 2, "quizzes": 10, "rubrics": 8}`
+- activity inventory: `{"assignments": 10, "discussions": 0, "groups": 1, "labs": 10, "lessons": 10, "outcomes": 4, "portfolio": 3, "quizzes": 10, "rubrics": 8}`
 
 ## Lessons
 

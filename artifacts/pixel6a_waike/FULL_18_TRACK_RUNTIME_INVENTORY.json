@@ -404,7 +404,7 @@
     }
   ],
   "registry": {
-    "path": "/Users/gunnchos/Downloads/gunnchos-7gc-research-product-spine/repos/gunnchos-waike-learning-platform/curriculum/registry/eighteen_tracks.json",
+    "path": "/Users/gunnchos/Downloads/gunnchos-7gc-research-product-spine/repos/gunnchos-waike-learning-platform/.worktrees/post-merge-full-platform-all-role-closure/curriculum/registry/eighteen_tracks.json",
     "pinned_commit": "fbf7685bc5686201ccaa0128ee83346d59b3d584",
     "source_repo": "waike-research-ops"
   },

@@ -1,10 +1,10 @@
 {
   "schema": "gate_b_gunnchai_contract_snapshot_v1",
-  "generated_utc": "2026-09-06T19:06:23Z",
+  "generated_utc": "2026-09-20T17:02:14Z",
   "status": "PASS",
-  "expected_sha": "4b4f411710e8cdb8102a7e11502f8497f68156b1",
-  "observed_sha": "4b4f411710e8cdb8102a7e11502f8497f68156b1",
-  "gunnchai_root": "/Users/gunnchos/dev/waike-learning-os-workspace/gunnchAI3k",
+  "expected_sha": "851e7916d6d5c7da23a8f30dba6bdfd389daa8ac",
+  "observed_sha": "851e7916d6d5c7da23a8f30dba6bdfd389daa8ac",
+  "gunnchai_root": "/private/tmp/gunnchai-pin-candidate-final",
   "repo": "https://github.com/gunnchOS3k/gunnchAI3k",
   "package": "gunnchai3k",
   "key_file_sha256": {
@@ -84,7 +84,7 @@
   "adapter_cheat_pattern_count": 8,
   "provider_status": {
     "repo": "https://github.com/gunnchOS3k/gunnchAI3k",
-    "sha": "4b4f411710e8cdb8102a7e11502f8497f68156b1",
+    "sha": "851e7916d6d5c7da23a8f30dba6bdfd389daa8ac",
     "package": "gunnchai3k",
     "modes": [
       "EDUCATOR_COPILOT",
@@ -129,13 +129,13 @@
       "local": {
         "provider_id": "local-product-service",
         "available": true,
-        "gunnchai_root": "/Users/gunnchos/dev/waike-learning-os-workspace/gunnchAI3k",
-        "cli": "/Users/gunnchos/dev/waike-learning-os-workspace/gunnchAI3k/src/system-layer/product_service/cli.ts",
+        "gunnchai_root": "/tmp/gunnchai-pin-candidate-final",
+        "cli": "/tmp/gunnchai-pin-candidate-final/src/system-layer/product_service/cli.ts",
         "probe": {
           "cli_present": true,
-          "cli": "/Users/gunnchos/dev/waike-learning-os-workspace/gunnchAI3k/src/system-layer/product_service/cli.ts",
-          "gunnchai_root": "/Users/gunnchos/dev/waike-learning-os-workspace/gunnchAI3k",
-          "gunnchai_sha_expected": "4b4f411710e8cdb8102a7e11502f8497f68156b1",
+          "cli": "/tmp/gunnchai-pin-candidate-final/src/system-layer/product_service/cli.ts",
+          "gunnchai_root": "/tmp/gunnchai-pin-candidate-final",
+          "gunnchai_sha_expected": "851e7916d6d5c7da23a8f30dba6bdfd389daa8ac",
           "assist_executed": false,
           "claims_local_inference": false
         },
@@ -151,9 +151,9 @@
     },
     "probe": {
       "cli_present": true,
-      "cli": "/Users/gunnchos/dev/waike-learning-os-workspace/gunnchAI3k/src/system-layer/product_service/cli.ts",
-      "gunnchai_root": "/Users/gunnchos/dev/waike-learning-os-workspace/gunnchAI3k",
-      "gunnchai_sha_expected": "4b4f411710e8cdb8102a7e11502f8497f68156b1",
+      "cli": "/tmp/gunnchai-pin-candidate-final/src/system-layer/product_service/cli.ts",
+      "gunnchai_root": "/tmp/gunnchai-pin-candidate-final",
+      "gunnchai_sha_expected": "851e7916d6d5c7da23a8f30dba6bdfd389daa8ac",
       "assist_executed": false,
       "claims_local_inference": false
     }

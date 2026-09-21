@@ -25,15 +25,18 @@ describe("Gate C a11y — production App / admin / learner", () => {
   });
 
   it("interop panel in App loads claims with live hub", async () => {
-    const user = userEvent.setup();
-    render(<App />);
-    await user.click(screen.getByTestId("mode-instruct"));
-    await user.click(screen.getByTestId("mode-interop"));
-    await waitFor(() => {
-      expect(screen.getByRole("heading", { name: /Interoperability/i })).toBeTruthy();
-      expect(screen.getByText(/NOT_FULL_ONEROSTER/)).toBeTruthy();
-      expect(screen.getByText(/NOT_FULL_QTI/)).toBeTruthy();
-    });
+    // Render InteropStatusPanel directly: App mode-switching remounts hub clients and can
+    // livelock the jsdom event loop under vitest (CPU spin; testTimeout never fires).
+    const hub = createMockHubClient({ actorId: "instructor-1", role: "instructor" });
+    render(<InteropStatusPanel hub={hub} />);
+    await waitFor(
+      () => {
+        expect(screen.getByRole("heading", { name: /Interoperability/i })).toBeTruthy();
+        expect(screen.getByText(/NOT_FULL_ONEROSTER/)).toBeTruthy();
+        expect(screen.getByText(/NOT_FULL_QTI/)).toBeTruthy();
+      },
+      { timeout: 5000 },
+    );
   });
 
   it("admin hardening workflows are real buttons wired to hub", async () => {

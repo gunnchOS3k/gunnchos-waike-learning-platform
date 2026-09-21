@@ -1,9 +1,9 @@
 # Gate B — gunnchAI canonical contract snapshot
 
 - Status: `PASS`
-- Expected SHA: `4b4f411710e8cdb8102a7e11502f8497f68156b1`
-- Observed SHA: `4b4f411710e8cdb8102a7e11502f8497f68156b1`
-- GUNNCHAI_ROOT: `/Users/gunnchos/dev/waike-learning-os-workspace/gunnchAI3k`
+- Expected SHA: `851e7916d6d5c7da23a8f30dba6bdfd389daa8ac`
+- Observed SHA: `851e7916d6d5c7da23a8f30dba6bdfd389daa8ac`
+- GUNNCHAI_ROOT: `/private/tmp/gunnchai-pin-candidate-final`
 - DEFAULT_RUNTIME_HAS_NO_FAKE_AI: `True`
 
 ## Key file SHA-256

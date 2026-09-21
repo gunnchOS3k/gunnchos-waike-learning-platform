@@ -1,0 +1,70 @@
+{
+  "schema": "waike.product_defect_ledger.v1",
+  "captured_at": "2026-09-20T17:20:00Z",
+  "defects": [
+    {
+      "id": "DEFECT-FC-0001",
+      "severity": "S2",
+      "status": "fixed",
+      "title": "helpers.py name collision across gate_* dirs",
+      "digitally_solvable": true
+    },
+    {
+      "id": "DEFECT-FC-0002",
+      "severity": "S2",
+      "status": "fixed",
+      "title": "vitest App mode-switch livelock",
+      "digitally_solvable": true
+    },
+    {
+      "id": "DEFECT-FC-0003",
+      "severity": "S2",
+      "status": "fixed",
+      "title": "gunnchAI pin drift",
+      "fix": "Pinned 851e7916d6d5c7da23a8f30dba6bdfd389daa8ac (PR #54); corrected 65017f42/f1921905/e8d474b",
+      "digitally_solvable": true
+    },
+    {
+      "id": "DEFECT-FC-0004",
+      "severity": "S2",
+      "status": "fixed",
+      "title": "verify-gate-b WAIKE_ROOT pin mismatch",
+      "digitally_solvable": true
+    },
+    {
+      "id": "DEFECT-FC-0005",
+      "severity": "S1",
+      "status": "fixed",
+      "title": "Physical role UI journeys on Pixel Chrome",
+      "root_cause": "UIAutomator could not drive WebView DOM",
+      "fix": "Chrome CDP via adb forward; five-role journeys earned",
+      "digitally_solvable": true
+    },
+    {
+      "id": "DEFECT-FC-0006",
+      "severity": "S2",
+      "status": "fixed",
+      "title": "PIXEL_WAIKE_AI_SURFACE_PASS",
+      "root_cause": "AI UI/endpoints not exercised on device",
+      "fix": "CDP learner AI + hub assist API against pin 851e791; Nearby Mac ≠ on-device",
+      "digitally_solvable": true
+    },
+    {
+      "id": "DEFECT-FC-0007",
+      "severity": "S3",
+      "status": "deferred",
+      "title": "Native Android Phase B deferred",
+      "digitally_solvable": false
+    },
+    {
+      "id": "DEFECT-FC-0008",
+      "severity": "S3",
+      "status": "fixed",
+      "title": "Full vitest hang App mock user",
+      "fix": "useMemo SessionUser + cancelled mode effect",
+      "digitally_solvable": true
+    }
+  ],
+  "open_s1_count": 0,
+  "open_s2_digitally_solvable_count": 0
+}

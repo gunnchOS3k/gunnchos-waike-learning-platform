@@ -1,0 +1,71 @@
+{
+  "schema": "waike.curriculum_pin_promotion.v1",
+  "generated_at": "2026-09-20T16:38:48Z",
+  "agent": "B",
+  "previous_pin": "fbf7685bc5686201ccaa0128ee83346d59b3d584",
+  "new_pin": "63ba9f25ac6b8d8d1b6dd118923566fd51c57b62",
+  "ops_pr": "https://github.com/gunnchOS3k/waike-research-ops/pull/60",
+  "ops_ci_run": "https://github.com/gunnchOS3k/waike-research-ops/actions/runs/35522241481",
+  "ops_ci_conclusion": "success",
+  "registry_hash": "7c72905b45ca2bbe55650b89ef0ccd66ae15269be84b5cf18a2b89e896d9c4ac",
+  "compatibility_version": "waike.taxonomy.consumer.v1",
+  "taxonomy_source_commit_sha": "34bfdc9f5048b85e1dbc1b232e01ea743b01cb9a",
+  "track_count": 18,
+  "track_ids": [
+    "DIGITAL_CONFIDENCE",
+    "IT_SUPPORT_HARDWARE",
+    "SOFTWARE_BUILDER",
+    "NETWORKING_INFRA",
+    "CYBER_SOC",
+    "DATA_DASHBOARDS",
+    "AI_ML_EDGE",
+    "EMBEDDED_PROTOTYPING",
+    "WIRELESS_6G",
+    "PM_AGILE_LSS",
+    "GAME_DEV_INTERACTIVE",
+    "SEVEN_GC_APPRENTICESHIP",
+    "CLOUD_DEVOPS",
+    "COMM_PD_ETHICS",
+    "ROBOTICS_CONTROL",
+    "GUNNCHOS_PRODUCT_LAB",
+    "HARDWARE_ENGINEERING",
+    "DATA_VIZ_BI"
+  ],
+  "track_id_drift": {
+    "missing": [],
+    "extra": []
+  },
+  "aliases_resolved": {
+    "COMPUTER_NETWORKING": "NETWORKING_INFRA",
+    "CYBERSECURITY": "CYBER_SOC"
+  },
+  "shared_package_aliases": {
+    "DIGITAL_CONFIDENCE+IT_SUPPORT_HARDWARE": "GENERAL_IT",
+    "NETWORKING_INFRA": "COMPUTER_NETWORKING",
+    "CYBER_SOC": "CYBERSECURITY"
+  },
+  "compile_18": {
+    "ok": true,
+    "inventory_ok": false,
+    "matrix_summary": {
+      "ALL_18_WAIKE_TRACKS_DIGITALLY_AVAILABLE": true,
+      "SEVEN_GC_SOURCE_BLOCKS_18_OF_18": false,
+      "blocked": 0,
+      "fail": 0,
+      "full_18_course_digital_rc": true,
+      "pass": 18,
+      "tracks": 18
+    }
+  },
+  "provenance": {
+    "declared": "63ba9f25ac6b8d8d1b6dd118923566fd51c57b62",
+    "observed_waike_root": "/tmp/waike-ops-pin-candidate-63ba9f25"
+  },
+  "human_gates": {
+    "WAIKE_18_HUMAN_ACADEMIC_REVIEW_PASS": false,
+    "WAIKE_18_HUMAN_ACCESSIBILITY_REVIEW_PASS": false,
+    "WAIKE_18_FIELD_VALIDATION_PASS": false,
+    "WAIKE_18_INSTITUTIONAL_ADOPTION_PASS": false
+  },
+  "note": "Promoted to PR #60 tip after CI green; no track-ID drift; aliases resolve; compile-18 18/18."
+}

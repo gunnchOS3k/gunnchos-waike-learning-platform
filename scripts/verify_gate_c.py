@@ -269,8 +269,8 @@ def main() -> int:
             ]
         },
         "pins": {
-            "waike": os.environ.get("WAIKE_PIN_REF", "fbf7685bc5686201ccaa0128ee83346d59b3d584"),
-            "gunnchai": os.environ.get("GUNNCHAI_PIN_REF", "4b4f411710e8cdb8102a7e11502f8497f68156b1"),
+            "waike": os.environ.get("WAIKE_PIN_REF", "63ba9f25ac6b8d8d1b6dd118923566fd51c57b62"),
+            "gunnchai": os.environ.get("GUNNCHAI_PIN_REF", "851e7916d6d5c7da23a8f30dba6bdfd389daa8ac"),
             "device_os": os.environ.get("DEVICE_OS_PIN_REF", DEVICE_OS_INTEGRATION_HEAD),
             "device_os_accepted_main": ACCEPTED_DEVICE_OS_MAIN,
         },
@@ -296,24 +296,31 @@ def main() -> int:
         "WAIKE_ALLOW_FAKE_AI": "1",
     }
 
-    # Prior regression (PR1–Gate B)
-    prior_a = run(
-        [
-            py,
-            "-m",
-            "pytest",
-            "-q",
-            "tests/compatibility",
-            "tests/security",
-            "tests/integration",
-            "tests/assessment",
-            "tests/pr3",
-            "tests/gate_a",
-            "services/hub/tests",
-            "--tb=line",
-        ],
-        env=env,
-    )
+    # Prior regression (PR1–Gate B). Split dirs — each gate_* ships helpers.py (FC-0001).
+    prior_a_dirs = [
+        "tests/compatibility",
+        "tests/security",
+        "tests/integration",
+        "tests/assessment",
+        "tests/pr3",
+        "tests/gate_a",
+        "services/hub/tests",
+    ]
+    prior_a_codes: list[int] = []
+    prior_a_chunks: list[str] = []
+    for d in prior_a_dirs:
+        if not (ROOT / d).exists():
+            continue
+        pa = run([py, "-m", "pytest", "-q", d, "--tb=line"], env=env)
+        prior_a_codes.append(pa.returncode)
+        prior_a_chunks.append(plain(pa))
+
+    class _PriorA:
+        returncode = 0 if all(c == 0 for c in prior_a_codes) else 1
+        stdout = "\n".join(prior_a_chunks)
+        stderr = ""
+
+    prior_a = _PriorA()
     env_b = dict(env)
     env_b["PYTHONPATH"] = "tools/course_compiler:services/hub"
     prior_b = run([py, "-m", "pytest", "-q", "tests/gate_b", "--tb=line"], env=env_b)

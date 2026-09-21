@@ -1,0 +1,152 @@
+{
+  "schema": "waike.full_platform_gates.v1",
+  "captured_at": "2026-09-20T18:58:08Z",
+  "branch": "device-lab/pr20-final-curriculum-ai-pixel-closure",
+  "parent_pr": 20,
+  "curriculum_pin": "63ba9f25ac6b8d8d1b6dd118923566fd51c57b62",
+  "gunnchai_pin": "851e7916d6d5c7da23a8f30dba6bdfd389daa8ac",
+  "gunnchai_draft_pr": "https://github.com/gunnchOS3k/gunnchAI3k/pull/54",
+  "gates": {
+    "WAIKE_ALL_18_TRACKS_COMPILED_PASS": {
+      "pass": true,
+      "note": "compile-18"
+    },
+    "WAIKE_ALL_18_TRACKS_RUNTIME_LOADED_PASS": {
+      "pass": true,
+      "note": null
+    },
+    "WAIKE_LEARNER_PHYSICAL_JOURNEY_PASS": {
+      "pass": true,
+      "note": "CDP"
+    },
+    "WAIKE_INSTRUCTOR_PHYSICAL_JOURNEY_PASS": {
+      "pass": true,
+      "note": "CDP"
+    },
+    "WAIKE_GRADER_PHYSICAL_JOURNEY_PASS": {
+      "pass": true,
+      "note": "CDP"
+    },
+    "WAIKE_GUARDIAN_PHYSICAL_JOURNEY_PASS": {
+      "pass": true,
+      "note": "CDP"
+    },
+    "WAIKE_SITE_ADMIN_PHYSICAL_JOURNEY_PASS": {
+      "pass": true,
+      "note": "CDP"
+    },
+    "WAIKE_ROLE_SESSION_ISOLATION_PASS": {
+      "pass": true,
+      "note": "CDP alpha/beta"
+    },
+    "WAIKE_CROSS_SITE_ISOLATION_PASS": {
+      "pass": true,
+      "note": "CDP"
+    },
+    "WAIKE_OFFLINE_RESTART_RECONNECT_PASS": {
+      "pass": true,
+      "note": "preserved B15"
+    },
+    "WAIKE_30_MIN_STABILITY_PASS": {
+      "pass": true,
+      "note": "preserved soak"
+    },
+    "WAIKE_ACCESSIBILITY_MECHANICS_PASS": {
+      "pass": true,
+      "note": null
+    },
+    "WAIKE_AI_SURFACE_PASS": {
+      "pass": true,
+      "note": "hub-served on Pixel; Nearby Mac \u2260 on-device"
+    },
+    "WAIKE_GUNNCHAI_CONTRACT_PASS": {
+      "pass": true,
+      "note": "851e7916d6d5c7da23a8f30dba6bdfd389daa8ac"
+    },
+    "WAIKE_GUNNCHOS_FIRST_PARTY_CONTRACT_PASS": {
+      "pass": true,
+      "note": "FULL_VIA_ADAPTER"
+    },
+    "WAIKE_ALL_ROLE_MATRIX_PASS": {
+      "pass": true,
+      "note": "CDP"
+    },
+    "WAIKE_18_TRACK_MATRIX_PASS": {
+      "pass": true,
+      "note": "18/18 inventory"
+    },
+    "WAIKE_NO_OPEN_S1_DEFECTS": {
+      "pass": true,
+      "note": "FC-0005 closed via CDP"
+    },
+    "WAIKE_NO_OPEN_S2_DIGITALLY_SOLVABLE_DEFECTS": {
+      "pass": true,
+      "note": "FC-0006 closed"
+    },
+    "WAIKE_ALL_CONTENT_ALL_ROLE_PIXEL_PILOT_PASS": {
+      "pass": true,
+      "note": null
+    },
+    "WAIKE_FULL_PLATFORM_COMPLETION_CANDIDATE_PASS": {
+      "pass": true,
+      "note": "Gate C+D AUTOMATED_PIPELINE_PASS this-run; owner human validation + MERGE_AUTHORIZED still open; linux/macos native this-run artifacts not produced on this host"
+    },
+    "WAIKE_HUMAN_DISABLED_USER_ACCESSIBILITY_VALIDATION": {
+      "pass": false,
+      "note": "owner checklist"
+    },
+    "WAIKE_HUMAN_LEARNER_USABILITY_PASS": {
+      "pass": false,
+      "note": "owner checklist"
+    },
+    "WAIKE_HUMAN_INSTRUCTOR_USABILITY_PASS": {
+      "pass": false,
+      "note": "owner checklist"
+    },
+    "WAIKE_HUMAN_ADMIN_USABILITY_PASS": {
+      "pass": false,
+      "note": "owner checklist"
+    },
+    "WAIKE_MERGE_AUTHORIZED": {
+      "pass": false,
+      "note": "DRAFT ONLY DO NOT MERGE"
+    }
+  },
+  "pixel_tokens": {
+    "PIXEL6A_WAIKE_DEVICE_CONNECTED": true,
+    "PIXEL_PILOT_ALL_18_TRACKS_LOADED": true,
+    "PIXEL_PILOT_ALL_ROLES_SEEDED": true,
+    "WAIKE_PIXEL_WEB_CLIENT_PASS": true,
+    "PIXEL_TO_REAL_HUB_CONNECTIVITY_PASS": true,
+    "WAIKE_PIXEL_PWA_INSTALL_PASS": true,
+    "PIXEL_LEARNER_18_TRACK_VISIBILITY_PASS": true,
+    "PIXEL_INSTRUCTOR_JOURNEY_PASS": true,
+    "PIXEL_GRADER_JOURNEY_PASS": true,
+    "PIXEL_GUARDIAN_JOURNEY_PASS": true,
+    "PIXEL_SITE_ADMIN_JOURNEY_PASS": true,
+    "PIXEL_ROLE_SESSION_ISOLATION_PASS": true,
+    "PIXEL_CROSS_SITE_ISOLATION_PASS": true,
+    "PIXEL_WAIKE_OFFLINE_RESTART_RECONNECT_PASS": true,
+    "PIXEL_ACCESSIBILITY_MECHANICS_PASS": true,
+    "PIXEL_WAIKE_STABILITY_PASS": true,
+    "PIXEL_WAIKE_AI_SURFACE_PASS": true,
+    "WAIKE_ALL_CONTENT_ALL_ROLE_PIXEL_PILOT_PASS": true,
+    "gunnchai_pin": "851e7916d6d5c7da23a8f30dba6bdfd389daa8ac",
+    "driver": "chrome_cdp"
+  },
+  "delivery_model": "FULL_VIA_ADAPTER",
+  "truth_labels": {
+    "nearby_mac_is_not_on_device": true,
+    "on_device_inference": false,
+    "ai_surface": "hub-served tutor via adb reverse + CDP DOM"
+  },
+  "gate_c_status": "AUTOMATED_PIPELINE_PASS",
+  "gate_d_status": "AUTOMATED_PIPELINE_PASS",
+  "gate_c_verification": "reports/GATE_C_VERIFICATION.json",
+  "gate_d_verification": "reports/GATE_D_VERIFICATION.json",
+  "native_this_run": {
+    "linux_ok": false,
+    "macos_ok": false,
+    "note": "GATE_D_NATIVE_ARTIFACT_MANIFEST this-run linux/macos false on this host; Gate D require_native unset so automation still passes"
+  }
+}

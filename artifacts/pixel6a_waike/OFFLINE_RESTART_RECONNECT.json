@@ -1,0 +1,23 @@
+{
+  "ok": true,
+  "steps": [
+    {
+      "t": "2026-09-20T08:20:31Z",
+      "step": "online_open"
+    },
+    {
+      "t": "2026-09-20T08:20:34Z",
+      "step": "airplane_on"
+    },
+    {
+      "t": "2026-09-20T08:20:41Z",
+      "step": "offline_relaunch",
+      "xml_bytes": 11756
+    },
+    {
+      "t": "2026-09-20T08:20:47Z",
+      "step": "airplane_off_reconnect"
+    }
+  ],
+  "note": "shell survived offline/relaunch/reconnect; sync receipt not claimed unless UI shows sync"
+}

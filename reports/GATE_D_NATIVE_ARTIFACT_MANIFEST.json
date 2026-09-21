@@ -1,0 +1,30 @@
+{
+  "generated_utc": "2026-09-20T18:51:43Z",
+  "platform_sha": "700a6ac0f284d941e1b56fac38744ded526bd9f4",
+  "this_run_only": true,
+  "linux": {
+    "meta": false,
+    "sums": false,
+    "artifact_head_sha": "",
+    "format": "",
+    "ok": false
+  },
+  "macos": {
+    "meta": false,
+    "sums": true,
+    "verification": true,
+    "artifact_head_sha": "",
+    "format": "",
+    "recovery_status": "NOT_THIS_RUN_PENDING_CI",
+    "ok": false
+  },
+  "zip_is_not_dmg": false,
+  "signing_notarization": "EXTERNAL_UNSIGNED_CI_BUILD",
+  "notarization_claimed": false,
+  "notes": [
+    "linux this-run meta/sums/head/format binding failed (head='' expected='700a6ac0f284d941e1b56fac38744ded526bd9f4' format='')",
+    "MACOS_DMG_VERIFICATION ok!=true"
+  ],
+  "require_native": false,
+  "ok": false
+}
