@@ -43,7 +43,7 @@
   ],
   "pr_body_redaction": {
     "target": "https://github.com/gunnchOS3k/gunnchos-waike-learning-platform/pull/21",
-    "status": "pending",
+    "status": "redacted_PIXEL_USB_DEVICE_1",
     "note": "Replace raw Pixel serial with PIXEL_USB_DEVICE_1 in editable PR body; do not rewrite commit history."
   },
   "screenshots": {
