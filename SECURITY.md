@@ -17,3 +17,5 @@ Report suspected vulnerabilities privately to the repository maintainers. Do not
 - Package verification must succeed before content is trusted by the client.
 
 See `docs/security/THREAT_MODEL.md` and `docs/security/KEY_MANAGEMENT_DEVELOPMENT.md`.
+
+Do not post exploitable security details publicly. Prefer private advisories: https://github.com/gunnchOS3k/gunnchos-research-portal/security/advisories/new

@@ -24,3 +24,11 @@ See `DEVELOPMENT.md`, `docs/product/CLAIM_BOUNDARY.md`, and `docs/product/PR1_AC
 ## Not claimed
 
 PR 1 does not claim full LMS parity, all-course migration, student validation, accessibility certification, production security review, or field-pilot completion.
+
+## Feedback & Suggestions
+
+Tried this project? File public feedback via the ecosystem hub:
+
+https://github.com/gunnchOS3k/gunnchos-research-portal/blob/main/FEEDBACK.md
+
+Security vulnerabilities: private only — https://github.com/gunnchOS3k/gunnchos-research-portal/blob/main/SECURITY.md

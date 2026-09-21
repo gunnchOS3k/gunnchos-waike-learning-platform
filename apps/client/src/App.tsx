@@ -12,6 +12,7 @@ import { InstructorAiPanel, LearnerAiPanel } from "./components/ai/AiPanels";
 import { AdminHardeningPanel } from "./components/admin/AdminHardeningPanel";
 import { InteropStatusPanel } from "./components/interop/InteropPanels";
 import { DeviceProfilePanel } from "./components/device/DeviceProfilePanel";
+import { FeedbackSuggestions } from "./components/help/FeedbackSuggestions";
 import type { AuthSession, HubActor, HubClient, SectionCard, SessionUser } from "./lib/hub/client";
 import { HubAuthError } from "./lib/hub/client";
 import { resolveHubClient } from "./lib/hub/resolveHub";
@@ -1169,6 +1170,7 @@ export default function App() {
           )
         ) : null}
       </div>
+      <FeedbackSuggestions role={primaryRole} />
     </div>
   );
 }
