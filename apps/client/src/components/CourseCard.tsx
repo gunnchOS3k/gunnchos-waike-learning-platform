@@ -10,7 +10,7 @@ export function CourseCard({
   return (
     <section className="course-card" aria-labelledby="course-title">
       <h2 id="course-title">{module.title}</h2>
-      <p className="muted">Module {module.module_id}</p>
+      <p className="muted">{module.lessons.length} lessons</p>
       <ol className="lesson-list">
         {module.lessons.map((lesson) => (
           <li key={lesson.lesson_id}>

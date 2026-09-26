@@ -36,6 +36,12 @@ export interface AssignmentSummary {
   week: number | null;
   current_version: number;
   portfolio_connection: number;
+  due_at?: string | null;
+  section_id?: string;
+  course_title?: string;
+  submission_state?: string;
+  grade_state?: string;
+  points_possible?: number | null;
 }
 
 export interface AssignmentDetail extends AssignmentSummary {
@@ -211,6 +217,50 @@ export interface HubClient {
     missing_track_ids: string[];
     tracks: Array<{ track_id: string; package_id: string; title: string; sections: unknown[] }>;
   }>;
+  search(query: string): Promise<{ hits: Array<{ id: string; kind: string; title: string; snippet: string; section_id: string }> }>;
+  listNotifications(): Promise<Array<{ id: string; kind: string; title: string; body: string; created_at: string; deep_link: string; unread: boolean }>>;
+  markNotificationRead(id: string): Promise<void>;
+  listAnnouncements(sectionId: string): Promise<Array<{ id: string; title: string; body: string; created_at: string }>>;
+  copySection(body: {
+    source_section_id: string;
+    code: string;
+    title: string;
+    term?: string;
+    instructor_id?: string;
+  }): Promise<{ section_id: string; package_id: string; duplicated_curriculum: false }>;
+  previewDueDateShift(sectionId: string, deltaHours: number): Promise<{
+    items: Array<{ id: string; title: string; current_due: string | null; proposed_due: string | null }>;
+  }>;
+  applyDueDateShift(sectionId: string, deltaHours: number): Promise<{ applied: boolean; count: number }>;
+  listCommentBank(): Promise<Array<{ comment_id: string; title: string; body: string }>>;
+  upsertCommentBank(title: string, body: string): Promise<{ comment_id: string; title: string; body: string }>;
+  intervention(sectionId: string): Promise<
+    Array<{ learner_id: string; display_name: string; signals: string[]; waiting_for_instructor_grade: boolean }>
+  >;
+  mlvConsumerSummary(): Promise<{
+    display_name: string;
+    continue_learning: Record<string, unknown> | null;
+    due_soon: unknown[];
+    courses: unknown[];
+    recent_feedback_count: number;
+    upcoming_count: number;
+  }>;
+  listSchoolApps(): Promise<
+    Array<{
+      app_id: string;
+      label: string;
+      launch_kind: "web" | "lti" | "browser_url";
+      url: string;
+      allowed_origins: string[];
+      pinned: boolean;
+      configured_by: "institution";
+      captures_credentials: false;
+    }>
+  >;
+  pinSchoolApp(appId: string, pinned: boolean): Promise<void>;
+  listModules(sectionId: string): Promise<
+    Array<{ id: string; title: string; order: number; status: string; lesson?: string; assignment?: string }>
+  >;
 }
 
 function authHeaders(token: string | null, actor?: HubActor): HeadersInit {
@@ -347,5 +397,33 @@ export function createHttpHubClient(
     guardianOverview: (learnerUserId) =>
       req(`/api/v1/guardian/learners/${encodeURIComponent(learnerUserId)}/overview`),
     curriculumInventory: () => req("/api/v1/pilot/curriculum-inventory"),
+    search: (query) => req(`/api/v1/learner/search?q=${encodeURIComponent(query)}`),
+    listNotifications: () => req("/api/v1/learner/notifications"),
+    markNotificationRead: async (id) => {
+      await req(`/api/v1/learner/notifications/${encodeURIComponent(id)}/read`, { method: "POST" });
+    },
+    listAnnouncements: (sectionId) =>
+      req(`/api/v1/sections/${encodeURIComponent(sectionId)}/announcements`),
+    copySection: (body) => req("/api/v1/instructor/sections/copy", { method: "POST", body: JSON.stringify(body) }),
+    previewDueDateShift: (sectionId, deltaHours) =>
+      req(`/api/v1/instructor/sections/${encodeURIComponent(sectionId)}/due-shift/preview?hours=${deltaHours}`),
+    applyDueDateShift: (sectionId, deltaHours) =>
+      req(`/api/v1/instructor/sections/${encodeURIComponent(sectionId)}/due-shift`, {
+        method: "POST",
+        body: JSON.stringify({ delta_hours: deltaHours }),
+      }),
+    listCommentBank: () => req("/api/v1/instructor/comment-bank"),
+    upsertCommentBank: (title, body) =>
+      req("/api/v1/instructor/comment-bank", { method: "POST", body: JSON.stringify({ title, body }) }),
+    intervention: (sectionId) => req(`/api/v1/instructor/sections/${encodeURIComponent(sectionId)}/intervention`),
+    mlvConsumerSummary: () => req("/api/v1/mlv/consumer-summary"),
+    listSchoolApps: () => req("/api/v1/school-apps"),
+    pinSchoolApp: async (appId, pinned) => {
+      await req(`/api/v1/school-apps/${encodeURIComponent(appId)}/pin`, {
+        method: "POST",
+        body: JSON.stringify({ pinned }),
+      });
+    },
+    listModules: (sectionId) => req(`/api/v1/sections/${encodeURIComponent(sectionId)}/modules`),
   };
 }

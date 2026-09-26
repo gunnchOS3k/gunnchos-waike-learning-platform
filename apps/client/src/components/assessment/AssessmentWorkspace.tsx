@@ -1,11 +1,15 @@
 import { useCallback, useEffect, useState } from "react";
 import type { AssignmentDetail, DraftState, HubClient, SubmissionView } from "../../lib/hub/client";
+import { SafeMarkdown } from "../content/SafeMarkdown";
 
 type Props = {
   hub: HubClient;
+  assignmentId?: string | null;
+  sectionId?: string | null;
+  onBack?: () => void;
 };
 
-export function AssessmentWorkspace({ hub }: Props) {
+export function AssessmentWorkspace({ hub, assignmentId = null, sectionId = null, onBack }: Props) {
   const [assignment, setAssignment] = useState<AssignmentDetail | null>(null);
   const [draft, setDraft] = useState<DraftState | null>(null);
   const [text, setText] = useState("");
@@ -39,12 +43,13 @@ export function AssessmentWorkspace({ hub }: Props) {
   useEffect(() => {
     (async () => {
       try {
-        const list = await hub.listAssignments();
-        const id = list[0]?.assignment_id;
-        if (!id) return;
-        const detail = await hub.getAssignment(id);
+        if (!assignmentId) {
+          setAssignment(null);
+          return;
+        }
+        const detail = await hub.getAssignment(assignmentId);
         setAssignment(detail);
-        const d = await hub.getDraft(id);
+        const d = await hub.getDraft(assignmentId);
         setDraft(d);
         setText(d.text_response || "");
         setArtifactName(d.artifact_name);
@@ -52,7 +57,7 @@ export function AssessmentWorkspace({ hub }: Props) {
         setError(String(e));
       }
     })();
-  }, [hub]);
+  }, [hub, assignmentId]);
 
   useEffect(() => {
     void refreshSide();
@@ -91,7 +96,7 @@ export function AssessmentWorkspace({ hub }: Props) {
     setError(null);
     try {
       const key = `ui-${assignment.assignment_id}-${history.length + 1}`;
-      const sub = await hub.submit(assignment.assignment_id, key, text);
+      const sub = await hub.submit(assignment.assignment_id, key, text, sectionId || undefined);
       setSubmission(sub);
       setStatus(`Submitted — receipt ${sub.receipt?.receipt_id}`);
       await refreshSide();
@@ -109,23 +114,37 @@ export function AssessmentWorkspace({ hub }: Props) {
     }
   }
 
+  if (!assignmentId) {
+    return (
+      <section className="panel" data-testid="assignment-workspace">
+        <h2>Assignment</h2>
+        <p className="muted">Choose an assignment to open it. Nothing is opened automatically.</p>
+      </section>
+    );
+  }
+
   if (!assignment) {
     return (
       <section className="panel" data-testid="assignment-workspace">
-        <h2>Assignments</h2>
-        <p className="muted">Loading DIGITAL_CONFIDENCE assignments…</p>
+        <h2>Assignment</h2>
+        <p className="muted">Loading assignment…</p>
       </section>
     );
   }
 
   return (
     <section className="panel" data-testid="assignment-workspace">
+      {onBack ? (
+        <button type="button" className="ghost" onClick={onBack}>
+          Back to assignments
+        </button>
+      ) : null}
       <h2>{assignment.title}</h2>
       <p className="muted">
-        {assignment.module_id} · week {assignment.week} · source {assignment.source_path}
+        {assignment.week ? `Week ${assignment.week}` : "Course assignment"}
       </p>
       <article className="assignment-body" data-testid="assignment-body">
-        <pre>{assignment.body_markdown.slice(0, 1200)}{assignment.body_markdown.length > 1200 ? "…" : ""}</pre>
+        <SafeMarkdown markdown={assignment.body_markdown} testId="assignment-markdown" />
       </article>
 
       <label className="field-label" htmlFor="draft-text">

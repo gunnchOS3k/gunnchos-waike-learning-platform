@@ -179,10 +179,23 @@ export function modeForDeviceOsDeepLink(kind: string): string | null {
     case "learn":
     case "section":
     case "sync":
+    case "home":
       return "home";
+    case "course":
+      return "courses";
     case "quiz":
     case "assignment":
       return "assignments";
+    case "grades":
+      return "grades";
+    case "calendar":
+      return "calendar";
+    case "study":
+    case "lesson":
+    case "lab":
+      return "study";
+    case "portfolio":
+      return "portfolio";
     case "device":
       return "interop";
     default:

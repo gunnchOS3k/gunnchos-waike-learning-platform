@@ -12,8 +12,10 @@ from pydantic import BaseModel, Field
 from app.api.routes import router as api_router
 from app.api.routes_gate_c import router as gate_c_router
 from app.api.routes_gate_d import router as gate_d_router
+from app.api.routes_learner_product import router as learner_product_router
 from app.cors_origins import hub_allow_origins
 from app.modules.guardian import GuardianService
+from app.modules.learner_product import LearnerProductService
 from app.db import connect, migrate
 from app.modules.activity_engine import ActivityEngine
 from app.modules.ai_assist import AiAssistService
@@ -214,6 +216,7 @@ def create_app(config: HubConfig | None = None, db_path: Path | None = None, see
     telemetry = TelemetryService(conn, observability)
     rate_limiter = RateLimiter(conn)
     guardian = GuardianService(conn)
+    learner_product = LearnerProductService(conn, sections, assessment)
 
     should_seed = bool(seed) or _fixture_seeding_allowed_by_env()
     pixel_pilot = _env_truthy("WAIKE_PIXEL_PILOT")
@@ -262,6 +265,7 @@ def create_app(config: HubConfig | None = None, db_path: Path | None = None, see
     app.state.packages = packages
     app.state.rate_limiter = rate_limiter
     app.state.guardian = guardian
+    app.state.learner_product = learner_product
     app.state.waike_root = str(waike) if waike else None
     app.state.seeded_test_fixtures = should_seed
     app.state.pixel_pilot = pixel_pilot
@@ -313,6 +317,7 @@ def create_app(config: HubConfig | None = None, db_path: Path | None = None, see
     app.include_router(api_router)
     app.include_router(gate_c_router)
     app.include_router(gate_d_router)
+    app.include_router(learner_product_router)
     return app
 
 

@@ -30,7 +30,7 @@ lint:
 python-test:
 	WAIKE_ROOT=$(WAIKE_ROOT) PYTHONPATH=services/hub $(PYTHON) -m pytest -q \
 	  tests/assessment tests/compatibility tests/exhaustion tests/integration \
-	  tests/pixel_pilot tests/pr3 tests/security services/hub/tests
+	  tests/pixel_pilot tests/pr3 tests/security tests/product services/hub/tests
 	WAIKE_ROOT=$(WAIKE_ROOT) PYTHONPATH=services/hub $(PYTHON) -m pytest -q tests/gate_a
 	WAIKE_ROOT=$(WAIKE_ROOT) PYTHONPATH=tools/course_compiler:services/hub $(PYTHON) -m pytest -q tests/gate_b
 	WAIKE_ROOT=$(WAIKE_ROOT) DEVICE_OS_ROOT=$${DEVICE_OS_ROOT:-$(CURDIR)/../gunnchos-device-os} PYTHONPATH=services/hub $(PYTHON) -m pytest -q tests/gate_c
