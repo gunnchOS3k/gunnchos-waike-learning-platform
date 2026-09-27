@@ -1,4 +1,5 @@
 import { useEffect, useRef } from "react";
+import { SafeMarkdown } from "./content/SafeMarkdown";
 import type { LessonContent } from "../lib/types";
 
 export function LessonReader({
@@ -35,7 +36,7 @@ export function LessonReader({
         tabIndex={0}
         data-testid="lesson-body"
       >
-        <pre>{lesson.markdown}</pre>
+        <SafeMarkdown markdown={lesson.markdown} testId="lesson-markdown" />
       </section>
     </article>
   );

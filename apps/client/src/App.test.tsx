@@ -87,6 +87,11 @@ describe("WAIKE Learning OS shell", () => {
     expect(screen.getByTestId("hub-mode-chip").textContent).toMatch(/hub:mock/);
     await user.click(screen.getByTestId("mode-assignments"));
     await waitFor(() => {
+      expect(screen.getByTestId("assignment-center")).toBeInTheDocument();
+    });
+    expect(screen.queryByTestId("assignment-body")).not.toBeInTheDocument();
+    await user.click(screen.getByTestId("open-assignment-digital_confidence_w01"));
+    await waitFor(() => {
       expect(screen.getByTestId("assignment-workspace")).toBeInTheDocument();
     });
     expect(screen.getByTestId("assignment-body").textContent).toMatch(/digital confidence/i);
@@ -116,6 +121,7 @@ describe("WAIKE Learning OS shell", () => {
     });
 
     await user.click(screen.getByTestId("mode-assignments"));
+    await user.click(screen.getByTestId("open-assignment-digital_confidence_w01"));
     await waitFor(() => {
       expect(screen.getByTestId("remediation-list").textContent).toMatch(/assigned|Revise/i);
     });

@@ -1,0 +1,39 @@
+{
+  "contract_id": "WAIKE_MLV_EDUCATION_CONTRACT",
+  "version": "v1",
+  "authenticated": true,
+  "user_scoped": true,
+  "modifies_3k_mlv": false,
+  "deep_links": [
+    "waike://home",
+    "waike://course/<section_id>",
+    "waike://module/<module_or_instance_id>",
+    "waike://lesson/<lesson_id>",
+    "waike://assignment/<assignment_id>",
+    "waike://quiz/<quiz_id>",
+    "waike://lab/<lab_id>",
+    "waike://grades",
+    "waike://calendar",
+    "waike://study/<content_id>",
+    "waike://portfolio"
+  ],
+  "consumer_summary": {
+    "endpoint": "/api/v1/mlv/consumer-summary",
+    "fields": [
+      "display_name",
+      "continue_learning",
+      "due_soon",
+      "courses",
+      "recent_feedback_count",
+      "upcoming_count"
+    ]
+  },
+  "must_not_expose": [
+    "answer_keys",
+    "instructor_only_materials",
+    "other_learners",
+    "unauthorized_grade_details",
+    "tokens_or_passwords",
+    "unrestricted_hub_apis"
+  ]
+}

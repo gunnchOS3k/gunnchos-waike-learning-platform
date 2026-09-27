@@ -13,7 +13,30 @@ import { AdminHardeningPanel } from "./components/admin/AdminHardeningPanel";
 import { InteropStatusPanel } from "./components/interop/InteropPanels";
 import { DeviceProfilePanel } from "./components/device/DeviceProfilePanel";
 import { FeedbackSuggestions } from "./components/help/FeedbackSuggestions";
-import type { AuthSession, HubActor, HubClient, SectionCard, SessionUser } from "./lib/hub/client";
+import { TodayHome } from "./components/learner/TodayHome";
+import { CourseLibrary } from "./components/learner/CourseLibrary";
+import { CourseHome } from "./components/learner/CourseHome";
+import { ModuleSequence } from "./components/learner/ModuleSequence";
+import { AssignmentCenter } from "./components/learner/AssignmentCenter";
+import { CalendarTodo } from "./components/learner/CalendarTodo";
+import { LearnerGrades } from "./components/learner/LearnerGrades";
+import { StudyMode } from "./components/learner/StudyMode";
+import { SearchPanel } from "./components/learner/SearchPanel";
+import { NotificationCenter } from "./components/learner/NotificationCenter";
+import { OfflineTruthPanel } from "./components/learner/OfflineTruth";
+import { SchoolAppsPanel } from "./components/learner/SchoolAppsPanel";
+import { InstructorWave1 } from "./components/instructor/InstructorWave1";
+import { GradingWorkspace } from "./components/instructor/GradingWorkspace";
+import { loadActiveCourseId, persistActiveCourseId, resolveActiveCourse, selectActiveCourse, togglePinnedCourse, loadPinnedCourseIds } from "./lib/product/activeCourse";
+import { buildTodayState } from "./lib/product/todayHome";
+import { calendarFromAssignments } from "./lib/product/calendarTodo";
+import { notificationsFromSignals } from "./lib/product/notifications";
+import { parseWaikeDeepLink } from "./lib/product/deepLinks";
+import { buildOfflineTruth } from "./lib/product/offlineTruth";
+import { LEARNER_MORE, LEARNER_PRIMARY, MOBILE_PRIMARY } from "./lib/product/nav";
+import { resolveModuleStatus } from "./lib/product/moduleStatus";
+import type { AssignmentCardModel, CourseCardModel, NotificationItem, SchoolApp, SearchHit } from "./lib/product/types";
+import type { AuthSession, HubActor, HubClient, AssignmentSummary, SectionCard, SessionUser } from "./lib/hub/client";
 import { HubAuthError } from "./lib/hub/client";
 import { resolveHubClient } from "./lib/hub/resolveHub";
 import type { SyncTransport } from "./lib/offline/syncCoordinator";
@@ -31,7 +54,15 @@ import {
 type Mode =
   | "lessons"
   | "home"
+  | "courses"
+  | "course"
   | "assignments"
+  | "calendar"
+  | "grades"
+  | "study"
+  | "messages"
+  | "portfolio"
+  | "more"
   | "activities"
   | "ai"
   | "instruct"
@@ -177,11 +208,18 @@ export default function App() {
   const [password, setPassword] = useState("");
   const [siteId, setSiteId] = useState("site-alpha");
   const [homeCards, setHomeCards] = useState<SectionCard[]>([]);
-  const [sectionId, setSectionId] = useState(
-    import.meta.env.VITE_PIXEL_PILOT === "true"
-      ? "sec_alpha_digital_confidence_pilot"
-      : "sec_alpha_dc_w01",
-  );
+  const [sectionId, setSectionId] = useState(() => loadActiveCourseId() || "");
+  const [openAssignmentId, setOpenAssignmentId] = useState<string | null>(null);
+  const [assignmentSummaries, setAssignmentSummaries] = useState<AssignmentSummary[]>([]);
+  const [pinnedIds, setPinnedIds] = useState<string[]>(() => loadPinnedCourseIds());
+  const [comments, setComments] = useState<Array<{ comment_id: string; title: string; body: string }>>([]);
+  const [schoolApps, setSchoolApps] = useState<SchoolApp[]>([]);
+  const [searchCatalog, setSearchCatalog] = useState<Array<Omit<SearchHit, "authorized">>>([]);
+  const [notices, setNotices] = useState<NotificationItem[]>([]);
+  const [moduleRows, setModuleRows] = useState<
+    Array<{ id: string; title: string; order: number; status: string; lesson?: string; assignment?: string }>
+  >([]);
+  const [showMore, setShowMore] = useState(false);
   const [dashboard, setDashboard] = useState<{
     metrics: { active_enrollments: number; submissions: number; ungraded: number };
   } | null>(null);
@@ -500,18 +538,57 @@ export default function App() {
   useEffect(() => {
     if (!hub || (!session && !isMock)) return;
     let cancelled = false;
-    if (mode === "home" && (primaryRole === "learner" || isMock)) {
+    void hub.listAssignments().then((rows) => {
+      if (!cancelled) setAssignmentSummaries(rows);
+    }).catch(() => undefined);
+    if (primaryRole === "learner" || (isMock && mode !== "instruct")) {
       void hub
         .learnerHome()
         .then((cards) => {
           if (cancelled) return;
           setHomeCards(cards);
-          const first = cards[0]?.section_id;
-          if (first) setSectionId(first);
         })
-        .catch((err) => {
-          if (!cancelled) setError(String(err));
-        });
+        .catch(() => undefined);
+    }
+    if (mode === "instruct") {
+      void hub.listSections().then((rows) => {
+        if (!cancelled) {
+          setHomeCards(rows.map((r) => ({ section_id: r.section_id, code: r.code, title: r.title, mastery: null, recent_feedback: [] })));
+        }
+      }).catch(() => undefined);
+    }
+    if ((mode === "home" || mode === "courses" || mode === "course") && (primaryRole === "learner" || isMock)) {
+      void hub.search("week").then((res) => {
+        if (!cancelled) setSearchCatalog(res.hits as Array<Omit<SearchHit, "authorized">>);
+      }).catch(() => undefined);
+      void hub.listNotifications().then((rows) => {
+        if (!cancelled) {
+          setNotices(
+            rows.map((n) => ({
+              id: n.id,
+              kind: n.kind as NotificationItem["kind"],
+              title: n.title,
+              body: n.body,
+              created_at: n.created_at,
+              deep_link: n.deep_link,
+              unread: n.unread,
+            })),
+          );
+        }
+      }).catch(() => undefined);
+      void hub.listSchoolApps().then((rows) => {
+        if (!cancelled) setSchoolApps(rows);
+      }).catch(() => undefined);
+    }
+    if (mode === "instruct" && hub) {
+      void hub.listCommentBank().then((rows) => {
+        if (!cancelled) setComments(rows);
+      }).catch(() => undefined);
+    }
+    if (sectionId && (mode === "course" || mode === "study")) {
+      void hub.listModules(sectionId).then((rows) => {
+        if (!cancelled) setModuleRows(rows);
+      }).catch(() => undefined);
     }
     if (mode === "instruct") {
       void hub
@@ -582,6 +659,86 @@ export default function App() {
       cancelled = true;
     };
   }, [hub, session, isMock, mode, primaryRole, sectionId, user?.user_id, user?.roles]);
+
+  const courseModels: CourseCardModel[] = homeCards.map((c) => ({
+    section_id: c.section_id,
+    code: c.code,
+    title: c.title,
+    pinned: pinnedIds.includes(c.section_id),
+    mastery: c.mastery,
+    progress: c.mastery
+      ? { completed: c.mastery.mastered ? 1 : 0, total: 1, label: c.mastery.mastered ? "On track" : "In progress" }
+      : null,
+  }));
+  const activeCourse = resolveActiveCourse(courseModels, sectionId || null);
+  const assignmentCards: AssignmentCardModel[] = assignmentSummaries.map((a) => ({
+    assignment_id: a.assignment_id,
+    section_id: a.section_id || sectionId || "",
+    course_title: a.course_title || courseModels.find((c) => c.section_id === a.section_id)?.title || "Course",
+    title: a.title,
+    due_at: a.due_at ?? null,
+    points_possible: a.points_possible ?? null,
+    submission_state: a.submission_state || "not_started",
+    grade_state: a.grade_state || "none",
+    filter_keys: ["all"],
+  }));
+  const nowIso = new Date().toISOString();
+  const calendarItems = calendarFromAssignments(assignmentCards, nowIso);
+  const today = buildTodayState({
+    courses: courseModels,
+    assignments: assignmentCards,
+    calendar: calendarItems,
+    feedback: homeCards.flatMap((c) =>
+      c.recent_feedback.map((f) => ({
+        feedback_id: f.feedback_id,
+        body: f.body,
+        created_at: f.created_at,
+        section_id: c.section_id,
+        course_title: c.title,
+      })),
+    ),
+    active: activeCourse,
+    continueItem: activeCourse
+      ? {
+          section_id: activeCourse.section_id,
+          course_title: activeCourse.title,
+          item_title: activeCourse.next_item?.title || lesson?.title || "Continue",
+          item_kind: "lesson",
+          item_id: lesson?.lesson_id || activeCourse.section_id,
+          progress_label: activeCourse.progress?.label || "In progress",
+        }
+      : null,
+    nowIso,
+  });
+  const offlineTruth = buildOfflineTruth({
+    downloaded: module ? [module.title] : [],
+    availableOffline: module ? [module.title] : [],
+    queuedChanges: sync.state?.counts.pending || 0,
+    awaitingSync: sync.state?.needsAttention || 0,
+    needsInternet: online ? [] : ["Ask gunnchAI", "New course install"],
+    conflicts: syncUx === "conflict" ? ["A change needs review"] : [],
+    durable: Boolean(sync.coordinator),
+    pinSupported: Boolean(sync.coordinator),
+  });
+
+  function chooseCourse(id: string) {
+    const chosen = selectActiveCourse(courseModels, id);
+    if (!chosen) return;
+    setSectionId(chosen.section_id);
+    persistActiveCourseId(chosen.section_id);
+    setMode("course");
+  }
+
+  function openDeepLink(href: string) {
+    const parsed = parseWaikeDeepLink(href);
+    if (!parsed) return;
+    if (parsed.kind === "assignment" && parsed.id) {
+      setOpenAssignmentId(parsed.id);
+      setMode("assignments");
+      return;
+    }
+    setMode(parsed.mode as Mode);
+  }
 
   function HubUnavailablePanel({ title }: { title: string }) {
     return (
@@ -673,8 +830,7 @@ export default function App() {
       <header>
         <h1 className="brand">WAIKE Learning OS</h1>
         <p className="tagline">
-          Local-first learning client. Packages are verified before trust. Multi-user identity and
-          gradebook are live for DIGITAL_CONFIDENCE.
+          Your courses, due work, and study tools — verified on this device before anything is trusted.
         </p>
         {user ? (
           <div className="pilot-banner" data-testid="pilot-role-banner" role="status">
@@ -709,7 +865,7 @@ export default function App() {
               setMode("lessons");
             }}
           >
-            Back to module
+            Back
           </button>
           {user ? (
             <button type="button" className="ghost" data-testid="logout-btn" onClick={() => void onLogout()}>
@@ -731,27 +887,73 @@ export default function App() {
           </button>
           {(primaryRole === "learner" || isMock) && (
             <>
+              {(runtime.isTouchPrimary ? LEARNER_PRIMARY.filter((x) => MOBILE_PRIMARY.includes(x.id)) : LEARNER_PRIMARY).map((item) => (
+                <button
+                  key={item.id}
+                  type="button"
+                  className={mode === item.id ? "mode-active" : "ghost"}
+                  data-testid={`mode-${item.id}`}
+                  onClick={() => {
+                    if (isMock) setMockActorRole("learner-a", "learner");
+                    setMode(item.id);
+                    setShowMore(false);
+                    if (item.id === "assignments") setOpenAssignmentId(null);
+                  }}
+                >
+                  {item.label}
+                </button>
+              ))}
+              {runtime.isTouchPrimary ? (
+                <button
+                  type="button"
+                  className={showMore || LEARNER_MORE.some((x) => x.id === mode) ? "mode-active" : "ghost"}
+                  data-testid="mode-more"
+                  onClick={() => setShowMore((v) => !v)}
+                >
+                  More
+                </button>
+              ) : (
+                LEARNER_MORE.map((item) => (
+                  <button
+                    key={item.id}
+                    type="button"
+                    className={mode === item.id ? "mode-active" : "ghost"}
+                    data-testid={`mode-${item.id}`}
+                    onClick={() => {
+                      if (isMock) setMockActorRole("learner-a", "learner");
+                      setMode(item.id);
+                    }}
+                  >
+                    {item.label}
+                  </button>
+                ))
+              )}
+              {(!runtime.isTouchPrimary || showMore) && runtime.isTouchPrimary
+                ? LEARNER_MORE.map((item) => (
+                    <button
+                      key={item.id}
+                      type="button"
+                      className={mode === item.id ? "mode-active" : "ghost"}
+                      data-testid={`mode-${item.id}`}
+                      onClick={() => {
+                        setMode(item.id);
+                        setShowMore(false);
+                      }}
+                    >
+                      {item.label}
+                    </button>
+                  ))
+                : null}
               <button
                 type="button"
-                className={mode === "home" ? "mode-active" : "ghost"}
-                data-testid="mode-home"
+                className={mode === "ai" ? "mode-active" : "ghost"}
+                data-testid="mode-ai"
                 onClick={() => {
                   if (isMock) setMockActorRole("learner-a", "learner");
-                  setMode("home");
+                  setMode("ai");
                 }}
               >
-                Home
-              </button>
-              <button
-                type="button"
-                className={mode === "assignments" ? "mode-active" : "ghost"}
-                data-testid="mode-assignments"
-                onClick={() => {
-                  if (isMock) setMockActorRole("learner-a", "learner");
-                  setMode("assignments");
-                }}
-              >
-                Assignments
+                Ask gunnchAI
               </button>
               <button
                 type="button"
@@ -763,17 +965,6 @@ export default function App() {
                 }}
               >
                 Activities
-              </button>
-              <button
-                type="button"
-                className={mode === "ai" ? "mode-active" : "ghost"}
-                data-testid="mode-ai"
-                onClick={() => {
-                  if (isMock) setMockActorRole("learner-a", "learner");
-                  setMode("ai");
-                }}
-              >
-                AI tutor
               </button>
             </>
           )}
@@ -921,7 +1112,7 @@ export default function App() {
             ) : (
               <section className="course-card">
                 <h2>No course installed</h2>
-                <p className="muted">Install a signed DIGITAL_CONFIDENCE learner pack to begin.</p>
+                <p className="muted">Install a signed learner pack to begin.</p>
               </section>
             )}
             {lesson ? (
@@ -988,41 +1179,175 @@ export default function App() {
         ) : null}
         {mode === "home" ? (
           hub ? (
-            <section className="panel" data-testid="learner-home">
-              <h2>My sections</h2>
-              {homeCards.length === 0 ? (
-                <p className="muted" data-testid="empty-home">
-                  No active enrollments.
-                </p>
-              ) : (
-                <ul>
-                  {homeCards.map((c) => (
-                    <li key={c.section_id}>
-                      <strong>{c.title}</strong> ({c.code})
-                      {c.mastery ? (
-                        <span className="muted">
-                          {" "}
-                          · mastery={c.mastery.mastered ? "yes" : "gap"}
-                        </span>
-                      ) : null}
-                      {c.recent_feedback[0] ? (
-                        <p className="muted">Feedback: {c.recent_feedback[0].body}</p>
-                      ) : null}
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </section>
+            <>
+              <TodayHome
+                today={today}
+                onContinue={() => setMode(lesson ? "study" : "courses")}
+                onOpenAssignment={(id, sec) => {
+                  setOpenAssignmentId(id);
+                  if (sec) {
+                    setSectionId(sec);
+                    persistActiveCourseId(sec);
+                  }
+                  setMode("assignments");
+                }}
+                onOpenCourse={chooseCourse}
+                onOpenCalendar={() => setMode("calendar")}
+                onAsk={() => setMode("ai")}
+              />
+              <SearchPanel
+                catalog={searchCatalog}
+                authorizedSectionIds={courseModels.map((c) => c.section_id)}
+                role={primaryRole || "learner"}
+                onOpen={(hit) => {
+                  if (hit.kind === "assignment") {
+                    setOpenAssignmentId(hit.id);
+                    setMode("assignments");
+                  } else {
+                    chooseCourse(hit.section_id);
+                  }
+                }}
+              />
+              <NotificationCenter
+                items={notices.length ? notices : notificationsFromSignals({})}
+                onOpen={(n) => openDeepLink(n.deep_link)}
+              />
+              <OfflineTruthPanel truth={offlineTruth} />
+            </>
           ) : (
-            <HubUnavailablePanel title="Learner home" />
+            <HubUnavailablePanel title="Home" />
           )
+        ) : null}
+        {mode === "courses" ? (
+          <CourseLibrary
+            courses={courseModels}
+            activeSectionId={activeCourse?.section_id || null}
+            onSelect={chooseCourse}
+            onTogglePin={(id) => setPinnedIds(togglePinnedCourse(id))}
+          />
+        ) : null}
+        {mode === "course" ? (
+          <>
+            <CourseHome
+              course={activeCourse}
+              nextDue={today.due_soon.find((d) => d.section_id === activeCourse?.section_id) || today.due_soon[0] || null}
+              announcement={null}
+              onContinue={() => setMode("study")}
+              onTab={(tab) => {
+                if (tab === "assignments") setMode("assignments");
+                if (tab === "grades") setMode("grades");
+                if (tab === "modules") setMode("course");
+                if (tab === "activities") setMode("activities");
+                if (tab === "discussions") setMode("messages");
+                if (tab === "files") setMode("study");
+              }}
+            />
+            <ModuleSequence
+              modules={moduleRows.map((m) => ({
+                ...m,
+                status: resolveModuleStatus({
+                  started: false,
+                  submitted: false,
+                  needsReview: false,
+                  complete: false,
+                  lockedByPrerequisite: m.status === "locked",
+                }),
+              }))}
+              onOpenLesson={() => setMode("study")}
+            />
+          </>
         ) : null}
         {mode === "assignments" ? (
           hub ? (
-            <AssessmentWorkspace hub={hub} />
+            openAssignmentId ? (
+              <AssessmentWorkspace
+                hub={hub}
+                assignmentId={openAssignmentId}
+                sectionId={sectionId || null}
+                onBack={() => setOpenAssignmentId(null)}
+              />
+            ) : (
+              <AssignmentCenter
+                assignments={assignmentCards}
+                nowIso={nowIso}
+                onOpen={(id, sec) => {
+                  setOpenAssignmentId(id);
+                  if (sec) {
+                    setSectionId(sec);
+                    persistActiveCourseId(sec);
+                  }
+                }}
+              />
+            )
           ) : (
             <HubUnavailablePanel title="Assignments" />
           )
+        ) : null}
+        {mode === "calendar" ? (
+          <CalendarTodo items={calendarItems} nowIso={nowIso} onOpen={openDeepLink} />
+        ) : null}
+        {mode === "grades" ? (
+          <LearnerGrades
+            rows={assignmentCards.map((a) => ({
+              assignment_id: a.assignment_id,
+              section_id: a.section_id,
+              course_title: a.course_title,
+              title: a.title,
+              points_earned: null,
+              points_possible: a.points_possible ?? null,
+              status: a.grade_state,
+              pending: true,
+            }))}
+            weightingModeled={false}
+            onOpen={(id) => {
+              setOpenAssignmentId(id);
+              setMode("assignments");
+            }}
+          />
+        ) : null}
+        {mode === "study" ? (
+          <StudyMode
+            title={lesson?.title || activeCourse?.title || "Study"}
+            markdown={lesson?.markdown || "Open a lesson from your course to study here."}
+            onAsk={() => setMode("ai")}
+            onLab={() => setMode("activities")}
+          />
+        ) : null}
+        {mode === "messages" ? (
+          <section className="panel" data-testid="messages-panel">
+            <h2>Messages</h2>
+            <p className="muted">Course discussions stay inside the course you opened. No broadcast spam.</p>
+          </section>
+        ) : null}
+        {mode === "portfolio" ? (
+          hub ? (
+            <section className="panel" data-testid="portfolio-panel">
+              <h2>Portfolio</h2>
+              <p className="muted">Evidence you have already submitted.</p>
+            </section>
+          ) : (
+            <HubUnavailablePanel title="Portfolio" />
+          )
+        ) : null}
+        {mode === "more" ? (
+          <>
+            <SearchPanel
+              catalog={searchCatalog}
+              authorizedSectionIds={courseModels.map((c) => c.section_id)}
+              role={primaryRole || "learner"}
+              onOpen={(hit) => {
+                if (hit.kind === "assignment") {
+                  setOpenAssignmentId(hit.id);
+                  setMode("assignments");
+                } else {
+                  chooseCourse(hit.section_id);
+                }
+              }}
+            />
+            <NotificationCenter items={notices.length ? notices : notificationsFromSignals({})} onOpen={(n) => openDeepLink(n.deep_link)} />
+            <OfflineTruthPanel truth={offlineTruth} />
+            <SchoolAppsPanel apps={schoolApps} onPin={(id, pinned) => void hub?.pinSchoolApp(id, pinned)} />
+          </>
         ) : null}
         {mode === "instruct" ? (
           hub ? (
@@ -1039,6 +1364,41 @@ export default function App() {
                 )}
               </section>
               <InstructorQueue hub={hub} />
+              <GradingWorkspace
+                hub={hub}
+                assignment={null}
+                queue={[]}
+                comments={comments}
+                onReload={async () => {
+                  setComments(await hub.listCommentBank());
+                }}
+              />
+              <InstructorWave1
+                sections={homeCards.length ? homeCards.map((c) => ({ section_id: c.section_id, title: c.title })) : [
+                  { section_id: sectionId || "sec_alpha_dc_w01", title: "Current course" },
+                ]}
+                dueItems={assignmentCards.map((a) => ({ id: a.assignment_id, title: a.title, current_due: a.due_at }))}
+                comments={comments}
+                intervention={[
+                  {
+                    learner_id: "learner-b",
+                    display_name: "Learner B",
+                    signals: ["missing_work"],
+                    waiting_for_instructor_grade: false,
+                    deep_link: "waike://course/sec_alpha_dc_w01",
+                  },
+                ]}
+                onCopy={(body) => {
+                  void hub.copySection(body).then(() => undefined);
+                }}
+                onApplyShift={(hours) => {
+                  if (sectionId) void hub.applyDueDateShift(sectionId, hours);
+                }}
+                onSaveComment={(title, body) => {
+                  void hub.upsertCommentBank(title, body).then((row) => setComments((c) => [...c, row]));
+                }}
+                onMessage={() => setMode("messages")}
+              />
             </>
           ) : (
             <HubUnavailablePanel title="Instructor grading queue" />
