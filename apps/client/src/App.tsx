@@ -50,6 +50,7 @@ import {
   simulateInstallFailure,
   simulateVerifiedInstall,
 } from "./lib/mockRuntime";
+import { PortalReturnLink } from "./PortalReturnLink";
 
 type Mode =
   | "lessons"
@@ -760,6 +761,7 @@ export default function App() {
     return (
       <div className={`app-shell ${runtime.isTouchPrimary ? "touch-ui" : ""}`}>
         <header>
+          <PortalReturnLink />
           <h1 className="brand">WAIKE Learning OS</h1>
           <p className="tagline">Sign in to your school hub session.</p>
           {runtime.pilotBannerLabel.includes("Pixel") ? (
@@ -828,6 +830,7 @@ export default function App() {
         Skip to content
       </a>
       <header>
+        <PortalReturnLink />
         <h1 className="brand">WAIKE Learning OS</h1>
         <p className="tagline">
           Your courses, due work, and study tools — verified on this device before anything is trusted.
