@@ -528,6 +528,14 @@ mod tests {
     use super::*;
     use crate::keyring_store::decode_hex_key;
     use std::process::Command;
+    use std::sync::{Mutex, OnceLock};
+
+    static PACK_COMPILE_LOCK: OnceLock<Mutex<()>> = OnceLock::new();
+
+    struct SamplePack {
+        _tempdir: tempfile::TempDir,
+        path: PathBuf,
+    }
 
     fn repo_root() -> PathBuf {
         PathBuf::from(env!("CARGO_MANIFEST_DIR"))
@@ -540,38 +548,46 @@ mod tests {
         fs::read(repo_root().join("contracts/fixtures/keys/TEST_ONLY_ed25519_public.key")).unwrap()
     }
 
-    fn ensure_sample_pack() -> PathBuf {
-        let out = repo_root().join("pack_out");
-        if !out.join("learner_pack_manifest.json").exists() {
-            let status = Command::new(repo_root().join(".venv/bin/course-compiler"))
-                .args(["compile", "DIGITAL_CONFIDENCE", "--out"])
+    fn ensure_sample_pack() -> SamplePack {
+        // Rust tests execute concurrently. Give each test an isolated output tree,
+        // and serialize compilation because the compiler also writes shared reports.
+        let tempdir = tempfile::tempdir().unwrap();
+        let out = tempdir.path().join("pack");
+        let _compile_guard = PACK_COMPILE_LOCK
+            .get_or_init(|| Mutex::new(()))
+            .lock()
+            .unwrap();
+        let status = Command::new(repo_root().join(".venv/bin/course-compiler"))
+            .args(["compile", "DIGITAL_CONFIDENCE", "--out"])
+            .arg(&out)
+            .env("SOURCE_DATE_EPOCH", "1700000000")
+            .current_dir(repo_root())
+            .status();
+        if status.is_err() || !status.unwrap().success() {
+            // Fallback: PYTHONPATH
+            let status2 = Command::new(repo_root().join(".venv/bin/python3"))
+                .args([
+                    "-m",
+                    "course_compiler.cli",
+                    "compile",
+                    "DIGITAL_CONFIDENCE",
+                    "--out",
+                ])
                 .arg(&out)
                 .env("SOURCE_DATE_EPOCH", "1700000000")
+                .env(
+                    "PYTHONPATH",
+                    repo_root().join("tools/course_compiler"),
+                )
                 .current_dir(repo_root())
-                .status();
-            if status.is_err() || !status.unwrap().success() {
-                // Fallback: PYTHONPATH
-                let status2 = Command::new(repo_root().join(".venv/bin/python3"))
-                    .args([
-                        "-m",
-                        "course_compiler.cli",
-                        "compile",
-                        "DIGITAL_CONFIDENCE",
-                        "--out",
-                    ])
-                    .arg(&out)
-                    .env("SOURCE_DATE_EPOCH", "1700000000")
-                    .env(
-                        "PYTHONPATH",
-                        repo_root().join("tools/course_compiler"),
-                    )
-                    .current_dir(repo_root())
-                    .status()
-                    .expect("compile pack");
-                assert!(status2.success(), "compiler failed");
-            }
+                .status()
+                .expect("compile pack");
+            assert!(status2.success(), "compiler failed");
         }
-        out
+        SamplePack {
+            _tempdir: tempdir,
+            path: out,
+        }
     }
 
     #[test]
@@ -580,7 +596,7 @@ mod tests {
         let dir = tempfile::tempdir().unwrap();
         let key = decode_hex_key(&"11".repeat(32)).unwrap();
         let svc = PackService::new(dir.path().to_path_buf(), &verify_key_bytes(), key).unwrap();
-        let trust = svc.install_pack(&pack_src).unwrap();
+        let trust = svc.install_pack(&pack_src.path).unwrap();
         assert!(trust.trusted);
         assert_eq!(trust.module_id, "DIGITAL_CONFIDENCE");
         assert_eq!(trust.verification_status, "verified");
@@ -606,7 +622,7 @@ mod tests {
         let pack_src = ensure_sample_pack();
         let dir = tempfile::tempdir().unwrap();
         let work = dir.path().join("unsigned");
-        copy_dir(&pack_src, &work).unwrap();
+        copy_dir(&pack_src.path, &work).unwrap();
         // flatten like install does
         let learner = work.join("learner");
         if learner.is_dir() {
@@ -631,7 +647,7 @@ mod tests {
 
         // wrong role
         let work2 = dir.path().join("wrong_role");
-        copy_dir(&pack_src, &work2).unwrap();
+        copy_dir(&pack_src.path, &work2).unwrap();
         let learner = work2.join("learner");
         if learner.is_dir() {
             for entry in WalkDir::new(&learner).into_iter().filter_map(|e| e.ok()) {
@@ -666,7 +682,7 @@ mod tests {
         let pack_src = ensure_sample_pack();
         let dir = tempfile::tempdir().unwrap();
         let work = dir.path().join("tampered");
-        copy_dir(&pack_src, &work).unwrap();
+        copy_dir(&pack_src.path, &work).unwrap();
 
         // Tamper a file that is actually listed in the signed manifest hashes.
         let manifest: Value = serde_json::from_str(

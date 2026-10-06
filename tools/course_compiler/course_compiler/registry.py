@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import os
 import subprocess
 from pathlib import Path
 from typing import Any
@@ -29,6 +30,9 @@ def load_pin(pin_path: Path | None = None) -> dict[str, Any]:
 def resolve_waike_root(pin: dict[str, Any] | None = None) -> Path:
     pin = pin or load_pin()
     candidates: list[Path] = []
+    explicit = os.environ.get("WAIKE_ROOT", "").strip()
+    if explicit:
+        candidates.append(Path(explicit).expanduser().resolve())
     hint = pin.get("absolute_path_hint")
     if hint:
         candidates.append(Path(hint))

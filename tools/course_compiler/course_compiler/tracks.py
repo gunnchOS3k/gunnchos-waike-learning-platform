@@ -25,7 +25,7 @@ CANONICAL_TRACK_IDS: tuple[str, ...] = (
 
 # digital_rc folder name when it differs from track_id (or None = no digital_rc package)
 DIGITAL_RC_PACKAGE: dict[str, str | None] = {
-    "DIGITAL_CONFIDENCE": None,  # legacy lessons/by_course import
+    "DIGITAL_CONFIDENCE": "DIGITAL_CONFIDENCE",  # canonical pointer + allow-listed GENERAL_IT shared tree
     "IT_SUPPORT_HARDWARE": "GENERAL_IT",
     "NETWORKING_INFRA": "COMPUTER_NETWORKING",
     "CYBER_SOC": "CYBERSECURITY",

@@ -83,6 +83,14 @@ def test_digital_confidence_still_compiles(tmp_path):
     report = compile_module("DIGITAL_CONFIDENCE", out_dir=tmp_path / "dc")
     assert report["module_id"] == "DIGITAL_CONFIDENCE"
     assert report["provenance_match"] is True
-    assert len(report["lessons"]) >= 8
+    assert len(report["lessons"]) >= 10
+    inventory = report["activity_inventory"]
+    assert inventory["quizzes"] >= 10
+    assert inventory["rubrics"] >= 8
+    assert inventory["outcomes"] >= 4
+    manifest = json.loads((tmp_path / "dc" / "learner_pack_manifest.json").read_text())
+    paths = [entry["path"] for entry in manifest["files"]]
+    assert any("/offline_pack/pack.json" in path for path in paths)
+    assert any("/GENERAL_IT/quizzes/q01.json" in path for path in paths)
     decision = verify_learner_pack(tmp_path / "dc", VK)
     assert decision.ok

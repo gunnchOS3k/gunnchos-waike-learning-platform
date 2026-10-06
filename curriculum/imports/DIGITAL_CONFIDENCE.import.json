@@ -4,11 +4,7 @@
   "learner_globs": [
     "programs/digital_confidence.md",
     "programs/digital_confidence_to_operator.md",
-    "lessons/by_course/digital_confidence/**",
     "student_workbooks/by_course/digital_confidence/**",
-    "labs/by_course/digital_confidence/**",
-    "assignments/by_course/digital_confidence/**",
-    "assignment_bodies/by_course/digital_confidence/**",
     "syllabi/digital_confidence/**",
     "results/student_packets/digital_confidence_student_packet.md",
     "results/syllabi/digital_confidence_syllabus.md",
@@ -23,7 +19,11 @@
     "group_projects/by_course/digital_confidence/**",
     "case_study_applications/by_course/digital_confidence/**",
     "assessment/by_course/digital_confidence/**",
-    "industry_alignment/by_course/digital_confidence/**"
+    "industry_alignment/by_course/digital_confidence/**",
+    "curriculum/digital_rc/DIGITAL_CONFIDENCE/*.json",
+    "curriculum/digital_rc/DIGITAL_CONFIDENCE/*.md",
+    "curriculum/digital_rc/DIGITAL_CONFIDENCE/student/**",
+    "curriculum/digital_rc/DIGITAL_CONFIDENCE/portfolio/**"
   ],
   "instructor_only_globs": [
     "instructor_solution_guides/by_course/digital_confidence/**",
@@ -47,10 +47,20 @@
     "teaching_notes.md",
     "demo_plan.md"
   ],
-  "learner_safe_from_general_it": [],
+  "learner_safe_from_general_it": [
+    "curriculum/digital_rc/GENERAL_IT/weeks/**",
+    "curriculum/digital_rc/GENERAL_IT/assignments/**",
+    "curriculum/digital_rc/GENERAL_IT/labs/**",
+    "curriculum/digital_rc/GENERAL_IT/offline_pack/**",
+    "curriculum/digital_rc/GENERAL_IT/rubrics/**",
+    "curriculum/digital_rc/GENERAL_IT/quizzes/**",
+    "curriculum/digital_rc/GENERAL_IT/presentation/**",
+    "curriculum/digital_rc/GENERAL_IT/assessments/**",
+    "curriculum/digital_rc/GENERAL_IT/projects/**"
+  ],
   "package_version": "1.0.0",
-  "source_kind": "legacy_lessons_by_course",
-  "digital_rc_package": null,
+  "source_kind": "canonical_digital_rc_with_shared_general_it",
+  "digital_rc_package": "DIGITAL_CONFIDENCE",
   "migration": {
     "from": "digital_confidence_only",
     "to": "registry_18_tracks",

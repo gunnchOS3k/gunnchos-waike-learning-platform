@@ -190,7 +190,9 @@ def compile_module(
     pkg_version = str(import_spec.get("package_version") or PACKAGE_VERSION)
     migration = import_spec.get("migration") or dict(MIGRATION_METADATA)
 
-    learner_globs = import_spec.get("learner_globs") or []
+    learner_globs = (import_spec.get("learner_globs") or []) + (
+        import_spec.get("learner_safe_from_general_it") or []
+    )
     instructor_globs = import_spec.get("instructor_only_globs") or []
     markers = import_spec.get("instructor_path_markers")
     # Collect learner candidates and instructor-only paths separately (fail closed / scoped).
