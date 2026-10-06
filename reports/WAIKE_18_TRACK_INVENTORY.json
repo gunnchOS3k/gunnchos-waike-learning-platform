@@ -4,26 +4,26 @@
   "tracks": [
     {
       "activity_counts": {
-        "assignments": 16,
-        "discussions": 1,
-        "groups": 24,
-        "labs": 8,
-        "lessons": 8,
-        "outcomes": 0,
-        "portfolio": 1,
-        "quizzes": 0,
-        "rubrics": 0
+        "assignments": 10,
+        "discussions": 0,
+        "groups": 25,
+        "labs": 10,
+        "lessons": 10,
+        "outcomes": 4,
+        "portfolio": 3,
+        "quizzes": 10,
+        "rubrics": 8
       },
-      "digital_rc_package": null,
-      "digital_rc_package_exists": false,
-      "has_ai_policy": false,
-      "has_offline_pack": false,
-      "instructor_file_count": 37,
-      "learner_file_count": 193,
+      "digital_rc_package": "DIGITAL_CONFIDENCE",
+      "digital_rc_package_exists": true,
+      "has_ai_policy": true,
+      "has_offline_pack": true,
+      "instructor_file_count": 29,
+      "learner_file_count": 145,
       "rubric_outcome_coverage": {
-        "has_outcomes": false,
+        "has_outcomes": true,
         "has_portfolio": true,
-        "has_rubrics": false
+        "has_rubrics": true
       },
       "sample_instructor_paths": [
         "group_projects/by_course/digital_confidence/instructor_solution_guide.md",
@@ -40,16 +40,16 @@
         "assessment/by_course/digital_confidence/continuous_improvement_plan.md",
         "assessment/by_course/digital_confidence/mastery_evidence_map.md",
         "assessment/by_course/digital_confidence/revision_policy.md",
-        "assignment_bodies/by_course/digital_confidence/assignment_01.md",
-        "assignment_bodies/by_course/digital_confidence/assignment_02.md",
-        "assignment_bodies/by_course/digital_confidence/assignment_03.md",
-        "assignment_bodies/by_course/digital_confidence/assignment_04.md",
-        "assignment_bodies/by_course/digital_confidence/assignment_05.md",
-        "assignment_bodies/by_course/digital_confidence/assignment_06.md",
-        "assignment_bodies/by_course/digital_confidence/assignment_07.md",
-        "assignment_bodies/by_course/digital_confidence/assignment_08.md"
+        "capstones/by_track/digital_confidence.md",
+        "case_study_applications/by_course/digital_confidence/7gc_case_sequence.md",
+        "case_study_applications/by_course/digital_confidence/gary_case_application.md",
+        "case_study_applications/by_course/digital_confidence/gaza_case_application.md",
+        "case_study_applications/by_course/digital_confidence/geelong_case_application.md",
+        "case_study_applications/by_course/digital_confidence/germany_case_application.md",
+        "case_study_applications/by_course/digital_confidence/ghana_case_application.md",
+        "case_study_applications/by_course/digital_confidence/graham_land_case_application.md"
       ],
-      "source_kind": "legacy_lessons_by_course",
+      "source_kind": "canonical_digital_rc_with_shared_general_it",
       "track": "DIGITAL_CONFIDENCE"
     },
     {
@@ -903,5 +903,5 @@
       "track": "DATA_VIZ_BI"
     }
   ],
-  "waike_root": "/tmp/waike-ops-pin-candidate-63ba9f25"
+  "waike_root": "/Users/gunnchos/Downloads/gunnchos-codex-worktrees/waike-research-ops-63ba9f25"
 }

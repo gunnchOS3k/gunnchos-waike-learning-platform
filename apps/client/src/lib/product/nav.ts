@@ -23,7 +23,11 @@ export const LEARNER_MORE: Array<{ id: LearnerDest; label: string }> = [
   { id: "portfolio", label: "Portfolio" },
 ];
 
-export const MOBILE_PRIMARY: LearnerDest[] = ["home", "courses", "assignments", "calendar", "more"];
+export const MOBILE_PRIMARY: LearnerDest[] = ["home", "courses", "assignments", "calendar"];
+export const MOBILE_MORE = [
+  ...LEARNER_PRIMARY.filter((item) => !MOBILE_PRIMARY.includes(item.id)),
+  ...LEARNER_MORE,
+];
 
 export function isLearnerDest(value: string): value is LearnerDest {
   return [...LEARNER_PRIMARY, ...LEARNER_MORE, { id: "more" as const, label: "More" }].some((x) => x.id === value);

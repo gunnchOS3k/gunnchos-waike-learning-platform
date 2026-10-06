@@ -1,6 +1,6 @@
 # Gate D Adversarial Final Review
 
-Generated: 2026-09-20T18:57:26Z
+Generated: 2026-10-06T12:03:03Z
 
 ## Hunt checklist
 - soft-fail assert tautologies across Gate D + prior-regression suites

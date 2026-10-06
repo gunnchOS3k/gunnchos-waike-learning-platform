@@ -7,6 +7,16 @@ import { overallPercentAllowed } from "./gradesHonesty";
 import { classifyIntervention, filterIntervention, previewDueDateShift } from "./instructorWorkflow";
 import { resolveModuleStatus } from "./moduleStatus";
 import { notificationsFromSignals } from "./notifications";
+import {
+  PUBLIC_TRACKS,
+  publicAssignmentContent,
+  publicAssignmentsForTrack,
+  publicCatalogStudyText,
+  publicContentForTrack,
+  publicCourseModels,
+  publicModulesForTrack,
+  publicTrackForSection,
+} from "./publicCurriculum";
 import { authorizeSearchHits, isAnswerKeyMaterial, matchQuery } from "./searchAuthz";
 import { containsUnsafeHtml, renderSafeMarkdown } from "./safeMarkdown";
 import { validateSchoolAppLaunch } from "./schoolApps";
@@ -68,6 +78,48 @@ describe("active course persistence", () => {
     expect(chosen?.title).toBe("Software Builder");
     expect(loadActiveCourseId(storage)).toBe("sec_sb");
     expect(resolveActiveCourse(courses, "sec_sb")?.section_id).toBe("sec_sb");
+  });
+});
+
+describe("public 18-track curriculum", () => {
+  it.each(PUBLIC_TRACKS)("opens every authored content item for $trackId", (track) => {
+    const resolved = publicTrackForSection(`catalog:${track.trackId}`);
+    const content = publicContentForTrack(resolved);
+    expect(content?.sourceCommit).toBe("63ba9f25ac6b8d8d1b6dd118923566fd51c57b62");
+    expect(content?.packId).toBeTruthy();
+    publicModulesForTrack(resolved).forEach((_, index) => {
+      expect(publicCatalogStudyText(track, index + 1)).toBe(content?.lessons[index].markdown);
+      expect(publicCatalogStudyText(track, index + 1).trim().length).toBeGreaterThan(0);
+    });
+    publicAssignmentsForTrack(resolved).forEach((assignment, index) => {
+      expect(publicAssignmentContent(resolved, assignment.assignment_id)?.markdown).toBe(content?.assignments[index].markdown);
+    });
+    for (const items of [content?.quizzes, content?.labs, content?.portfolio]) {
+      expect(items?.length).toBeGreaterThan(0);
+      expect(items?.every((item) => item.markdown.trim().length > 0 && /^[a-f0-9]{64}$/.test(item.sha256))).toBe(true);
+    }
+  });
+  it("exposes every unique track without inventing learner progress", () => {
+    expect(PUBLIC_TRACKS).toHaveLength(18);
+    expect(new Set(PUBLIC_TRACKS.map((track) => track.trackId)).size).toBe(18);
+    const models = publicCourseModels();
+    expect(models).toHaveLength(18);
+    expect(models.every((course) => course.progress == null && course.mastery == null)).toBe(true);
+    expect(models.map((course) => course.title)).toContain("7GC AI-RAN Research Apprenticeship");
+  });
+
+  it("supports course to lesson, assignment, lab, and portfolio discovery", () => {
+    const track = publicTrackForSection("catalog:NETWORKING_INFRA");
+    expect(track?.title).toBe("Networking and Internet Infrastructure");
+    expect(publicModulesForTrack(track)).toHaveLength(10);
+    expect(publicModulesForTrack(track)[0]).toMatchObject({
+      lesson: "Week 1 presentation — Packets are chopped on purpose",
+      assignment: "Assignment A01 — Packets are chopped on purpose",
+      lab: "lab_cidr_math — Pier /26 and /28",
+      quiz: "Quiz 1",
+    });
+    expect(publicAssignmentsForTrack(track)).toHaveLength(10);
+    expect(track?.portfolio).toBe(3);
   });
 });
 

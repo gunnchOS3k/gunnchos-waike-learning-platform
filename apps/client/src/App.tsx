@@ -13,6 +13,7 @@ import { AdminHardeningPanel } from "./components/admin/AdminHardeningPanel";
 import { InteropStatusPanel } from "./components/interop/InteropPanels";
 import { DeviceProfilePanel } from "./components/device/DeviceProfilePanel";
 import { FeedbackSuggestions } from "./components/help/FeedbackSuggestions";
+import { SafeMarkdown } from "./components/content/SafeMarkdown";
 import { TodayHome } from "./components/learner/TodayHome";
 import { CourseLibrary } from "./components/learner/CourseLibrary";
 import { CourseHome } from "./components/learner/CourseHome";
@@ -33,8 +34,19 @@ import { calendarFromAssignments } from "./lib/product/calendarTodo";
 import { notificationsFromSignals } from "./lib/product/notifications";
 import { parseWaikeDeepLink } from "./lib/product/deepLinks";
 import { buildOfflineTruth } from "./lib/product/offlineTruth";
-import { LEARNER_MORE, LEARNER_PRIMARY, MOBILE_PRIMARY } from "./lib/product/nav";
+import { LEARNER_MORE, LEARNER_PRIMARY, MOBILE_MORE, MOBILE_PRIMARY } from "./lib/product/nav";
 import { resolveModuleStatus } from "./lib/product/moduleStatus";
+import {
+  PUBLIC_TRACKS,
+  publicAssignmentContent,
+  publicAssignmentsForTrack,
+  publicCatalogStudyText,
+  publicContentForTrack,
+  publicCourseModels,
+  publicModulesForTrack,
+  publicTrackForSection,
+} from "./lib/product/publicCurriculum";
+import type { PublicContentItem } from "./lib/product/publicCurriculum";
 import type { AssignmentCardModel, CourseCardModel, NotificationItem, SchoolApp, SearchHit } from "./lib/product/types";
 import type { AuthSession, HubActor, HubClient, AssignmentSummary, SectionCard, SessionUser } from "./lib/hub/client";
 import { HubAuthError } from "./lib/hub/client";
@@ -45,7 +57,6 @@ import { browseInstallPack, getInitialDeviceOsLaunchContext, isTauri, modeForDev
 import { detectRuntime } from "./platform/runtimeAdapter";
 import type { LessonContent, LessonInfo, ModuleView, TrustStatus } from "./lib/types";
 import {
-  mockModule,
   mockTrust,
   simulateInstallFailure,
   simulateVerifiedInstall,
@@ -196,7 +207,7 @@ function resolvePrimaryRole(roles: string[] | undefined | null): string | null {
 
 export default function App() {
   const [trust, setTrust] = useState<TrustStatus>(mockTrust);
-  const [module, setModule] = useState<ModuleView | null>(isTauri() ? null : mockModule);
+  const [module, setModule] = useState<ModuleView | null>(null);
   const [lesson, setLesson] = useState<LessonContent | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [resumeOffset, setResumeOffset] = useState(0);
@@ -220,6 +231,8 @@ export default function App() {
   const [moduleRows, setModuleRows] = useState<
     Array<{ id: string; title: string; order: number; status: string; lesson?: string; assignment?: string }>
   >([]);
+  const [catalogUnit, setCatalogUnit] = useState(1);
+  const [catalogActivity, setCatalogActivity] = useState<PublicContentItem | null>(null);
   const [showMore, setShowMore] = useState(false);
   const [dashboard, setDashboard] = useState<{
     metrics: { active_enrollments: number; submissions: number; ungraded: number };
@@ -303,6 +316,12 @@ export default function App() {
   const needsLogin = hubResolution.status === "http" && !session;
   const isStaff =
     primaryRole === "instructor" || primaryRole === "grader" || primaryRole === "site_admin";
+  const publicCatalogMode = hubResolution.status === "unavailable";
+  const learnerAccess = primaryRole === "learner" || isMock || publicCatalogMode;
+
+  useEffect(() => {
+    if (publicCatalogMode && mode === "lessons") setMode("home");
+  }, [publicCatalogMode, mode]);
 
   const device = useMemo(() => deviceId(), []);
   // Only a real HTTP hub can settle mutations; the mock hub has no sync ledger.
@@ -391,6 +410,12 @@ export default function App() {
     setError(null);
     try {
       if (!isTauri()) {
+        if (!isMock) {
+          setError(
+            "Signed learner-pack installation is available in the WAIKE device app. This public browser can browse the complete package catalog but does not pretend to install a local pack.",
+          );
+          return;
+        }
         const failure = (window as unknown as { __WAIKE_MOCK_FAIL__?: string }).__WAIKE_MOCK_FAIL__;
         if (failure) {
           throw simulateInstallFailure(failure);
@@ -661,7 +686,7 @@ export default function App() {
     };
   }, [hub, session, isMock, mode, primaryRole, sectionId, user?.user_id, user?.roles]);
 
-  const courseModels: CourseCardModel[] = homeCards.map((c) => ({
+  const hubCourseModels: CourseCardModel[] = homeCards.map((c) => ({
     section_id: c.section_id,
     code: c.code,
     title: c.title,
@@ -671,8 +696,11 @@ export default function App() {
       ? { completed: c.mastery.mastered ? 1 : 0, total: 1, label: c.mastery.mastered ? "On track" : "In progress" }
       : null,
   }));
+  const courseModels = publicCatalogMode ? publicCourseModels(pinnedIds) : hubCourseModels;
   const activeCourse = resolveActiveCourse(courseModels, sectionId || null);
-  const assignmentCards: AssignmentCardModel[] = assignmentSummaries.map((a) => ({
+  const activePublicTrack = publicCatalogMode ? publicTrackForSection(sectionId) : null;
+  const activePublicContent = publicContentForTrack(activePublicTrack);
+  const hubAssignmentCards: AssignmentCardModel[] = assignmentSummaries.map((a) => ({
     assignment_id: a.assignment_id,
     section_id: a.section_id || sectionId || "",
     course_title: a.course_title || courseModels.find((c) => c.section_id === a.section_id)?.title || "Course",
@@ -683,6 +711,10 @@ export default function App() {
     grade_state: a.grade_state || "none",
     filter_keys: ["all"],
   }));
+  const assignmentCards = publicCatalogMode
+    ? publicAssignmentsForTrack(activePublicTrack)
+    : hubAssignmentCards;
+  const activePublicAssignment = publicAssignmentContent(activePublicTrack, openAssignmentId);
   const nowIso = new Date().toISOString();
   const calendarItems = calendarFromAssignments(assignmentCards, nowIso);
   const today = buildTodayState({
@@ -699,7 +731,7 @@ export default function App() {
       })),
     ),
     active: activeCourse,
-    continueItem: activeCourse
+    continueItem: activeCourse && !publicCatalogMode
       ? {
           section_id: activeCourse.section_id,
           course_title: activeCourse.title,
@@ -727,6 +759,9 @@ export default function App() {
     if (!chosen) return;
     setSectionId(chosen.section_id);
     persistActiveCourseId(chosen.section_id);
+    setOpenAssignmentId(null);
+    setCatalogUnit(1);
+    setCatalogActivity(null);
     setMode("course");
   }
 
@@ -843,6 +878,12 @@ export default function App() {
             {hubResolution.status === "mock" ? " · mock (dev/test only)" : ""}
           </div>
         ) : null}
+        {publicCatalogMode ? (
+          <div className="pilot-banner" data-testid="public-catalog-banner" role="status">
+            Public curriculum mode · all {PUBLIC_TRACKS.length} verified package records remain
+            discoverable · school submissions, grades, messages, and AI require a configured Hub
+          </div>
+        ) : null}
         <div className="toolbar">
           {runtime.isTouchPrimary ? (
             <button
@@ -888,7 +929,7 @@ export default function App() {
           >
             Lessons
           </button>
-          {(primaryRole === "learner" || isMock) && (
+          {learnerAccess && (
             <>
               {(runtime.isTouchPrimary ? LEARNER_PRIMARY.filter((x) => MOBILE_PRIMARY.includes(x.id)) : LEARNER_PRIMARY).map((item) => (
                 <button
@@ -909,7 +950,7 @@ export default function App() {
               {runtime.isTouchPrimary ? (
                 <button
                   type="button"
-                  className={showMore || LEARNER_MORE.some((x) => x.id === mode) ? "mode-active" : "ghost"}
+                  className={showMore || MOBILE_MORE.some((x) => x.id === mode) ? "mode-active" : "ghost"}
                   data-testid="mode-more"
                   onClick={() => setShowMore((v) => !v)}
                 >
@@ -932,7 +973,7 @@ export default function App() {
                 ))
               )}
               {(!runtime.isTouchPrimary || showMore) && runtime.isTouchPrimary
-                ? LEARNER_MORE.map((item) => (
+                ? MOBILE_MORE.map((item) => (
                     <button
                       key={item.id}
                       type="button"
@@ -1019,14 +1060,16 @@ export default function App() {
               </button>
             </>
           )}
-          <button
-            type="button"
-            className={mode === "gradebook" ? "mode-active" : "ghost"}
-            data-testid="mode-gradebook"
-            onClick={() => setMode("gradebook")}
-          >
-            Gradebook
-          </button>
+          {(isStaff || isMock) ? (
+            <button
+              type="button"
+              className={mode === "gradebook" ? "mode-active" : "ghost"}
+              data-testid="mode-gradebook"
+              onClick={() => setMode("gradebook")}
+            >
+              Gradebook
+            </button>
+          ) : null}
           {primaryRole === "site_admin" ? (
             <button
               type="button"
@@ -1145,8 +1188,33 @@ export default function App() {
               <LearnerActivities activities={hub.activities} sectionId={sectionId} />
             </section>
           ) : (
-            <section className="panel">
-              <p className="muted">{hubUnavailable}</p>
+            <section className="panel" data-testid="public-activities">
+              <h2>Quizzes / labs / groups</h2>
+              {activePublicTrack ? (
+                <>
+                  <p><strong>{activePublicTrack.title}</strong></p>
+                  <h3>Quizzes</h3>
+                  {activePublicContent?.quizzes.length ? (
+                    <ul>{activePublicContent.quizzes.map((item) => (
+                      <li key={item.id}><button type="button" className="ghost" onClick={() => setCatalogActivity(item)}>{item.title}</button></li>
+                    ))}</ul>
+                  ) : <p className="muted">No authored quizzes are declared for this track.</p>}
+                  <h3>Labs</h3>
+                  <ul>{activePublicContent?.labs.map((item) => (
+                    <li key={item.id}><button type="button" className="ghost" onClick={() => setCatalogActivity(item)}>{item.title}</button></li>
+                  ))}</ul>
+                  {catalogActivity ? (
+                    <section data-testid="public-activity-content">
+                      <h3>{catalogActivity.title}</h3>
+                      <SafeMarkdown markdown={catalogActivity.markdown} />
+                    </section>
+                  ) : null}
+                  <p className="muted">
+                    Authored package content is readable here. Attempts, submissions, group membership,
+                    and grading require a configured school Hub and are not simulated.
+                  </p>
+                </>
+              ) : <p className="muted">Open a course to inspect its packaged activities.</p>}
             </section>
           )
         ) : null}
@@ -1181,9 +1249,28 @@ export default function App() {
           )
         ) : null}
         {mode === "home" ? (
-          hub ? (
+          hub || publicCatalogMode ? (
             <>
-              <TodayHome
+              {publicCatalogMode ? (
+                <section className="panel" data-testid="public-runtime-truth">
+                  <h2>Learn without a school connection</h2>
+                  <p>
+                    Browse the complete packaged curriculum now. An installed verified pack can be
+                    read on its supported device; school-owned due dates, submissions, feedback,
+                    messages, and grades appear only after a real Hub connection.
+                  </p>
+                </section>
+              ) : null}
+              {publicCatalogMode ? (
+                <section className="panel today-home" data-testid="learner-home">
+                  <h2>Today</h2>
+                  <p>
+                    No school schedule is available without a Hub. Your package catalog is ready,
+                    with all {PUBLIC_TRACKS.length} tracks available to browse.
+                  </p>
+                  <button type="button" onClick={() => setMode("courses")}>Browse all courses</button>
+                </section>
+              ) : <TodayHome
                 today={today}
                 onContinue={() => setMode(lesson ? "study" : "courses")}
                 onOpenAssignment={(id, sec) => {
@@ -1197,8 +1284,8 @@ export default function App() {
                 onOpenCourse={chooseCourse}
                 onOpenCalendar={() => setMode("calendar")}
                 onAsk={() => setMode("ai")}
-              />
-              <SearchPanel
+              />}
+              {!publicCatalogMode ? <SearchPanel
                 catalog={searchCatalog}
                 authorizedSectionIds={courseModels.map((c) => c.section_id)}
                 role={primaryRole || "learner"}
@@ -1210,11 +1297,11 @@ export default function App() {
                     chooseCourse(hit.section_id);
                   }
                 }}
-              />
-              <NotificationCenter
+              /> : null}
+              {!publicCatalogMode ? <NotificationCenter
                 items={notices.length ? notices : notificationsFromSignals({})}
                 onOpen={(n) => openDeepLink(n.deep_link)}
-              />
+              /> : null}
               <OfflineTruthPanel truth={offlineTruth} />
             </>
           ) : (
@@ -1237,7 +1324,10 @@ export default function App() {
               announcement={null}
               onContinue={() => setMode("study")}
               onTab={(tab) => {
-                if (tab === "assignments") setMode("assignments");
+                if (tab === "assignments") {
+                  setOpenAssignmentId(null);
+                  setMode("assignments");
+                }
                 if (tab === "grades") setMode("grades");
                 if (tab === "modules") setMode("course");
                 if (tab === "activities") setMode("activities");
@@ -1246,7 +1336,7 @@ export default function App() {
               }}
             />
             <ModuleSequence
-              modules={moduleRows.map((m) => ({
+              modules={(publicCatalogMode ? publicModulesForTrack(activePublicTrack) : moduleRows.map((m) => ({
                 ...m,
                 status: resolveModuleStatus({
                   started: false,
@@ -1255,8 +1345,12 @@ export default function App() {
                   complete: false,
                   lockedByPrerequisite: m.status === "locked",
                 }),
-              }))}
-              onOpenLesson={() => setMode("study")}
+              })))}
+              onOpenLesson={(id) => {
+                const unit = Number(id.split(".").at(-1));
+                if (Number.isFinite(unit)) setCatalogUnit(unit);
+                setMode("study");
+              }}
             />
           </>
         ) : null}
@@ -1282,15 +1376,48 @@ export default function App() {
                 }}
               />
             )
+          ) : openAssignmentId && activePublicTrack && activePublicAssignment ? (
+            <section className="panel" data-testid="public-assignment-preview">
+              <h2>{activePublicTrack.title} · {activePublicAssignment.title}</h2>
+              <SafeMarkdown markdown={activePublicAssignment.markdown} testId="public-assignment-content" />
+              <div className="error-box" role="status">
+                A school Hub is required to save a server-backed draft, submit work, receive a
+                receipt, or obtain a grade. No submission has been created.
+              </div>
+              <button type="button" className="ghost" onClick={() => setOpenAssignmentId(null)}>Back to assignments</button>
+            </section>
           ) : (
-            <HubUnavailablePanel title="Assignments" />
+            <AssignmentCenter
+              assignments={assignmentCards}
+              nowIso={nowIso}
+              onOpen={(id, sec) => {
+                setOpenAssignmentId(id);
+                setSectionId(sec);
+              }}
+            />
           )
         ) : null}
         {mode === "calendar" ? (
-          <CalendarTodo items={calendarItems} nowIso={nowIso} onOpen={openDeepLink} />
+          publicCatalogMode ? (
+            <section className="panel" data-testid="public-calendar-truth">
+              <h2>Calendar</h2>
+              <p className="muted">
+                Course due dates and school events require a configured Hub. Package metadata does
+                not invent an agenda.
+              </p>
+            </section>
+          ) : <CalendarTodo items={calendarItems} nowIso={nowIso} onOpen={openDeepLink} />
         ) : null}
         {mode === "grades" ? (
-          <LearnerGrades
+          publicCatalogMode ? (
+            <section className="panel" data-testid="public-grades-truth">
+              <h2>Grades</h2>
+              <div className="error-box" role="status">
+                School grades are unavailable because no school Hub is configured.
+              </div>
+              <p className="muted">Package browsing does not create scores, mastery, or completion.</p>
+            </section>
+          ) : <LearnerGrades
             rows={assignmentCards.map((a) => ({
               assignment_id: a.assignment_id,
               section_id: a.section_id,
@@ -1310,8 +1437,9 @@ export default function App() {
         ) : null}
         {mode === "study" ? (
           <StudyMode
-            title={lesson?.title || activeCourse?.title || "Study"}
-            markdown={lesson?.markdown || "Open a lesson from your course to study here."}
+            title={activePublicTrack?.title || lesson?.title || activeCourse?.title || "Study"}
+            markdown={activePublicTrack ? publicCatalogStudyText(activePublicTrack, catalogUnit) : lesson?.markdown || "Open a lesson from your course to study here."}
+            labLaunchable={Boolean(activePublicTrack?.labs)}
             onAsk={() => setMode("ai")}
             onLab={() => setMode("activities")}
           />
@@ -1319,7 +1447,11 @@ export default function App() {
         {mode === "messages" ? (
           <section className="panel" data-testid="messages-panel">
             <h2>Messages</h2>
-            <p className="muted">Course discussions stay inside the course you opened. No broadcast spam.</p>
+            <p className="muted">
+              {publicCatalogMode
+                ? "Messages and course discussions require a configured school Hub. No local message thread is fabricated."
+                : "Course discussions stay inside the course you opened. No broadcast spam."}
+            </p>
           </section>
         ) : null}
         {mode === "portfolio" ? (
@@ -1329,7 +1461,20 @@ export default function App() {
               <p className="muted">Evidence you have already submitted.</p>
             </section>
           ) : (
-            <HubUnavailablePanel title="Portfolio" />
+            <section className="panel" data-testid="public-portfolio">
+              <h2>Portfolio</h2>
+              {activePublicTrack ? (
+                <>
+                  <p>{activePublicTrack.title} portfolio evidence instructions from the verified learner package:</p>
+                  {activePublicContent?.portfolio.map((item) => (
+                    <section key={item.id} data-testid="public-portfolio-content">
+                      <SafeMarkdown markdown={item.markdown} />
+                    </section>
+                  ))}
+                  <p className="muted">Saving or submitting portfolio evidence requires a configured Hub.</p>
+                </>
+              ) : <p className="muted">Open a course to inspect its portfolio mappings.</p>}
+            </section>
           )
         ) : null}
         {mode === "more" ? (

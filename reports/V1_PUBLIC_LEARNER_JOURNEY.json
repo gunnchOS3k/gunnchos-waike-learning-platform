@@ -1,0 +1,644 @@
+{
+  "schema": "waike.v1_public_learner_evidence.v1",
+  "source_sha": "63ba9f25ac6b8d8d1b6dd118923566fd51c57b62",
+  "implementation_base": "90fb9c5ceab51d99dfff7b5e6d1775fd1dca85d6",
+  "track_count": 18,
+  "all_content_reachable": true,
+  "rows": [
+    {
+      "track": "DIGITAL_CONFIDENCE",
+      "pack_id": "DIGITAL_CONFIDENCE.learner.v1",
+      "content_root_sha256": "e8f2c1a7c0167bacf336510e050c1df40a2fa544c58d5f7d23350b05cf99556f",
+      "learner_zip_sha256": "21a60dea3fa528beac8c29536d7f43aeccfbdb00f5f891293297e12c2b8869cc",
+      "source_sha": "63ba9f25ac6b8d8d1b6dd118923566fd51c57b62",
+      "compile_verify": "PASS",
+      "reachable_content_counts": {
+        "lessons": 10,
+        "assignments": 10,
+        "quizzes": 10,
+        "labs": 10,
+        "portfolio": 2
+      },
+      "routes": {
+        "lessons": "Courses > Modules > Study",
+        "assignments": "Courses > Assignments > Open",
+        "quizzes": "Courses > Activities > Quiz",
+        "labs": "Courses > Activities > Lab",
+        "portfolio": "Courses > Portfolio"
+      },
+      "signed_payload_hashes_match": true,
+      "offline_pack_declared": true,
+      "public_browser_install_claimed": false,
+      "native_install_requires_signed_pack": true,
+      "status": "PASS"
+    },
+    {
+      "track": "IT_SUPPORT_HARDWARE",
+      "pack_id": "IT_SUPPORT_HARDWARE.learner.v1",
+      "content_root_sha256": "27e7408146bb75e5e42191183d9bf74197fea7ed11c5b6919f08c77f6592cc3e",
+      "learner_zip_sha256": "8c76b172855d219369f096ae992a042e0e2404a3b0da63be156328cb23c8b9a5",
+      "source_sha": "63ba9f25ac6b8d8d1b6dd118923566fd51c57b62",
+      "compile_verify": "PASS",
+      "reachable_content_counts": {
+        "lessons": 10,
+        "assignments": 10,
+        "quizzes": 10,
+        "labs": 10,
+        "portfolio": 1
+      },
+      "routes": {
+        "lessons": "Courses > Modules > Study",
+        "assignments": "Courses > Assignments > Open",
+        "quizzes": "Courses > Activities > Quiz",
+        "labs": "Courses > Activities > Lab",
+        "portfolio": "Courses > Portfolio"
+      },
+      "signed_payload_hashes_match": true,
+      "offline_pack_declared": true,
+      "public_browser_install_claimed": false,
+      "native_install_requires_signed_pack": true,
+      "status": "PASS"
+    },
+    {
+      "track": "SOFTWARE_BUILDER",
+      "pack_id": "SOFTWARE_BUILDER.learner.v1",
+      "content_root_sha256": "5e13e449c0338dd9875a154a85025bfa462f8bdb26f4c08af24ff505eb76922c",
+      "learner_zip_sha256": "accb83a1d2f10a5489992087af306a72cfe6d3181ac263efee77619d4c7b2eda",
+      "source_sha": "63ba9f25ac6b8d8d1b6dd118923566fd51c57b62",
+      "compile_verify": "PASS",
+      "reachable_content_counts": {
+        "lessons": 10,
+        "assignments": 10,
+        "quizzes": 10,
+        "labs": 10,
+        "portfolio": 1
+      },
+      "routes": {
+        "lessons": "Courses > Modules > Study",
+        "assignments": "Courses > Assignments > Open",
+        "quizzes": "Courses > Activities > Quiz",
+        "labs": "Courses > Activities > Lab",
+        "portfolio": "Courses > Portfolio"
+      },
+      "signed_payload_hashes_match": true,
+      "offline_pack_declared": true,
+      "public_browser_install_claimed": false,
+      "native_install_requires_signed_pack": true,
+      "status": "PASS"
+    },
+    {
+      "track": "NETWORKING_INFRA",
+      "pack_id": "NETWORKING_INFRA.learner.v1",
+      "content_root_sha256": "c5cabf7839c988e4ac5df00121165c02023b01134e46cd44ddeb69542fdac547",
+      "learner_zip_sha256": "72cafa8ed6ee00e29475622ffe6785e1d1708c37ef037b85da94b2e2ec57c601",
+      "source_sha": "63ba9f25ac6b8d8d1b6dd118923566fd51c57b62",
+      "compile_verify": "PASS",
+      "reachable_content_counts": {
+        "lessons": 10,
+        "assignments": 10,
+        "quizzes": 10,
+        "labs": 14,
+        "portfolio": 1
+      },
+      "routes": {
+        "lessons": "Courses > Modules > Study",
+        "assignments": "Courses > Assignments > Open",
+        "quizzes": "Courses > Activities > Quiz",
+        "labs": "Courses > Activities > Lab",
+        "portfolio": "Courses > Portfolio"
+      },
+      "signed_payload_hashes_match": true,
+      "offline_pack_declared": true,
+      "public_browser_install_claimed": false,
+      "native_install_requires_signed_pack": true,
+      "status": "PASS"
+    },
+    {
+      "track": "CYBER_SOC",
+      "pack_id": "CYBER_SOC.learner.v1",
+      "content_root_sha256": "bf8cca6c3445f4e1261254f7724b77f618b6a1e39d42a287d3d09959d0d797e9",
+      "learner_zip_sha256": "cbaafcdc24f71de229829cd54b2146ba3be509d65ae2edadf98ee3e80313b517",
+      "source_sha": "63ba9f25ac6b8d8d1b6dd118923566fd51c57b62",
+      "compile_verify": "PASS",
+      "reachable_content_counts": {
+        "lessons": 10,
+        "assignments": 10,
+        "quizzes": 10,
+        "labs": 13,
+        "portfolio": 1
+      },
+      "routes": {
+        "lessons": "Courses > Modules > Study",
+        "assignments": "Courses > Assignments > Open",
+        "quizzes": "Courses > Activities > Quiz",
+        "labs": "Courses > Activities > Lab",
+        "portfolio": "Courses > Portfolio"
+      },
+      "signed_payload_hashes_match": true,
+      "offline_pack_declared": true,
+      "public_browser_install_claimed": false,
+      "native_install_requires_signed_pack": true,
+      "status": "PASS"
+    },
+    {
+      "track": "DATA_DASHBOARDS",
+      "pack_id": "DATA_DASHBOARDS.learner.v1",
+      "content_root_sha256": "7d8f9745dd1d4b0c1f8ddb16661c4ece17006f628cd0ba9ff2b021db8afeb2b4",
+      "learner_zip_sha256": "2cc0f2e1df464c68858f8090e3296124d06fd658787d514e87fd57944895fd94",
+      "source_sha": "63ba9f25ac6b8d8d1b6dd118923566fd51c57b62",
+      "compile_verify": "PASS",
+      "reachable_content_counts": {
+        "lessons": 10,
+        "assignments": 10,
+        "quizzes": 10,
+        "labs": 10,
+        "portfolio": 1
+      },
+      "routes": {
+        "lessons": "Courses > Modules > Study",
+        "assignments": "Courses > Assignments > Open",
+        "quizzes": "Courses > Activities > Quiz",
+        "labs": "Courses > Activities > Lab",
+        "portfolio": "Courses > Portfolio"
+      },
+      "signed_payload_hashes_match": true,
+      "offline_pack_declared": true,
+      "public_browser_install_claimed": false,
+      "native_install_requires_signed_pack": true,
+      "status": "PASS"
+    },
+    {
+      "track": "AI_ML_EDGE",
+      "pack_id": "AI_ML_EDGE.learner.v1",
+      "content_root_sha256": "5b6ba240a2c68c19c3344bd9a288b27564f9c02ecdf41c8580f730d2d0de8109",
+      "learner_zip_sha256": "d4ae97bdf78202939efebefcf465ca9c70d8ce5123d220dd837c6143b4350e28",
+      "source_sha": "63ba9f25ac6b8d8d1b6dd118923566fd51c57b62",
+      "compile_verify": "PASS",
+      "reachable_content_counts": {
+        "lessons": 10,
+        "assignments": 10,
+        "quizzes": 10,
+        "labs": 10,
+        "portfolio": 1
+      },
+      "routes": {
+        "lessons": "Courses > Modules > Study",
+        "assignments": "Courses > Assignments > Open",
+        "quizzes": "Courses > Activities > Quiz",
+        "labs": "Courses > Activities > Lab",
+        "portfolio": "Courses > Portfolio"
+      },
+      "signed_payload_hashes_match": true,
+      "offline_pack_declared": true,
+      "public_browser_install_claimed": false,
+      "native_install_requires_signed_pack": true,
+      "status": "PASS"
+    },
+    {
+      "track": "EMBEDDED_PROTOTYPING",
+      "pack_id": "EMBEDDED_PROTOTYPING.learner.v1",
+      "content_root_sha256": "65334a73d814457685b0a2ada72fd3d98088fa54dc014435efa574bc9056e34b",
+      "learner_zip_sha256": "acbb92429ed7c5b2e6750d6d5dfb69d03c145fa9315c916b9724146ebf2347be",
+      "source_sha": "63ba9f25ac6b8d8d1b6dd118923566fd51c57b62",
+      "compile_verify": "PASS",
+      "reachable_content_counts": {
+        "lessons": 10,
+        "assignments": 10,
+        "quizzes": 10,
+        "labs": 10,
+        "portfolio": 1
+      },
+      "routes": {
+        "lessons": "Courses > Modules > Study",
+        "assignments": "Courses > Assignments > Open",
+        "quizzes": "Courses > Activities > Quiz",
+        "labs": "Courses > Activities > Lab",
+        "portfolio": "Courses > Portfolio"
+      },
+      "signed_payload_hashes_match": true,
+      "offline_pack_declared": true,
+      "public_browser_install_claimed": false,
+      "native_install_requires_signed_pack": true,
+      "status": "PASS"
+    },
+    {
+      "track": "WIRELESS_6G",
+      "pack_id": "WIRELESS_6G.learner.v1",
+      "content_root_sha256": "5eb1899cf12618735735a6624e35ad1fde6ddb7446a8eeec3af17b3fec479f0b",
+      "learner_zip_sha256": "991584533e1019c219c993aa0381bb52618c6a58ba994ed1f17e609d76306f42",
+      "source_sha": "63ba9f25ac6b8d8d1b6dd118923566fd51c57b62",
+      "compile_verify": "PASS",
+      "reachable_content_counts": {
+        "lessons": 10,
+        "assignments": 10,
+        "quizzes": 10,
+        "labs": 10,
+        "portfolio": 1
+      },
+      "routes": {
+        "lessons": "Courses > Modules > Study",
+        "assignments": "Courses > Assignments > Open",
+        "quizzes": "Courses > Activities > Quiz",
+        "labs": "Courses > Activities > Lab",
+        "portfolio": "Courses > Portfolio"
+      },
+      "signed_payload_hashes_match": true,
+      "offline_pack_declared": true,
+      "public_browser_install_claimed": false,
+      "native_install_requires_signed_pack": true,
+      "status": "PASS"
+    },
+    {
+      "track": "PM_AGILE_LSS",
+      "pack_id": "PM_AGILE_LSS.learner.v1",
+      "content_root_sha256": "54af8985a13811d0bf28bf6f69bce6d397ea4ddaf8ff46756746e31401d7a9a9",
+      "learner_zip_sha256": "f427094e454d51c47a0a4be09d08b492fcec0573e7e0ee5e91096fea3f146b1f",
+      "source_sha": "63ba9f25ac6b8d8d1b6dd118923566fd51c57b62",
+      "compile_verify": "PASS",
+      "reachable_content_counts": {
+        "lessons": 10,
+        "assignments": 10,
+        "quizzes": 10,
+        "labs": 10,
+        "portfolio": 1
+      },
+      "routes": {
+        "lessons": "Courses > Modules > Study",
+        "assignments": "Courses > Assignments > Open",
+        "quizzes": "Courses > Activities > Quiz",
+        "labs": "Courses > Activities > Lab",
+        "portfolio": "Courses > Portfolio"
+      },
+      "signed_payload_hashes_match": true,
+      "offline_pack_declared": true,
+      "public_browser_install_claimed": false,
+      "native_install_requires_signed_pack": true,
+      "status": "PASS"
+    },
+    {
+      "track": "GAME_DEV_INTERACTIVE",
+      "pack_id": "GAME_DEV_INTERACTIVE.learner.v1",
+      "content_root_sha256": "2c324cb5306296843ab90bd8da9f378d56e980bf024524b425f098552f007d38",
+      "learner_zip_sha256": "aa2fab685d2735b096f6f3188e3ff99a50f433641fe057dbdd90b83e741b1e71",
+      "source_sha": "63ba9f25ac6b8d8d1b6dd118923566fd51c57b62",
+      "compile_verify": "PASS",
+      "reachable_content_counts": {
+        "lessons": 10,
+        "assignments": 10,
+        "quizzes": 10,
+        "labs": 10,
+        "portfolio": 1
+      },
+      "routes": {
+        "lessons": "Courses > Modules > Study",
+        "assignments": "Courses > Assignments > Open",
+        "quizzes": "Courses > Activities > Quiz",
+        "labs": "Courses > Activities > Lab",
+        "portfolio": "Courses > Portfolio"
+      },
+      "signed_payload_hashes_match": true,
+      "offline_pack_declared": true,
+      "public_browser_install_claimed": false,
+      "native_install_requires_signed_pack": true,
+      "status": "PASS"
+    },
+    {
+      "track": "SEVEN_GC_APPRENTICESHIP",
+      "pack_id": "SEVEN_GC_APPRENTICESHIP.learner.v1",
+      "content_root_sha256": "35feb9c944df213f3897f878b245f74b1786b88c1deef0c931e84111bab08e76",
+      "learner_zip_sha256": "773e0e4f82a61e17b73a31f8a7faca2581e69745e14b4d57dcbf9d67f63badcc",
+      "source_sha": "63ba9f25ac6b8d8d1b6dd118923566fd51c57b62",
+      "compile_verify": "PASS",
+      "reachable_content_counts": {
+        "lessons": 10,
+        "assignments": 10,
+        "quizzes": 10,
+        "labs": 10,
+        "portfolio": 1
+      },
+      "routes": {
+        "lessons": "Courses > Modules > Study",
+        "assignments": "Courses > Assignments > Open",
+        "quizzes": "Courses > Activities > Quiz",
+        "labs": "Courses > Activities > Lab",
+        "portfolio": "Courses > Portfolio"
+      },
+      "signed_payload_hashes_match": true,
+      "offline_pack_declared": true,
+      "public_browser_install_claimed": false,
+      "native_install_requires_signed_pack": true,
+      "status": "PASS"
+    },
+    {
+      "track": "CLOUD_DEVOPS",
+      "pack_id": "CLOUD_DEVOPS.learner.v1",
+      "content_root_sha256": "7e0042140bef75ebbc671aee363cec4db251dbc2a34c4935aed7b3df1db8cbbe",
+      "learner_zip_sha256": "8b4fd08ee3ae8442b4439151cf21f8678819eca357e185ffa0bf02ea24f474d1",
+      "source_sha": "63ba9f25ac6b8d8d1b6dd118923566fd51c57b62",
+      "compile_verify": "PASS",
+      "reachable_content_counts": {
+        "lessons": 10,
+        "assignments": 10,
+        "quizzes": 10,
+        "labs": 10,
+        "portfolio": 1
+      },
+      "routes": {
+        "lessons": "Courses > Modules > Study",
+        "assignments": "Courses > Assignments > Open",
+        "quizzes": "Courses > Activities > Quiz",
+        "labs": "Courses > Activities > Lab",
+        "portfolio": "Courses > Portfolio"
+      },
+      "signed_payload_hashes_match": true,
+      "offline_pack_declared": true,
+      "public_browser_install_claimed": false,
+      "native_install_requires_signed_pack": true,
+      "status": "PASS"
+    },
+    {
+      "track": "COMM_PD_ETHICS",
+      "pack_id": "COMM_PD_ETHICS.learner.v1",
+      "content_root_sha256": "3907ff906eff4cd930b5a783e19dcbdd9d839328a6b515e137d8145db891a31e",
+      "learner_zip_sha256": "7670811d1d1fcfaa6bcef537b913e66907a2365fd45bb8f9ac3602bd0dec2d59",
+      "source_sha": "63ba9f25ac6b8d8d1b6dd118923566fd51c57b62",
+      "compile_verify": "PASS",
+      "reachable_content_counts": {
+        "lessons": 10,
+        "assignments": 10,
+        "quizzes": 10,
+        "labs": 10,
+        "portfolio": 1
+      },
+      "routes": {
+        "lessons": "Courses > Modules > Study",
+        "assignments": "Courses > Assignments > Open",
+        "quizzes": "Courses > Activities > Quiz",
+        "labs": "Courses > Activities > Lab",
+        "portfolio": "Courses > Portfolio"
+      },
+      "signed_payload_hashes_match": true,
+      "offline_pack_declared": true,
+      "public_browser_install_claimed": false,
+      "native_install_requires_signed_pack": true,
+      "status": "PASS"
+    },
+    {
+      "track": "ROBOTICS_CONTROL",
+      "pack_id": "ROBOTICS_CONTROL.learner.v1",
+      "content_root_sha256": "6c5c550580e0cb4b53826158e9a305612ecc74ee7d1aa837016f515568923eb7",
+      "learner_zip_sha256": "8715d1d929c91014847b68e80fb2fbacc4e766e5b45779ef306cda30e913fe97",
+      "source_sha": "63ba9f25ac6b8d8d1b6dd118923566fd51c57b62",
+      "compile_verify": "PASS",
+      "reachable_content_counts": {
+        "lessons": 10,
+        "assignments": 10,
+        "quizzes": 10,
+        "labs": 10,
+        "portfolio": 1
+      },
+      "routes": {
+        "lessons": "Courses > Modules > Study",
+        "assignments": "Courses > Assignments > Open",
+        "quizzes": "Courses > Activities > Quiz",
+        "labs": "Courses > Activities > Lab",
+        "portfolio": "Courses > Portfolio"
+      },
+      "signed_payload_hashes_match": true,
+      "offline_pack_declared": true,
+      "public_browser_install_claimed": false,
+      "native_install_requires_signed_pack": true,
+      "status": "PASS"
+    },
+    {
+      "track": "GUNNCHOS_PRODUCT_LAB",
+      "pack_id": "GUNNCHOS_PRODUCT_LAB.learner.v1",
+      "content_root_sha256": "a498d5dfa9c40cb72edc7fe416b2680ecca30b72b0a5785159d1dd118617ca62",
+      "learner_zip_sha256": "58e77c2885b1fdc71ffdb781fe4ffca97871b08d692478781394d646bbbf1760",
+      "source_sha": "63ba9f25ac6b8d8d1b6dd118923566fd51c57b62",
+      "compile_verify": "PASS",
+      "reachable_content_counts": {
+        "lessons": 10,
+        "assignments": 10,
+        "quizzes": 10,
+        "labs": 10,
+        "portfolio": 1
+      },
+      "routes": {
+        "lessons": "Courses > Modules > Study",
+        "assignments": "Courses > Assignments > Open",
+        "quizzes": "Courses > Activities > Quiz",
+        "labs": "Courses > Activities > Lab",
+        "portfolio": "Courses > Portfolio"
+      },
+      "signed_payload_hashes_match": true,
+      "offline_pack_declared": true,
+      "public_browser_install_claimed": false,
+      "native_install_requires_signed_pack": true,
+      "status": "PASS"
+    },
+    {
+      "track": "HARDWARE_ENGINEERING",
+      "pack_id": "HARDWARE_ENGINEERING.learner.v1",
+      "content_root_sha256": "4cf4127560013371ebdecd6d60631e946ace0c6b77ca04af9f6ec437f9eee76e",
+      "learner_zip_sha256": "e336c31bb7ace0c14f26616eed8b5a33d39d23a84a183d3747c824f7a0a5c0ad",
+      "source_sha": "63ba9f25ac6b8d8d1b6dd118923566fd51c57b62",
+      "compile_verify": "PASS",
+      "reachable_content_counts": {
+        "lessons": 10,
+        "assignments": 10,
+        "quizzes": 10,
+        "labs": 10,
+        "portfolio": 1
+      },
+      "routes": {
+        "lessons": "Courses > Modules > Study",
+        "assignments": "Courses > Assignments > Open",
+        "quizzes": "Courses > Activities > Quiz",
+        "labs": "Courses > Activities > Lab",
+        "portfolio": "Courses > Portfolio"
+      },
+      "signed_payload_hashes_match": true,
+      "offline_pack_declared": true,
+      "public_browser_install_claimed": false,
+      "native_install_requires_signed_pack": true,
+      "status": "PASS"
+    },
+    {
+      "track": "DATA_VIZ_BI",
+      "pack_id": "DATA_VIZ_BI.learner.v1",
+      "content_root_sha256": "0b62ece18ed718adf780cc6c6d4b1f64b9c883a5ca606474a42929b10e965f87",
+      "learner_zip_sha256": "41a1c53279aeec642ecd1efef534257b21b121e7f121e965d49af56593a87f4a",
+      "source_sha": "63ba9f25ac6b8d8d1b6dd118923566fd51c57b62",
+      "compile_verify": "PASS",
+      "reachable_content_counts": {
+        "lessons": 10,
+        "assignments": 10,
+        "quizzes": 10,
+        "labs": 10,
+        "portfolio": 1
+      },
+      "routes": {
+        "lessons": "Courses > Modules > Study",
+        "assignments": "Courses > Assignments > Open",
+        "quizzes": "Courses > Activities > Quiz",
+        "labs": "Courses > Activities > Lab",
+        "portfolio": "Courses > Portfolio"
+      },
+      "signed_payload_hashes_match": true,
+      "offline_pack_declared": true,
+      "public_browser_install_claimed": false,
+      "native_install_requires_signed_pack": true,
+      "status": "PASS"
+    }
+  ],
+  "evidence_boundary": "Signed source hashes and exhaustive frontend routing tests; no human or production acceptance inferred.",
+  "digital_confidence": {
+    "status": "RESOLVED_CANONICAL_PACKAGING",
+    "upstream_blocker": null,
+    "canonical_files": [
+      "curriculum/digital_rc/DIGITAL_CONFIDENCE/course.json",
+      "curriculum/digital_rc/DIGITAL_CONFIDENCE/",
+      "curriculum/digital_rc/GENERAL_IT/"
+    ],
+    "resolution": "Import existing track metadata and explicitly allow-listed shared GENERAL_IT authored content; no curriculum invented."
+  },
+  "tests": {
+    "bootstrap": "PASS",
+    "compile_18": "18/18 PASS",
+    "gate_b_test": "70 PASS",
+    "verify_gate_b": "AUTOMATED_PIPELINE_PASS",
+    "make_test": {
+      "core": 126,
+      "gate_a": 99,
+      "gate_b": 201,
+      "gate_c": 74,
+      "gate_d": 16,
+      "rust": 38,
+      "frontend_at_full_run": 78
+    },
+    "frontend_final": 96,
+    "frontend_lint": "PASS",
+    "make_build": "PASS (Digital Confidence, Vite, native Rust)",
+    "verifier_regression": "2 PASS"
+  },
+  "gates": {
+    "V1_WAIKE_HUMAN_PASS": false,
+    "production_school_hub_acceptance": false,
+    "production_hosted_acceptance": false,
+    "pixel_device_acceptance": false,
+    "external_oneroster_qti_lti_certification": false,
+    "production_signing_notarization": false,
+    "independent_security_accessibility_privacy_certification": false,
+    "production_ai_service_acceptance": false,
+    "ci_native_artifact_head_binding": false,
+    "ci_real_deviceos_launch_head_binding": false
+  },
+  "verifiers": {
+    "C": {
+      "status": "AUTOMATED_PIPELINE_PASS",
+      "fake_ai_enabled": false,
+      "production_ai_acceptance": false,
+      "checks": {
+        "prior_regression": true,
+        "gate_c": true,
+        "GATE_C_DISCOVERY.json": true,
+        "GATE_C_DEVICEOS_CONTRACT_DISCOVERY.json": true,
+        "owner_blockers_all_pass": true,
+        "macos_dmg_meta": true
+      },
+      "blocked": [],
+      "test_counts": {
+        "prior_regression": {
+          "passed": 223,
+          "failed": 0,
+          "skipped": 0,
+          "xfailed": 0,
+          "error": 0
+        },
+        "gate_c": {
+          "passed": 74,
+          "failed": 0,
+          "skipped": 0,
+          "xfailed": 0,
+          "error": 0
+        }
+      }
+    },
+    "D": {
+      "status": "AUTOMATED_PIPELINE_PASS",
+      "fake_ai_enabled": false,
+      "production_ai_acceptance": false,
+      "checks": {
+        "clean_room": true,
+        "prior_regression": true,
+        "gate_d": true,
+        "native_artifacts": true,
+        "deviceos_e2e_binding": true,
+        "required_artifacts": true,
+        "all_18_tracks": true,
+        "journeys": true,
+        "clean_room_semantic": true,
+        "adversarial": true
+      },
+      "blocked": [],
+      "test_counts": {
+        "prior_regression": {
+          "passed": 487,
+          "failed": 0,
+          "skipped": 0,
+          "xfailed": 0,
+          "error": 0
+        },
+        "gate_d": {
+          "passed": 16,
+          "failed": 0,
+          "skipped": 0,
+          "xfailed": 0,
+          "error": 0
+        }
+      }
+    }
+  },
+  "pending_ci_bindings": {
+    "GATE_D_NATIVE_ARTIFACT_MANIFEST": {
+      "generated_utc": "2026-10-06T11:58:33Z",
+      "platform_sha": "90fb9c5ceab51d99dfff7b5e6d1775fd1dca85d6",
+      "this_run_only": true,
+      "linux": {
+        "meta": false,
+        "sums": false,
+        "artifact_head_sha": "",
+        "format": "",
+        "ok": false
+      },
+      "macos": {
+        "meta": false,
+        "sums": true,
+        "verification": true,
+        "artifact_head_sha": "",
+        "format": "",
+        "recovery_status": "NOT_THIS_RUN_PENDING_CI",
+        "ok": false
+      },
+      "zip_is_not_dmg": false,
+      "signing_notarization": "EXTERNAL_UNSIGNED_CI_BUILD",
+      "notarization_claimed": false,
+      "notes": [
+        "linux this-run meta/sums/head/format binding failed (head='' expected='90fb9c5ceab51d99dfff7b5e6d1775fd1dca85d6' format='')",
+        "MACOS_DMG_VERIFICATION ok!=true"
+      ],
+      "require_native": false,
+      "ok": false
+    },
+    "GATE_D_DEVICEOS_E2E_BINDING": {
+      "generated_utc": "2026-10-06T11:58:33Z",
+      "platform_sha": "90fb9c5ceab51d99dfff7b5e6d1775fd1dca85d6",
+      "ok": false,
+      "notes": [
+        "Device OS E2E platform_source_sha 'PENDING_CI_HEAD_SHA' != head '90fb9c5ceab51d99dfff7b5e6d1775fd1dca85d6'"
+      ],
+      "require_deviceos": false
+    }
+  }
+}

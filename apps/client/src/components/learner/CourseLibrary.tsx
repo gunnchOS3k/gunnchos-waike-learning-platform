@@ -34,7 +34,7 @@ export function CourseLibrary({ courses, activeSectionId, onSelect, onTogglePin 
       />
       {filtered.length === 0 ? (
         <p className="muted" data-testid="course-library-empty">
-          No matching courses. You only see courses you are enrolled in.
+          No matching courses.
         </p>
       ) : (
         <ul className="course-grid">
@@ -49,6 +49,8 @@ export function CourseLibrary({ courses, activeSectionId, onSelect, onTogglePin 
                   </p>
                 ) : null}
                 {c.progress ? <p>{c.progress.label}</p> : null}
+                {c.summary ? <p>{c.summary}</p> : null}
+                {c.availability ? <p className="muted">{c.availability}</p> : null}
                 {c.next_item ? <p className="muted">Next: {c.next_item.title}</p> : null}
                 <div className="toolbar">
                   <button type="button" data-testid={`select-course-${c.section_id}`} onClick={() => onSelect(c.section_id)}>

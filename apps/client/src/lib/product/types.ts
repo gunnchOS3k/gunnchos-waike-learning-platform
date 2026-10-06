@@ -35,6 +35,8 @@ export interface CourseCardModel {
   next_item?: { id: string; title: string; kind: string } | null;
   pinned?: boolean;
   mastery?: { mastered: number; score: number; gap_notes: string } | null;
+  summary?: string | null;
+  availability?: string | null;
 }
 
 export interface AssignmentCardModel {

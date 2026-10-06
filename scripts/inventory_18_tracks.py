@@ -17,7 +17,9 @@ from course_compiler.tracks import CANONICAL_TRACK_IDS, digital_rc_folder  # noq
 
 
 def inventory_track(waike: Path, track_id: str, import_spec: dict) -> dict:
-    learner_globs = import_spec.get("learner_globs") or []
+    learner_globs = (import_spec.get("learner_globs") or []) + (
+        import_spec.get("learner_safe_from_general_it") or []
+    )
     instructor_globs = import_spec.get("instructor_only_globs") or []
     markers = import_spec.get("instructor_path_markers")
     learner_candidates = collect_files(waike, learner_globs)

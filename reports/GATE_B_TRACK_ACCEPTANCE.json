@@ -8,14 +8,14 @@
       "matrix_install": "PASS",
       "matrix_learner_visible": "PASS",
       "matrix_instructor_visible": "PASS",
-      "matrix_offline": "NO",
+      "matrix_offline": "YES",
       "compile_verify_ok": true,
       "activity_counts": {
-        "lessons": 8,
-        "assignments": 16,
-        "quizzes": 0,
-        "labs": 8,
-        "rubrics": 0
+        "lessons": 10,
+        "assignments": 10,
+        "quizzes": 10,
+        "labs": 10,
+        "rubrics": 8
       },
       "e2e": {
         "install": "PASS",
@@ -27,7 +27,7 @@
       "registered_activity_status": {
         "lessons": "REGISTERED",
         "assignments": "REGISTERED",
-        "quizzes": "NOT_APPLICABLE",
+        "quizzes": "REGISTERED",
         "labs": "REGISTERED"
       }
     },

@@ -1,4 +1,4 @@
-.PHONY: bootstrap lint test build verify-pr1 verify-pr2 verify-pr3 verify-gate-a verify-gate-b verify-gate-c verify-gate-d gate-c-test gate-d-test compile-dc compile-18 rust-test frontend-test hub-test python-test assessment-test pr3-test gate-a-test gate-b-test gate-b-ai-test clean pixel-waike-full-pilot
+.PHONY: bootstrap lint test build verify-pr1 verify-pr2 verify-pr3 verify-gate-a verify-gate-b verify-gate-c verify-gate-d gate-c-test gate-d-test compile-dc compile-18 validate-public-curriculum rust-test frontend-test hub-test python-test assessment-test pr3-test gate-a-test gate-b-test gate-b-ai-test clean pixel-waike-full-pilot
 
 export PATH := $(HOME)/.cargo/bin:$(PATH)
 export SOURCE_DATE_EPOCH ?= 1700000000
@@ -75,6 +75,10 @@ compile-18:
 	$(PYTHON) -m course_compiler.cli compile-all --out pack_out_18
 	WAIKE_ROOT=$(WAIKE_ROOT) $(PYTHON) scripts/inventory_18_tracks.py
 	WAIKE_ROOT=$(WAIKE_ROOT) $(PYTHON) scripts/build_18_track_matrix.py
+	$(PYTHON) scripts/build_public_curriculum_content.py
+
+validate-public-curriculum:
+	python3 scripts/validate_public_curriculum.py
 
 gate-b-test:
 	WAIKE_ROOT=$(WAIKE_ROOT) PYTHONPATH=tools/course_compiler:services/hub $(PYTHON) -m pytest -q \
@@ -145,7 +149,7 @@ gate-c-test:
 
 verify-gate-c:
 	@mkdir -p reports
-	@WAIKE_ROOT=$(WAIKE_ROOT) DEVICE_OS_ROOT=$${DEVICE_OS_ROOT:-$(CURDIR)/../gunnchos-device-os} GUNNCHAI_ROOT=$${GUNNCHAI_ROOT:-$(CURDIR)/../gunnchAI3k} WAIKE_ALLOW_FAKE_AI=$${WAIKE_ALLOW_FAKE_AI:-1} $(PYTHON) scripts/verify_gate_c.py
+	@WAIKE_ROOT=$(WAIKE_ROOT) DEVICE_OS_ROOT=$${DEVICE_OS_ROOT:-$(CURDIR)/../gunnchos-device-os} GUNNCHAI_ROOT=$${GUNNCHAI_ROOT:-$(CURDIR)/../gunnchAI3k} WAIKE_ALLOW_FAKE_AI=$${WAIKE_ALLOW_FAKE_AI:-0} $(PYTHON) scripts/verify_gate_c.py
 	@echo "verify-gate-c: see reports/GATE_C_VERIFICATION.md"
 
 gate-d-test:
@@ -153,7 +157,7 @@ gate-d-test:
 
 verify-gate-d:
 	@mkdir -p reports
-	@WAIKE_ROOT=$(WAIKE_ROOT) DEVICE_OS_ROOT=$${DEVICE_OS_ROOT:-$(CURDIR)/../gunnchos-device-os} GUNNCHAI_ROOT=$${GUNNCHAI_ROOT:-$(CURDIR)/../gunnchAI3k} WAIKE_ALLOW_FAKE_AI=$${WAIKE_ALLOW_FAKE_AI:-1} $(PYTHON) scripts/verify_gate_d.py
+	@WAIKE_ROOT=$(WAIKE_ROOT) DEVICE_OS_ROOT=$${DEVICE_OS_ROOT:-$(CURDIR)/../gunnchos-device-os} GUNNCHAI_ROOT=$${GUNNCHAI_ROOT:-$(CURDIR)/../gunnchAI3k} WAIKE_ALLOW_FAKE_AI=$${WAIKE_ALLOW_FAKE_AI:-0} $(PYTHON) scripts/verify_gate_d.py
 	@echo "verify-gate-d: see reports/GATE_D_VERIFICATION.md"
 
 pixel-waike-full-pilot: bootstrap

@@ -1,12 +1,12 @@
 # Gate D All-18 Track Acceptance
 
-Generated: 2026-09-20T18:57:26Z
+Generated: 2026-10-06T12:03:03Z
 
 Tracks: **18** | all_pass: **True**
 
 | track_id | matrix_final | offline | outcomes | rubrics | status |
 |----------|--------------|---------|----------|---------|--------|
-| `DIGITAL_CONFIDENCE` | `PASS` | `NO` | `NO` | `NO` | `PASS` |
+| `DIGITAL_CONFIDENCE` | `PASS` | `YES` | `YES` | `YES` | `PASS` |
 | `IT_SUPPORT_HARDWARE` | `PASS` | `YES` | `YES` | `YES` | `PASS` |
 | `SOFTWARE_BUILDER` | `PASS` | `YES` | `YES` | `YES` | `PASS` |
 | `NETWORKING_INFRA` | `PASS` | `YES` | `YES` | `YES` | `PASS` |

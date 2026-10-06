@@ -13,7 +13,28 @@ sys.path.insert(0, str(ROOT / "tools" / "course_compiler"))
 
 from course_compiler.compiler import compile_module  # noqa: E402
 from course_compiler.compat import RejectionReason  # noqa: E402
-from course_compiler.registry import RegistryError, load_pin, verify_waike_provenance  # noqa: E402
+from course_compiler.registry import (  # noqa: E402
+    RegistryError,
+    load_pin,
+    resolve_waike_root,
+    verify_waike_provenance,
+)
+
+
+def test_explicit_waike_root_wins_over_pin_hints(tmp_path: Path, monkeypatch):
+    exact = tmp_path / "exact-pin"
+    (exact / "curriculum" / "taxonomy").mkdir(parents=True)
+    (exact / "curriculum" / "taxonomy" / "eighteen_tracks.json").write_text("{}")
+    monkeypatch.setenv("WAIKE_ROOT", str(exact))
+
+    resolved = resolve_waike_root(
+        {
+            "absolute_path_hint": str(tmp_path / "wrong-hint"),
+            "source_path": "../wrong-relative",
+        }
+    )
+
+    assert resolved == exact.resolve()
 
 
 def test_provenance_match_passes():

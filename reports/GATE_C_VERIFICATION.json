@@ -1,5 +1,5 @@
 {
-  "generated_utc": "2026-09-20T18:45:14Z",
+  "generated_utc": "2026-10-06T11:53:42Z",
   "status": "AUTOMATED_PIPELINE_PASS",
   "claims": [
     "INTEROPERABILITY_AND_DEVICEOS_DIGITAL_INTEGRATION_COMPLETE",
@@ -16,7 +16,7 @@
   },
   "test_counts": {
     "prior_regression": {
-      "passed": 220,
+      "passed": 223,
       "failed": 0,
       "skipped": 0,
       "xfailed": 0,
@@ -60,12 +60,14 @@
   },
   "pins": {
     "waike": "63ba9f25ac6b8d8d1b6dd118923566fd51c57b62",
-    "gunnchai": "851e7916d6d5c7da23a8f30dba6bdfd389daa8ac",
+    "gunnchai": "e2d1adcb5847cf00282fb7fa64970254b14e344e",
     "device_os": "4f02a48780d300a5d3a7758937b20e3bf9364d0d",
     "device_os_accepted_main": "4f02a48780d300a5d3a7758937b20e3bf9364d0d"
   },
   "device_os_pr_required": false,
   "tested_against": "accepted_device_os_main",
+  "fake_ai_enabled": false,
+  "production_ai_acceptance": false,
   "exit_codes": {
     "prior_regression": 0,
     "prior_a": 0,
