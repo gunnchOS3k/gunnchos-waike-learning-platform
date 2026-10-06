@@ -1,5 +1,5 @@
 /* WAIKE PWA service worker — shell cache only; never cache /api/ auth payloads. */
-const SHELL = "waike-shell-v1";
+const SHELL = "waike-shell-v2";
 const SHELL_URLS = ["/", "/index.html", "/manifest.webmanifest"];
 
 self.addEventListener("install", (event) => {
