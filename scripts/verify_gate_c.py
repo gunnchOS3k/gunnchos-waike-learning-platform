@@ -293,8 +293,10 @@ def main() -> int:
             "DEVICE_OS_ROOT", str(ROOT.parent / "gunnchos-device-os")
         ),
         "GUNNCHAI_ROOT": os.environ.get("GUNNCHAI_ROOT", str(ROOT.parent / "gunnchAI3k")),
-        "WAIKE_ALLOW_FAKE_AI": "1",
+        "WAIKE_ALLOW_FAKE_AI": os.environ.get("WAIKE_ALLOW_FAKE_AI", "0"),
     }
+    results["fake_ai_enabled"] = env["WAIKE_ALLOW_FAKE_AI"] == "1"
+    results["production_ai_acceptance"] = False
 
     # Prior regression (PR1–Gate B). Split dirs — each gate_* ships helpers.py (FC-0001).
     prior_a_dirs = [

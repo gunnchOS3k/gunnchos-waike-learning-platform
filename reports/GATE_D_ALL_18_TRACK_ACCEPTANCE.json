@@ -1,5 +1,5 @@
 {
-  "generated_utc": "2026-09-20T18:57:26Z",
+  "generated_utc": "2026-10-06T12:03:03Z",
   "waike_pin": "63ba9f25ac6b8d8d1b6dd118923566fd51c57b62",
   "track_count": 18,
   "rows": [
@@ -11,16 +11,16 @@
         "install": "PASS",
         "learner_visible": "PASS",
         "instructor_visible": "PASS",
-        "offline": "NO",
-        "outcomes": "NO",
-        "rubrics": "NO"
+        "offline": "YES",
+        "outcomes": "YES",
+        "rubrics": "YES"
       },
       "activity_counts": {
-        "lessons": 8,
-        "assignments": 16,
-        "quizzes": 0,
-        "labs": 8,
-        "rubrics": 0
+        "lessons": 10,
+        "assignments": 10,
+        "quizzes": 10,
+        "labs": 10,
+        "rubrics": 8
       },
       "e2e": {
         "install": "PASS",

@@ -1,5 +1,5 @@
 {
-  "generated_utc": "2026-09-20T17:02:14Z",
+  "generated_utc": "2026-10-06T01:11:57Z",
   "status": "AUTOMATED_PIPELINE_PASS",
   "claims": [
     "GUNNCHAI_PLATFORM_INTEGRATION_DIGITALLY_COMPLETE",
@@ -34,7 +34,7 @@
   "GATE_B_REQUIRED_TESTS_SKIPPED": 0,
   "gunnchai": {
     "repo": "https://github.com/gunnchOS3k/gunnchAI3k",
-    "discovered_sha": "851e7916d6d5c7da23a8f30dba6bdfd389daa8ac",
+    "discovered_sha": "e2d1adcb5847cf00282fb7fa64970254b14e344e",
     "ci_provider": "FakeGunnchAIProvider"
   },
   "claim_boundary": {
@@ -65,5 +65,5 @@
     "full_18_course_digital_rc": true,
     "SEVEN_GC_DIGITAL_RC_PRESENT": true
   },
-  "report_generated_from_sha": "fea6027c64a886f516a2cf62640f150637c48d22"
+  "report_generated_from_sha": "90fb9c5ceab51d99dfff7b5e6d1775fd1dca85d6"
 }

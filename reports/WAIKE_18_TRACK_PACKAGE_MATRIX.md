@@ -4,7 +4,7 @@ Source SHA (pinned/observed): `63ba9f25ac6b8d8d1b6dd118923566fd51c57b62`
 
 | track | package | verify | decrypt | lessons | assigns | quizzes | labs | rubrics | portfolio | offline | AI | status | blocker |
 |---|---|---|---|---:|---:|---:|---:|---:|---:|---|---|---|---|
-| DIGITAL_CONFIDENCE | 1.0.0 | PASS | PASS | 8 | 16 | 0 | 8 | 0 | 1 | NO | ABSENT | PASS |  |
+| DIGITAL_CONFIDENCE | 1.0.0 | PASS | PASS | 10 | 10 | 10 | 10 | 8 | 3 | YES | PRESENT | PASS |  |
 | IT_SUPPORT_HARDWARE | 1.0.0 | PASS | PASS | 10 | 10 | 10 | 10 | 8 | 3 | YES | ABSENT | PASS |  |
 | SOFTWARE_BUILDER | 1.0.0 | PASS | PASS | 10 | 10 | 10 | 10 | 8 | 3 | YES | PRESENT | PASS |  |
 | NETWORKING_INFRA | 1.0.0 | PASS | PASS | 10 | 10 | 10 | 14 | 11 | 3 | YES | PRESENT | PASS |  |

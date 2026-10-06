@@ -1,12 +1,12 @@
 {
   "schema": "waike.learning_os.full_completion_state.v1",
   "platform_repo": "gunnchOS3k/gunnchos-waike-learning-platform",
-  "platform_branch": "cursor/waike-learning-gate-d-full-acceptance",
-  "accepted_platform_main": "58daf1a0cc22b60c4246eb4195b74bcb0a714a38",
+  "platform_branch": "v1/full-learner-journey",
+  "accepted_platform_main": "90fb9c5ceab51d99dfff7b5e6d1775fd1dca85d6",
   "gate_c_merge_commit": "58daf1a0cc22b60c4246eb4195b74bcb0a714a38",
-  "current_wave": "GATE_D_FULL_ACCEPTANCE",
-  "status": "AUTOMATED_PIPELINE_PASS",
-  "source": "verify_gate_d_this_run",
+  "current_wave": "V1_PUBLIC_LEARNER_JOURNEY",
+  "status": "LOCAL_AUTOMATED_PASS_PENDING_PR_HEAD_CI",
+  "source": "verified_working_tree_and_v1_public_evidence",
   "waves": {
     "PR1_FOUNDATION": "MERGED",
     "PR2_ASSESSMENT_LIFECYCLE": "MERGED",
@@ -26,9 +26,21 @@
   "claims_withdrawn_until_reproof": [],
   "device_os_accepted_main": "4f02a48780d300a5d3a7758937b20e3bf9364d0d",
   "waike_pin": "63ba9f25ac6b8d8d1b6dd118923566fd51c57b62",
-  "gunnchai_pin": "851e7916d6d5c7da23a8f30dba6bdfd389daa8ac",
-  "owner_action": "MERGE_GATE_D_FINAL_ACCEPTANCE",
-  "last_verified_utc": "2026-09-20T18:51:43Z",
-  "platform_sha": "700a6ac0f284d941e1b56fac38744ded526bd9f4",
-  "honesty": "This-run CI artifact: digital Gate D claims earned only when clean-room + prior regression + Gate D suites pass with zero skips, semantic journey/role PASS fields, this-run native Linux/macOS artifacts bound to PR head SHA, and CI Device OS E2E evidence bound to the same head. Committed FULL_COMPLETION_STATE.json baseline remains PENDING_FINAL_EXACT_HEAD_CI until owner merges. External gates remain OPEN."
+  "gunnchai_pin": "e2d1adcb5847cf00282fb7fa64970254b14e344e",
+  "owner_action": "OWNER_REVIEW_AND_PR_HEAD_CI",
+  "last_verified_utc": "2026-10-06T11:58:33Z",
+  "platform_sha": "90fb9c5ceab51d99dfff7b5e6d1775fd1dca85d6",
+  "honesty": "Local full suites and Gate C/D report verifiers pass with fake AI disabled. Native release artifact and real Device OS launch bindings to the PR head remain pending. Production, device, human and external certifications remain false/open.",
+  "human_external_gates": {
+    "V1_WAIKE_HUMAN_PASS": false,
+    "production_school_hub_acceptance": false,
+    "production_hosted_acceptance": false,
+    "pixel_device_acceptance": false,
+    "external_oneroster_qti_lti_certification": false,
+    "production_signing_notarization": false,
+    "independent_security_accessibility_privacy_certification": false,
+    "production_ai_service_acceptance": false,
+    "ci_native_artifact_head_binding": false,
+    "ci_real_deviceos_launch_head_binding": false
+  }
 }

@@ -1,8 +1,8 @@
 {
-  "generated_utc": "2026-09-20T18:57:26Z",
-  "gunnchai_pin": "851e7916d6d5c7da23a8f30dba6bdfd389daa8ac",
-  "expected_sha": "851e7916d6d5c7da23a8f30dba6bdfd389daa8ac",
-  "observed_sha": "851e7916d6d5c7da23a8f30dba6bdfd389daa8ac",
+  "generated_utc": "2026-10-06T12:03:03Z",
+  "gunnchai_pin": "e2d1adcb5847cf00282fb7fa64970254b14e344e",
+  "expected_sha": "e2d1adcb5847cf00282fb7fa64970254b14e344e",
+  "observed_sha": "e2d1adcb5847cf00282fb7fa64970254b14e344e",
   "modes": [
     "AI_ALLOWED",
     "HINTS_ONLY",
