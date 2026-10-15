@@ -1,5 +1,5 @@
 {
-  "sourceCommit": "e66cc977be755be35bdd560b67842ddcc926cad4",
+  "sourceCommit": "33a101852f4fefb0eb239bcffa60a65d71102e2c",
   "tracks": [
     {
       "trackId": "DIGITAL_CONFIDENCE",
@@ -19,17 +19,17 @@
     {
       "trackId": "NETWORKING_INFRA",
       "offlinePackDeclared": false,
-      "contentRootSha256": "6e9e41850ca06a834882b4f3991762aabdb32d5537e8416cac1f5db5227e34be"
+      "contentRootSha256": "c251debd2ce86914dab1d411fd61e5ccfabf1c42b4bbe2e16e8f85c9702ecb87"
     },
     {
       "trackId": "CYBER_SOC",
       "offlinePackDeclared": false,
-      "contentRootSha256": "873b9af7574c23922933a928a754c7cebcd68eab639965d160142d36605895b4"
+      "contentRootSha256": "5bb77bde79016c2bb356a9b063875a949dea90e254c92f04c240b40a6c76e117"
     },
     {
       "trackId": "DATA_DASHBOARDS",
       "offlinePackDeclared": false,
-      "contentRootSha256": "1746ed4e6761abed42c4c0bf332dd77dbcd48fac1f3417c87d367592b0fe3631"
+      "contentRootSha256": "3d09a577c1b7e0b001633e3993bff39c4f9bd2ca1a8f47ba102052aaba19a0dc"
     },
     {
       "trackId": "AI_ML_EDGE",

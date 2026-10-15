@@ -216,7 +216,7 @@ def create_app(config: HubConfig | None = None, db_path: Path | None = None, see
     guardian = GuardianService(conn)
     learner_product = LearnerProductService(conn, sections, assessment)
 
-    should_seed = bool(seed) or _fixture_seeding_allowed_by_env()
+    should_seed = not production and (bool(seed) or _fixture_seeding_allowed_by_env())
     pixel_pilot = _env_truthy("WAIKE_PIXEL_PILOT")
     curriculum_inventory: dict | None = None
     if should_seed:

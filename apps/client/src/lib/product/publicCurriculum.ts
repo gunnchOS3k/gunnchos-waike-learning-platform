@@ -87,14 +87,13 @@ export function loadPublicContent(track: PublicTrack): Promise<PublicTrackConten
 /** One course request; retries do not alter records or manufacture offline scores. */
 export function usePublicContent(track: PublicTrack | null) {
   const [state, setState] = useState<{content: PublicTrackContent | null; error: string | null}>({content: publicContentForTrack(track), error: null});
-  const [attempt, setAttempt] = useState(0);
   useEffect(() => {
     let active = true;
     setState({content: publicContentForTrack(track), error: null});
     if (track) loadPublicContent(track).then(content => { if (active) setState({content, error: null}); }).catch(() => { if (active) setState({content: null, error: "The course could not be downloaded. Check your connection and retry. Saved practice remains on this browser."}); });
     return () => { active = false; };
-  }, [track?.trackId, attempt]);
-  return {...state, content: state.content?.trackId === track?.trackId ? state.content : null, retry: () => setAttempt(a => a + 1)};
+  }, [track?.trackId]);
+  return {...state, content: state.content?.trackId === track?.trackId ? state.content : null, retry: () => window.location.reload()};
 }
 
 export const PUBLIC_TRACKS: PublicTrack[] = [

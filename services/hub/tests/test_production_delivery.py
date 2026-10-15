@@ -133,3 +133,47 @@ def test_migration_is_backup_bound_and_rehearsed(release):
     assert result['migrations_applied']==[] and result['rehearsal_verified'] is True
     fresh=release['data'].parent/'fresh';result=ops.migration(fresh,None)
     assert result['migrations_applied']==[v for v,_ in MIGRATIONS]
+
+
+def test_config_production_cannot_inherit_development_seed_flag(release,monkeypatch):
+    monkeypatch.setenv('WAIKE_ENV','development')
+    monkeypatch.setenv('WAIKE_SEED_TEST_FIXTURES','true')
+    app=create_app(config=HubConfig(environment='production'),db_path=release['data']/'config-prod.sqlite3')
+    assert app.state.seeded_test_fixtures is False
+    assert app.state.db.execute('SELECT count(*) FROM users').fetchone()[0]==0
+    app.state.db.close()
+
+
+def test_reserved_fixture_database_refused(release):
+    conn=sqlite3.connect(release['data']/'hub.sqlite3')
+    conn.execute("INSERT INTO sites VALUES ('site-alpha','Synthetic fixture','2000-01-01')");conn.commit();conn.close()
+    with pytest.raises(ValueError,match='SYNTHETIC_FIXTURE_DATABASE_FORBIDDEN'):settings()
+
+
+def test_shared_connection_requests_are_serialized():
+    import asyncio
+    import httpx
+    active=0; maximum=0
+    async def backend(scope,receive,send):
+        nonlocal active,maximum
+        active+=1;maximum=max(maximum,active)
+        await asyncio.sleep(0.01)
+        active-=1
+        await send({'type':'http.response.start','status':200,'headers':[]})
+        await send({'type':'http.response.body','body':b'ok'})
+    async def run():
+        transport=httpx.ASGITransport(app=ProductionBoundary(backend,origin='https://learn.example.org'))
+        async with httpx.AsyncClient(transport=transport,base_url='https://learn.example.org') as client:
+            replies=await asyncio.gather(*[client.post('/api/v1/probe',json={}) for _ in range(8)])
+            assert all(r.status_code==200 for r in replies)
+    asyncio.run(run())
+    assert maximum==1
+
+
+def test_tree_hash_preserves_internal_canonical_links_and_refuses_external(tmp_path):
+    root=tmp_path/'source';root.mkdir();(root/'real').mkdir();(root/'real'/'lesson').write_text('canonical')
+    before=tree_hash(root);(root/'alias').symlink_to('real',target_is_directory=True)
+    assert tree_hash(root)!=before
+    outside=tmp_path/'private';outside.write_text('outside source')
+    (root/'forbidden').symlink_to(outside)
+    with pytest.raises(ValueError,match='EXTERNAL_SYMLINK_FORBIDDEN'):tree_hash(root)

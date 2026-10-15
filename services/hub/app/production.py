@@ -19,6 +19,7 @@ from urllib.parse import urlsplit
 from fastapi import HTTPException
 from fastapi.responses import FileResponse
 from starlette.middleware.trustedhost import TrustedHostMiddleware
+from starlette.middleware.gzip import GZipMiddleware
 from starlette.responses import JSONResponse
 
 MAX_BODY = 2 * 1024 * 1024
@@ -28,12 +29,16 @@ MAX_RATE_KEYS = 4096
 def tree_hash(root: Path) -> str:
     digest = hashlib.sha256()
     for path in sorted(root.rglob('*')):
-        if '.git' in path.parts or '__pycache__' in path.parts or not path.is_file():
+        if '.git' in path.parts or '__pycache__' in path.parts:
             continue
         if path.is_symlink():
-            raise ValueError('RELEASE_SYMLINK_FORBIDDEN')
-        digest.update(path.relative_to(root).as_posix().encode() + b'\0')
-        digest.update(hashlib.sha256(path.read_bytes()).digest())
+            if not path.resolve(strict=True).is_relative_to(root.resolve()):
+                raise ValueError('RELEASE_EXTERNAL_SYMLINK_FORBIDDEN')
+            digest.update(path.relative_to(root).as_posix().encode() + b'\0symlink\0' + os.readlink(path).encode())
+            continue
+        if path.is_file():
+            digest.update(path.relative_to(root).as_posix().encode() + b'\0')
+            digest.update(hashlib.sha256(path.read_bytes()).digest())
     return digest.hexdigest()
 
 
@@ -76,9 +81,22 @@ def settings() -> dict:
         versions = [r[0] for r in probe.execute('SELECT version FROM schema_migrations ORDER BY version')]
         if versions != [v for v, _ in MIGRATIONS]:
             raise ValueError('DATABASE_REQUIRES_EXPLICIT_MIGRATION')
+        if probe.execute("SELECT 1 FROM sites WHERE site_id IN ('site-alpha', 'site-beta') LIMIT 1").fetchone():
+            raise ValueError('SYNTHETIC_FIXTURE_DATABASE_FORBIDDEN')
     finally:
         probe.close()
     return dict(origin=origin.rstrip('/'), host=url.hostname, static=static, manifest=manifest)
+
+
+class PublicCompression:
+    """Compress public static assets only; private API responses stay uncompressed."""
+    def __init__(self, app):
+        self.app = app
+        self.compressed = GZipMiddleware(app, minimum_size=1000, compresslevel=6)
+
+    async def __call__(self, scope, receive, send):
+        target = self.app if scope.get('path', '').startswith('/api/') else self.compressed
+        await target(scope, receive, send)
 
 
 class ProductionBoundary:
@@ -91,6 +109,9 @@ class ProductionBoundary:
     def __init__(self, app, origin: str, limit: int = 120):
         self.app, self.origin, self.limit = app, origin, limit
         self.buckets: OrderedDict[tuple, deque] = OrderedDict()
+        # The existing Hub shares one SQLite connection across service modules.
+        # Serialize complete API transactions instead of interleaving savepoints.
+        self.api_lock = asyncio.Lock()
 
     async def __call__(self, scope, receive, send):
         if scope['type'] != 'http':
@@ -157,7 +178,11 @@ class ProductionBoundary:
                 if path.startswith('/api/'):
                     message['headers'] = [(k,v) for k,v in message['headers'] if k.lower() != b'cache-control'] + [(b'cache-control', b'no-store')]
             await send(message)
-        await self.app(scope, source_receive, secured_send)
+        if path.startswith('/api/'):
+            async with self.api_lock:
+                await self.app(scope, source_receive, secured_send)
+        else:
+            await self.app(scope, source_receive, secured_send)
 
 
 def create_production_app():
@@ -205,6 +230,7 @@ def create_production_app():
             raise HTTPException(404, 'Not found')
         return FileResponse(candidate, headers={'Cache-Control': 'public, max-age=31536000, immutable' if requested.startswith('assets/') else 'no-cache'})
 
+    app.add_middleware(PublicCompression)
     app.add_middleware(ProductionBoundary, origin=config['origin'])
     app.add_middleware(TrustedHostMiddleware, allowed_hosts=[config['host'], 'localhost'])
     return app
