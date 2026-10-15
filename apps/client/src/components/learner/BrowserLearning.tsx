@@ -1,6 +1,6 @@
 import {DigitalConfidencePractical} from "./DigitalConfidencePractical";
 import { useEffect, useState } from 'react';
-import { PUBLIC_TRACKS, publicContentForTrack } from '../../lib/product/publicCurriculum';
+import { PUBLIC_TRACKS, usePublicContent, type PublicTrack, type PublicTrackContent } from '../../lib/product/publicCurriculum';
 import { SafeMarkdown } from '../content/SafeMarkdown';
 import './browserLearning.css';
 
@@ -15,7 +15,11 @@ export function parseLearningHash(hash: string): { track: string; unit: number }
 }
 export function BrowserLearning({ trackId, unit, onNavigate, auth }: { trackId: string; unit: number; onNavigate: (track: string, unit: number) => void; auth?: {token:string;baseUrl:string;sectionId:string;onReview:()=>void} }) {
   const track = PUBLIC_TRACKS.find(t => t.trackId === trackId) || PUBLIC_TRACKS[0];
-  const content = publicContentForTrack(track)!;
+  const {content, error, retry} = usePublicContent(track);
+  if (!content) return <section className="browser-learning" aria-busy={!error}><h1>{track.title}</h1><p role={error ? "alert" : "status"}>{error || "Downloading this course…"}</p>{error && <button onClick={retry}>Retry course download</button>}</section>;
+  return <LoadedBrowserLearning key={track.trackId} {...{trackId, unit, onNavigate, auth, track, content}} />;
+}
+function LoadedBrowserLearning({trackId, unit, onNavigate, auth, track, content}: {trackId: string; unit: number; onNavigate: (track: string, unit: number) => void; auth?: {token:string;baseUrl:string;sectionId:string;onReview:()=>void}; track: PublicTrack; content: PublicTrackContent}) {
   const lesson = content.lessons[unit - 1];
   const quiz = content.quizzes[unit - 1];
   const assignment = content.assignments[unit - 1];

@@ -43,7 +43,7 @@ import {
   publicAssignmentContent,
   publicAssignmentsForTrack,
   publicCatalogStudyText,
-  publicContentForTrack,
+  usePublicContent,
   publicCourseModels,
   publicModulesForTrack,
   publicTrackForSection,
@@ -218,11 +218,12 @@ export default function App() {
   const [resumeHint, setResumeHint] = useState<string | null>(null);
   const [mode, setMode] = useState<Mode>("lessons");
   const [session, setSession] = useState<AuthSession | null>(() => loadSession());
+  const [loginRequested, setLoginRequested] = useState(false);
   const [sessionExpired, setSessionExpired] = useState(false);
   const [mockActor, setMockActor] = useState<HubActor>({ actorId: "learner-a", role: "learner" });
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [siteId, setSiteId] = useState("site-alpha");
+  const [siteId, setSiteId] = useState(import.meta.env.VITE_PUBLIC_READER === "true" ? "" : "site-alpha");
   const [homeCards, setHomeCards] = useState<SectionCard[]>([]);
   const [sectionId, setSectionId] = useState(() => loadActiveCourseId() || "");
   const [openAssignmentId, setOpenAssignmentId] = useState<string | null>(null);
@@ -317,10 +318,11 @@ export default function App() {
     };
   }, [session, isMock, mockActor.actorId, mockActor.role]);
   const primaryRole = resolvePrimaryRole(user?.roles);
-  const needsLogin = hubResolution.status === "http" && !session;
+  const publicReaderEnabled = import.meta.env.VITE_PUBLIC_READER === "true";
+  const needsLogin = hubResolution.status === "http" && !session && (!publicReaderEnabled || loginRequested);
   const isStaff =
     primaryRole === "instructor" || primaryRole === "grader" || primaryRole === "site_admin";
-  const publicCatalogMode = hubResolution.status === "unavailable";
+  const publicCatalogMode = hubResolution.status === "unavailable" || (publicReaderEnabled && !session && !isMock);
   const learnerAccess = primaryRole === "learner" || isMock || publicCatalogMode;
 
   useEffect(() => {
@@ -706,7 +708,8 @@ export default function App() {
   const courseModels = publicCatalogMode ? publicCourseModels(pinnedIds) : hubCourseModels;
   const activeCourse = resolveActiveCourse(courseModels, sectionId || null);
   const activePublicTrack = publicCatalogMode ? publicTrackForSection(sectionId) : null;
-  const activePublicContent = publicContentForTrack(activePublicTrack);
+  const {content: activePublicContent} = usePublicContent(activePublicTrack);
+  const {content: dcContent} = usePublicContent(mode === "dc-practicals" ? PUBLIC_TRACKS[0] : null);
   const hubAssignmentCards: AssignmentCardModel[] = assignmentSummaries.map((a) => ({
     assignment_id: a.assignment_id,
     section_id: a.section_id || sectionId || "",
@@ -817,6 +820,7 @@ export default function App() {
             Session expired — please sign in again.
           </div>
         ) : null}
+        {publicReaderEnabled && <button onClick={() => setLoginRequested(false)}>Continue public learning</button>}
         <form className="panel login-form" onSubmit={(e) => void onLogin(e)} data-testid="login-form">
           <h2>Sign in</h2>
           <label className="field-label" htmlFor="site-id">
@@ -892,6 +896,7 @@ export default function App() {
           </div>
         ) : null}
         <div className="toolbar">
+          {publicCatalogMode && hubResolution.status === "http" && <button onClick={() => setLoginRequested(true)}>Sign in to my learning Hub</button>}
           {runtime.isTouchPrimary ? (
             <button
               type="button"
@@ -1160,7 +1165,7 @@ export default function App() {
       {hub && session && learnerAccess && activeCourse?.title.toLowerCase().includes("digital confidence") && <div><button onClick={()=>{setCatalogUnit(1);setMode("dc-course");}}>Open Digital Confidence weekly reader</button><button onClick={()=>setMode("dc-practicals")}>Open Digital Confidence independent practical</button></div>}
       <div className="layout" id="main" tabIndex={-1}>
         {mode === "dc-course" && hub && session && hubResolution.status === "http" && <BrowserLearning key={`dc-auth:${catalogUnit}`} trackId="DIGITAL_CONFIDENCE" unit={catalogUnit} onNavigate={(_,unit)=>setCatalogUnit(unit)} auth={{token:session.token,baseUrl:hubResolution.baseUrl,sectionId:sectionId||"",onReview:()=>{setOpenAssignmentId("DIGITAL_CONFIDENCE-independent-v1");setMode("assignments");}}}/>}
-        {mode === "dc-practicals" && hub && session && hubResolution.status === "http" && publicContentForTrack(PUBLIC_TRACKS[0])?.delivery && <DigitalConfidencePractical delivery={publicContentForTrack(PUBLIC_TRACKS[0])!.delivery!} unit={11} auth={{token:session.token,baseUrl:hubResolution.baseUrl,sectionId:sectionId||"",onReview:()=>{setOpenAssignmentId("DIGITAL_CONFIDENCE-independent-v1");setMode("assignments");}}}/>}
+        {mode === "dc-practicals" && hub && session && hubResolution.status === "http" && dcContent?.delivery && <DigitalConfidencePractical delivery={dcContent!.delivery!} unit={11} auth={{token:session.token,baseUrl:hubResolution.baseUrl,sectionId:sectionId||"",onReview:()=>{setOpenAssignmentId("DIGITAL_CONFIDENCE-independent-v1");setMode("assignments");}}}/>}
         {mode === "lessons" && publicCatalogMode ? <BrowserLearning
           key={`${activePublicTrack?.trackId || "DIGITAL_CONFIDENCE"}:${catalogUnit}`}
           trackId={activePublicTrack?.trackId || "DIGITAL_CONFIDENCE"} unit={catalogUnit}

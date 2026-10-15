@@ -236,3 +236,21 @@ describe("createHttpHubClient", () => {
     expect(parsed).not.toHaveProperty("force_mastery_gap");
   });
 });
+
+
+describe("operator-built same-origin web Hub", () => {
+  it("uses this browser origin only with an explicit build flag", () => {
+    vi.stubGlobal("window", {location: {origin: "https://learn.example.org", search: "?hub=https://hostile.example"}});
+    const result = resolveHubClient(getToken, undefined, undefined, {MODE: "production", VITE_HUB_SAME_ORIGIN: "true"});
+    expect(result.status).toBe("http");
+    if (result.status === "http") expect(result.baseUrl).toBe("https://learn.example.org");
+  });
+  it("never enables same-origin from a URL parameter", () => {
+    vi.stubGlobal("window", {location: {origin: "https://learn.example.org", search: "?VITE_HUB_SAME_ORIGIN=true"}});
+    expect(resolveHubClient(getToken, undefined, undefined, {MODE:"production"}).status).toBe("unavailable");
+  });
+  it.each(["file://", "http://hostile.example"])("refuses unsafe origin %s", origin => {
+    vi.stubGlobal("window", {location: {origin}});
+    expect(resolveHubClient(getToken, undefined, undefined, {MODE:"production", VITE_HUB_SAME_ORIGIN:"true"}).status).toBe("unavailable");
+  });
+});

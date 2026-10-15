@@ -18,3 +18,5 @@ source=args.curriculum_root.resolve()
 if subprocess.check_output(['git','status','--porcelain'],cwd=source,text=True).strip():
     raise SystemExit('Commit the canonical curriculum before exporting a source-bound delivery artifact.')
 subprocess.run([sys.executable,str(source/'scripts/export_browser_curriculum.py'),'--output',str(ROOT/'apps/client/src/generated/publicCurriculumContent.json')],check=True)
+
+subprocess.run([sys.executable, str(ROOT/'scripts/split_public_curriculum.py')], check=True)

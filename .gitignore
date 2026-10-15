@@ -52,3 +52,7 @@ services/hub/data/pixel_pilot/
 /artifacts/full-delivery/wfd2-test-only/*/instructor_*
 /artifacts/full-delivery/wfd2-test-only/*/*.instructor.aes256gcm
 /artifacts/full-delivery/wfd2-test-only/*/learner/
+
+# Private release snapshots and host runtime/backup secrets stay outside Git.
+/.release/
+/deploy/production/private/

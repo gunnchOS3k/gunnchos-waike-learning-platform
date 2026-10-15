@@ -75,18 +75,8 @@ def _waike_env_name() -> str:
 
 
 def _fixture_seeding_allowed_by_env() -> bool:
-    """Synthetic Alpha/Beta fixtures require unmistakable opt-in and non-production shape.
-
-    Impossible in production mode unless an explicit test/dev path is also selected
-    (WAIKE_FIXTURE_AUTH or WAIKE_ENV in {test,dev,development,local}).
-    """
-    if not _env_truthy("WAIKE_SEED_TEST_FIXTURES"):
-        return False
-    env_name = _waike_env_name()
-    if env_name in {"production", "prod"}:
-        # Production mode: require an explicit test/dev selector (fixture auth) as well.
-        return _env_truthy("WAIKE_FIXTURE_AUTH")
-    return True
+    """Production never seeds fixtures, even if fixture authentication is requested."""
+    return _env_truthy("WAIKE_SEED_TEST_FIXTURES") and _waike_env_name() not in {"production", "prod"}
 
 
 def _default_db_path() -> Path:
@@ -135,7 +125,7 @@ def create_app(config: HubConfig | None = None, db_path: Path | None = None, see
     """Create hub app. Synthetic fixture seeding is off by default.
 
     Prefer ``seed=True`` in tests. Runtime opt-in requires ``WAIKE_SEED_TEST_FIXTURES=true``
-    and is refused for production-shaped processes without an explicit test/dev selector.
+    and is ignored in production. Production rejects explicit seed=True, fixture auth and pilot seeding.
     """
     if config is None:
         # Allow process env to opt into fixture auth for live HTTP seam / local PR2 tools.
@@ -146,6 +136,14 @@ def create_app(config: HubConfig | None = None, db_path: Path | None = None, see
             environment=_waike_env_name(),
         )
     cfg = config
+    production = cfg.environment.lower() in {"production", "prod"} or _waike_env_name() in {"production", "prod"}
+    if production:
+        if seed or cfg.fixture_auth_enabled or _env_truthy("WAIKE_FIXTURE_AUTH"):
+            raise ValueError("PRODUCTION_FIXTURE_AUTH_OR_SEED_FORBIDDEN")
+        if _env_truthy("WAIKE_PIXEL_PILOT") or _env_truthy("WAIKE_ALLOW_FAKE_AI"):
+            raise ValueError("PRODUCTION_PILOT_OR_FAKE_AI_FORBIDDEN")
+        if not cfg.production_auth_enabled:
+            raise ValueError("PRODUCTION_AUTH_REQUIRED")
     app = FastAPI(
         title="WAIKE Learning Hub",
         version=cfg.version,
@@ -327,4 +325,4 @@ def create_app(config: HubConfig | None = None, db_path: Path | None = None, see
 
 
 # Production-shaped module import: never auto-seed Alpha/Beta test accounts.
-app = create_app(seed=False)
+app = None if _env_truthy("WAIKE_FACTORY_MODE") else create_app(seed=False)

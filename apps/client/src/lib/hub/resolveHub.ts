@@ -10,6 +10,8 @@ export type HubResolution =
 export type HubEnv = {
   MODE?: string;
   VITE_HUB_URL?: string;
+  /** Operator-built same-origin web deployment. No URL or launch query can enable it. */
+  VITE_HUB_SAME_ORIGIN?: string;
   VITE_WAIKE_MOCK_HUB?: string;
   /** Pixel physical pilot — production-shaped; never allow silent mockHub fallback. */
   VITE_PIXEL_PILOT?: string;
@@ -96,6 +98,13 @@ export function resolveHubClient(
       client: createHttpHubClient(checked.base, getToken, onAuthFailure, undefined),
       baseUrl: checked.base,
     };
+  }
+
+  if (env.VITE_HUB_SAME_ORIGIN === "true") {
+    const origin = typeof window === "undefined" ? "" : window.location.origin;
+    const checked = structuralNormalizeHubBase(origin);
+    if (!checked.ok || (!origin.startsWith("https://") && !/^http:\/\/(localhost|127\.0\.0\.1)(:|$)/.test(origin))) return {status: "unavailable", client: null, reason: "Same-origin Hub requires HTTPS or a loopback test origin"};
+    return {status: "http", client: createHttpHubClient(checked.base, getToken, onAuthFailure, undefined), baseUrl: checked.base};
   }
 
   const runtimeRaw = (env.runtimeHubUrl || "").trim();

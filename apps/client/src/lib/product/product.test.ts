@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { beforeAll, describe, expect, it } from "vitest";
 import { loadActiveCourseId, persistActiveCourseId, resolveActiveCourse, selectActiveCourse } from "./activeCourse";
 import { filterAssignments, pickOpenAssignment } from "./assignmentCenter";
 import { calendarFromAssignments, groupCalendar } from "./calendarTodo";
@@ -9,6 +9,7 @@ import { resolveModuleStatus } from "./moduleStatus";
 import { notificationsFromSignals } from "./notifications";
 import {
   PUBLIC_TRACKS,
+  loadPublicContent,
   publicAssignmentContent,
   publicAssignmentsForTrack,
   publicCatalogStudyText,
@@ -82,6 +83,7 @@ describe("active course persistence", () => {
 });
 
 describe("public 18-track curriculum", () => {
+  beforeAll(async () => { await Promise.all(PUBLIC_TRACKS.map(loadPublicContent)); });
   it.each(PUBLIC_TRACKS)("opens every authored content item for $trackId", (track) => {
     const resolved = publicTrackForSection(`catalog:${track.trackId}`);
     const content = publicContentForTrack(resolved);

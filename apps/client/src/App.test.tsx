@@ -181,3 +181,23 @@ describe("WAIKE Learning OS shell", () => {
     });
   });
 });
+
+
+describe("single-origin public reader", () => {
+  it("lets anonymous learners read and deliberately switch to existing school login", async () => {
+    vi.stubEnv("VITE_PUBLIC_READER", "true");
+    vi.stubEnv("VITE_HUB_SAME_ORIGIN", "true");
+    vi.stubEnv("VITE_HUB_URL", "");
+    sessionStorage.clear();
+    const user=userEvent.setup();
+    render(<App/>);
+    expect(screen.queryByTestId("login-form")).not.toBeInTheDocument();
+    expect(screen.getByTestId("public-catalog-banner")).toBeInTheDocument();
+    await user.click(screen.getByRole("button", {name:"Sign in to my learning Hub"}));
+    expect(screen.getByTestId("login-form")).toBeInTheDocument();
+    expect(screen.getByTestId("login-site-id")).toHaveValue("");
+    await user.click(screen.getByRole("button", {name:"Continue public learning"}));
+    expect(screen.queryByTestId("login-form")).not.toBeInTheDocument();
+    expect(screen.getByTestId("public-catalog-banner")).toBeInTheDocument();
+  });
+});

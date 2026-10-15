@@ -1,8 +1,8 @@
 import { cleanup, render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { afterEach, beforeEach, describe, it, expect, vi } from 'vitest';
 import { BrowserLearning, parseLearningHash } from './BrowserLearning';
-import { PUBLIC_TRACKS, publicContentForTrack } from '../../lib/product/publicCurriculum';
-beforeEach(() => { localStorage.clear(); });
+import { PUBLIC_TRACKS, loadPublicContent, publicContentForTrack } from '../../lib/product/publicCurriculum';
+beforeEach(async () => { localStorage.clear(); await loadPublicContent(PUBLIC_TRACKS[0]); });
 afterEach(() => { cleanup(); vi.unstubAllGlobals(); });
 describe('browser course learning', () => {
   it('only accepts known course and unit deep links', () => {

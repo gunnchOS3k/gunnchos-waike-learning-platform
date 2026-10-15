@@ -1,0 +1,36 @@
+# Existing approved Linux host only. No TLS/DNS/provider provisioning is performed.
+services:
+  waike:
+    image: ${WAIKE_RELEASE_IMAGE:?Set an immutable approved image digest}
+    build:
+      context: ../..
+      dockerfile: deploy/production/Dockerfile
+    restart: unless-stopped
+    init: true
+    user: "10001:10001"
+    read_only: true
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    pids_limit: 96
+    mem_limit: 768m
+    cpus: 1.0
+    environment:
+      WAIKE_PUBLIC_ORIGIN: ${WAIKE_PUBLIC_ORIGIN:?Set the exact HTTPS reader origin}
+    ports:
+      - "127.0.0.1:${WAIKE_BIND_PORT:-8080}:8080"
+    volumes:
+      - type: bind
+        source: ${WAIKE_DATA_DIRECTORY:?Set existing persistent data directory}
+        target: /var/lib/waike
+    tmpfs:
+      - /tmp:rw,noexec,nosuid,nodev,size=64m,mode=1777
+    secrets:
+      - practice_signing_key
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+secrets:
+  practice_signing_key:
+    file: ${WAIKE_PRACTICE_KEY_PATH:?Set protected existing secret file}

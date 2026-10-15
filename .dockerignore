@@ -1,0 +1,17 @@
+**
+!services/
+!services/hub/
+!services/hub/app/
+!services/hub/app/**
+!curriculum/
+!curriculum/registry/
+!curriculum/registry/PIN.json
+!deploy/
+!deploy/production/
+!deploy/production/Dockerfile
+!deploy/production/requirements.lock
+!deploy/production/operations.py
+!.release/
+!.release/**
+**/__pycache__
+**/*.pyc
