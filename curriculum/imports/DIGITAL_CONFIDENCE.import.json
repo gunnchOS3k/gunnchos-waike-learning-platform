@@ -56,7 +56,8 @@
     "curriculum/digital_rc/GENERAL_IT/quizzes/**",
     "curriculum/digital_rc/GENERAL_IT/presentation/**",
     "curriculum/digital_rc/GENERAL_IT/assessments/**",
-    "curriculum/digital_rc/GENERAL_IT/projects/**"
+    "curriculum/digital_rc/GENERAL_IT/projects/**",
+    "curriculum/digital_rc/GENERAL_IT/delivery/*.json"
   ],
   "package_version": "1.0.0",
   "source_kind": "canonical_digital_rc_with_shared_general_it",

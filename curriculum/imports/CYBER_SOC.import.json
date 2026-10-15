@@ -28,7 +28,8 @@
     "curriculum/digital_rc/CYBERSECURITY/ai_use_policy.json",
     "curriculum/digital_rc/CYBERSECURITY/guides/**",
     "programs/cybersecurity_soc.md",
-    "programs/cybersecurity.md"
+    "programs/cybersecurity.md",
+    "curriculum/digital_rc/CYBERSECURITY/learner_exercises/**"
   ],
   "instructor_only_globs": [
     "curriculum/digital_rc/CYBERSECURITY/instructor/**"

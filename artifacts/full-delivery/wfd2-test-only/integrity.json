@@ -1,0 +1,32 @@
+[
+  {
+    "track": "DIGITAL_CONFIDENCE",
+    "sourceCommit": "e66cc977be755be35bdd560b67842ddcc926cad4",
+    "learner_zip_sha256": "bee45064d3b392d7df5ed776b0e3c3b71be545d16a4fbf4b20df213319dce1dc",
+    "signature_verified_test_key_only": true,
+    "private_paths_absent": true,
+    "answer_index_absent": true,
+    "required_source_present": "GENERAL_IT/delivery/digital_confidence.json",
+    "native_installation_tested": false
+  },
+  {
+    "track": "SOFTWARE_BUILDER",
+    "sourceCommit": "e66cc977be755be35bdd560b67842ddcc926cad4",
+    "learner_zip_sha256": "a138f152163d9c9f2717390bbe6862e4ce5663490734842737fdf528bc127bdc",
+    "signature_verified_test_key_only": true,
+    "private_paths_absent": true,
+    "answer_index_absent": true,
+    "required_source_present": "SOFTWARE_BUILDER/learner_exercises/first_program/capacity.py",
+    "native_installation_tested": false
+  },
+  {
+    "track": "CYBER_SOC",
+    "sourceCommit": "e66cc977be755be35bdd560b67842ddcc926cad4",
+    "learner_zip_sha256": "7ab5e733e0e336b272a49748c192e23c8a3f798152683d986f3ec2a0bfb2a325",
+    "signature_verified_test_key_only": true,
+    "private_paths_absent": true,
+    "answer_index_absent": true,
+    "required_source_present": "CYBERSECURITY/learner_exercises/triage_model/triage.py",
+    "native_installation_tested": false
+  }
+]

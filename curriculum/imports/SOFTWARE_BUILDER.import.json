@@ -28,7 +28,8 @@
     "curriculum/digital_rc/SOFTWARE_BUILDER/ai_use_policy.json",
     "curriculum/digital_rc/SOFTWARE_BUILDER/guides/**",
     "programs/software_builder.md",
-    "programs/software_engineering.md"
+    "programs/software_engineering.md",
+    "curriculum/digital_rc/SOFTWARE_BUILDER/learner_exercises/**"
   ],
   "instructor_only_globs": [
     "curriculum/digital_rc/SOFTWARE_BUILDER/instructor/**"

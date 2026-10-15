@@ -85,7 +85,7 @@ describe("public 18-track curriculum", () => {
   it.each(PUBLIC_TRACKS)("opens every authored content item for $trackId", (track) => {
     const resolved = publicTrackForSection(`catalog:${track.trackId}`);
     const content = publicContentForTrack(resolved);
-    expect(content?.sourceCommit).toBe("d486d41d77a529015ac0ddb5ea43e521881def22");
+    expect(content?.sourceCommit).toBe("e66cc977be755be35bdd560b67842ddcc926cad4");
     expect(content?.packId).toBeTruthy();
     publicModulesForTrack(resolved).forEach((_, index) => {
       expect(publicCatalogStudyText(track, index + 1)).toBe(content?.lessons[index].markdown);

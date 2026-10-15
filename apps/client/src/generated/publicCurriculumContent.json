@@ -1,14 +1,14 @@
 {
   "schema": "waike.browser.curriculum.v2",
   "owner": "waike-research-ops",
-  "sourceCommit": "d486d41d77a529015ac0ddb5ea43e521881def22",
+  "sourceCommit": "e66cc977be755be35bdd560b67842ddcc926cad4",
   "tracks": [
     {
       "trackId": "DIGITAL_CONFIDENCE",
       "title": "Digital Confidence to Computer Operator",
       "packId": "GENERAL_IT",
       "contentRootSha256": "9e1f53a1caf4d43052ca155f12a61c078fbabd8e8f1f2519ba9a2edc206da2e1",
-      "sourceCommit": "d486d41d77a529015ac0ddb5ea43e521881def22",
+      "sourceCommit": "e66cc977be755be35bdd560b67842ddcc926cad4",
       "offlinePackDeclared": false,
       "delivery": {
         "definition": {
@@ -1602,7 +1602,7 @@
       "title": "IT Support and Hardware Foundations",
       "packId": "GENERAL_IT",
       "contentRootSha256": "62d05bf821017547c7eccae08b6f625f58286170f62a21bf252a55b738cc24d2",
-      "sourceCommit": "d486d41d77a529015ac0ddb5ea43e521881def22",
+      "sourceCommit": "e66cc977be755be35bdd560b67842ddcc926cad4",
       "offlinePackDeclared": false,
       "delivery": null,
       "lessons": [
@@ -2642,8 +2642,8 @@
       "trackId": "SOFTWARE_BUILDER",
       "title": "Software Builder Zero-to-Hero",
       "packId": "SOFTWARE_BUILDER",
-      "contentRootSha256": "82256e3fe7dd220a608bf856f1623a43731386f57c4428e5a70bc9f8fd385382",
-      "sourceCommit": "d486d41d77a529015ac0ddb5ea43e521881def22",
+      "contentRootSha256": "85272131e5c7c0649b2b667aa3d4cc839b8142c47f30172907ae674b239cef4a",
+      "sourceCommit": "e66cc977be755be35bdd560b67842ddcc926cad4",
       "offlinePackDeclared": false,
       "delivery": null,
       "lessons": [
@@ -2651,8 +2651,8 @@
           "id": "SOFTWARE_BUILDER-w01",
           "title": "ForgeDesk ticket 8801 — git conflict on the deploy branch",
           "path": "curriculum/digital_rc/SOFTWARE_BUILDER/weeks/w01/lesson.md",
-          "sha256": "f1d2420726272bff392e1a7639623b4c82084ae3767b8e2914baa8921d81a58a",
-          "markdown": "# Week 1: ForgeDesk ticket 8801 — git conflict on the deploy branch\n\nThe WAIKE Software ForgeDesk is a two-person civic issue tracker for Device Lab checkouts. Ticket 8801 opens when a volunteer edits routes.py on feature/kiosk-hours while the desk lead edited the same function on main. A conflict is not a personality crisis. It is two hashes that claim the same lines. You will read both sides, keep the authz guard that main added, and keep the hours table that the feature branch added.\n\nBranch names in this course are contracts. main is always deployable to the local Device Lab compose stack. Feature branches must merge with an explicit conflict report JSON that names the surviving function signature. The lab rejects a resolution that drops require_role or that keeps both copies as _v1 and _v2 without a test.\n\nCS50 Web Git week is a structure citation only. Harvard lab text stays at Harvard. WAIKE conflict fixture is original: two parents, one file, one required survivor set. Publicly viewable is not free to copy. AI mode for practice drills: PRACTICE; for the graded conflict report: AI_DISCLOSED if you used HINT.\n\n## Concept and boundary\n\nVersion control records changes, not correctness. A commit identifies a project state; a branch names a movable line of development. A merge conflict means Git could not choose an edit automatically. Deleting conflict markers without understanding both changes can silently discard behavior.\n\n## Guided implementation\n\nCreate a new local practice repository containing a two-line runbook. Commit it. Make two branches that edit the same line differently, commit on each, then merge one into the other. Expected result: Git identifies the conflicting path. Read both edits, write a combined version that preserves the intended requirements, stage it, and commit. Confirm with `git status` and inspect the final file. If you cannot explain the conflict, stop; preserve both branches instead of resetting away their work.\n\n## Independent evidence and recovery\n\nDocument both original requirements, the final decision and a test that would detect a lost requirement. Repeat with edits to separate lines and explain why a conflict may not occur. Use only a disposable local repository; do not practice force-pushing on a shared branch.\n\nIf a result differs, preserve the failing output and the exact file revision. Change one assumption at a time, rerun the relevant check, and explain what the new evidence supports. Do not mark an unperformed step complete.\n\n## Worked example\n\nParents A and B both touch def open_hours. A adds require_role('desk'). B adds HOURS={...}. Survivor must include both tokens.\n",
+          "sha256": "5acad735fc098295e7d937fea24307c1e1638afd7798a4e2feab1fbf0a2444c9",
+          "markdown": "# Week 1: ForgeDesk ticket 8801 — git conflict on the deploy branch\n\nThe WAIKE Software ForgeDesk is a two-person civic issue tracker for Device Lab checkouts. Ticket 8801 opens when a volunteer edits routes.py on feature/kiosk-hours while the desk lead edited the same function on main. A conflict is not a personality crisis. It is two hashes that claim the same lines. You will read both sides, keep the authz guard that main added, and keep the hours table that the feature branch added.\n\nBranch names in this course are contracts. main is always deployable to the local Device Lab compose stack. Feature branches must merge with an explicit conflict report JSON that names the surviving function signature. The lab rejects a resolution that drops require_role or that keeps both copies as _v1 and _v2 without a test.\n\nCS50 Web Git week is a structure citation only. Harvard lab text stays at Harvard. WAIKE conflict fixture is original: two parents, one file, one required survivor set. Publicly viewable is not free to copy. AI mode for practice drills: PRACTICE; for the graded conflict report: AI_DISCLOSED if you used HINT.\n\n## Concept and boundary\n\nVersion control records changes, not correctness. A commit identifies a project state; a branch names a movable line of development. A merge conflict means Git could not choose an edit automatically. Deleting conflict markers without understanding both changes can silently discard behavior.\n\n## Guided implementation\n\nCreate a new local practice repository containing a two-line runbook. Commit it. Make two branches that edit the same line differently, commit on each, then merge one into the other. Expected result: Git identifies the conflicting path. Read both edits, write a combined version that preserves the intended requirements, stage it, and commit. Confirm with `git status` and inspect the final file. If you cannot explain the conflict, stop; preserve both branches instead of resetting away their work.\n\n## Independent evidence and recovery\n\nDocument both original requirements, the final decision and a test that would detect a lost requirement. Repeat with edits to separate lines and explain why a conflict may not occur. Use only a disposable local repository; do not practice force-pushing on a shared branch.\n\nIf a result differs, preserve the failing output and the exact file revision. Change one assumption at a time, rerun the relevant check, and explain what the new evidence supports. Do not mark an unperformed step complete.\n\n## First-programming bridge\n\nIf variables, functions or tests are new, open **Your first program** in the reader’s downloadable worked examples before attempting the infrastructure lab. Save `capacity.py` and `test_capacity.py` with its README in one folder. The guide teaches assignment versus comparison, numeric types, branches, return values, exceptions and boundary tests through the Digital Confidence capacity case. It includes a separate workload-planning challenge with a reviewer rubric. A checked fixture does not establish independent programming competence. Return here to specify a requirement and observable acceptance criteria for your own function.\n\n## Worked example\n\nParents A and B both touch def open_hours. A adds require_role('desk'). B adds HOURS={...}. Survivor must include both tokens.\n",
           "labId": "lab_git_conflict"
         },
         {
@@ -3675,8 +3675,8 @@
           "id": "README",
           "title": "Checkout contract worked example",
           "path": "curriculum/digital_rc/SOFTWARE_BUILDER/learner_exercises/checkout_contract/README.md",
-          "sha256": "2912124c5b88c5edfb9067e66e4064d3fe5bbecece60397344ed5642815ff4b1",
-          "markdown": "# Checkout contract worked example\n\nPrerequisites: Python 3.11+ on a computer you control, a text editor and ability to open a terminal in a folder. Uses Python's standard library only. No network service, packages, accounts or real library data are needed.\n\nDownload `checkout.py` and `test_checkout.py` into the same empty folder. From that folder run:\n\n```\npython3 -m unittest -v test_checkout.py\n```\n\nOn Windows where the Python launcher is installed, use `py -3 -m unittest -v test_checkout.py`. Expected result: six tests pass. A missing Python command means the runtime prerequisite is unmet; do not copy commands from an unknown download site. A module import error usually means you ran from the wrong folder or did not save both files with `.py` extensions.\n\nRead each assertion and predict its result before running. Then deliberately change the reader authorization check to allow POST, rerun and observe the failed denial test. Restore the original condition and rerun. Save the before/after result; a screenshot of a green test run alone does not show that you understand why it passed.\n\nIndependent work: add a second fictional item and tests showing that checking out the first does not change the second. Add a test for an unsupported method and a separate test for an unrecognized role. Explain why a user-supplied role string would be unsafe in a real web service. Do not use this exercise as an authentication or production database implementation.\n\nThis is a local worked example, not execution of the canonical ForgeDesk infrastructure labs. Those require their documented artifact schemas and authorized environment. AI assistance contributed to the example and tests. Human technical and educational acceptance remains pending. Source inherits the repository's software license; publication and third-party rights remain separately reviewed.\n"
+          "sha256": "9e78f005c75d19a641834b37ba9b883e48e8d8c4782d33daabbee7143c9087ad",
+          "markdown": "# Checkout contract worked example\n\nNew to programming? Start with the downloadable **Your first program** guide and its `capacity.py` / `test_capacity.py` files, then return here.\n\nPrerequisites: Python 3.11+ on a computer you control, a text editor and ability to open a terminal in a folder. Uses Python's standard library only. No network service, packages, accounts or real library data are needed.\n\nDownload `checkout.py` and `test_checkout.py` into the same empty folder. From that folder run:\n\n```\npython3 -m unittest -v test_checkout.py\n```\n\nOn Windows where the Python launcher is installed, use `py -3 -m unittest -v test_checkout.py`. Expected result: six tests pass. A missing Python command means the runtime prerequisite is unmet; do not copy commands from an unknown download site. A module import error usually means you ran from the wrong folder or did not save both files with `.py` extensions.\n\nRead each assertion and predict its result before running. Then deliberately change the reader authorization check to allow POST, rerun and observe the failed denial test. Restore the original condition and rerun. Save the before/after result; a screenshot of a green test run alone does not show that you understand why it passed.\n\nIndependent work: add a second fictional item and tests showing that checking out the first does not change the second. Add a test for an unsupported method and a separate test for an unrecognized role. Explain why a user-supplied role string would be unsafe in a real web service. Do not use this exercise as an authentication or production database implementation.\n\nThis is a local worked example, not execution of the canonical ForgeDesk infrastructure labs. Those require their documented artifact schemas and authorized environment. AI assistance contributed to the example and tests. Human technical and educational acceptance remains pending. Source inherits the repository's software license; publication and third-party rights remain separately reviewed.\n"
         },
         {
           "id": "checkout",
@@ -3691,6 +3691,27 @@
           "path": "curriculum/digital_rc/SOFTWARE_BUILDER/learner_exercises/checkout_contract/test_checkout.py",
           "sha256": "7a8ea2c89dabb808c29cda114e12de7dd1e44b2e0a06a12788016278a6de84d0",
           "markdown": "\"\"\"Worked-example tests. Independent assignment requires additional cases.\"\"\"\nimport unittest\nfrom checkout import Checkout\n\nclass ContractTests(unittest.TestCase):\n    def setUp(self): self.app=Checkout()\n    def tearDown(self): self.app.close()\n    def test_get_does_not_change_availability(self):\n        self.assertEqual(self.app.request('GET','demo-1')['outcome'], 'available')\n        self.assertEqual(self.app.request('GET','demo-1')['outcome'], 'available')\n    def test_desk_can_checkout_once(self):\n        self.assertEqual(self.app.request('POST','demo-1','desk')['status'],201)\n        self.assertEqual(self.app.request('POST','demo-1','desk')['status'],409)\n    def test_reader_cannot_mutate(self):\n        self.assertEqual(self.app.request('POST','demo-1','reader')['status'],403)\n        self.assertEqual(self.app.request('GET','demo-1')['outcome'],'available')\n    def test_unknown_item(self):\n        self.assertEqual(self.app.request('GET','missing')['status'],404)\n    def test_parameter_binding_treats_input_as_data(self):\n        self.assertEqual(self.app.request('GET',\"demo-1' OR 1=1 --\")['status'],404)\n        self.assertEqual(self.app.request('GET','demo-1')['status'],200)\n    def test_log_is_bounded_to_status_and_outcome(self):\n        self.app.request('GET','demo-1')\n        self.assertEqual(set(self.app.events[0]), {'status','outcome'})\n\nif __name__=='__main__': unittest.main()\n"
+        },
+        {
+          "id": "README",
+          "title": "Your first program: turn a capacity question into a tested function",
+          "path": "curriculum/digital_rc/SOFTWARE_BUILDER/learner_exercises/first_program/README.md",
+          "sha256": "85dbec2faa1b01b05aa06399ed60ae92a5adfc18969c0722a18de5437779f81a",
+          "markdown": "# Your first program: turn a capacity question into a tested function\n\nStart here before the Checkout contract example if variables, functions or automated tests are unfamiliar. You need the Digital Confidence file-saving and capacity activities, a plain-text editor, and Python 3.11 or later installed on a computer you control. No administrator privileges, packages, web account or network are required. If the runtime is unavailable, use your authorized teaching environment; do not install a random executable to bypass that prerequisite.\n\nBy the end you should be able to explain the difference between text and numbers, call a function with different inputs, predict a branch, diagnose a failed test and revise your own code. Passing these example tests is practice; it is not independent evidence of those skills.\n\n## 1. Save and run a program\n\nDownload `capacity.py` and `test_capacity.py` together into a new folder you own. Show filename extensions in your file manager if necessary; `capacity.py.txt` is a text document with the wrong name for these commands. Open a terminal in that folder. A terminal accepts commands as text; its current folder determines where relative filenames are found. Run:\n\n```\npython3 --version\npython3 capacity.py\n```\n\nWhere the Windows Python launcher is already installed, use `py -3` in place of `python3`. The first command identifies the interpreter, which reads and runs Python code. The second names a file to run; typing the filename into an editor does not execute it. Expected output is:\n\n```\nUsable free: 25.000%; meets fixture policy\n```\n\nThe program uses fictional storage values. It does not inspect or modify your real disk. Do not paste your home-directory name or other personal information into evidence.\n\n## 2. Read one statement at a time\n\nA variable gives a value a name. In `total = 256`, `=` assigns a value; it is different from `==`, which compares values. The integer `256` supports arithmetic. The text `\"256\"` is a string; it must be validated and converted before arithmetic. This example deliberately accepts only whole-number GiB inputs, so it rejects strings, fractional measurements and booleans rather than silently guessing what they mean.\n\n`def capacity(total, used, reserve):` defines a reusable function. Indented lines are its body. Parameters are local names receiving the caller's inputs. `capacity(256, 180, 12)` calls that function with three arguments. Parentheses group the subtraction before division: `(256 - 180 - 12) / 256 * 100` is 25.0. All three values must use the same unit. The reserve is separate from used capacity in this fixture; subtracting a reserve already included in used would be a different model.\n\n`if free_percent >= 15:` selects a branch. The threshold is a teaching policy, not a universal operating-system requirement. A below-policy result can be an accurate answer. `return` sends a result back to the caller. The returned dictionary has named entries, accessed as `result['free_percent']`; it is not a database and is not saved after the process exits.\n\nBefore changing any code, predict `capacity(256, 220, 12)`. The remaining 24 GiB is 9.375%, so the policy branch should say `below`. Change only the example call at the bottom, save, rerun and compare. Restore the original call afterward. If the output stays unchanged, confirm that you saved the same file that the terminal runs.\n\n## 3. Reject impossible inputs before computing\n\nA total of zero cannot be a divisor. Negative capacity and used-plus-reserve exceeding total are invalid for this fixture. The function raises `ValueError` for these cases. An exception stops the normal return path and describes why the input was rejected. We do not catch every exception and print a success message: rejection is part of the contract.\n\nTry a deliberate error in the example call: `capacity(0, 0, 0)`. Read the final exception line, then locate the filename and line number above it. Expected result: `ValueError: total must be positive`. Restore the valid call. Keep the error and repaired output in your fictional practice journal. A traceback is diagnostic evidence; it does not mean the computer has been damaged.\n\n## 4. Read and run an automated test\n\nRun:\n\n```\npython3 -m unittest -v test_capacity.py\n```\n\n`-m unittest` asks Python to run its standard test tool. It imports the named test file. Importing `capacity.py` defines its function, but the `if __name__ == '__main__':` guard keeps the demonstration print from running during import. Expected result: nine tests pass, including invalid inputs. Each assertion compares observed behavior with an independently specified expectation. A green run only covers these cases.\n\nIn `test_exact_threshold`, a 200 GiB volume with 160 used and 10 reserved leaves 30 GiB, exactly 15%. The test expects `meets`. Temporarily change the function's comparison from `>=` to `>` and run the suite. That boundary test must fail. Read expected versus actual, restore `>=`, and run again. Do not change the test to hide the failure.\n\nTroubleshooting: `ModuleNotFoundError` usually means one file is missing, renamed or in another folder. `SyntaxError` often means an unmatched quote, bracket or colon. `IndentationError` means the block indentation is inconsistent; compare the reference's spaces. A failed assertion means the code ran but differed from the expected behavior. Check the named case before editing unrelated lines. Work in a copy if you need to preserve the original.\n\n## 5. Independent variation and review\n\nCreate a separate `capacity_plan.py`. Write a function taking total, used, separate reserve and a proposed **additional** workload in whole GiB. It must report free percentage after the workload, whether the workload physically fits, and whether the resulting state meets the same 15% policy. Define what happens when it does not fit; do not return an ordinary successful capacity result for an impossible state. Keep physically fitting and policy-compliant as separate concepts.\n\nChoose your own fictional inputs. Include a fitting case above policy, a fitting case below policy, an exactly-at-policy case, a workload that exceeds free capacity, zero total, a negative workload, and a text input. Calculate expected results before running your code. Write tests for each and demonstrate one deliberate defect that a test catches. No reference solution for this independent variation is included here.\n\nDeliver your source, tests, expected-results table, before/failure/repair output and a short explanation of one limitation. Explain the branches in your own words. A reviewer checks arithmetic, validation, the distinct fit/policy decisions, meaningful tests and your revision process. They may ask for changed inputs or a live explanation. Revision is expected when a criterion is unmet; submission alone does not award mastery. If you used AI or other help, identify what it supplied and what you independently checked.\n\nReturn to Software Builder Week 1 to connect a plain-language requirement to this function's contract. Continue to the Checkout contract worked example once you can explain the parameter, return value, branch and boundary test without reading a script. Git, HTTP and SQLite will introduce additional concepts; this local program does not implement those systems.\n\nAI assistance contributed to this guide, code and tests. Human technical and educational acceptance is pending. Repository software licensing applies; no third-party assets or real learner data are included.\n"
+        },
+        {
+          "id": "capacity",
+          "title": "capacity",
+          "path": "curriculum/digital_rc/SOFTWARE_BUILDER/learner_exercises/first_program/capacity.py",
+          "sha256": "402b16aa1c6bf7c5fb56a6f5262540cd5d2eff5c805dbfa17f2b779578061965",
+          "markdown": "\"\"\"Fictional whole-GiB capacity example; no disk access or external dependencies.\"\"\"\ndef capacity(total, used, reserve):\n    if any(type(value) is not int for value in (total, used, reserve)):\n        raise TypeError('capacities must be whole-number GiB values')\n    if total <= 0:\n        raise ValueError('total must be positive')\n    if used < 0 or reserve < 0 or used + reserve > total:\n        raise ValueError('used and separate reserve must fit within total')\n    free_percent = (total - used - reserve) / total * 100\n    if free_percent >= 15:\n        policy = 'meets'\n    else:\n        policy = 'below'\n    return {'free_percent': free_percent, 'policy': policy}\n\nif __name__ == '__main__':\n    result = capacity(256, 180, 12)\n    print(f\"Usable free: {result['free_percent']:.3f}%; {result['policy']} fixture policy\")\n"
+        },
+        {
+          "id": "test_capacity",
+          "title": "test_capacity",
+          "path": "curriculum/digital_rc/SOFTWARE_BUILDER/learner_exercises/first_program/test_capacity.py",
+          "sha256": "fd68946355f2c1ad0c886e971afa7ed378c9aa618dbfe5677e8d87933da08350",
+          "markdown": "import unittest\nfrom capacity import capacity\n\nclass CapacityContract(unittest.TestCase):\n    def test_example(self):\n        self.assertEqual(capacity(256, 180, 12), {'free_percent': 25.0, 'policy': 'meets'})\n    def test_below_policy_is_valid(self):\n        self.assertEqual(capacity(256, 220, 12), {'free_percent': 9.375, 'policy': 'below'})\n    def test_exact_threshold(self):\n        self.assertEqual(capacity(200, 160, 10), {'free_percent': 15.0, 'policy': 'meets'})\n    def test_full_volume(self):\n        self.assertEqual(capacity(100, 90, 10), {'free_percent': 0.0, 'policy': 'below'})\n    def test_empty_volume(self):\n        self.assertEqual(capacity(100, 0, 0), {'free_percent': 100.0, 'policy': 'meets'})\n    def test_zero_total(self):\n        with self.assertRaisesRegex(ValueError, 'positive'):capacity(0, 0, 0)\n    def test_impossible_capacity(self):\n        for values in [(100, -1, 0), (100, 1, -1), (100, 95, 10), (-100, 0, 0)]:\n            with self.subTest(values=values),self.assertRaises(ValueError):capacity(*values)\n    def test_text_and_fractional_inputs(self):\n        for value in ['100', 100.0, None, []]:\n            with self.subTest(value=value),self.assertRaises(TypeError):capacity(value, 0, 0)\n    def test_boolean_is_not_measurement(self):\n        with self.assertRaises(TypeError):capacity(100, True, 0)\n\nif __name__ == '__main__':unittest.main()\n"
         }
       ],
       "prerequisites": {
@@ -3709,7 +3730,7 @@
       "title": "Networking and Internet Infrastructure",
       "packId": "COMPUTER_NETWORKING",
       "contentRootSha256": "6e9e41850ca06a834882b4f3991762aabdb32d5537e8416cac1f5db5227e34be",
-      "sourceCommit": "d486d41d77a529015ac0ddb5ea43e521881def22",
+      "sourceCommit": "e66cc977be755be35bdd560b67842ddcc926cad4",
       "offlinePackDeclared": false,
       "delivery": null,
       "lessons": [
@@ -4802,7 +4823,7 @@
       "title": "Cybersecurity Foundations and SOC Readiness",
       "packId": "CYBERSECURITY",
       "contentRootSha256": "873b9af7574c23922933a928a754c7cebcd68eab639965d160142d36605895b4",
-      "sourceCommit": "d486d41d77a529015ac0ddb5ea43e521881def22",
+      "sourceCommit": "e66cc977be755be35bdd560b67842ddcc926cad4",
       "offlinePackDeclared": false,
       "delivery": null,
       "lessons": [
@@ -5889,7 +5910,7 @@
       "title": "Data, Databases, and Dashboards",
       "packId": "DATA_DASHBOARDS",
       "contentRootSha256": "1746ed4e6761abed42c4c0bf332dd77dbcd48fac1f3417c87d367592b0fe3631",
-      "sourceCommit": "d486d41d77a529015ac0ddb5ea43e521881def22",
+      "sourceCommit": "e66cc977be755be35bdd560b67842ddcc926cad4",
       "offlinePackDeclared": false,
       "delivery": null,
       "lessons": [
@@ -6933,7 +6954,7 @@
       "title": "AI/ML and Edge AI Foundations",
       "packId": "AI_ML_EDGE",
       "contentRootSha256": "30393baed4f31cc60b415bd8e96911dd18ee34c40af98b6eb85489fa4f2d4ac3",
-      "sourceCommit": "d486d41d77a529015ac0ddb5ea43e521881def22",
+      "sourceCommit": "e66cc977be755be35bdd560b67842ddcc926cad4",
       "offlinePackDeclared": false,
       "delivery": null,
       "lessons": [
@@ -7977,7 +7998,7 @@
       "title": "Embedded Systems and Device Prototyping",
       "packId": "EMBEDDED_PROTOTYPING",
       "contentRootSha256": "1c1b2664122682062c459c9ca21aeaf8e93d409a4ca1ac2cbb370bcfe2b8e36f",
-      "sourceCommit": "d486d41d77a529015ac0ddb5ea43e521881def22",
+      "sourceCommit": "e66cc977be755be35bdd560b67842ddcc926cad4",
       "offlinePackDeclared": false,
       "delivery": null,
       "lessons": [
@@ -9021,7 +9042,7 @@
       "title": "Wireless, DSP, and 6G Foundations",
       "packId": "WIRELESS_6G",
       "contentRootSha256": "0eb8ed051c0170da772ef5dc87dfd0ed518a89f3953061c408ad086af8f8e0bb",
-      "sourceCommit": "d486d41d77a529015ac0ddb5ea43e521881def22",
+      "sourceCommit": "e66cc977be755be35bdd560b67842ddcc926cad4",
       "offlinePackDeclared": false,
       "delivery": null,
       "lessons": [
@@ -10065,7 +10086,7 @@
       "title": "Project Management, Agile, and Lean Six Sigma",
       "packId": "PM_AGILE_LSS",
       "contentRootSha256": "cb89e99cbefb6bfc5680470074cf6868ef9644a83aa8fc258dcda1a5898a5126",
-      "sourceCommit": "d486d41d77a529015ac0ddb5ea43e521881def22",
+      "sourceCommit": "e66cc977be755be35bdd560b67842ddcc926cad4",
       "offlinePackDeclared": false,
       "delivery": null,
       "lessons": [
@@ -11108,7 +11129,7 @@
       "title": "Game Development and Interactive Media",
       "packId": "GAME_DEV_INTERACTIVE",
       "contentRootSha256": "4bdf4224ec85788ca65b54945480ad779a7e1d685d44e6aec4068116c6e03688",
-      "sourceCommit": "d486d41d77a529015ac0ddb5ea43e521881def22",
+      "sourceCommit": "e66cc977be755be35bdd560b67842ddcc926cad4",
       "offlinePackDeclared": false,
       "delivery": null,
       "lessons": [
@@ -12151,7 +12172,7 @@
       "title": "7GC AI-RAN Research Apprenticeship",
       "packId": "SEVEN_GC_APPRENTICESHIP",
       "contentRootSha256": "390e4717dc44a9e8102ff0383510fdb7d16a6f9842be3b1d6081bbf2d17253fe",
-      "sourceCommit": "d486d41d77a529015ac0ddb5ea43e521881def22",
+      "sourceCommit": "e66cc977be755be35bdd560b67842ddcc926cad4",
       "offlinePackDeclared": false,
       "delivery": null,
       "lessons": [
@@ -13197,7 +13218,7 @@
       "title": "Cloud and DevOps",
       "packId": "CLOUD_DEVOPS",
       "contentRootSha256": "b6623f7c8b503ce0e7b15298c8feca4de45dd043071cba88a91c058edb391e67",
-      "sourceCommit": "d486d41d77a529015ac0ddb5ea43e521881def22",
+      "sourceCommit": "e66cc977be755be35bdd560b67842ddcc926cad4",
       "offlinePackDeclared": false,
       "delivery": null,
       "lessons": [
@@ -14241,7 +14262,7 @@
       "title": "Communication, Professional Development, and Ethics",
       "packId": "COMM_PD_ETHICS",
       "contentRootSha256": "a3015e049eab0ed27df81f0ea5de05392fcedd97f7557bdff67782b47ab0047a",
-      "sourceCommit": "d486d41d77a529015ac0ddb5ea43e521881def22",
+      "sourceCommit": "e66cc977be755be35bdd560b67842ddcc926cad4",
       "offlinePackDeclared": false,
       "delivery": null,
       "lessons": [
@@ -15285,7 +15306,7 @@
       "title": "Robotics and Control",
       "packId": "ROBOTICS_CONTROL",
       "contentRootSha256": "a3dac84590ee50a2ab7d02a89f81eada8fb20858f17f52e062d003db8ac75cfc",
-      "sourceCommit": "d486d41d77a529015ac0ddb5ea43e521881def22",
+      "sourceCommit": "e66cc977be755be35bdd560b67842ddcc926cad4",
       "offlinePackDeclared": false,
       "delivery": null,
       "lessons": [
@@ -16329,7 +16350,7 @@
       "title": "gunnchOS Device OS and Product Lab",
       "packId": "GUNNCHOS_PRODUCT_LAB",
       "contentRootSha256": "4fa8a3b9250923d30bf1a1b1a888fe5a1802a63665d8b94e9d45f33ecc9ba938",
-      "sourceCommit": "d486d41d77a529015ac0ddb5ea43e521881def22",
+      "sourceCommit": "e66cc977be755be35bdd560b67842ddcc926cad4",
       "offlinePackDeclared": false,
       "delivery": null,
       "lessons": [
@@ -17374,7 +17395,7 @@
       "title": "Hardware Engineering",
       "packId": "HARDWARE_ENGINEERING",
       "contentRootSha256": "c8673013514b0ae6f2e4d306e1abb581fbb7d8e7068aebce811072381c3b3754",
-      "sourceCommit": "d486d41d77a529015ac0ddb5ea43e521881def22",
+      "sourceCommit": "e66cc977be755be35bdd560b67842ddcc926cad4",
       "offlinePackDeclared": false,
       "delivery": null,
       "lessons": [
@@ -18417,7 +18438,7 @@
       "title": "Data Visualization and Business Intelligence",
       "packId": "DATA_VIZ_BI",
       "contentRootSha256": "2533e0de78ffdff52060f16af2f7b5b86bb4c8fad7f5671ab12ac3716d174a7a",
-      "sourceCommit": "d486d41d77a529015ac0ddb5ea43e521881def22",
+      "sourceCommit": "e66cc977be755be35bdd560b67842ddcc926cad4",
       "offlinePackDeclared": false,
       "delivery": null,
       "lessons": [

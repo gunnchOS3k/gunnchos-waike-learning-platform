@@ -45,7 +45,7 @@ export function BrowserLearning({ trackId, unit, onNavigate, auth }: { trackId: 
   }, [storageKey, unit]);
   function save(next: RecordState) {
     setRecord(next);
-    if (!consent) { setMessage('Kept for this visit. Turn on device saving to keep it after closing.'); return; }
+    if (!consent) { setMessage('Kept for this lesson view. Turn on device saving before navigating to retain it.'); return; }
     try { localStorage.setItem(storageKey, JSON.stringify(next)); setMessage('Saved on this browser.'); }
     catch { setMessage('Browser storage is unavailable. Download your evidence before leaving.'); }
   }
@@ -79,23 +79,23 @@ export function BrowserLearning({ trackId, unit, onNavigate, auth }: { trackId: 
     </header>
     <nav aria-label="Unit sections">{[["lesson","Lesson"],["practice-lab","Lab"],["practice-quiz","Quiz"],["practice-assignment","Assignment"],["practice-progress","My evidence"]].map(([id,label]) => <a key={id} href={`#${id}`} onClick={e => { e.preventDefault(); document.getElementById(id)?.scrollIntoView(); }}>{label}</a>)}</nav>
     {content.delivery && <p>{content.delivery.definition.introduction}</p>}
-    <article id="lesson" tabIndex={-1}><SafeMarkdown markdown={lesson.markdown.replace(/^(#{1,5}) /gm, "$1# ")} testId="full-lesson-content" />
+    {content.delivery && <><DigitalConfidencePractical key={`dc:${unit}`} delivery={content.delivery} unit={unit}/>{unit===10&&<DigitalConfidencePractical delivery={content.delivery} unit={11} auth={auth}/>}</>}
+    <article id="lesson" tabIndex={-1}>{content.delivery && <p>Shared General IT reading and authorized technical extension. Begin with the guided activity above; terminal commands require the separately stated environment and permission.</p>}<SafeMarkdown markdown={lesson.markdown.replace(/^(#{1,5}) /gm, "$1# ")} testId="full-lesson-content" />
       <button onClick={() => save({ ...record, viewed: Array.from(new Set([...record.viewed, unit])) })}>Mark this lesson read</button>
       <p>Reading records engagement. It does not demonstrate mastery.</p>
     </article>
-    {content.delivery && <><DigitalConfidencePractical key={`dc:${unit}`} delivery={content.delivery} unit={unit}/>{unit===10&&<DigitalConfidencePractical delivery={content.delivery} unit={11} auth={auth}/>}</>}
-    <section id="practice-lab"><h2>Practice lab</h2>{lab ? <SafeMarkdown markdown={lab.markdown.replace(/^(#{1,5}) /gm, "$1# ")} /> : <p>The linked lab could not be loaded. No lab completion is recorded.</p>}
+    <section id="practice-lab"><h2>Practice lab</h2>{content.delivery && <p>The guided Digital Confidence practical above is the beginner pathway. This shared General IT laboratory is an optional technical extension.</p>}{lab ? <SafeMarkdown markdown={lab.markdown.replace(/^(#{1,5}) /gm, "$1# ")} /> : <p>The linked lab could not be loaded. No lab completion is recorded.</p>}
       {lesson.labId === 'lab_storage' && <StoragePractice />}
       <p>Command-line activities require the canonical curriculum checkout and the stated tools. Submit your own artifact; running a reference fixture does not establish your competence. Browser calculations are formative practice.</p>
     </section>
-    <section id="practice-quiz"><h2>Unit {unit} practice quiz</h2><p>Answer every question, then check your reasoning. This practice score is not an authenticated grade. Questions are sent to the evaluator; no account or draft is sent.</p>
+    <section id="practice-quiz"><h2>Unit {unit} practice quiz</h2>{content.delivery && <p>Shared General IT extension quiz. The beginner practical provides criterion feedback above; these additional questions also cover the technical reading.</p>}<p>Answer every question, then check your reasoning. This practice score is not an authenticated grade. Questions are sent to the evaluator; no account or draft is sent.</p>
       <form onSubmit={evaluate}>{quiz.items?.map((item, i) => <fieldset key={item.id}><legend>{i+1}. {item.stem}</legend>
         {item.choices.map((choice,index) => <label className="quiz-choice" key={index}><input required type="radio" name={item.id} checked={responses[item.id] === index} onChange={() => { setResponses({ ...responses, [item.id]: index }); setResult(null); }} />{choice}</label>)}
         {result && <p className={result.feedback[i]?.correct ? 'practice-correct' : 'practice-review'}>{result.feedback[i]?.correct ? 'Correct. ' : 'Review. '}{result.feedback[i]?.explanation}</p>}
       </fieldset>)}<button disabled={busy}>{busy ? 'Checking…' : 'Check my answers'}</button><button type="button" onClick={() => { setResponses({}); setResult(null); }}>Retry with a fresh response</button></form>
       {result && <p role="status">Practice result: {result.earned} / {result.possible}. No server record was created.</p>}
     </section>
-    <section id="practice-assignment"><h2>Independent assignment</h2><SafeMarkdown markdown={assignment.markdown.replace(/^(#{1,5}) /gm, "$1# ")} />
+    <section id="practice-assignment"><h2>Independent assignment</h2>{content.delivery && <p>Shared General IT extension assignment. The Digital Confidence independent evidence portfolio appears after the Week 10 practical and uses its own rubric.</p>}<SafeMarkdown markdown={assignment.markdown.replace(/^(#{1,5}) /gm, "$1# ")} />
       <label>My private draft (avoid personal information, passwords and real learner records)<textarea rows={8} maxLength={20000} value={draft} onChange={e => setDraft(e.target.value)} /></label>
       <button onClick={() => save({ ...record, drafts: { ...record.drafts, [unit]: draft } })}>Save draft on this device</button>
       <p>Draft only. To submit for assessment, sign in to an authorized school Hub and open this course’s Assignments workspace. Submission, instructor feedback and official grades use that Hub’s existing records. A guest draft is not submitted automatically.</p>
