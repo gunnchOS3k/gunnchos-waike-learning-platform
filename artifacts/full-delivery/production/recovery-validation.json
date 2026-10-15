@@ -1,7 +1,7 @@
 {
   "schema": "waike.recovered-engineering-validation.v1",
   "client_date": "2026-10-15",
-  "verified_platform_source": "025e1002a611e4ece6465ac6a2176bfc90675ba2",
+  "verified_platform_source": "c7d1aefd9a641e99c8cf1746c9d6eef841a3096f",
   "curriculum_source": "33a101852f4fefb0eb239bcffa60a65d71102e2c",
   "environment": {
     "python": "3.14.7",
@@ -17,11 +17,12 @@
     },
     {
       "command": "pnpm --dir apps/client test",
-      "passed": 105,
+      "passed": 106,
       "failed": 0,
       "result": "passed",
-      "raw_output_location": "Codex recovery tool output; historical client-tests.txt is retained separately",
-      "warnings": "React act warnings in asynchronous tests remain; no failed assertions"
+      "raw_output_location": "workshop-regression/client-tests.txt",
+      "warnings": "React act warnings in asynchronous tests remain; no failed assertions",
+      "verified_source": "c7d1aefd9a641e99c8cf1746c9d6eef841a3096f"
     },
     {
       "command": "pnpm --dir apps/client build",
@@ -33,7 +34,9 @@
       "passed": 33,
       "failed": 0,
       "result": "passed",
-      "output": "recovery-targeted-tests.txt"
+      "output": "recovery-targeted-tests.txt",
+      "verified_source": "025e1002a611e4ece6465ac6a2176bfc90675ba2",
+      "unchanged_scope_notice": "Not repeated: c7d1aef changes only client file-read state handling and its regression; server and curriculum code are unchanged"
     },
     {
       "command": "PYTHONPATH=services/hub WAIKE_ROOT=../curriculum python -m pytest -q services/hub/tests",
@@ -41,19 +44,24 @@
       "failed": 0,
       "result": "passed",
       "output": "recovery-hub-suite.txt",
-      "overlap_notice": "31 tests overlap targeted run; counts are not additive"
+      "overlap_notice": "31 tests overlap targeted run; counts are not additive",
+      "verified_source": "025e1002a611e4ece6465ac6a2176bfc90675ba2",
+      "unchanged_scope_notice": "Not repeated: c7d1aef changes only client file-read state handling and its regression; server and curriculum code are unchanged"
     },
     {
       "command": "node deploy/production/browser_acceptance.cjs",
       "result": "passed",
       "checks": 15,
       "output": "browser/acceptance.json",
-      "meaning": "Actual localhost HTTPS ASGI with empty database; Chromium desktop and mobile viewport; automated accessibility only"
+      "meaning": "Actual localhost HTTPS ASGI with empty database; Chromium desktop and mobile viewport; automated accessibility only",
+      "verified_source": "c7d1aefd9a641e99c8cf1746c9d6eef841a3096f"
     }
   ],
   "human_educational_reviewed": false,
   "independent_learner_outcomes_verified": false,
   "institutional_delivery_ready": false,
   "public_deployed": false,
-  "privacy": "Screenshots and JSON contain fictional public course case data only. Runtime key, TLS key, DB and private curriculum release remain Git-ignored."
+  "privacy": "Screenshots and JSON contain fictional public course case data only. Runtime key, TLS key, DB and private curriculum release remain Git-ignored.",
+  "historical_runtime_evidence": "history/025e100/",
+  "scope": "New immutable release after observed asynchronous file-read race repair; server code and canonical curriculum unchanged"
 }

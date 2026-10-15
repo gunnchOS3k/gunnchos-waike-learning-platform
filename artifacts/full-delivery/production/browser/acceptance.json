@@ -6,18 +6,18 @@
   "ready": {
     "status": "ready",
     "curriculum_commit": "33a101852f4fefb0eb239bcffa60a65d71102e2c",
-    "platform_commit": "025e1002a611e4ece6465ac6a2176bfc90675ba2",
+    "platform_commit": "c7d1aefd9a641e99c8cf1746c9d6eef841a3096f",
     "seeded_test_fixtures": false
   },
   "slow_network": {
     "download_kbps": 200,
     "latency_ms": 80,
-    "time_to_first_course_ms": 8315
+    "time_to_first_course_ms": 8308
   },
   "initial_course_scripts": [
     "/assets/DIGITAL_CONFIDENCE-BXeA6Aj-.js"
   ],
-  "fictional_practical_evidence_sha256": "897506d0743ad74ce259a74244d04b65bf67c305f3e572e94c7ff07d717e128a",
+  "fictional_practical_evidence_sha256": "e5db304e208e21a0654d4b604267c54f81071cc5d9cdedee3a9eb1654359b352",
   "automated_accessibility": {
     "scope": "Digital Confidence browser reader",
     "wcag_tags": [
