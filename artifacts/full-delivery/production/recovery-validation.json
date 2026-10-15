@@ -1,0 +1,59 @@
+{
+  "schema": "waike.recovered-engineering-validation.v1",
+  "client_date": "2026-10-15",
+  "verified_platform_source": "025e1002a611e4ece6465ac6a2176bfc90675ba2",
+  "curriculum_source": "33a101852f4fefb0eb239bcffa60a65d71102e2c",
+  "environment": {
+    "python": "3.14.7",
+    "system": "Darwin",
+    "architecture": "arm64",
+    "dependencies": "recovery-environment.txt"
+  },
+  "checks": [
+    {
+      "command": "pnpm --dir apps/client lint",
+      "result": "passed",
+      "meaning": "TypeScript compilation only"
+    },
+    {
+      "command": "pnpm --dir apps/client test",
+      "passed": 105,
+      "failed": 0,
+      "result": "passed",
+      "raw_output_location": "Codex recovery tool output; historical client-tests.txt is retained separately",
+      "warnings": "React act warnings in asynchronous tests remain; no failed assertions"
+    },
+    {
+      "command": "pnpm --dir apps/client build",
+      "result": "passed",
+      "meaning": "Vite production build; same-origin release build log retained in recovery-release-build.txt"
+    },
+    {
+      "command": "PYTHONPATH=services/hub WAIKE_ROOT=../curriculum python -m pytest -q services/hub/tests/test_production_delivery.py tests/deployment/test_course_split.py services/hub/tests/test_digital_confidence.py services/hub/tests/test_public_practice.py",
+      "passed": 33,
+      "failed": 0,
+      "result": "passed",
+      "output": "recovery-targeted-tests.txt"
+    },
+    {
+      "command": "PYTHONPATH=services/hub WAIKE_ROOT=../curriculum python -m pytest -q services/hub/tests",
+      "passed": 42,
+      "failed": 0,
+      "result": "passed",
+      "output": "recovery-hub-suite.txt",
+      "overlap_notice": "31 tests overlap targeted run; counts are not additive"
+    },
+    {
+      "command": "node deploy/production/browser_acceptance.cjs",
+      "result": "passed",
+      "checks": 15,
+      "output": "browser/acceptance.json",
+      "meaning": "Actual localhost HTTPS ASGI with empty database; Chromium desktop and mobile viewport; automated accessibility only"
+    }
+  ],
+  "human_educational_reviewed": false,
+  "independent_learner_outcomes_verified": false,
+  "institutional_delivery_ready": false,
+  "public_deployed": false,
+  "privacy": "Screenshots and JSON contain fictional public course case data only. Runtime key, TLS key, DB and private curriculum release remain Git-ignored."
+}
