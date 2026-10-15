@@ -1,0 +1,163 @@
+
+> waike-learning-client@0.1.0 test /Users/gunnchos/Downloads/gunnchos-7gc-research-product-spine/repos/_waike_full_delivery/platform/apps/client
+> vitest run
+
+
+ RUN  v2.1.9 /Users/gunnchos/Downloads/gunnchos-7gc-research-product-spine/repos/_waike_full_delivery/platform/apps/client
+
+ ✓ src/lib/hub/resolveHub.test.ts (19 tests) 10ms
+ ✓ src/test/a11y.gate-b.test.tsx (3 tests) 84ms
+ ✓ src/lib/product/product.test.ts (33 tests) 210ms
+stderr | src/components/learner/BrowserLearning.test.tsx > browser course learning > stores an opted-in private draft and restores it without creating a submission
+Warning: An update to BrowserLearning inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+    at BrowserLearning (/Users/gunnchos/Downloads/gunnchos-7gc-research-product-spine/repos/_waike_full_delivery/platform/apps/client/src/components/learner/BrowserLearning.tsx:21:28)
+
+ ✓ src/components/learner/BrowserLearning.test.tsx (4 tests) 322ms
+stderr | src/test/a11y.gate-c.test.tsx > Gate C a11y — production App / admin / learner > App exposes skip link and primary navigation landmarks
+Warning: An update to App inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+    at App (/Users/gunnchos/Downloads/gunnchos-7gc-research-product-spine/repos/_waike_full_delivery/platform/apps/client/src/App.tsx:194:51)
+Warning: An update to App inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+    at App (/Users/gunnchos/Downloads/gunnchos-7gc-research-product-spine/repos/_waike_full_delivery/platform/apps/client/src/App.tsx:194:51)
+
+stderr | src/App.test.tsx > WAIKE Learning OS shell > renders branded shell and trust status
+Warning: An update to App inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+    at App (/Users/gunnchos/Downloads/gunnchos-7gc-research-product-spine/repos/_waike_full_delivery/platform/apps/client/src/App.tsx:194:51)
+Warning: An update to App inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+    at App (/Users/gunnchos/Downloads/gunnchos-7gc-research-product-spine/repos/_waike_full_delivery/platform/apps/client/src/App.tsx:194:51)
+
+ ✓ src/test/a11y.gate-c.test.tsx (5 tests) 179ms
+ ✓ src/test/keyboard.gate-c.test.tsx (5 tests) 237ms
+ ✓ src/components/learner/DigitalConfidencePractical.test.tsx (1 test) 114ms
+ ✓ src/test/learner-first.adoption.test.tsx (5 tests) 378ms
+ ✓ src/test/a11y.gate-a.test.tsx (9 tests) 59ms
+stderr | src/test/a11y.pr3.test.tsx > PR3 automated accessibility smoke (not certification) > exposes skip link, branded heading, and primary navigation
+Warning: An update to App inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+    at App (/Users/gunnchos/Downloads/gunnchos-7gc-research-product-spine/repos/_waike_full_delivery/platform/apps/client/src/App.tsx:194:51)
+Warning: An update to App inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+    at App (/Users/gunnchos/Downloads/gunnchos-7gc-research-product-spine/repos/_waike_full_delivery/platform/apps/client/src/App.tsx:194:51)
+
+stderr | src/test/a11y.pr3.test.tsx > PR3 automated accessibility smoke (not certification) > has no production actor-switcher chip
+Warning: An update to App inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+    at App (/Users/gunnchos/Downloads/gunnchos-7gc-research-product-spine/repos/_waike_full_delivery/platform/apps/client/src/App.tsx:194:51)
+Warning: An update to App inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+    at App (/Users/gunnchos/Downloads/gunnchos-7gc-research-product-spine/repos/_waike_full_delivery/platform/apps/client/src/App.tsx:194:51)
+
+ ✓ src/test/a11y.pr3.test.tsx (3 tests) 232ms
+ ✓ src/lib/offline/syncUx.test.ts (3 tests) 14ms
+ ✓ src/platform/runtimeAdapter.test.ts (2 tests) 1ms
+ ✓ src/portalReturn.test.ts (2 tests) 1ms
+stderr | src/test/a11y.learner-first.test.tsx > Learner-first automated a11y > keeps skip link, primary nav, and labeled search
+Warning: An update to App inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+    at App (/Users/gunnchos/Downloads/gunnchos-7gc-research-product-spine/repos/_waike_full_delivery/platform/apps/client/src/App.tsx:194:51)
+Warning: An update to App inside a test was not wrapped in act(...).
+
+When testing, code that causes React state updates should be wrapped into act(...):
+
+act(() => {
+  /* fire events that update state */
+});
+/* assert on the output */
+
+This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+    at App (/Users/gunnchos/Downloads/gunnchos-7gc-research-product-spine/repos/_waike_full_delivery/platform/apps/client/src/App.tsx:194:51)
+
+ ✓ src/test/a11y.learner-first.test.tsx (1 test) 55ms
+ ✓ src/App.test.tsx (11 tests) 1649ms
+   ✓ WAIKE Learning OS shell > keeps all 18 tracks discoverable without a Hub and does not fake school state 492ms
+   ✓ WAIKE Learning OS shell > runs learner assignment draft submit and instructor grade path 630ms
+
+ Test Files  15 passed (15)
+      Tests  106 passed (106)
+   Start at  15:43:15
+   Duration  3.41s (transform 2.14s, setup 2.81s, collect 3.33s, tests 3.55s, environment 7.32s, prepare 881ms)
+
