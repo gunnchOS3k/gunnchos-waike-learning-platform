@@ -3,7 +3,7 @@
   "source_repo": "waike-research-ops",
   "source_path": "../waike-research-ops",
   "absolute_path_hint": "../curriculum",
-  "pinned_commit": "777f014024a3b4fdde23185146e937909b0d8259",
+  "pinned_commit": "d486d41d77a529015ac0ddb5ea43e521881def22",
   "taxonomy_paths": [
     "curriculum/taxonomy/eighteen_tracks.json",
     "artifacts/taxonomy/CANONICAL_TRACK_REGISTRY.export.json"
@@ -104,7 +104,7 @@
     "NETWORKING_INFRA": "COMPUTER_NETWORKING",
     "CYBER_SOC": "CYBERSECURITY"
   },
-  "authoritative_pin_commit": "777f014024a3b4fdde23185146e937909b0d8259",
+  "authoritative_pin_commit": "d486d41d77a529015ac0ddb5ea43e521881def22",
   "previous_pinned_commit": "63ba9f25ac6b8d8d1b6dd118923566fd51c57b62",
   "historical_ops_review": {
     "ops_pr": "https://github.com/gunnchOS3k/waike-research-ops/pull/60",

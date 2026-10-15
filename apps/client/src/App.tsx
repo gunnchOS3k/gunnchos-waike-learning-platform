@@ -67,6 +67,7 @@ import { PortalReturnLink } from "./PortalReturnLink";
 
 type Mode =
   | "dc-practicals"
+  | "dc-course"
   | "lessons"
   | "home"
   | "courses"
@@ -1156,8 +1157,9 @@ export default function App() {
         </div>
       ) : null}
 
-      {hub && session && learnerAccess && activeCourse?.title.toLowerCase().includes("digital confidence") && <button onClick={()=>setMode("dc-practicals")}>Open Digital Confidence independent practical</button>}
+      {hub && session && learnerAccess && activeCourse?.title.toLowerCase().includes("digital confidence") && <div><button onClick={()=>{setCatalogUnit(1);setMode("dc-course");}}>Open Digital Confidence weekly reader</button><button onClick={()=>setMode("dc-practicals")}>Open Digital Confidence independent practical</button></div>}
       <div className="layout" id="main" tabIndex={-1}>
+        {mode === "dc-course" && hub && session && hubResolution.status === "http" && <BrowserLearning key={`dc-auth:${catalogUnit}`} trackId="DIGITAL_CONFIDENCE" unit={catalogUnit} onNavigate={(_,unit)=>setCatalogUnit(unit)} auth={{token:session.token,baseUrl:hubResolution.baseUrl,sectionId:sectionId||"",onReview:()=>{setOpenAssignmentId("DIGITAL_CONFIDENCE-independent-v1");setMode("assignments");}}}/>}
         {mode === "dc-practicals" && hub && session && hubResolution.status === "http" && publicContentForTrack(PUBLIC_TRACKS[0])?.delivery && <DigitalConfidencePractical delivery={publicContentForTrack(PUBLIC_TRACKS[0])!.delivery!} unit={11} auth={{token:session.token,baseUrl:hubResolution.baseUrl,sectionId:sectionId||"",onReview:()=>{setOpenAssignmentId("DIGITAL_CONFIDENCE-independent-v1");setMode("assignments");}}}/>}
         {mode === "lessons" && publicCatalogMode ? <BrowserLearning
           key={`${activePublicTrack?.trackId || "DIGITAL_CONFIDENCE"}:${catalogUnit}`}

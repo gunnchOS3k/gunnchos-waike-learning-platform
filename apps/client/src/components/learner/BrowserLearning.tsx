@@ -13,7 +13,7 @@ export function parseLearningHash(hash: string): { track: string; unit: number }
   const unit = Number(match[2]);
   return unit >= 1 && unit <= 10 ? { track: match[1], unit } : null;
 }
-export function BrowserLearning({ trackId, unit, onNavigate }: { trackId: string; unit: number; onNavigate: (track: string, unit: number) => void }) {
+export function BrowserLearning({ trackId, unit, onNavigate, auth }: { trackId: string; unit: number; onNavigate: (track: string, unit: number) => void; auth?: {token:string;baseUrl:string;sectionId:string;onReview:()=>void} }) {
   const track = PUBLIC_TRACKS.find(t => t.trackId === trackId) || PUBLIC_TRACKS[0];
   const content = publicContentForTrack(track)!;
   const lesson = content.lessons[unit - 1];
@@ -22,7 +22,7 @@ export function BrowserLearning({ trackId, unit, onNavigate }: { trackId: string
   const lab = content.labs.find(l => l.id === lesson.labId);
   const storageKey = `waike.practice.v1:${track.trackId}:${content.contentRootSha256}`;
   function clearCourseRecords() {
-    const keys = Array.from({length: localStorage.length}, (_, i) => localStorage.key(i)).filter((k): k is string => Boolean(k?.startsWith(`waike.practice.v1:${track.trackId}:`)));
+    const keys = Array.from({length: localStorage.length}, (_, i) => localStorage.key(i)).filter((k): k is string => Boolean(k?.startsWith(`waike.practice.v1:${track.trackId}:`) || (trackId==='DIGITAL_CONFIDENCE' && k?.startsWith('waike.dc.work.v1:'))));
     keys.forEach(k => localStorage.removeItem(k));
   }
   const [record, setRecord] = useState<RecordState>(empty);
@@ -73,16 +73,17 @@ export function BrowserLearning({ trackId, unit, onNavigate }: { trackId: string
   }
   return <section className="browser-learning" aria-label="Course learning reader" data-testid="browser-learning">
     <header><p className="eyebrow">WAIKE / Open learning</p><h1>{track.title}</h1>
-      <label htmlFor="reader-course">Choose course</label><select id="reader-course" value={track.trackId} onChange={e => onNavigate(e.target.value, 1)}>{PUBLIC_TRACKS.map(t => <option key={t.trackId} value={t.trackId}>{t.title}</option>)}</select>
+      {!auth && <><label htmlFor="reader-course">Choose course</label><select id="reader-course" value={track.trackId} onChange={e => onNavigate(e.target.value, 1)}>{PUBLIC_TRACKS.map(t => <option key={t.trackId} value={t.trackId}>{t.title}</option>)}</select></>}
       <label htmlFor="reader-unit">Choose unit</label><select id="reader-unit" value={unit} onChange={e => onNavigate(track.trackId, Number(e.target.value))}>{content.lessons.map((l,i) => <option key={l.id} value={i+1}>{i+1}. {l.title}</option>)}</select>
       <p>Prerequisites: {content.prerequisites?.required?.join('; ') || 'Review the course syllabus before starting.'}</p>
     </header>
     <nav aria-label="Unit sections">{[["lesson","Lesson"],["practice-lab","Lab"],["practice-quiz","Quiz"],["practice-assignment","Assignment"],["practice-progress","My evidence"]].map(([id,label]) => <a key={id} href={`#${id}`} onClick={e => { e.preventDefault(); document.getElementById(id)?.scrollIntoView(); }}>{label}</a>)}</nav>
+    {content.delivery && <p>{content.delivery.definition.introduction}</p>}
     <article id="lesson" tabIndex={-1}><SafeMarkdown markdown={lesson.markdown.replace(/^(#{1,5}) /gm, "$1# ")} testId="full-lesson-content" />
       <button onClick={() => save({ ...record, viewed: Array.from(new Set([...record.viewed, unit])) })}>Mark this lesson read</button>
       <p>Reading records engagement. It does not demonstrate mastery.</p>
     </article>
-    {content.delivery && <><p>{content.delivery.definition.introduction}</p><DigitalConfidencePractical key={`dc:${unit}`} delivery={content.delivery} unit={unit}/>{unit===10&&<DigitalConfidencePractical delivery={content.delivery} unit={11}/>}</>}
+    {content.delivery && <><DigitalConfidencePractical key={`dc:${unit}`} delivery={content.delivery} unit={unit}/>{unit===10&&<DigitalConfidencePractical delivery={content.delivery} unit={11} auth={auth}/>}</>}
     <section id="practice-lab"><h2>Practice lab</h2>{lab ? <SafeMarkdown markdown={lab.markdown.replace(/^(#{1,5}) /gm, "$1# ")} /> : <p>The linked lab could not be loaded. No lab completion is recorded.</p>}
       {lesson.labId === 'lab_storage' && <StoragePractice />}
       <p>Command-line activities require the canonical curriculum checkout and the stated tools. Submit your own artifact; running a reference fixture does not establish your competence. Browser calculations are formative practice.</p>

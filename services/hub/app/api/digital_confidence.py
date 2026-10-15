@@ -136,8 +136,9 @@ def progress(request:Request,actor:Actor=Depends(require_actor)):
     _,revision,_=materials(request)
     current=False
     if history:
-        sub=service.get_submission(actor,history[0]['submission_id'])
+        sub=service.get_submission(actor,history[-1]['submission_id'])
         try:current=json.loads(sub['text_response'])['case']['revision']==revision
         except (KeyError,TypeError,ValueError):pass
-    demonstrated=bool(current and mastery and mastery['mastered'])
-    return {'submitted':bool(history),'evaluated':bool(mastery),'completed':demonstrated,'competency_demonstrated':demonstrated,'human_review':'recorded instructor evaluation' if mastery else 'pending','source_current':current,'history':history,'mastery':mastery,'portfolio':service.list_portfolio(actor)}
+    evaluated=bool(history and mastery and mastery['submission_id']==history[-1]['submission_id'])
+    demonstrated=bool(current and evaluated and mastery['mastered'])
+    return {'submitted':bool(history),'evaluated':evaluated,'completed':demonstrated,'competency_demonstrated':demonstrated,'human_review':'recorded instructor evaluation' if evaluated else 'pending','source_current':current,'history':history,'mastery':mastery,'portfolio':service.list_portfolio(actor)}

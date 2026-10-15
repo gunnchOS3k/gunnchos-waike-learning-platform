@@ -59,3 +59,28 @@ def test_existing_gradebook_submission_review_and_competence(client):
     service.grade_submission(actor,sub['submission_id'],[{'criterion_id':x['criterion_id'],'level_id':x['levels'][0]['level_id'],'points':1,'comment':'Synthetic acceptance-test evaluation.'} for x in criteria],'Synthetic fixture review; no human learner validation.')
     progress=client.get('/api/v1/digital-confidence/progress',headers=learner).json()
     assert progress['evaluated'];assert progress['completed'];assert progress['competency_demonstrated'];assert progress['portfolio']
+
+    # A revision is a new attempt, not an inherited review of the first attempt.
+    fresh=case(client,11)
+    payload.update(token=fresh['token'],answers=answers(11,fresh['parameters']),idempotency_key='independent-revision-2')
+    r=client.post('/api/v1/digital-confidence/submissions',json=payload,headers=learner)
+    assert r.status_code==200,r.text
+    progress=client.get('/api/v1/digital-confidence/progress',headers=learner).json()
+    assert progress['submitted'];assert not progress['evaluated'];assert not progress['completed'];assert not progress['competency_demonstrated']
+
+
+def test_malformed_expired_and_unauthorized_evidence(client,monkeypatch):
+    c=case(client,11);endpoint='/api/v1/digital-confidence/evaluate'
+    assert client.post(endpoint,json={'token':c['token'],'answers':{'x':True}}).status_code==422
+    assert client.post(endpoint,json={'token':c['token'],'answers':{'x':{'name':'note','text':[]}}}).status_code==422
+    assert client.post(endpoint,json={'token':c['token'],'answers':{str(i):'x'*2000 for i in range(10)}}).status_code==413
+    a=answers(11,c['parameters'])
+    payload={'token':c['token'],'answers':a,'section_id':'sec_alpha_dc_w01','idempotency_key':'boundary'}
+    assert client.post('/api/v1/digital-confidence/submissions',json=payload,headers=hdr('instructor-alpha','instructor')).status_code==403
+    gamma=client.post('/api/v1/auth/login',json={'username':'learner-gamma','password':'WaikeTestPass1!','site_id':'site-beta'}).json()
+    assert client.post('/api/v1/digital-confidence/submissions',json=payload,headers={'Authorization':'Bearer '+gamma['token']}).status_code==403
+    # Issued case expiration is verified against server time, never a browser assertion.
+    import app.api.digital_confidence as dc
+    now=dc.time.time()
+    monkeypatch.setattr(dc.time,'time',lambda:now+3700)
+    assert client.post(endpoint,json={'token':c['token'],'answers':a}).status_code==409

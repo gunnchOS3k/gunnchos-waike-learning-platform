@@ -1,15 +1,569 @@
 {
   "schema": "waike.browser.curriculum.v2",
   "owner": "waike-research-ops",
-  "sourceCommit": "777f014024a3b4fdde23185146e937909b0d8259",
+  "sourceCommit": "d486d41d77a529015ac0ddb5ea43e521881def22",
   "tracks": [
     {
       "trackId": "DIGITAL_CONFIDENCE",
       "title": "Digital Confidence to Computer Operator",
       "packId": "GENERAL_IT",
-      "contentRootSha256": "62d05bf821017547c7eccae08b6f625f58286170f62a21bf252a55b738cc24d2",
-      "sourceCommit": "777f014024a3b4fdde23185146e937909b0d8259",
+      "contentRootSha256": "9e1f53a1caf4d43052ca155f12a61c078fbabd8e8f1f2519ba9a2edc206da2e1",
+      "sourceCommit": "d486d41d77a529015ac0ddb5ea43e521881def22",
       "offlinePackDeclared": false,
+      "delivery": {
+        "definition": {
+          "schema": "waike.digital-confidence.delivery.v1",
+          "trackId": "DIGITAL_CONFIDENCE",
+          "sharedPackage": "GENERAL_IT",
+          "version": "2.0.0-review",
+          "introduction": "Start with the guided activity for each unit before the shared General IT reading. You can use a helper for access or input, but explain your own decisions. Keyboard users can Tab between controls, use arrow keys in menus and Space to select choices. Increase browser text with its zoom controls if helpful. No terminal, admin rights or real private files are needed for the browser pathway. Shared General IT commands are optional extensions for authorized practice environments.",
+          "completion": {
+            "practice": "All ten activities checked and explained; formative only.",
+            "independent": "Fresh source-bound case, actual selected file bytes, calculations and an original explanation submitted through the existing Hub.",
+            "review": "Instructor verifies all four rubric criteria and practical performance, returns feedback and confirms any remediation. Automated checks alone do not award competency.",
+            "humanEducationalAcceptance": "pending"
+          },
+          "independent": {
+            "assignmentId": "DIGITAL_CONFIDENCE-independent-v1",
+            "title": "Digital Confidence independent evidence portfolio",
+            "criteria": [
+              {
+                "id": "files",
+                "description": "Actual renamed and restored files match the issued case; reviewer verifies organization and reopening."
+              },
+              {
+                "id": "analysis",
+                "description": "New capacity calculation and safe next action are correct and explained."
+              },
+              {
+                "id": "safety",
+                "description": "Evidence uses fictional data, distinguishes proposed/performed actions and protects credentials."
+              },
+              {
+                "id": "reflection",
+                "description": "Original explanation, failure/recovery demonstration and response to review meet the competency map."
+              }
+            ]
+          },
+          "units": [
+            {
+              "unit": 1,
+              "title": "Files you can find again",
+              "competency": "DC-FILES",
+              "objective": "Create and reopen a named text file in an owned practice folder.",
+              "concept": "A file is named data saved to storage. A folder groups files. A window is an interface for viewing or editing; closing one is different from deleting its saved file. A path describes where a file lives. Work only with the fictional course material. You need a browser, a text editor and permission to save a small file; a helper may assist with input without answering the task for you.",
+              "instructions": [
+                "Download the fictional note shown below. Find it in your browser downloads or chosen save location.",
+                "Create a folder called WAIKE Practice in a location you control. Move the downloaded note there using your file manager.",
+                "Open the note in a plain-text editor. Read its case code. Save a copy using the required new filename; keep the original.",
+                "Close the editor, reopen the saved copy from its folder, then choose that actual file below. The checker reads the selected bytes and filename, not your other files."
+              ],
+              "fields": [
+                {
+                  "id": "file",
+                  "type": "file",
+                  "label": "Choose your renamed note"
+                }
+              ],
+              "expected": "The required filename and exact UTF-8 text both match. A matching file verifies those properties; it cannot prove which interface actions you used.",
+              "troubleshooting": "If the file is missing, inspect the download location. If its name ends in .txt.txt, display filename extensions before renaming. Do not overwrite your only copy.",
+              "independent": "Create a second note with a different name, reopen it and describe the path to a reviewer. Keep real names and passwords out of evidence.",
+              "rubric": [
+                {
+                  "criterion": "correctness",
+                  "requirement": "Produced evidence matches the issued inputs, not a memorized example."
+                },
+                {
+                  "criterion": "safety",
+                  "requirement": "Only fictional data and authorized actions; no credentials or private identifiers."
+                },
+                {
+                  "criterion": "explanation",
+                  "requirement": "Explain the method, a failure/recovery and what remains unverified."
+                }
+              ],
+              "next_step": "Continue to unit 2 after checking and explaining this activity."
+            },
+            {
+              "unit": 2,
+              "title": "Open, copy and identify",
+              "competency": "DC-NAVIGATION",
+              "objective": "Distinguish a saved document, its extension and the application opening it.",
+              "concept": "An extension is part of a filename, often used to choose an application. It does not prove the contents are safe. A copy can be edited independently; a shortcut points to another location and is not a backup. Operating systems and file managers differ, so identify the actual name and location rather than memorizing a screenshot.",
+              "instructions": [
+                "Return to the practice folder from unit 1. Open the copied note by selecting its filename.",
+                "Read the actual filename ending and record the extension without a dot.",
+                "Use the file manager to make a second copy with a new name. Reopen both copies and confirm their text before changing either.",
+                "Choose the action that creates an independently editable copy. Explain to a helper why a shortcut would behave differently."
+              ],
+              "fields": [
+                {
+                  "id": "extension",
+                  "type": "text",
+                  "label": "Filename extension without a dot"
+                },
+                {
+                  "id": "action",
+                  "type": "select",
+                  "label": "Action for an independently editable document",
+                  "options": [
+                    "copy",
+                    "shortcut",
+                    "delete"
+                  ]
+                }
+              ],
+              "expected": "The extension is txt and the independent-copy action is selected. Your separate local file is reviewed in the capstone.",
+              "troubleshooting": "If double-clicking opens an unexpected application, use an approved Open With command or open the text editor first. Do not change global file associations for this exercise.",
+              "independent": "Make and identify your own fictional text document. Demonstrate reopening it from a folder rather than relying on a recent-files list.",
+              "rubric": [
+                {
+                  "criterion": "correctness",
+                  "requirement": "Produced evidence matches the issued inputs, not a memorized example."
+                },
+                {
+                  "criterion": "safety",
+                  "requirement": "Only fictional data and authorized actions; no credentials or private identifiers."
+                },
+                {
+                  "criterion": "explanation",
+                  "requirement": "Explain the method, a failure/recovery and what remains unverified."
+                }
+              ],
+              "next_step": "Continue to unit 3 after checking and explaining this activity."
+            },
+            {
+              "unit": 3,
+              "title": "Accounts and permission boundaries",
+              "competency": "DC-ACCOUNTS",
+              "objective": "Choose appropriate access for a shared-device user.",
+              "concept": "An account identifies a user. Authentication checks a claimed identity; permission determines allowed actions. A password is a secret, never a course answer. A standard user should be able to do ordinary work without being able to administer a shared machine. The browser exercise edits a policy model only; it creates no real account.",
+              "instructions": [
+                "Read the two fictional roles: kiosk visitor saves public work; desk operator reads the helpdesk queue.",
+                "In the model, choose whether the kiosk visitor may administer the system.",
+                "Choose the group needed by the desk operator, without giving it to the visitor.",
+                "On a device you own, locate the account settings using its help/search feature and identify your account type without changing it. Record only the type, never a username or screenshot with personal details."
+              ],
+              "fields": [
+                {
+                  "id": "kiosk_admin",
+                  "type": "select",
+                  "label": "May the kiosk visitor administer the system?",
+                  "options": [
+                    "no",
+                    "yes"
+                  ]
+                },
+                {
+                  "id": "operator_group",
+                  "type": "select",
+                  "label": "Desk operator group",
+                  "options": [
+                    "helpdesk",
+                    "root",
+                    "everyone"
+                  ]
+                }
+              ],
+              "expected": "The visitor lacks administration and the operator has the helpdesk role. This checks the model, not enforcement by your operating system.",
+              "troubleshooting": "If you cannot inspect settings, ask the device owner. Do not create accounts, share passwords or request administrator access to pass this unit.",
+              "independent": "Explain an allowed and denied action for another fictional volunteer. A reviewer checks your reasoning and the permission boundary.",
+              "rubric": [
+                {
+                  "criterion": "correctness",
+                  "requirement": "Produced evidence matches the issued inputs, not a memorized example."
+                },
+                {
+                  "criterion": "safety",
+                  "requirement": "Only fictional data and authorized actions; no credentials or private identifiers."
+                },
+                {
+                  "criterion": "explanation",
+                  "requirement": "Explain the method, a failure/recovery and what remains unverified."
+                }
+              ],
+              "next_step": "Continue to unit 4 after checking and explaining this activity."
+            },
+            {
+              "unit": 4,
+              "title": "Restore the work, then verify it",
+              "competency": "DC-RESTORE",
+              "objective": "Recover an earlier document into a separate destination and verify its bytes.",
+              "concept": "Copying gives you another instance of data. Restoring brings saved data back to a usable location. A snapshot can depend on the same storage system; a separate recoverable backup addresses other failures. The 3-2-1 strategy includes an offsite copy. A same-building second computer is off-device, not offsite. A checksum compares bytes; it does not guarantee the original is correct or safe.",
+              "instructions": [
+                "Download this unit's fictional original. Copy it to a backup folder you own.",
+                "Change the working copy locally, leaving the backup unchanged.",
+                "Copy the backup into a new empty restore folder. Give the restored file the required restore filename.",
+                "Select the restored file below. First try the changed working copy to observe a mismatch, then recover from the preserved backup and retry."
+              ],
+              "fields": [
+                {
+                  "id": "file",
+                  "type": "file",
+                  "label": "Choose the restored original note"
+                }
+              ],
+              "expected": "The restored filename and bytes match the issued original. Actual folder layout and recovery sequence remain visible to a reviewer, not to this browser.",
+              "troubleshooting": "A newline or changed encoding changes bytes. Compare against the original and choose the correct source. Never restore over your only original during practice.",
+              "independent": "Repeat with a new note you wrote. Preserve original, changed and restored copies; explain which failure an offsite copy would address.",
+              "rubric": [
+                {
+                  "criterion": "correctness",
+                  "requirement": "Produced evidence matches the issued inputs, not a memorized example."
+                },
+                {
+                  "criterion": "safety",
+                  "requirement": "Only fictional data and authorized actions; no credentials or private identifiers."
+                },
+                {
+                  "criterion": "explanation",
+                  "requirement": "Explain the method, a failure/recovery and what remains unverified."
+                }
+              ],
+              "next_step": "Continue to unit 5 after checking and explaining this activity."
+            },
+            {
+              "unit": 5,
+              "title": "Record an observation, not a secret",
+              "competency": "DC-RESPONSIBLE",
+              "objective": "Write a useful support observation while protecting credentials.",
+              "concept": "An observation reports what you directly saw. An inference proposes why it happened. A useful support record includes the task, time and symptom without unnecessary personal information. Never put a password, recovery code or private identifier into a ticket. A fictional idle timer is a configured example, not a universal browser behavior.",
+              "instructions": [
+                "Read the issued idle duration in minutes. Convert it to seconds using 60 seconds per minute.",
+                "Choose the entry that records a credential-reset request without a secret.",
+                "Choose the statement that reports an observed empty document after a timeout rather than claiming an unverified cause.",
+                "Write your own fictional four-line journal outside this form: task, observation, safe next step and uncertainty. Save it for independent review."
+              ],
+              "fields": [
+                {
+                  "id": "idle_seconds",
+                  "type": "number",
+                  "label": "Idle duration in seconds"
+                },
+                {
+                  "id": "ticket_note",
+                  "type": "select",
+                  "label": "Credential-related ticket note",
+                  "options": [
+                    "credential reset requested",
+                    "store the password",
+                    "send the recovery code"
+                  ]
+                },
+                {
+                  "id": "observation",
+                  "type": "select",
+                  "label": "Observed fact",
+                  "options": [
+                    "document empty after timeout",
+                    "the Internet is broken",
+                    "the computer was hacked"
+                  ]
+                }
+              ],
+              "expected": "The time conversion is correct, the note contains no secret and the statement is an observation. A reviewer evaluates your independent journal.",
+              "troubleshooting": "If you are unsure whether an identifier is private, omit it and describe the device by a fictional alias. If a real secret was exposed, follow the owner's incident process.",
+              "independent": "Create a different fictional incident and separate observation, inference and a test that could distinguish competing explanations.",
+              "rubric": [
+                {
+                  "criterion": "correctness",
+                  "requirement": "Produced evidence matches the issued inputs, not a memorized example."
+                },
+                {
+                  "criterion": "safety",
+                  "requirement": "Only fictional data and authorized actions; no credentials or private identifiers."
+                },
+                {
+                  "criterion": "explanation",
+                  "requirement": "Explain the method, a failure/recovery and what remains unverified."
+                }
+              ],
+              "next_step": "Continue to unit 6 after checking and explaining this activity."
+            },
+            {
+              "unit": 6,
+              "title": "Capacity and everyday maintenance",
+              "competency": "DC-CAPACITY",
+              "objective": "Calculate available capacity and interpret a configured reserve policy.",
+              "concept": "Storage holds saved files; RAM supports active working data. They are different resources. For this model, usable free capacity equals size minus used minus a separately listed reserve. All quantities use GiB. Real systems may already include reservations in their available-space number; do not subtract twice. The course's 15% threshold is a scenario policy.",
+              "instructions": [
+                "Read the size, used and separately reserved capacities in the issued case.",
+                "Subtract used and reserve from size. Divide that result by size, then multiply by 100.",
+                "Enter the free percentage and choose whether it meets the 15% policy. A correct low-capacity finding is valid analysis, not a failed arithmetic task.",
+                "On a device you own, find a read-only storage summary. Note its units and explain why they may differ. No deletion or disk reformatting is required."
+              ],
+              "fields": [
+                {
+                  "id": "free_percent",
+                  "type": "number",
+                  "label": "Usable free percentage"
+                },
+                {
+                  "id": "policy",
+                  "type": "select",
+                  "label": "Does the model meet the 15% policy?",
+                  "options": [
+                    "meets",
+                    "below"
+                  ]
+                }
+              ],
+              "expected": "The percentage and policy conclusion match the current case, including below-threshold cases. This does not authorize deleting files.",
+              "troubleshooting": "Check units and whether reserve was subtracted once. Stop if used plus reserve exceeds size; that would be inconsistent input, not a negative usable disk.",
+              "independent": "Compute another case chosen by a reviewer. Explain a safe maintenance proposal that preserves the original work and requires owner approval before a change.",
+              "rubric": [
+                {
+                  "criterion": "correctness",
+                  "requirement": "Produced evidence matches the issued inputs, not a memorized example."
+                },
+                {
+                  "criterion": "safety",
+                  "requirement": "Only fictional data and authorized actions; no credentials or private identifiers."
+                },
+                {
+                  "criterion": "explanation",
+                  "requirement": "Explain the method, a failure/recovery and what remains unverified."
+                }
+              ],
+              "next_step": "Continue to unit 7 after checking and explaining this activity."
+            },
+            {
+              "unit": 7,
+              "title": "Names, connectivity and safe diagnosis",
+              "competency": "DC-CONNECTIVITY",
+              "objective": "Use an explicit local name table and distinguish lookup from connection.",
+              "concept": "A network name and an address are different. A resolver answers name queries under its configured rules. Successful lookup alone does not establish that a printer, website or Internet connection works. This exercise uses documentation addresses and a closed fictional table; it sends no DNS queries or packets.",
+              "instructions": [
+                "Read the issued printer name/address table. Identify the printer address for this case.",
+                "Enter that address exactly. For a name missing from this closed table, select the no-record outcome.",
+                "Choose the next test that checks an authorized local connection without sending private names to a public resolver.",
+                "On your own device, identify the connection indicator without disconnecting another user. Write down only a generic state such as connected or unavailable."
+              ],
+              "fields": [
+                {
+                  "id": "printer_address",
+                  "type": "text",
+                  "label": "Printer address from this case"
+                },
+                {
+                  "id": "missing_name",
+                  "type": "select",
+                  "label": "Name absent from the closed table",
+                  "options": [
+                    "no record in this fixture",
+                    "always use a public resolver"
+                  ]
+                },
+                {
+                  "id": "next_test",
+                  "type": "select",
+                  "label": "Next diagnostic step",
+                  "options": [
+                    "check authorized local connection",
+                    "reformat the device",
+                    "publish the private hostname"
+                  ]
+                }
+              ],
+              "expected": "The case-specific address and bounded diagnosis match. No real network state is inferred from this table.",
+              "troubleshooting": "If the case table and observed device differ, label the observation separately. Never overwrite real DNS or hosts settings to match the classroom fixture.",
+              "independent": "Prepare a three-branch diagnosis: no connection, failed lookup, application unavailable after lookup. Name the evidence needed for each branch.",
+              "rubric": [
+                {
+                  "criterion": "correctness",
+                  "requirement": "Produced evidence matches the issued inputs, not a memorized example."
+                },
+                {
+                  "criterion": "safety",
+                  "requirement": "Only fictional data and authorized actions; no credentials or private identifiers."
+                },
+                {
+                  "criterion": "explanation",
+                  "requirement": "Explain the method, a failure/recovery and what remains unverified."
+                }
+              ],
+              "next_step": "Continue to unit 8 after checking and explaining this activity."
+            },
+            {
+              "unit": 8,
+              "title": "Service state and a usable task",
+              "competency": "DC-SERVICES",
+              "objective": "Distinguish startup configuration, running state and task verification.",
+              "concept": "A background service performs a function without necessarily showing a window. Enabled at startup and currently running are different states. A running print service can still have a paused queue or an unavailable printer. Restarting may interrupt other users, so observe and get permission before changing anything.",
+              "instructions": [
+                "Read the fictional service record: printing is required, toy tracking is prohibited.",
+                "Choose a running state for the printing service and a stopped state for the tracker.",
+                "Choose a task-level verification using a fictional test page rather than assuming a green status is sufficient.",
+                "Inspect a harmless status view on your own device if available. Do not stop, enable or disable real services. A paper/model route is sufficient for this Digital Confidence objective."
+              ],
+              "fields": [
+                {
+                  "id": "printing",
+                  "type": "select",
+                  "label": "Required printing service",
+                  "options": [
+                    "running",
+                    "stopped"
+                  ]
+                },
+                {
+                  "id": "tracker",
+                  "type": "select",
+                  "label": "Prohibited toy tracker",
+                  "options": [
+                    "stopped",
+                    "running"
+                  ]
+                },
+                {
+                  "id": "verify_task",
+                  "type": "select",
+                  "label": "Task-level verification",
+                  "options": [
+                    "print a fictional test page with permission",
+                    "assume running means healthy"
+                  ]
+                }
+              ],
+              "expected": "The model permits the needed task and disables the prohibited one, with a task-level check. No actual printer execution is attested.",
+              "troubleshooting": "If a real queue contains private documents, do not copy its contents into evidence. Ask the device owner before attempting a test page.",
+              "independent": "Write a bounded plan for a paused queue. Include permission, one test, expected observation and an escalation condition.",
+              "rubric": [
+                {
+                  "criterion": "correctness",
+                  "requirement": "Produced evidence matches the issued inputs, not a memorized example."
+                },
+                {
+                  "criterion": "safety",
+                  "requirement": "Only fictional data and authorized actions; no credentials or private identifiers."
+                },
+                {
+                  "criterion": "explanation",
+                  "requirement": "Explain the method, a failure/recovery and what remains unverified."
+                }
+              ],
+              "next_step": "Continue to unit 9 after checking and explaining this activity."
+            },
+            {
+              "unit": 9,
+              "title": "Make a reversible change plan",
+              "competency": "DC-CHANGE",
+              "objective": "Plan a change inside an authorized window with recovery and verification.",
+              "concept": "A change plan states the starting state, intended action, permission, verification and recovery. A dry run is a rehearsal, not proof that a real change happened. A snapshot taken after a change cannot by itself restore the earlier state. The exercise uses a fictional local-time window; no scheduler or system setting is changed.",
+              "instructions": [
+                "Read the issued maintenance window and proposed start time.",
+                "Decide whether the proposed time falls inside the window.",
+                "Order the rehearsed steps: capture recoverable state, apply the approved change, verify the task.",
+                "Choose the recovery action for a failed verification. Write who could authorize a real change and when you would stop."
+              ],
+              "fields": [
+                {
+                  "id": "window",
+                  "type": "select",
+                  "label": "Proposed start time",
+                  "options": [
+                    "inside",
+                    "outside"
+                  ]
+                },
+                {
+                  "id": "steps",
+                  "type": "select",
+                  "label": "Rehearsal order",
+                  "options": [
+                    "capture, apply, verify",
+                    "apply, capture, verify"
+                  ]
+                },
+                {
+                  "id": "recovery",
+                  "type": "select",
+                  "label": "On failed verification",
+                  "options": [
+                    "restore the recorded prior state and verify",
+                    "hide the failed result"
+                  ]
+                }
+              ],
+              "expected": "The time decision and rehearsal sequence match. Outside-window cases are correctly deferred; no live change is made.",
+              "troubleshooting": "If a real procedure lacks a known recovery point, stop and obtain one. Do not invent a successful rollback or a reviewer signature.",
+              "independent": "Create a different plan with a reviewer-selected time, show a verification failure and record a simulated recovery separately from any performed action.",
+              "rubric": [
+                {
+                  "criterion": "correctness",
+                  "requirement": "Produced evidence matches the issued inputs, not a memorized example."
+                },
+                {
+                  "criterion": "safety",
+                  "requirement": "Only fictional data and authorized actions; no credentials or private identifiers."
+                },
+                {
+                  "criterion": "explanation",
+                  "requirement": "Explain the method, a failure/recovery and what remains unverified."
+                }
+              ],
+              "next_step": "Continue to unit 10 after checking and explaining this activity."
+            },
+            {
+              "unit": 10,
+              "title": "Independent handoff and portfolio",
+              "competency": "DC-HANDOFF",
+              "objective": "Assemble usable evidence and communicate what it establishes.",
+              "concept": "A portfolio is a selected, explained set of work. A receipt can verify submitted bytes or a software check; it cannot prove who performed an action or that a skill transfers to every device. Independent assessment uses a fresh case rather than replaying these practice selections. Human review is needed for explanation, safety and practical performance.",
+              "instructions": [
+                "Review the nine activities and identify unresolved checks; revise the relevant work before claiming success.",
+                "Choose the proper evidence status for an unreviewed independent submission.",
+                "Choose a handoff that contains observations, reproducible files, safe scope and an unresolved question.",
+                "Open the separate independent assessment below. Download its fresh source note, perform the file/recovery tasks and submit evidence to the configured school Hub when enrolled. Guest checks remain rehearsal."
+              ],
+              "fields": [
+                {
+                  "id": "review_status",
+                  "type": "select",
+                  "label": "Unreviewed independent work",
+                  "options": [
+                    "pending instructor review",
+                    "competency demonstrated automatically"
+                  ]
+                },
+                {
+                  "id": "handoff",
+                  "type": "select",
+                  "label": "Useful handoff includes",
+                  "options": [
+                    "method, evidence, limits and next action",
+                    "only a completion badge"
+                  ]
+                }
+              ],
+              "expected": "The status and handoff distinguish checked practice from independently reviewed competence. A perfect practice score does not complete the course.",
+              "troubleshooting": "If the reviewer cannot reproduce a result, preserve the failure and provide the next safe test. An unavailable Hub means the draft is not submitted.",
+              "independent": "Provide the independent portfolio, explain one corrected mistake and respond to actual instructor feedback. Authentic educational acceptance remains pending.",
+              "rubric": [
+                {
+                  "criterion": "correctness",
+                  "requirement": "Produced evidence matches the issued inputs, not a memorized example."
+                },
+                {
+                  "criterion": "safety",
+                  "requirement": "Only fictional data and authorized actions; no credentials or private identifiers."
+                },
+                {
+                  "criterion": "explanation",
+                  "requirement": "Explain the method, a failure/recovery and what remains unverified."
+                }
+              ],
+              "next_step": "Complete the fresh independent case; await instructor review."
+            }
+          ],
+          "provenance": {
+            "originalTeaching": true,
+            "aiAssistance": "Substantive lesson, code and assessment design assistance; human technical/educational acceptance remains pending."
+          }
+        },
+        "revision": "ccb5dda2defda0bfd9a513401b5e48ebe5c1a79e78a44df398825bf9d7979e37",
+        "sourcePath": "curriculum/digital_rc/GENERAL_IT/delivery/digital_confidence.json"
+      },
       "lessons": [
         {
           "id": "GENERAL_IT-w01",
@@ -1048,8 +1602,9 @@
       "title": "IT Support and Hardware Foundations",
       "packId": "GENERAL_IT",
       "contentRootSha256": "62d05bf821017547c7eccae08b6f625f58286170f62a21bf252a55b738cc24d2",
-      "sourceCommit": "777f014024a3b4fdde23185146e937909b0d8259",
+      "sourceCommit": "d486d41d77a529015ac0ddb5ea43e521881def22",
       "offlinePackDeclared": false,
+      "delivery": null,
       "lessons": [
         {
           "id": "GENERAL_IT-w01",
@@ -2088,8 +2643,9 @@
       "title": "Software Builder Zero-to-Hero",
       "packId": "SOFTWARE_BUILDER",
       "contentRootSha256": "82256e3fe7dd220a608bf856f1623a43731386f57c4428e5a70bc9f8fd385382",
-      "sourceCommit": "777f014024a3b4fdde23185146e937909b0d8259",
+      "sourceCommit": "d486d41d77a529015ac0ddb5ea43e521881def22",
       "offlinePackDeclared": false,
+      "delivery": null,
       "lessons": [
         {
           "id": "SOFTWARE_BUILDER-w01",
@@ -3153,8 +3709,9 @@
       "title": "Networking and Internet Infrastructure",
       "packId": "COMPUTER_NETWORKING",
       "contentRootSha256": "6e9e41850ca06a834882b4f3991762aabdb32d5537e8416cac1f5db5227e34be",
-      "sourceCommit": "777f014024a3b4fdde23185146e937909b0d8259",
+      "sourceCommit": "d486d41d77a529015ac0ddb5ea43e521881def22",
       "offlinePackDeclared": false,
+      "delivery": null,
       "lessons": [
         {
           "id": "COMPUTER_NETWORKING-w01",
@@ -4244,9 +4801,10 @@
       "trackId": "CYBER_SOC",
       "title": "Cybersecurity Foundations and SOC Readiness",
       "packId": "CYBERSECURITY",
-      "contentRootSha256": "cd8082783ecaedd0df82d5fdaea4790b60dd62a254676a60f87d065370fbfa12",
-      "sourceCommit": "777f014024a3b4fdde23185146e937909b0d8259",
+      "contentRootSha256": "873b9af7574c23922933a928a754c7cebcd68eab639965d160142d36605895b4",
+      "sourceCommit": "d486d41d77a529015ac0ddb5ea43e521881def22",
       "offlinePackDeclared": false,
+      "delivery": null,
       "lessons": [
         {
           "id": "CYBERSECURITY-w01",
@@ -5292,7 +5850,29 @@
           "markdown": "{\n  \"course_id\": \"CYBERSECURITY\",\n  \"required\": [\n    \"Authorized-fixture-only rule: do not scan or exploit systems you do not own\",\n    \"Ticket-journal discipline without PII\"\n  ],\n  \"recommended\": [\n    \"COMPUTER_NETWORKING name-resolution and port literacy\"\n  ]\n}\n"
         }
       ],
-      "resources": [],
+      "resources": [
+        {
+          "id": "README",
+          "title": "Fictional SOC triage model",
+          "path": "curriculum/digital_rc/CYBERSECURITY/learner_exercises/triage_model/README.md",
+          "sha256": "ed15322b647e22b1c3bb389448f5b8591295f7318ea6a26919c3eb3c3f8789af",
+          "markdown": "# Fictional SOC triage model\n\nRequirements: Python 3.11+. Save `triage.py` and `test_triage.py` in an empty folder and run `python3 -m unittest -v test_triage.py` (or `py -3 -m unittest -v test_triage.py` with the Windows Python launcher). Expected result: seven tests pass. No packages, network access or administrative rights are needed.\n\nInspect each test before execution. The model accepts fictional dictionaries; it does not authenticate analysts, read system logs, detect real intrusions or perform containment. Its authorization function illustrates a policy decision only. No account permissions are changed.\n\nThe failed-login rule flags at least three failures for investigation. It does not establish malicious intent. Two failures produce no flag in this rule, but that does not establish safety. Change the threshold and explain how alert count changes without claiming measured sensitivity or specificity. Those metrics require labeled evidence and a defined dataset.\n\nCreate your own four fictional events in two explicit timezones. Predict the order after conversion to UTC, then test it. A timestamp without timezone is rejected rather than silently assumed local. Chronological order does not prove causation, and clock synchronization uncertainty still matters.\n\nIndependent work: test failures split across two actors, an invalid threshold, and events with identical timestamps. Document the behavior you observed and one limitation. Then create a containment proposal describing scope, permission, preservation and rollback; do not execute it on a real device. Instructor review of that reasoning remains required.\n\nUse no real passwords, identifiers or security telemetry. AI assistance contributed to code, tests and instruction. Human technical and educational acceptance remains pending.\n"
+        },
+        {
+          "id": "test_triage",
+          "title": "test_triage",
+          "path": "curriculum/digital_rc/CYBERSECURITY/learner_exercises/triage_model/test_triage.py",
+          "sha256": "ccfd72dcac5df352b5f0c9c4983a9d994be53b2f21fa7a3f16914fd2fece9e67",
+          "markdown": "import unittest\nfrom triage import authorized,triage,timeline\nclass TriageTests(unittest.TestCase):\n    def test_allow_read(self):self.assertTrue(authorized('analyst','read_redacted'))\n    def test_deny_action(self):self.assertFalse(authorized('analyst','propose_containment'))\n    def test_unknown_role_denied(self):self.assertFalse(authorized('unknown','read_redacted'))\n    def test_threshold_is_not_verdict(self):\n        result=triage([{'actor_alias':'actor-a','outcome':'failed'}]*3)\n        self.assertEqual(result,[{'actor_alias':'actor-a','failed_count':3,'disposition':'investigate'}])\n    def test_below_threshold(self):self.assertEqual(triage([{'actor_alias':'actor-a','outcome':'failed'}]*2),[])\n    def test_timezone_normalization(self):\n        events=[{'id':'later','time':'2026-01-01T12:00:00Z'},{'id':'earlier','time':'2026-01-01T12:30:00+01:00'}]\n        self.assertEqual(timeline(events)[0]['id'],'earlier')\n    def test_missing_timezone_rejected(self):\n        with self.assertRaises(ValueError):timeline([{'time':'2026-01-01T12:00:00'}])\nif __name__=='__main__':unittest.main()\n"
+        },
+        {
+          "id": "triage",
+          "title": "triage",
+          "path": "curriculum/digital_rc/CYBERSECURITY/learner_exercises/triage_model/triage.py",
+          "sha256": "400bd3985ea75aedf1492437155ec77d0d6e80acd3993217347d700f9ddbd58c",
+          "markdown": "\"\"\"Local, fictional SOC analysis. No scanning, account changes or real logs.\"\"\"\nfrom datetime import datetime, timezone\n\nPOLICY={'analyst':{'read_redacted'},'responder':{'read_redacted','propose_containment'}}\ndef authorized(role, action):\n    return action in POLICY.get(role,set())\n\ndef triage(events, threshold=3):\n    if type(threshold) is not int or threshold<1: raise ValueError('Positive integer threshold required')\n    counts={}\n    for event in events:\n        # This is a count rule, not an inference about an attack or a person.\n        if event.get('outcome')=='failed':\n            actor=event.get('actor_alias')\n            if not isinstance(actor,str) or not actor: raise ValueError('Fictional actor alias required')\n            counts[actor]=counts.get(actor,0)+1\n    return [{'actor_alias':a,'failed_count':n,'disposition':'investigate'} for a,n in sorted(counts.items()) if n>=threshold]\n\ndef timeline(events):\n    def time_of(event):\n        value=datetime.fromisoformat(event['time'].replace('Z','+00:00'))\n        if value.tzinfo is None:raise ValueError('Explicit timezone required')\n        return value.astimezone(timezone.utc)\n    return sorted(events,key=time_of)\n"
+        }
+      ],
       "prerequisites": {
         "course_id": "CYBERSECURITY",
         "required": [
@@ -5309,8 +5889,9 @@
       "title": "Data, Databases, and Dashboards",
       "packId": "DATA_DASHBOARDS",
       "contentRootSha256": "1746ed4e6761abed42c4c0bf332dd77dbcd48fac1f3417c87d367592b0fe3631",
-      "sourceCommit": "777f014024a3b4fdde23185146e937909b0d8259",
+      "sourceCommit": "d486d41d77a529015ac0ddb5ea43e521881def22",
       "offlinePackDeclared": false,
+      "delivery": null,
       "lessons": [
         {
           "id": "DATA_DASHBOARDS-w01",
@@ -6352,8 +6933,9 @@
       "title": "AI/ML and Edge AI Foundations",
       "packId": "AI_ML_EDGE",
       "contentRootSha256": "30393baed4f31cc60b415bd8e96911dd18ee34c40af98b6eb85489fa4f2d4ac3",
-      "sourceCommit": "777f014024a3b4fdde23185146e937909b0d8259",
+      "sourceCommit": "d486d41d77a529015ac0ddb5ea43e521881def22",
       "offlinePackDeclared": false,
+      "delivery": null,
       "lessons": [
         {
           "id": "AI_ML_EDGE-w01",
@@ -7395,8 +7977,9 @@
       "title": "Embedded Systems and Device Prototyping",
       "packId": "EMBEDDED_PROTOTYPING",
       "contentRootSha256": "1c1b2664122682062c459c9ca21aeaf8e93d409a4ca1ac2cbb370bcfe2b8e36f",
-      "sourceCommit": "777f014024a3b4fdde23185146e937909b0d8259",
+      "sourceCommit": "d486d41d77a529015ac0ddb5ea43e521881def22",
       "offlinePackDeclared": false,
+      "delivery": null,
       "lessons": [
         {
           "id": "EMBEDDED_PROTOTYPING-w01",
@@ -8438,8 +9021,9 @@
       "title": "Wireless, DSP, and 6G Foundations",
       "packId": "WIRELESS_6G",
       "contentRootSha256": "0eb8ed051c0170da772ef5dc87dfd0ed518a89f3953061c408ad086af8f8e0bb",
-      "sourceCommit": "777f014024a3b4fdde23185146e937909b0d8259",
+      "sourceCommit": "d486d41d77a529015ac0ddb5ea43e521881def22",
       "offlinePackDeclared": false,
+      "delivery": null,
       "lessons": [
         {
           "id": "WIRELESS_6G-w01",
@@ -9481,8 +10065,9 @@
       "title": "Project Management, Agile, and Lean Six Sigma",
       "packId": "PM_AGILE_LSS",
       "contentRootSha256": "cb89e99cbefb6bfc5680470074cf6868ef9644a83aa8fc258dcda1a5898a5126",
-      "sourceCommit": "777f014024a3b4fdde23185146e937909b0d8259",
+      "sourceCommit": "d486d41d77a529015ac0ddb5ea43e521881def22",
       "offlinePackDeclared": false,
+      "delivery": null,
       "lessons": [
         {
           "id": "PM_AGILE_LSS-w01",
@@ -10523,8 +11108,9 @@
       "title": "Game Development and Interactive Media",
       "packId": "GAME_DEV_INTERACTIVE",
       "contentRootSha256": "4bdf4224ec85788ca65b54945480ad779a7e1d685d44e6aec4068116c6e03688",
-      "sourceCommit": "777f014024a3b4fdde23185146e937909b0d8259",
+      "sourceCommit": "d486d41d77a529015ac0ddb5ea43e521881def22",
       "offlinePackDeclared": false,
+      "delivery": null,
       "lessons": [
         {
           "id": "GAME_DEV_INTERACTIVE-w01",
@@ -11565,8 +12151,9 @@
       "title": "7GC AI-RAN Research Apprenticeship",
       "packId": "SEVEN_GC_APPRENTICESHIP",
       "contentRootSha256": "390e4717dc44a9e8102ff0383510fdb7d16a6f9842be3b1d6081bbf2d17253fe",
-      "sourceCommit": "777f014024a3b4fdde23185146e937909b0d8259",
+      "sourceCommit": "d486d41d77a529015ac0ddb5ea43e521881def22",
       "offlinePackDeclared": false,
+      "delivery": null,
       "lessons": [
         {
           "id": "SEVEN_GC_APPRENTICESHIP-w01",
@@ -12610,8 +13197,9 @@
       "title": "Cloud and DevOps",
       "packId": "CLOUD_DEVOPS",
       "contentRootSha256": "b6623f7c8b503ce0e7b15298c8feca4de45dd043071cba88a91c058edb391e67",
-      "sourceCommit": "777f014024a3b4fdde23185146e937909b0d8259",
+      "sourceCommit": "d486d41d77a529015ac0ddb5ea43e521881def22",
       "offlinePackDeclared": false,
+      "delivery": null,
       "lessons": [
         {
           "id": "CLOUD_DEVOPS-w01",
@@ -13653,8 +14241,9 @@
       "title": "Communication, Professional Development, and Ethics",
       "packId": "COMM_PD_ETHICS",
       "contentRootSha256": "a3015e049eab0ed27df81f0ea5de05392fcedd97f7557bdff67782b47ab0047a",
-      "sourceCommit": "777f014024a3b4fdde23185146e937909b0d8259",
+      "sourceCommit": "d486d41d77a529015ac0ddb5ea43e521881def22",
       "offlinePackDeclared": false,
+      "delivery": null,
       "lessons": [
         {
           "id": "COMM_PD_ETHICS-w01",
@@ -14696,8 +15285,9 @@
       "title": "Robotics and Control",
       "packId": "ROBOTICS_CONTROL",
       "contentRootSha256": "a3dac84590ee50a2ab7d02a89f81eada8fb20858f17f52e062d003db8ac75cfc",
-      "sourceCommit": "777f014024a3b4fdde23185146e937909b0d8259",
+      "sourceCommit": "d486d41d77a529015ac0ddb5ea43e521881def22",
       "offlinePackDeclared": false,
+      "delivery": null,
       "lessons": [
         {
           "id": "ROBOTICS_CONTROL-w01",
@@ -15739,8 +16329,9 @@
       "title": "gunnchOS Device OS and Product Lab",
       "packId": "GUNNCHOS_PRODUCT_LAB",
       "contentRootSha256": "4fa8a3b9250923d30bf1a1b1a888fe5a1802a63665d8b94e9d45f33ecc9ba938",
-      "sourceCommit": "777f014024a3b4fdde23185146e937909b0d8259",
+      "sourceCommit": "d486d41d77a529015ac0ddb5ea43e521881def22",
       "offlinePackDeclared": false,
+      "delivery": null,
       "lessons": [
         {
           "id": "GUNNCHOS_PRODUCT_LAB-w01",
@@ -16783,8 +17374,9 @@
       "title": "Hardware Engineering",
       "packId": "HARDWARE_ENGINEERING",
       "contentRootSha256": "c8673013514b0ae6f2e4d306e1abb581fbb7d8e7068aebce811072381c3b3754",
-      "sourceCommit": "777f014024a3b4fdde23185146e937909b0d8259",
+      "sourceCommit": "d486d41d77a529015ac0ddb5ea43e521881def22",
       "offlinePackDeclared": false,
+      "delivery": null,
       "lessons": [
         {
           "id": "HARDWARE_ENGINEERING-w01",
@@ -17825,8 +18417,9 @@
       "title": "Data Visualization and Business Intelligence",
       "packId": "DATA_VIZ_BI",
       "contentRootSha256": "2533e0de78ffdff52060f16af2f7b5b86bb4c8fad7f5671ab12ac3716d174a7a",
-      "sourceCommit": "777f014024a3b4fdde23185146e937909b0d8259",
+      "sourceCommit": "d486d41d77a529015ac0ddb5ea43e521881def22",
       "offlinePackDeclared": false,
+      "delivery": null,
       "lessons": [
         {
           "id": "DATA_VIZ_BI-w01",
