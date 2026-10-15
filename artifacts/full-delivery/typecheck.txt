@@ -1,0 +1,4 @@
+
+> waike-learning-client@0.1.0 lint /Users/gunnchos/Downloads/gunnchos-7gc-research-product-spine/repos/_waike_full_delivery/platform/apps/client
+> tsc --noEmit
+
