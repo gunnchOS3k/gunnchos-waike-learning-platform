@@ -1,0 +1,11 @@
+.browser-learning {grid-column:1/-1; width:min(100%, 960px); margin:0 auto; line-height:1.7; overflow-wrap:anywhere;}
+.browser-learning h1{font-size:clamp(1.6rem,4vw,2.4rem);line-height:1.2}.browser-learning h2{margin-top:1rem}
+.browser-learning section,.browser-learning article{padding:1.4rem 0;border-bottom:1px solid #53617a}
+.browser-learning nav{display:flex;flex-wrap:wrap;align-items:center;gap:1rem;padding:1rem 0}
+.browser-learning label{display:block;margin:.65rem 0}.browser-learning select,.browser-learning textarea{display:block;max-width:100%;width:100%;padding:.6rem;font:inherit}
+.browser-learning button{margin:.4rem .6rem .4rem 0;min-height:44px;white-space:normal}
+.browser-learning fieldset{border:1px solid #7182a0;border-radius:.5rem;padding:1rem;margin:1rem 0;min-width:0}
+.browser-learning legend{font-weight:bold;max-width:100%;padding:0 .3rem}.browser-learning .quiz-choice{display:flex;align-items:baseline;gap:.7rem;padding:.4rem;cursor:pointer}
+.browser-learning input[type=radio],.browser-learning input[type=checkbox]{width:20px;height:20px;flex-shrink:0}
+.browser-learning pre{white-space:pre-wrap;overflow-wrap:anywhere;font-size:.85rem}.browser-learning .practice-correct{color:#8ce5be}.browser-learning .practice-review{color:#ffdb8c}
+.browser-learning :focus-visible{outline:3px solid #9ad5ff;outline-offset:4px}.browser-learning .safe-markdown p{margin:.9em 0}.browser-learning ol{list-style:decimal;padding-left:1.8em}

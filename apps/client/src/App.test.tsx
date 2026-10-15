@@ -91,6 +91,7 @@ describe("WAIKE Learning OS shell", () => {
     await waitFor(() => {
       expect(screen.getByTestId("public-catalog-banner")).toHaveTextContent(/all 18/i);
     });
+    await user.click(screen.getByTestId("mode-home"));
     expect(screen.getByTestId("public-runtime-truth")).toHaveTextContent(/complete packaged curriculum/i);
 
     await user.click(screen.getByTestId("mode-courses"));
@@ -101,10 +102,11 @@ describe("WAIKE Learning OS shell", () => {
     await user.click(screen.getAllByRole("button", { name: "Open course" })[1]);
     expect(screen.getByTestId("course-home")).toHaveTextContent(/IT Support and Hardware Foundations/);
     expect(screen.getByTestId("module-sequence")).toHaveTextContent(/Assignment A01/);
-    expect(screen.getByTestId("module-sequence")).toHaveTextContent(/lab_accessibility_contrast_check/);
+    expect(screen.getByTestId("module-sequence")).toHaveTextContent(/lab_ticket_queue/);
 
-    await user.click(screen.getByRole("button", { name: /Lesson: Week 1 presentation/ }));
-    expect(screen.getByTestId("study-mode")).toHaveTextContent(/Idle policy 1200s/);
+    await user.click(screen.getByRole("button", { name: /Lesson: The Civic Tech Desk/ }));
+    expect(screen.getByTestId("full-lesson-content")).toHaveTextContent(/Idle policy 1200s/);
+    expect(screen.getByRole("button", { name: "Check my answers" })).toBeInTheDocument();
 
     await user.click(screen.getByTestId("mode-assignments"));
     await user.click(screen.getByRole("button", { name: /Assignment A01/i }));
@@ -129,7 +131,8 @@ describe("WAIKE Learning OS shell", () => {
     await waitFor(() => expect(screen.getByTestId("public-catalog-banner")).toBeInTheDocument());
     await user.click(screen.getByRole("button", { name: /Install learner pack/i }));
     expect(screen.getByRole("alert")).toHaveTextContent(/does not pretend to install/i);
-    expect(screen.getByTestId("trust-banner")).not.toHaveTextContent(/Verified learner pack/i);
+    expect(screen.queryByTestId("trust-banner")).not.toBeInTheDocument();
+    expect(screen.getByText(/signed-pack trust applies only/)).toBeInTheDocument();
   });
 
   it("runs learner assignment draft submit and instructor grade path", async () => {

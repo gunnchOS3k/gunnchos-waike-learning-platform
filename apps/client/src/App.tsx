@@ -3,6 +3,7 @@ import { invoke } from "@tauri-apps/api/core";
 import { AssessmentWorkspace } from "./components/assessment/AssessmentWorkspace";
 import { InstructorQueue } from "./components/assessment/InstructorQueue";
 import { CourseCard } from "./components/CourseCard";
+import { BrowserLearning, parseLearningHash } from "./components/learner/BrowserLearning";
 import { LessonReader } from "./components/LessonReader";
 import { TrustBanner } from "./components/TrustBanner";
 import { SyncStatusBanner } from "./components/sync/SyncStatusBanner";
@@ -320,8 +321,11 @@ export default function App() {
   const learnerAccess = primaryRole === "learner" || isMock || publicCatalogMode;
 
   useEffect(() => {
-    if (publicCatalogMode && mode === "lessons") setMode("home");
-  }, [publicCatalogMode, mode]);
+    if (!publicCatalogMode) return;
+    const navigate = () => { const route = parseLearningHash(window.location.hash); if (route) { setSectionId(`catalog:${route.track}`); setCatalogUnit(route.unit); setMode("lessons"); } };
+    navigate(); window.addEventListener("hashchange", navigate);
+    return () => window.removeEventListener("hashchange", navigate);
+  }, [publicCatalogMode]);
 
   const device = useMemo(() => deviceId(), []);
   // Only a real HTTP hub can settle mutations; the mock hub has no sync ledger.
@@ -1132,7 +1136,7 @@ export default function App() {
         </div>
       </header>
 
-      <TrustBanner trust={trust} />
+      {publicCatalogMode ? <p className="muted">Open curriculum reader · signed-pack trust applies only after installing a verified offline pack.</p> : <TrustBanner trust={trust} />}
       <SyncStatusBanner state={syncUx} />
       {resumeHint ? (
         <p className="muted" data-testid="resume-hint">
@@ -1151,7 +1155,11 @@ export default function App() {
       ) : null}
 
       <div className="layout" id="main">
-        {mode === "lessons" ? (
+        {mode === "lessons" && publicCatalogMode ? <BrowserLearning
+          key={`${activePublicTrack?.trackId || "DIGITAL_CONFIDENCE"}:${catalogUnit}`}
+          trackId={activePublicTrack?.trackId || "DIGITAL_CONFIDENCE"} unit={catalogUnit}
+          onNavigate={(track, unit) => { window.location.hash = `/learn/${track}/${unit}`; setSectionId(`catalog:${track}`); setCatalogUnit(unit); setMode("lessons"); }} /> : null}
+        {mode === "lessons" && !publicCatalogMode ? (
           <>
             {module ? (
               <CourseCard module={module} onOpenLesson={(l) => void onOpenLesson(l)} />
@@ -1322,7 +1330,7 @@ export default function App() {
               course={activeCourse}
               nextDue={today.due_soon.find((d) => d.section_id === activeCourse?.section_id) || today.due_soon[0] || null}
               announcement={null}
-              onContinue={() => setMode("study")}
+              onContinue={() => setMode(publicCatalogMode ? "lessons" : "study")}
               onTab={(tab) => {
                 if (tab === "assignments") {
                   setOpenAssignmentId(null);
@@ -1349,7 +1357,7 @@ export default function App() {
               onOpenLesson={(id) => {
                 const unit = Number(id.split(".").at(-1));
                 if (Number.isFinite(unit)) setCatalogUnit(unit);
-                setMode("study");
+                setMode(publicCatalogMode ? "lessons" : "study");
               }}
             />
           </>

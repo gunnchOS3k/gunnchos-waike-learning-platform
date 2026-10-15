@@ -314,6 +314,8 @@ def create_app(config: HubConfig | None = None, db_path: Path | None = None, see
     def get_config() -> HubConfig:
         return cfg
 
+    from app.api.public_practice import router as public_practice_router
+    app.include_router(public_practice_router)
     app.include_router(api_router)
     app.include_router(gate_c_router)
     app.include_router(gate_d_router)

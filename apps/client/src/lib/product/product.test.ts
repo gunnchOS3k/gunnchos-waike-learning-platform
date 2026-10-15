@@ -85,7 +85,7 @@ describe("public 18-track curriculum", () => {
   it.each(PUBLIC_TRACKS)("opens every authored content item for $trackId", (track) => {
     const resolved = publicTrackForSection(`catalog:${track.trackId}`);
     const content = publicContentForTrack(resolved);
-    expect(content?.sourceCommit).toBe("63ba9f25ac6b8d8d1b6dd118923566fd51c57b62");
+    expect(content?.sourceCommit).toBe("24a5434d7f9725fcd45bbbed82262ac62a1dc774");
     expect(content?.packId).toBeTruthy();
     publicModulesForTrack(resolved).forEach((_, index) => {
       expect(publicCatalogStudyText(track, index + 1)).toBe(content?.lessons[index].markdown);
@@ -113,10 +113,10 @@ describe("public 18-track curriculum", () => {
     expect(track?.title).toBe("Networking and Internet Infrastructure");
     expect(publicModulesForTrack(track)).toHaveLength(10);
     expect(publicModulesForTrack(track)[0]).toMatchObject({
-      lesson: "Week 1 presentation — Packets are chopped on purpose",
+      lesson: "Packets are chopped on purpose",
       assignment: "Assignment A01 — Packets are chopped on purpose",
       lab: "lab_cidr_math — Pier /26 and /28",
-      quiz: "Quiz 1",
+      quiz: "Week 1 practice quiz",
     });
     expect(publicAssignmentsForTrack(track)).toHaveLength(10);
     expect(track?.portfolio).toBe(3);

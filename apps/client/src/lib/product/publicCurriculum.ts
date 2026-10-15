@@ -38,6 +38,8 @@ export type PublicContentItem = {
   path: string;
   sha256: string;
   markdown: string;
+  labId?: string;
+  items?: { id: string; kind: string; stem: string; choices: string[] }[];
 };
 
 export type PublicTrackContent = {
@@ -52,11 +54,14 @@ export type PublicTrackContent = {
   quizzes: PublicContentItem[];
   labs: PublicContentItem[];
   portfolio: PublicContentItem[];
+  references?: PublicContentItem[];
+  resources?: PublicContentItem[];
+  prerequisites?: { required?: string[]; recommended?: string[] };
 };
 
 const CONTENT_TRACKS = contentBundleJson.tracks as PublicTrackContent[];
 
-export const PUBLIC_CURRICULUM_SOURCE_COMMIT = "63ba9f25ac6b8d8d1b6dd118923566fd51c57b62";
+export const PUBLIC_CURRICULUM_SOURCE_COMMIT = contentBundleJson.sourceCommit;
 
 export const PUBLIC_TRACKS: PublicTrack[] = [
   ["DIGITAL_CONFIDENCE", "Digital Confidence to Computer Operator", "Information Technology", "Foundation", 10, 10, 10, 10, 25, 3, true, true],
@@ -137,7 +142,7 @@ export function publicModulesForTrack(track: PublicTrack | null): PublicModuleRo
       lesson: lesson.title,
       assignment: content.assignments[index]?.title,
       quiz: content.quizzes[index]?.title,
-      lab: content.labs[index]?.title,
+      lab: content.labs.find(l => l.id === lesson.labId)?.title,
     };
   });
 }
