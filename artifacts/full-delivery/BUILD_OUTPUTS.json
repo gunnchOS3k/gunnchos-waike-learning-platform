@@ -1,10 +1,10 @@
 {
-  "source_curriculum": "b0d1645c90580fca546c51deaeb0ebb59d080bde",
+  "source_curriculum": "777f014024a3b4fdde23185146e937909b0d8259",
   "output_root": "apps/client/dist (generated, ignored)",
   "files": {
     "index.html": {
       "bytes": 1268,
-      "sha256": "7510440b967d39d3d5dc9b840e5e08078554ec6224035551312f827b0526e242"
+      "sha256": "c51146711c37810378251e9f8fd77014ef7f84b1c4439e195af36aea95017740"
     },
     "manifest.webmanifest": {
       "bytes": 545,
@@ -26,9 +26,9 @@
       "bytes": 413,
       "sha256": "456f7d0856346bf3e372fc949a26cca422379c674607fe1280420d455101722e"
     },
-    "assets/index-BQ8RdLVy.js": {
-      "bytes": 1298095,
-      "sha256": "a956ff74dcc93471e7bc7278931ea0043263597d4d79b7815ea8e26381c8ce64"
+    "assets/index-DgtUcLRn.js": {
+      "bytes": 1299065,
+      "sha256": "6b17151db5272dd22f2e4478ee4a9c787d2604d7637ce80bf3b3e27fdc21e552"
     },
     "assets/index-C00vqRsL.css": {
       "bytes": 7658,

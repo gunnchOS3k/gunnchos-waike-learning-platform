@@ -1,14 +1,14 @@
 {
   "schema": "waike.browser.curriculum.v2",
   "owner": "waike-research-ops",
-  "sourceCommit": "b0d1645c90580fca546c51deaeb0ebb59d080bde",
+  "sourceCommit": "777f014024a3b4fdde23185146e937909b0d8259",
   "tracks": [
     {
       "trackId": "DIGITAL_CONFIDENCE",
       "title": "Digital Confidence to Computer Operator",
       "packId": "GENERAL_IT",
       "contentRootSha256": "62d05bf821017547c7eccae08b6f625f58286170f62a21bf252a55b738cc24d2",
-      "sourceCommit": "b0d1645c90580fca546c51deaeb0ebb59d080bde",
+      "sourceCommit": "777f014024a3b4fdde23185146e937909b0d8259",
       "offlinePackDeclared": false,
       "lessons": [
         {
@@ -1048,7 +1048,7 @@
       "title": "IT Support and Hardware Foundations",
       "packId": "GENERAL_IT",
       "contentRootSha256": "62d05bf821017547c7eccae08b6f625f58286170f62a21bf252a55b738cc24d2",
-      "sourceCommit": "b0d1645c90580fca546c51deaeb0ebb59d080bde",
+      "sourceCommit": "777f014024a3b4fdde23185146e937909b0d8259",
       "offlinePackDeclared": false,
       "lessons": [
         {
@@ -2088,7 +2088,7 @@
       "title": "Software Builder Zero-to-Hero",
       "packId": "SOFTWARE_BUILDER",
       "contentRootSha256": "82256e3fe7dd220a608bf856f1623a43731386f57c4428e5a70bc9f8fd385382",
-      "sourceCommit": "b0d1645c90580fca546c51deaeb0ebb59d080bde",
+      "sourceCommit": "777f014024a3b4fdde23185146e937909b0d8259",
       "offlinePackDeclared": false,
       "lessons": [
         {
@@ -3152,8 +3152,8 @@
       "trackId": "NETWORKING_INFRA",
       "title": "Networking and Internet Infrastructure",
       "packId": "COMPUTER_NETWORKING",
-      "contentRootSha256": "5d11b95bf9e4eccda87daefc760d688ac42b06ae4f4d51f6562b38a43c380638",
-      "sourceCommit": "b0d1645c90580fca546c51deaeb0ebb59d080bde",
+      "contentRootSha256": "6e9e41850ca06a834882b4f3991762aabdb32d5537e8416cac1f5db5227e34be",
+      "sourceCommit": "777f014024a3b4fdde23185146e937909b0d8259",
       "offlinePackDeclared": false,
       "lessons": [
         {
@@ -4066,8 +4066,8 @@
           "id": "lab_cidr_math",
           "title": "lab_cidr_math — Pier /26 and /28",
           "path": "curriculum/digital_rc/COMPUTER_NETWORKING/labs/lab_cidr_math/README.md",
-          "sha256": "3ee498abdae69ed371721ea568275bd3251e9d998bbb1887f6d3807d5ac6e669",
-          "markdown": "# lab_cidr_math — Pier /26 and /28\n\n10.20.30.40/26 network is 10.20.30.0, not .40. Usable 62 and 14. This is bitwise work, not a GUI.\n\n## Student artifact\nKeys: `cases`.\nMissing parse fields fail. A TTL story of `(1-1)==0` without a header byte fails.\nA file whose entire body is `PASS` is rejected by `_fail_if_print_pass`.\n\n## How to run\nFrom the Packet Range repo root, submit the parse/table JSON you computed. A GUI screenshot is not a validator input.\n```\npython3 scripts/run_course_labs.py --lab lab_cidr_math --submission path/to/student.json\npython3 scripts/run_course_labs.py --lab lab_cidr_math --empty\n```\n\nUsing the host address as the network on /26 is the package negative.\n"
+          "sha256": "230d80d00553538ea14e50ab45fc63e5d8c2aa2ef5bbae3e869b1657a24843d3",
+          "markdown": "# lab_cidr_math — Pier /26 and /28\n\n10.20.30.40/26 network is 10.20.30.0, not .40. Usable 62 and 14. This is bitwise work, not a GUI.\n\n## Student artifact\nKeys: `cases`.\nMissing parse fields fail. A TTL story of `(1-1)==0` without a header byte fails.\nA file whose entire body is `PASS` is rejected by `_fail_if_print_pass`.\n\n## How to run\nFrom the Packet Range repo root, submit the parse/table JSON you computed. A GUI screenshot is not a validator input.\n```\npython3 scripts/run_course_labs.py --lab lab_cidr_math --submission path/to/student.json\npython3 scripts/run_course_labs.py --lab lab_cidr_math --empty\n```\n\nUsing the host address as the network on /26 is the package negative.\n\n## Prefix conventions and input verification\n\nSubmit a nonempty `cases` list, up to 64 cases. Each case needs a string IPv4 `cidr`, calculated `network` and `broadcast` strings, and an integer `usable` count. Boolean values are not counts. For ordinary /0–/30 subnet arithmetic, subtract network and broadcast addresses; for /31 use the point-to-point convention (two), and for /32 use the single host-route address (one). The `broadcast` output for /31 and /32 is the library's numerical upper-bound property, not a claim of an operational directed broadcast. RFC 4632 section 3.1: https://www.rfc-editor.org/rfc/rfc4632.html. No packets are sent.\n\nIndependent practice: calculate a /30, /31 and /32 using documentation addresses. Run the CLI with your artifact. Then deliberately submit zero usable addresses for /32 and verify that the check fails. Empty/malformed lists must fail rather than produce a passing result or an uncaught parser exception.\n"
         },
         {
           "id": "lab_datapath",
@@ -4245,7 +4245,7 @@
       "title": "Cybersecurity Foundations and SOC Readiness",
       "packId": "CYBERSECURITY",
       "contentRootSha256": "cd8082783ecaedd0df82d5fdaea4790b60dd62a254676a60f87d065370fbfa12",
-      "sourceCommit": "b0d1645c90580fca546c51deaeb0ebb59d080bde",
+      "sourceCommit": "777f014024a3b4fdde23185146e937909b0d8259",
       "offlinePackDeclared": false,
       "lessons": [
         {
@@ -5309,7 +5309,7 @@
       "title": "Data, Databases, and Dashboards",
       "packId": "DATA_DASHBOARDS",
       "contentRootSha256": "1746ed4e6761abed42c4c0bf332dd77dbcd48fac1f3417c87d367592b0fe3631",
-      "sourceCommit": "b0d1645c90580fca546c51deaeb0ebb59d080bde",
+      "sourceCommit": "777f014024a3b4fdde23185146e937909b0d8259",
       "offlinePackDeclared": false,
       "lessons": [
         {
@@ -6352,7 +6352,7 @@
       "title": "AI/ML and Edge AI Foundations",
       "packId": "AI_ML_EDGE",
       "contentRootSha256": "30393baed4f31cc60b415bd8e96911dd18ee34c40af98b6eb85489fa4f2d4ac3",
-      "sourceCommit": "b0d1645c90580fca546c51deaeb0ebb59d080bde",
+      "sourceCommit": "777f014024a3b4fdde23185146e937909b0d8259",
       "offlinePackDeclared": false,
       "lessons": [
         {
@@ -7395,7 +7395,7 @@
       "title": "Embedded Systems and Device Prototyping",
       "packId": "EMBEDDED_PROTOTYPING",
       "contentRootSha256": "1c1b2664122682062c459c9ca21aeaf8e93d409a4ca1ac2cbb370bcfe2b8e36f",
-      "sourceCommit": "b0d1645c90580fca546c51deaeb0ebb59d080bde",
+      "sourceCommit": "777f014024a3b4fdde23185146e937909b0d8259",
       "offlinePackDeclared": false,
       "lessons": [
         {
@@ -8438,7 +8438,7 @@
       "title": "Wireless, DSP, and 6G Foundations",
       "packId": "WIRELESS_6G",
       "contentRootSha256": "0eb8ed051c0170da772ef5dc87dfd0ed518a89f3953061c408ad086af8f8e0bb",
-      "sourceCommit": "b0d1645c90580fca546c51deaeb0ebb59d080bde",
+      "sourceCommit": "777f014024a3b4fdde23185146e937909b0d8259",
       "offlinePackDeclared": false,
       "lessons": [
         {
@@ -9481,7 +9481,7 @@
       "title": "Project Management, Agile, and Lean Six Sigma",
       "packId": "PM_AGILE_LSS",
       "contentRootSha256": "cb89e99cbefb6bfc5680470074cf6868ef9644a83aa8fc258dcda1a5898a5126",
-      "sourceCommit": "b0d1645c90580fca546c51deaeb0ebb59d080bde",
+      "sourceCommit": "777f014024a3b4fdde23185146e937909b0d8259",
       "offlinePackDeclared": false,
       "lessons": [
         {
@@ -10523,7 +10523,7 @@
       "title": "Game Development and Interactive Media",
       "packId": "GAME_DEV_INTERACTIVE",
       "contentRootSha256": "4bdf4224ec85788ca65b54945480ad779a7e1d685d44e6aec4068116c6e03688",
-      "sourceCommit": "b0d1645c90580fca546c51deaeb0ebb59d080bde",
+      "sourceCommit": "777f014024a3b4fdde23185146e937909b0d8259",
       "offlinePackDeclared": false,
       "lessons": [
         {
@@ -11565,7 +11565,7 @@
       "title": "7GC AI-RAN Research Apprenticeship",
       "packId": "SEVEN_GC_APPRENTICESHIP",
       "contentRootSha256": "390e4717dc44a9e8102ff0383510fdb7d16a6f9842be3b1d6081bbf2d17253fe",
-      "sourceCommit": "b0d1645c90580fca546c51deaeb0ebb59d080bde",
+      "sourceCommit": "777f014024a3b4fdde23185146e937909b0d8259",
       "offlinePackDeclared": false,
       "lessons": [
         {
@@ -12610,7 +12610,7 @@
       "title": "Cloud and DevOps",
       "packId": "CLOUD_DEVOPS",
       "contentRootSha256": "b6623f7c8b503ce0e7b15298c8feca4de45dd043071cba88a91c058edb391e67",
-      "sourceCommit": "b0d1645c90580fca546c51deaeb0ebb59d080bde",
+      "sourceCommit": "777f014024a3b4fdde23185146e937909b0d8259",
       "offlinePackDeclared": false,
       "lessons": [
         {
@@ -13653,7 +13653,7 @@
       "title": "Communication, Professional Development, and Ethics",
       "packId": "COMM_PD_ETHICS",
       "contentRootSha256": "a3015e049eab0ed27df81f0ea5de05392fcedd97f7557bdff67782b47ab0047a",
-      "sourceCommit": "b0d1645c90580fca546c51deaeb0ebb59d080bde",
+      "sourceCommit": "777f014024a3b4fdde23185146e937909b0d8259",
       "offlinePackDeclared": false,
       "lessons": [
         {
@@ -14696,7 +14696,7 @@
       "title": "Robotics and Control",
       "packId": "ROBOTICS_CONTROL",
       "contentRootSha256": "a3dac84590ee50a2ab7d02a89f81eada8fb20858f17f52e062d003db8ac75cfc",
-      "sourceCommit": "b0d1645c90580fca546c51deaeb0ebb59d080bde",
+      "sourceCommit": "777f014024a3b4fdde23185146e937909b0d8259",
       "offlinePackDeclared": false,
       "lessons": [
         {
@@ -15739,7 +15739,7 @@
       "title": "gunnchOS Device OS and Product Lab",
       "packId": "GUNNCHOS_PRODUCT_LAB",
       "contentRootSha256": "4fa8a3b9250923d30bf1a1b1a888fe5a1802a63665d8b94e9d45f33ecc9ba938",
-      "sourceCommit": "b0d1645c90580fca546c51deaeb0ebb59d080bde",
+      "sourceCommit": "777f014024a3b4fdde23185146e937909b0d8259",
       "offlinePackDeclared": false,
       "lessons": [
         {
@@ -16783,7 +16783,7 @@
       "title": "Hardware Engineering",
       "packId": "HARDWARE_ENGINEERING",
       "contentRootSha256": "c8673013514b0ae6f2e4d306e1abb581fbb7d8e7068aebce811072381c3b3754",
-      "sourceCommit": "b0d1645c90580fca546c51deaeb0ebb59d080bde",
+      "sourceCommit": "777f014024a3b4fdde23185146e937909b0d8259",
       "offlinePackDeclared": false,
       "lessons": [
         {
@@ -17825,7 +17825,7 @@
       "title": "Data Visualization and Business Intelligence",
       "packId": "DATA_VIZ_BI",
       "contentRootSha256": "2533e0de78ffdff52060f16af2f7b5b86bb4c8fad7f5671ab12ac3716d174a7a",
-      "sourceCommit": "b0d1645c90580fca546c51deaeb0ebb59d080bde",
+      "sourceCommit": "777f014024a3b4fdde23185146e937909b0d8259",
       "offlinePackDeclared": false,
       "lessons": [
         {
