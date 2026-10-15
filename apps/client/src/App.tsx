@@ -865,7 +865,7 @@ export default function App() {
 
   return (
     <div className={`app-shell ${runtime.isTouchPrimary ? "touch-ui" : ""}`}>
-      <a className="skip-link" href="#main">
+      <a className="skip-link" href="#main" onClick={e => { e.preventDefault(); document.getElementById("main")?.focus(); document.getElementById("main")?.scrollIntoView(); }}>
         Skip to content
       </a>
       <header>
@@ -910,10 +910,10 @@ export default function App() {
             onClick={() => {
               setLesson(null);
               setError(null);
-              setMode("lessons");
+              setMode(publicCatalogMode ? "courses" : "lessons");
             }}
           >
-            Back
+            {publicCatalogMode ? "Back to courses" : "Back"}
           </button>
           {user ? (
             <button type="button" className="ghost" data-testid="logout-btn" onClick={() => void onLogout()}>
@@ -1154,7 +1154,7 @@ export default function App() {
         </div>
       ) : null}
 
-      <div className="layout" id="main">
+      <div className="layout" id="main" tabIndex={-1}>
         {mode === "lessons" && publicCatalogMode ? <BrowserLearning
           key={`${activePublicTrack?.trackId || "DIGITAL_CONFIDENCE"}:${catalogUnit}`}
           trackId={activePublicTrack?.trackId || "DIGITAL_CONFIDENCE"} unit={catalogUnit}

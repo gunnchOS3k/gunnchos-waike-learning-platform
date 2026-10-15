@@ -19,3 +19,11 @@ Software Builder: ten lessons now connect requirements, Git, API state, database
 ## Gates that remain open
 
 Every course remains LEARNER_ACCEPTANCE_PENDING. Substantive educational review of the remaining packages, complete practical evidence, protected final assessments, meaningful human-reviewed work and authentic learner pilots remain required. No occupational readiness, certification, course completion or competency demonstration is inferred from file counts, a quiz score, a page visit or these tests. The catalog exam-weight cap remains unchanged.
+
+## Networking and Cybersecurity continuation
+
+Networking now includes ten expanded weekly lessons and a seven-test downloadable Python model for segment arithmetic, subnet counts, longest-prefix forwarding, TTL expiry and no-route outcomes. Cybersecurity includes ten expanded lessons and a seven-test fictional triage model for policy decisions, investigation thresholds and timezone-normalized event ordering. Neither emits packets, changes permissions, performs containment or constitutes a physical measurement. Canonical infrastructure practicals remain separate. General IT quiz wording and private explanatory keys were corrected to match the offsite backup and maintenance instruction; stable question IDs and answer positions were preserved.
+
+The source pin is now `b0d1645c90580fca546c51deaeb0ebb59d080bde`. The compiler rejected the previous pin/source mismatch, as designed; the explicit development pin update resolved it. A test-only Digital Confidence package compiled successfully and its import report is retained. This is not an offline package release or owner acceptance. Prior public pin `63ba9f25` and its historical review context remain recorded in Git and PIN metadata.
+
+Validation: 100 client tests; 18 Hub-service tests including all 180 quiz evaluations; five canonical export/synchronization tests; 20 worked-example tests (6 software + 7 networking + 7 triage). The broader assessment/security run passed 165 tests, with two environment-related checks subsequently resolved in a five-test rerun (three checks overlap). This is 167 distinct checks across that selected broader suite, not 170. Browser results are recorded in the coordinated site's full-delivery acceptance report and artifacts. No authentic learner grades were generated.

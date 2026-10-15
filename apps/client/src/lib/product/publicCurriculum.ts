@@ -121,11 +121,11 @@ export function publicCourseModels(pinnedIds: string[] = []): CourseCardModel[] 
     title: track.title,
     site: track.academy,
     term: track.level,
-    status: "Verified package catalog",
+    status: "Open learning · educational review pending",
     pinned: pinnedIds.includes(catalogSectionId(track.trackId)),
     progress: null,
     summary: `${track.lessons} lessons · ${track.assignments} assignments · ${track.labs} labs${track.quizzes ? ` · ${track.quizzes} quizzes` : ""}`,
-    availability: track.offlinePack ? "Offline pack declared" : "Online/package install required",
+    availability: publicContentForTrack(track)?.offlinePackDeclared ? "Offline pack declared" : "Web reader available · offline release pending",
   }));
 }
 

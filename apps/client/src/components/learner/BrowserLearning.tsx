@@ -20,6 +20,10 @@ export function BrowserLearning({ trackId, unit, onNavigate }: { trackId: string
   const assignment = content.assignments[unit - 1];
   const lab = content.labs.find(l => l.id === lesson.labId);
   const storageKey = `waike.practice.v1:${track.trackId}:${content.contentRootSha256}`;
+  function clearCourseRecords() {
+    const keys = Array.from({length: localStorage.length}, (_, i) => localStorage.key(i)).filter((k): k is string => Boolean(k?.startsWith(`waike.practice.v1:${track.trackId}:`)));
+    keys.forEach(k => localStorage.removeItem(k));
+  }
   const [record, setRecord] = useState<RecordState>(empty);
   const [consent, setConsent] = useState(false);
   const [message, setMessage] = useState('');
@@ -32,7 +36,7 @@ export function BrowserLearning({ trackId, unit, onNavigate }: { trackId: string
       const saved = localStorage.getItem(storageKey);
       if (saved) {
         const parsed = JSON.parse(saved);
-        if (Array.isArray(parsed.viewed) && parsed.quizzes && parsed.drafts) {
+        if (Array.isArray(parsed.viewed) && parsed.viewed.every((n: unknown) => Number.isInteger(n) && Number(n) >= 1 && Number(n) <= 10) && parsed.quizzes && typeof parsed.quizzes === 'object' && parsed.drafts && typeof parsed.drafts === 'object' && Object.values(parsed.drafts).every(d => typeof d === 'string' && d.length <= 20000)) {
           setRecord(parsed); setConsent(true); setDraft(parsed.drafts[String(unit)] || '');
         }
       }
@@ -98,7 +102,7 @@ export function BrowserLearning({ trackId, unit, onNavigate }: { trackId: string
       <p>Lesson reads: {record.viewed.length} / {content.lessons.length}. Quizzes practiced: {Object.keys(record.quizzes).length}. Drafts saved: {Object.keys(record.drafts).length}. Labs and assignments still require verified evidence and review. Course completion: not established.</p>
       <dl><dt>Viewed</dt><dd>{record.viewed.length} lessons marked read</dd><dt>Practiced</dt><dd>{Object.keys(record.quizzes).length} quizzes with a checked response</dd><dt>Submitted</dt><dd>No guest work submitted to a school Hub</dd><dt>Evaluated</dt><dd>Formative quiz feedback only; practical and instructor evaluation pending</dd><dt>Completed</dt><dd>Not established</dd><dt>Competency demonstrated</dt><dd>Not established; requires verified practical evidence and authorized review</dd></dl>
       <label><input type="checkbox" checked={consent} onChange={e => { setConsent(e.target.checked); if (!e.target.checked) { try { localStorage.removeItem(storageKey); } catch { /* unavailable storage */ } } }} />Save practice on this browser. Other people using this browser may be able to see it.</label>
-      <button onClick={download}>Download my practice evidence</button><button onClick={() => { try { localStorage.removeItem(storageKey); } catch { /* unavailable storage */ } setRecord(empty()); setDraft(''); setConsent(false); setMessage('This course’s saved practice was cleared.'); }}>Clear this course’s device record</button>
+      <button onClick={download}>Download my practice evidence</button><button onClick={() => { try { clearCourseRecords(); } catch { setMessage('The browser could not clear saved records. Use its site-data settings to remove them.'); return; } setRecord(empty()); setDraft(''); setConsent(false); setMessage('This course’s saved practice was cleared.'); }}>Clear this course’s device record</button>
       <p>Records are tied to this content version. They are not synced across devices. Updated content starts a separate practice record.</p>
       <details><summary>Glossary and course syllabus</summary>{content.references?.filter(r => !r.path.endsWith('.json')).map(r => <SafeMarkdown key={r.path} markdown={r.markdown} />)}</details>
       <details><summary>Source version</summary><p>Canonical owner: waike-research-ops. Source commit: {content.sourceCommit}. Content hash: {content.contentRootSha256}. Educational acceptance pending.</p></details>
@@ -111,9 +115,9 @@ export function BrowserLearning({ trackId, unit, onNavigate }: { trackId: string
 function StoragePractice() {
   const [used, setUsed] = useState('180'); const [reserve, setReserve] = useState('12'); const [answer, setAnswer] = useState(''); const [feedback, setFeedback] = useState('');
   return <aside><h3>Run the capacity calculation</h3><p>Fixture: a 256 GiB volume. All values use the same unit. Usable free capacity = size − used − reserved. Divide by size for the free ratio; multiply by 100 for a percentage. This course’s 15% policy is a fixture assumption.</p>
-    <label>Used GiB<input type="number" min="0" max="256" value={used} onChange={e => setUsed(e.target.value)} /></label>
-    <label>Reserved GiB<input type="number" min="0" max="256" value={reserve} onChange={e => setReserve(e.target.value)} /></label>
-    <label>Your free percentage<input type="number" step="any" value={answer} onChange={e => setAnswer(e.target.value)} /></label>
+    <label>Used GiB<input type="number" min="0" max="256" value={used} onChange={e => { setUsed(e.target.value); setFeedback(''); }} /></label>
+    <label>Reserved GiB<input type="number" min="0" max="256" value={reserve} onChange={e => { setReserve(e.target.value); setFeedback(''); }} /></label>
+    <label>Your free percentage<input type="number" step="any" value={answer} onChange={e => { setAnswer(e.target.value); setFeedback(''); }} /></label>
     <button onClick={() => { const u=Number(used), r=Number(reserve), a=Number(answer); if (!used || !reserve || !answer || ![u,r,a].every(Number.isFinite) || u<0 || r<0 || u+r>256 || a<0 || a>100) { setFeedback('Enter valid nonnegative capacities totaling no more than 256 GiB and a percentage from 0 to 100.'); return; } const percent=(256-u-r)/256*100; setFeedback(Math.abs(a-percent)<0.01 ? `Calculation verified: ${percent.toFixed(3)}%. ${percent>=15 ? 'Meets' : 'Below'} this fixture’s 15% policy. Change the inputs and predict the result again.` : 'The calculation differs. Subtract both used and reserved capacity before dividing by 256. Try again.'); }}>Verify my calculation</button><p role="status">{feedback}</p>
   </aside>;
 }

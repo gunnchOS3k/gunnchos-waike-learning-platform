@@ -1,0 +1,38 @@
+{
+  "source_curriculum": "b0d1645c90580fca546c51deaeb0ebb59d080bde",
+  "output_root": "apps/client/dist (generated, ignored)",
+  "files": {
+    "index.html": {
+      "bytes": 1268,
+      "sha256": "7510440b967d39d3d5dc9b840e5e08078554ec6224035551312f827b0526e242"
+    },
+    "manifest.webmanifest": {
+      "bytes": 545,
+      "sha256": "cba75833a98aeca9f4046d7ab1d843948d416deafa9a9a61a7eb65546a7652e9"
+    },
+    "sw.js": {
+      "bytes": 1085,
+      "sha256": "8fb52f8d874078e36594482fb5c45d7a8bb3366b6ea1ca1bd2a860d8f08f77bf"
+    },
+    "icons/waike-512.png": {
+      "bytes": 1496,
+      "sha256": "1b0453710e470b8619b23b2bb3d48b24717521fadf4922576ad933164f93c0fb"
+    },
+    "icons/README.md": {
+      "bytes": 184,
+      "sha256": "ab2e69a178338801ecb4f8f67aff5bd2c788de33c49e7fb690acb0c88ed5b114"
+    },
+    "icons/waike-192.png": {
+      "bytes": 413,
+      "sha256": "456f7d0856346bf3e372fc949a26cca422379c674607fe1280420d455101722e"
+    },
+    "assets/index-BQ8RdLVy.js": {
+      "bytes": 1298095,
+      "sha256": "a956ff74dcc93471e7bc7278931ea0043263597d4d79b7815ea8e26381c8ce64"
+    },
+    "assets/index-C00vqRsL.css": {
+      "bytes": 7658,
+      "sha256": "5d680607f451de0d59c8e82c56f48a9a04fe7d9a83c4fea7da0ecca924811f10"
+    }
+  }
+}
