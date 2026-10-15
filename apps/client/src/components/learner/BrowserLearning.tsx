@@ -1,3 +1,4 @@
+import {DigitalConfidencePractical} from "./DigitalConfidencePractical";
 import { useEffect, useState } from 'react';
 import { PUBLIC_TRACKS, publicContentForTrack } from '../../lib/product/publicCurriculum';
 import { SafeMarkdown } from '../content/SafeMarkdown';
@@ -81,6 +82,7 @@ export function BrowserLearning({ trackId, unit, onNavigate }: { trackId: string
       <button onClick={() => save({ ...record, viewed: Array.from(new Set([...record.viewed, unit])) })}>Mark this lesson read</button>
       <p>Reading records engagement. It does not demonstrate mastery.</p>
     </article>
+    {content.delivery && <><p>{content.delivery.definition.introduction}</p><DigitalConfidencePractical key={`dc:${unit}`} delivery={content.delivery} unit={unit}/>{unit===10&&<DigitalConfidencePractical delivery={content.delivery} unit={11}/>}</>}
     <section id="practice-lab"><h2>Practice lab</h2>{lab ? <SafeMarkdown markdown={lab.markdown.replace(/^(#{1,5}) /gm, "$1# ")} /> : <p>The linked lab could not be loaded. No lab completion is recorded.</p>}
       {lesson.labId === 'lab_storage' && <StoragePractice />}
       <p>Command-line activities require the canonical curriculum checkout and the stated tools. Submit your own artifact; running a reference fixture does not establish your competence. Browser calculations are formative practice.</p>

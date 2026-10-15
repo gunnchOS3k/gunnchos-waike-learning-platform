@@ -54,6 +54,7 @@ export type PublicTrackContent = {
   quizzes: PublicContentItem[];
   labs: PublicContentItem[];
   portfolio: PublicContentItem[];
+  delivery?: import("../../components/learner/DigitalConfidencePractical").DcDelivery | null;
   references?: PublicContentItem[];
   resources?: PublicContentItem[];
   prerequisites?: { required?: string[]; recommended?: string[] };
