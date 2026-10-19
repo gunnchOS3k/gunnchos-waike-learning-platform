@@ -91,6 +91,7 @@ describe("WAIKE Learning OS shell", () => {
     await waitFor(() => {
       expect(screen.getByTestId("public-catalog-banner")).toHaveTextContent(/all 18/i);
     });
+    await user.click(screen.getByTestId("mode-home"));
     expect(screen.getByTestId("public-runtime-truth")).toHaveTextContent(/complete packaged curriculum/i);
 
     await user.click(screen.getByTestId("mode-courses"));
