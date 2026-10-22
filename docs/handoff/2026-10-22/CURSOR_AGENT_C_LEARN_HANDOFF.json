@@ -1,0 +1,90 @@
+{
+  "schema": "cursor.agent_c.learn_handoff.v1",
+  "date": "2026-10-22",
+  "v1": "NOT READY",
+  "rc2": "NOT READY",
+  "b03_fixed": false,
+  "b08_changed": false,
+  "repos": [
+    {
+      "repo": "gunnchos-waike-learning-platform",
+      "role": "edited",
+      "worktree": "repos/gunnchos-waike-learning-platform/.worktrees/cursor-v1-agent-c-learn",
+      "branch": "eng/cursor-v1-agent-c-learn",
+      "base_sha": "6bdfa0b416ea95b0abb36669faa8059095962281",
+      "fix_commit_sha": "f668ea40a32c3d991a7ba42d9be5d836356b1dbb",
+      "origin_main_sha": "2641042936f3b965daccb11091c80cbc6fa64f91"
+    },
+    {
+      "repo": "waike-research-ops",
+      "role": "read-only matrix",
+      "sha": "dd1c5ae0a917ce3fc45e7def2439cc6981bf0ab7",
+      "matrix": "curriculum/taxonomy/eighteen_tracks.json"
+    },
+    {
+      "repo": "gunnchAI3k",
+      "role": "not edited",
+      "sha": "e64d3dbca9ab821b5d40c7c981b723201c0307c8"
+    },
+    {
+      "repo": "3k-mlv",
+      "role": "read-only",
+      "sha": "5e99c64673557efe7cbdfbbfb4d4ebcdcabfaab7",
+      "worktree": "repos/_mlv_revival_worktrees/3k-mlv"
+    }
+  ],
+  "tracks": [
+    {"id": "DIGITAL_CONFIDENCE", "client_unit1_read": "verified", "assessment_offline_education": "not", "why": "Unit 1 rendered and marked read. Existing practical file-read test passed. Not a Hub grade."},
+    {"id": "IT_SUPPORT_HARDWARE", "client_unit1_read": "verified", "assessment_offline_education": "not", "why": "Unit 1 read step executed. Lesson markdown SHA-256 prefix 3940c2b0a8a9 matches DIGITAL_CONFIDENCE. Coursework not rewritten."},
+    {"id": "SOFTWARE_BUILDER", "client_unit1_read": "verified", "assessment_offline_education": "not", "why": "Unit 1 rendered and marked read. Completion stayed unestablished."},
+    {"id": "NETWORKING_INFRA", "client_unit1_read": "verified", "assessment_offline_education": "not", "why": "Unit 1 rendered and marked read. Completion stayed unestablished."},
+    {"id": "CYBER_SOC", "client_unit1_read": "verified", "assessment_offline_education": "not", "why": "Unit 1 rendered and marked read. Completion stayed unestablished."},
+    {"id": "DATA_DASHBOARDS", "client_unit1_read": "verified", "assessment_offline_education": "not", "why": "Unit 1 rendered and marked read. Completion stayed unestablished."},
+    {"id": "AI_ML_EDGE", "client_unit1_read": "verified", "assessment_offline_education": "not", "why": "Unit 1 rendered and marked read. Completion stayed unestablished."},
+    {"id": "EMBEDDED_PROTOTYPING", "client_unit1_read": "verified", "assessment_offline_education": "not", "why": "Unit 1 rendered and marked read. Completion stayed unestablished."},
+    {"id": "WIRELESS_6G", "client_unit1_read": "verified", "assessment_offline_education": "not", "why": "Unit 1 rendered and marked read. Completion stayed unestablished."},
+    {"id": "PM_AGILE_LSS", "client_unit1_read": "verified", "assessment_offline_education": "not", "why": "Unit 1 rendered and marked read. Completion stayed unestablished."},
+    {"id": "GAME_DEV_INTERACTIVE", "client_unit1_read": "verified", "assessment_offline_education": "not", "why": "Unit 1 rendered and marked read. Completion stayed unestablished."},
+    {"id": "SEVEN_GC_APPRENTICESHIP", "client_unit1_read": "verified", "assessment_offline_education": "not", "why": "Unit 1 rendered and marked read. Completion stayed unestablished."},
+    {"id": "CLOUD_DEVOPS", "client_unit1_read": "verified", "assessment_offline_education": "not", "why": "Unit 1 rendered and marked read. Completion stayed unestablished."},
+    {"id": "COMM_PD_ETHICS", "client_unit1_read": "verified", "assessment_offline_education": "not", "why": "Unit 1 rendered and marked read. Completion stayed unestablished."},
+    {"id": "ROBOTICS_CONTROL", "client_unit1_read": "verified", "assessment_offline_education": "not", "why": "Unit 1 rendered and marked read. Completion stayed unestablished."},
+    {"id": "GUNNCHOS_PRODUCT_LAB", "client_unit1_read": "verified", "assessment_offline_education": "not", "why": "Unit 1 rendered and marked read. Completion stayed unestablished."},
+    {"id": "HARDWARE_ENGINEERING", "client_unit1_read": "verified", "assessment_offline_education": "not", "why": "Unit 1 rendered and marked read. Completion stayed unestablished."},
+    {"id": "DATA_VIZ_BI", "client_unit1_read": "verified", "assessment_offline_education": "not", "why": "Unit 1 rendered and marked read. Completion stayed unestablished."}
+  ],
+  "defect": {
+    "id": "device-save-does-not-persist-lesson-read",
+    "not": "Lessons-to-Home navigation (7b9484f, not edited)",
+    "evidence_before_fix": "vitest -t \"reads lesson progress back\" failed waiting for Lesson reads: 1 after remount; in-memory count was 1 and localStorage.length was 0",
+    "fix_commit_sha": "f668ea40a32c3d991a7ba42d9be5d836356b1dbb"
+  },
+  "tests": {
+    "command": "./node_modules/.bin/vitest run src/components/learner/BrowserLearning.test.tsx src/components/learner/DigitalConfidencePractical.test.tsx",
+    "after_fix": "2 files passed, 7 tests passed, 0 failed",
+    "install": "none; existing vitest via local symlink, not committed"
+  },
+  "gunnchai": {
+    "result": "not_run",
+    "production_call": false,
+    "fake_provider_added": false,
+    "reason": "no node_modules; dirty tutor checkout left untouched; production calls forbidden"
+  },
+  "tls": {
+    "status": "unchanged",
+    "trusted_replay": "blocked",
+    "bypass": false,
+    "source": "portal continuations/trusted-replay/REPORT.md TRUSTED_TLS_PASS false"
+  },
+  "files_not_touched": [
+    "anime-aggressors",
+    "partylink",
+    "beatlink-party",
+    "pedestrian-pursuit",
+    "archive-of-life-artifact-world",
+    "gunnchos-research-portal",
+    "codex-art",
+    "production-website"
+  ],
+  "next_executable_learning_task": "Owner provisions an authorized current localhost CA/leaf chain, then one trusted same-origin fictional practical replay. Do not mark B03 fixed."
+}
