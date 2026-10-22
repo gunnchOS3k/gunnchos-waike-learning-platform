@@ -13,6 +13,8 @@ This packet is a draft engineering note. A unit-1 browser read is not 18-track a
 | Branch | `eng/cursor-v1-agent-c-learn` |
 | Base (local delivery tip, not `origin/main`) | `6bdfa0b416ea95b0abb36669faa8059095962281` |
 | Fix commit | `f668ea40a32c3d991a7ba42d9be5d836356b1dbb` |
+| Handoff commit | `eb229afd13e4aa7d01a3c40a022c38d3fbac250b` |
+| Draft PR | https://github.com/gunnchOS3k/gunnchos-waike-learning-platform/pull/29 |
 | `origin/main` | `2641042936f3b965daccb11091c80cbc6fa64f91` |
 
 `origin/main` does not contain `BrowserLearning.tsx`. The reader lives on the local delivery line. This branch therefore contains those preexisting delivery commits plus the fix commit and this handoff. They are not a release candidate.
