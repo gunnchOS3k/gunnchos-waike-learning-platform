@@ -108,7 +108,18 @@ function LoadedBrowserLearning({trackId, unit, onNavigate, auth, track, content}
     <section id="practice-progress"><h2>My evidence</h2>
       <p>Lesson reads: {record.viewed.length} / {content.lessons.length}. Quizzes practiced: {Object.keys(record.quizzes).length}. Drafts saved: {Object.keys(record.drafts).length}. Labs and assignments still require verified evidence and review. Course completion: not established.</p>
       <dl><dt>Viewed</dt><dd>{record.viewed.length} lessons marked read</dd><dt>Practiced</dt><dd>{Object.keys(record.quizzes).length} quizzes with a checked response</dd><dt>Submitted</dt><dd>No guest work submitted to a school Hub</dd><dt>Evaluated</dt><dd>Formative quiz feedback only; practical and instructor evaluation pending</dd><dt>Completed</dt><dd>Not established</dd><dt>Competency demonstrated</dt><dd>Not established; requires verified practical evidence and authorized review</dd></dl>
-      <label><input type="checkbox" checked={consent} onChange={e => { setConsent(e.target.checked); if (!e.target.checked) { try { localStorage.removeItem(storageKey); } catch { /* unavailable storage */ } } }} />Save practice on this browser. Other people using this browser may be able to see it.</label>
+      <label><input type="checkbox" checked={consent} onChange={e => {
+        const enabled = e.target.checked;
+        setConsent(enabled);
+        if (!enabled) {
+          try { localStorage.removeItem(storageKey); } catch { /* unavailable storage */ }
+          return;
+        }
+        try {
+          localStorage.setItem(storageKey, JSON.stringify(record));
+          setMessage('Saved on this browser.');
+        } catch { setMessage('Browser storage is unavailable. Download your evidence before leaving.'); }
+      }} />Save practice on this browser. Other people using this browser may be able to see it.</label>
       <button onClick={download}>Download my practice evidence</button><button onClick={() => { try { clearCourseRecords(); } catch { setMessage('The browser could not clear saved records. Use its site-data settings to remove them.'); return; } setRecord(empty()); setDraft(''); setConsent(false); setMessage('This course’s saved practice was cleared.'); }}>Clear this course’s device record</button>
       <p>Records are tied to this content version. They are not synced across devices. Updated content starts a separate practice record.</p>
       <details><summary>Glossary and course syllabus</summary>{content.references?.filter(r => !r.path.endsWith('.json')).map(r => <SafeMarkdown key={r.path} markdown={r.markdown} />)}</details>

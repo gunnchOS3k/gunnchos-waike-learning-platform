@@ -45,4 +45,34 @@ describe('browser course learning', () => {
     render(<BrowserLearning {...props}/>);expect(screen.getByRole('textbox')).toHaveValue('Fictional ticket draft');
     expect(screen.getByText(/Draft only/)).toBeInTheDocument();
   });
+  it('reads lesson progress back after device saving is turned on', async () => {
+    const props={trackId:'DIGITAL_CONFIDENCE',unit:1,onNavigate:vi.fn()};
+    const view=render(<BrowserLearning {...props}/>);
+    fireEvent.click(screen.getByRole('button',{name:'Mark this lesson read'}));
+    expect(screen.getByText(/Lesson reads: 1 \//)).toBeInTheDocument();
+    expect(localStorage.length).toBe(0);
+    fireEvent.click(screen.getByLabelText(/Save practice on this browser/));
+    view.unmount();
+    render(<BrowserLearning {...props}/>);
+    await waitFor(() => expect(screen.getByText(/Lesson reads: 1 \//)).toBeInTheDocument());
+    expect(screen.getByText(/1 lessons marked read/)).toBeInTheDocument();
+    expect(screen.getByText(/Course completion: not established/)).toBeInTheDocument();
+  });
+  it('executes a unit-1 read for every canonical track without awarding completion', async () => {
+    expect(PUBLIC_TRACKS.map(t => t.trackId)).toEqual([
+      'DIGITAL_CONFIDENCE','IT_SUPPORT_HARDWARE','SOFTWARE_BUILDER','NETWORKING_INFRA','CYBER_SOC','DATA_DASHBOARDS','AI_ML_EDGE','EMBEDDED_PROTOTYPING','WIRELESS_6G','PM_AGILE_LSS','GAME_DEV_INTERACTIVE','SEVEN_GC_APPRENTICESHIP','CLOUD_DEVOPS','COMM_PD_ETHICS','ROBOTICS_CONTROL','GUNNCHOS_PRODUCT_LAB','HARDWARE_ENGINEERING','DATA_VIZ_BI',
+    ]);
+    for (const track of PUBLIC_TRACKS) {
+      const content = await loadPublicContent(track);
+      expect(content.lessons[0]?.markdown.length).toBeGreaterThan(0);
+      const view = render(<BrowserLearning trackId={track.trackId} unit={1} onNavigate={vi.fn()} />);
+      const reader = screen.getByTestId('browser-learning');
+      expect(reader.querySelector('header h1')?.textContent).toBe(track.title);
+      fireEvent.click(screen.getByRole('button', { name: 'Mark this lesson read' }));
+      expect(screen.getByText(/Lesson reads: 1 \//)).toBeInTheDocument();
+      expect(screen.getByText(/Course completion: not established/)).toBeInTheDocument();
+      view.unmount();
+      cleanup();
+    }
+  });
 });
