@@ -123,12 +123,15 @@ jobs:
           DEVICE_OS_ROOT: ${{ github.workspace }}/gunnchos-device-os
           GUNNCHAI_ROOT: ${{ github.workspace }}/gunnchAI3k
           PYTHONPATH: services/hub
-          WAIKE_ALLOW_FAKE_AI: "1"
         run: |
-          .venv/bin/pytest -q \
+          # Production startup must not inherit a fake-AI or pilot flag.
+          env -u WAIKE_ALLOW_FAKE_AI -u WAIKE_PIXEL_PILOT \
+            .venv/bin/pytest -q tests/pr3/test_startup_security.py --tb=line
+          WAIKE_ALLOW_FAKE_AI=1 .venv/bin/pytest -q \
             tests/compatibility tests/security tests/integration \
             tests/assessment tests/pr3 tests/gate_a \
-            services/hub/tests --tb=line
+            services/hub/tests --tb=line \
+            --ignore=tests/pr3/test_startup_security.py
           .venv/bin/pytest -q tests/gate_c --tb=line
           PYTHONPATH=tools/course_compiler:services/hub .venv/bin/pytest -q tests/gate_b --tb=line
 

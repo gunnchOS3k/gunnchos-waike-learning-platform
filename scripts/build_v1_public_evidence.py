@@ -6,7 +6,7 @@ import json
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-PIN = "63ba9f25ac6b8d8d1b6dd118923566fd51c57b62"
+PIN = "33a101852f4fefb0eb239bcffa60a65d71102e2c"
 
 
 def main():
