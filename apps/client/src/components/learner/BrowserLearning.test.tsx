@@ -1,7 +1,7 @@
 import { cleanup, render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { afterEach, beforeEach, describe, it, expect, vi } from 'vitest';
 import { BrowserLearning, parseLearningHash } from './BrowserLearning';
-import { PUBLIC_TRACKS, loadPublicContent, publicContentForTrack } from '../../lib/product/publicCurriculum';
+import { PUBLIC_TRACKS, loadPublicContent, publicAssignmentsForTrack, publicContentForTrack } from '../../lib/product/publicCurriculum';
 beforeEach(async () => { localStorage.clear(); await loadPublicContent(PUBLIC_TRACKS[0]); });
 afterEach(() => { cleanup(); vi.unstubAllGlobals(); });
 describe('browser course learning', () => {
@@ -75,27 +75,50 @@ describe('browser course learning', () => {
       cleanup();
     }
   });
-  it('lets a guest open one authored lesson, a lab, and ungraded practice', async () => {
+  it('lets a guest complete an ungraded journey on more than one track', async () => {
     expect(PUBLIC_TRACKS).toHaveLength(18);
-    const track = PUBLIC_TRACKS[0];
-    const content = await loadPublicContent(track);
-    expect(content.lessons[0]?.markdown.length).toBeGreaterThan(80);
-    expect((content.labs[0]?.markdown || '').length).toBeGreaterThan(40);
-    const quiz = content.quizzes[0];
-    const fetch = vi.fn().mockResolvedValue({ok:true,json:async()=>({kind:'formative_practice',persisted:false,earned:0,possible:quiz.items!.length,feedback:quiz.items!.map(q=>({id:q.id,correct:false,explanation:'Review the lesson.'}))})});
-    vi.stubGlobal('fetch', fetch);
-    const navigate = vi.fn();
-    render(<BrowserLearning trackId={track.trackId} unit={1} onNavigate={navigate} />);
-    fireEvent.change(screen.getByLabelText('Choose course'), {target:{value:PUBLIC_TRACKS[1].trackId}});
-    expect(navigate).toHaveBeenCalledWith(PUBLIC_TRACKS[1].trackId, 1);
-    expect((screen.getByTestId('full-lesson-content').textContent || '').length).toBeGreaterThan(40);
-    expect(screen.getByRole('heading', {name:'Practice lab'})).toBeInTheDocument();
-    expect(screen.getByText(/This practice score is not an authenticated grade/)).toBeInTheDocument();
-    expect(screen.getByText(/A guest draft is not submitted automatically/)).toBeInTheDocument();
-    Array.from(document.querySelectorAll('fieldset')).forEach(group => fireEvent.click(group.querySelector('input')!));
-    fireEvent.click(screen.getByRole('button', {name:'Check my answers'}));
-    await waitFor(() => expect(screen.getByText(/No server record was created/)).toBeInTheDocument());
-    expect(screen.getByText(/Course completion: not established/)).toBeInTheDocument();
-    expect(fetch.mock.calls[0][1].credentials).toBe('omit');
+    for (const track of PUBLIC_TRACKS) {
+      const content = await loadPublicContent(track);
+      expect(content.lessons[0]?.markdown.length).toBeGreaterThan(80);
+      expect((content.labs[0]?.markdown || '').length).toBeGreaterThan(40);
+      expect(content.quizzes.length).toBeGreaterThan(0);
+      expect(content.assignments.length).toBeGreaterThan(0);
+      for (const quiz of content.quizzes) {
+        for (const item of quiz.items || []) {
+          expect(item).not.toHaveProperty('answer_index');
+          expect(item).not.toHaveProperty('answer');
+          expect(JSON.stringify(item).toLowerCase()).not.toContain('answer_key');
+        }
+      }
+      for (const card of publicAssignmentsForTrack(track)) {
+        expect(card.submission_state).toBe('Requires a school Hub');
+        expect(card.grade_state).toBe('none');
+      }
+    }
+    for (const track of [PUBLIC_TRACKS[0], PUBLIC_TRACKS[8], PUBLIC_TRACKS[17]]) {
+      const content = publicContentForTrack(track)!;
+      const quiz = content.quizzes[0];
+      const fetch = vi.fn().mockResolvedValue({ok:true,json:async()=>({kind:'formative_practice',persisted:false,earned:0,possible:quiz.items!.length,feedback:quiz.items!.map(q=>({id:q.id,correct:false,explanation:'Review the lesson.'}))})});
+      vi.stubGlobal('fetch', fetch);
+      const view = render(<BrowserLearning trackId={track.trackId} unit={1} onNavigate={vi.fn()} />);
+      expect((screen.getByTestId('full-lesson-content').textContent || '').length).toBeGreaterThan(40);
+      expect(screen.getByRole('heading', {name:'Practice lab'})).toBeInTheDocument();
+      expect(screen.getByText(/This practice score is not an authenticated grade/)).toBeInTheDocument();
+      expect(screen.getByText(/A guest draft is not submitted automatically/)).toBeInTheDocument();
+      expect(screen.queryByText(/answer key/i)).toBeNull();
+      expect(screen.queryByRole('button', {name:/exam/i})).toBeNull();
+      Array.from(document.querySelectorAll('fieldset')).forEach(group => fireEvent.click(group.querySelector('input')!));
+      fireEvent.click(screen.getByRole('button', {name:'Check my answers'}));
+      await waitFor(() => expect(screen.getByText(/No server record was created/)).toBeInTheDocument());
+      expect(screen.getByText(/Course completion: not established/)).toBeInTheDocument();
+      expect(fetch.mock.calls[0][0]).toBe(`/api/v1/public-practice/${track.trackId}/1`);
+      expect(fetch.mock.calls[0][1].credentials).toBe('omit');
+      const body = JSON.parse(fetch.mock.calls[0][1].body);
+      expect(body.quiz_sha256).toBe(quiz.sha256);
+      expect(body).not.toHaveProperty('grade');
+      view.unmount();
+      cleanup();
+      localStorage.clear();
+    }
   });
 });
