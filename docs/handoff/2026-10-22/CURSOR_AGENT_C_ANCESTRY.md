@@ -96,3 +96,25 @@ Disk at this pass: about 12 GiB free. No heavy install. The failed focused workt
 ## Next executable learning task
 
 Keep #29 in review as the delivery stack that contains the reader. Do not cherry-pick `f668ea40` onto main until `BrowserLearning` exists there. Do not retarget either curriculum pin. The next learning proof, after that stack is the review surface, is an existing evaluator or instructor-auth test inside the delivery tree, still without a TLS bypass and without a production gunnchAI call.
+
+## Evaluator pass
+
+Head at the start of this pass was still `23f6bf204efc7199527f2028eed029246d315d24`. It was not reset. The learner-journey paragraph above recorded the practice evaluator as not run. This section is that later run. No product code changed.
+
+Existing test, not the lesson-read test and not “hides overall percent”: `apps/client/src/components/learner/BrowserLearning.test.tsx`, case `evaluates selected responses and preserves practice as ungraded evidence`.
+
+Command, from `apps/client`, existing vitest `v2.1.9` (symlink into `_waike_full_delivery`, not committed):
+
+`./node_modules/.bin/vitest run src/components/learner/BrowserLearning.test.tsx -t "evaluates selected responses and preserves practice as ungraded evidence" --reporter=verbose`
+
+Result: **pass**. `Test Files  1 passed (1)`. `Tests  1 passed | 5 skipped (6)`. Start `23:12:29`. Duration `1.17s`. Exit code 0.
+
+The test stubs `fetch` with `kind: formative_practice`, `persisted: false`, and `earned: 0`. It checks that the client shows `Practice result: 0`, posts one response per quiz item with `quiz_sha256`, sets `credentials` to `omit`, keeps `Course completion: not established`, and stores one opted-in local record. That is ungraded formative evidence on the client. It does not grade, does not authorize an instructor, and does not call a live evaluator.
+
+Pins were not changed. Stack `curriculum/registry/PIN.json` `pinned_commit` and `authoritative_pin_commit` remain `33a101852f4fefb0eb239bcffa60a65d71102e2c`. Workflow checkouts for gates B–D and windows-pilot0 remain `63ba9f25ac6b8d8d1b6dd118923566fd51c57b62`. `origin/main` remains `2641042936f3b965daccb11091c80cbc6fa64f91`. `f668ea40` was not cherry-picked onto main. #29 stays the draft stack.
+
+Disk at this pass: about 12 GiB free, still under the 18 GiB reserve. No npm install. No TLS bypass. No production gunnchAI call. No fake provider was added.
+
+V1 and RC2 remain **NOT READY**. B03 stays open.
+
+Next learning proof on this stack: the existing instructor-authorization case `denies answer keys and other sections` in `apps/client/src/lib/product/product.test.ts` (`authorizeSearchHits` for a learner). A live evaluator still stops on the missing authorized localhost CA and leaf. Do not bypass TLS and do not call production gunnchAI.
