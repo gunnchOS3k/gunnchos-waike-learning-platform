@@ -319,10 +319,6 @@ export default function App() {
   const publicCatalogMode = hubResolution.status === "unavailable";
   const learnerAccess = primaryRole === "learner" || isMock || publicCatalogMode;
 
-  useEffect(() => {
-    if (publicCatalogMode && mode === "lessons") setMode("home");
-  }, [publicCatalogMode, mode]);
-
   const device = useMemo(() => deviceId(), []);
   // Only a real HTTP hub can settle mutations; the mock hub has no sync ledger.
   const syncTransport: SyncTransport | null = useMemo(() => {
@@ -699,6 +695,7 @@ export default function App() {
   const courseModels = publicCatalogMode ? publicCourseModels(pinnedIds) : hubCourseModels;
   const activeCourse = resolveActiveCourse(courseModels, sectionId || null);
   const activePublicTrack = publicCatalogMode ? publicTrackForSection(sectionId) : null;
+  const publicLessonTrack = activePublicTrack || (publicCatalogMode ? PUBLIC_TRACKS[0] : null);
   const activePublicContent = publicContentForTrack(activePublicTrack);
   const hubAssignmentCards: AssignmentCardModel[] = assignmentSummaries.map((a) => ({
     assignment_id: a.assignment_id,
@@ -906,10 +903,10 @@ export default function App() {
             onClick={() => {
               setLesson(null);
               setError(null);
-              setMode("lessons");
+              setMode(publicCatalogMode ? "courses" : "lessons");
             }}
           >
-            Back
+            {publicCatalogMode ? "Back to courses" : "Back"}
           </button>
           {user ? (
             <button type="button" className="ghost" data-testid="logout-btn" onClick={() => void onLogout()}>
@@ -1151,7 +1148,7 @@ export default function App() {
       ) : null}
 
       <div className="layout" id="main">
-        {mode === "lessons" ? (
+        {mode === "lessons" && !publicCatalogMode ? (
           <>
             {module ? (
               <CourseCard module={module} onOpenLesson={(l) => void onOpenLesson(l)} />
@@ -1322,7 +1319,7 @@ export default function App() {
               course={activeCourse}
               nextDue={today.due_soon.find((d) => d.section_id === activeCourse?.section_id) || today.due_soon[0] || null}
               announcement={null}
-              onContinue={() => setMode("study")}
+              onContinue={() => setMode(publicCatalogMode ? "lessons" : "study")}
               onTab={(tab) => {
                 if (tab === "assignments") {
                   setOpenAssignmentId(null);
@@ -1349,7 +1346,7 @@ export default function App() {
               onOpenLesson={(id) => {
                 const unit = Number(id.split(".").at(-1));
                 if (Number.isFinite(unit)) setCatalogUnit(unit);
-                setMode("study");
+                setMode(publicCatalogMode ? "lessons" : "study");
               }}
             />
           </>
@@ -1435,10 +1432,10 @@ export default function App() {
             }}
           />
         ) : null}
-        {mode === "study" ? (
+        {mode === "study" || (mode === "lessons" && publicCatalogMode) ? (
           <StudyMode
-            title={activePublicTrack?.title || lesson?.title || activeCourse?.title || "Study"}
-            markdown={activePublicTrack ? publicCatalogStudyText(activePublicTrack, catalogUnit) : lesson?.markdown || "Open a lesson from your course to study here."}
+            title={publicLessonTrack?.title || lesson?.title || activeCourse?.title || "Study"}
+            markdown={publicLessonTrack ? publicCatalogStudyText(publicLessonTrack, catalogUnit) : lesson?.markdown || "Open a lesson from your course to study here."}
             labLaunchable={Boolean(activePublicTrack?.labs)}
             onAsk={() => setMode("ai")}
             onLab={() => setMode("activities")}
