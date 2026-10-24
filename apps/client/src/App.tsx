@@ -708,7 +708,9 @@ export default function App() {
   const courseModels = publicCatalogMode ? publicCourseModels(pinnedIds) : hubCourseModels;
   const activeCourse = resolveActiveCourse(courseModels, sectionId || null);
   const activePublicTrack = publicCatalogMode ? publicTrackForSection(sectionId) : null;
+  const publicLessonTrack = activePublicTrack || (publicCatalogMode ? PUBLIC_TRACKS[0] : null);
   const {content: activePublicContent} = usePublicContent(activePublicTrack);
+  usePublicContent(publicLessonTrack);
   const {content: dcContent} = usePublicContent(mode === "dc-practicals" ? PUBLIC_TRACKS[0] : null);
   const hubAssignmentCards: AssignmentCardModel[] = assignmentSummaries.map((a) => ({
     assignment_id: a.assignment_id,
@@ -1167,8 +1169,8 @@ export default function App() {
         {mode === "dc-course" && hub && session && hubResolution.status === "http" && <BrowserLearning key={`dc-auth:${catalogUnit}`} trackId="DIGITAL_CONFIDENCE" unit={catalogUnit} onNavigate={(_,unit)=>setCatalogUnit(unit)} auth={{token:session.token,baseUrl:hubResolution.baseUrl,sectionId:sectionId||"",onReview:()=>{setOpenAssignmentId("DIGITAL_CONFIDENCE-independent-v1");setMode("assignments");}}}/>}
         {mode === "dc-practicals" && hub && session && hubResolution.status === "http" && dcContent?.delivery && <DigitalConfidencePractical delivery={dcContent!.delivery!} unit={11} auth={{token:session.token,baseUrl:hubResolution.baseUrl,sectionId:sectionId||"",onReview:()=>{setOpenAssignmentId("DIGITAL_CONFIDENCE-independent-v1");setMode("assignments");}}}/>}
         {mode === "lessons" && publicCatalogMode ? <BrowserLearning
-          key={`${activePublicTrack?.trackId || "DIGITAL_CONFIDENCE"}:${catalogUnit}`}
-          trackId={activePublicTrack?.trackId || "DIGITAL_CONFIDENCE"} unit={catalogUnit}
+          key={`${publicLessonTrack?.trackId || PUBLIC_TRACKS[0].trackId}:${catalogUnit}`}
+          trackId={publicLessonTrack?.trackId || PUBLIC_TRACKS[0].trackId} unit={catalogUnit}
           onNavigate={(track, unit) => { window.location.hash = `/learn/${track}/${unit}`; setSectionId(`catalog:${track}`); setCatalogUnit(unit); setMode("lessons"); }} /> : null}
         {mode === "lessons" && !publicCatalogMode ? (
           <>
@@ -1456,8 +1458,8 @@ export default function App() {
         ) : null}
         {mode === "study" ? (
           <StudyMode
-            title={activePublicTrack?.title || lesson?.title || activeCourse?.title || "Study"}
-            markdown={activePublicTrack ? publicCatalogStudyText(activePublicTrack, catalogUnit) : lesson?.markdown || "Open a lesson from your course to study here."}
+            title={publicLessonTrack?.title || lesson?.title || activeCourse?.title || "Study"}
+            markdown={publicLessonTrack ? publicCatalogStudyText(publicLessonTrack, catalogUnit) : lesson?.markdown || "Open a lesson from your course to study here."}
             labLaunchable={Boolean(activePublicTrack?.labs)}
             onAsk={() => setMode("ai")}
             onLab={() => setMode("activities")}
