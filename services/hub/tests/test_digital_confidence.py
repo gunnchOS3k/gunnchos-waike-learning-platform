@@ -36,8 +36,16 @@ def test_case_is_version_bound_and_tamper_evident(client):
     a['file']['text']+='wrong';assert not client.post(endpoint,json={'token':c['token'],'answers':a}).json()['checks_passed']
 
 def test_public_cannot_submit_or_read_progress(client):
+    db=client.app.state.db
+    before={name:db.execute(f'SELECT COUNT(*) FROM {name}').fetchone()[0] for name in ('grades','submissions','lesson_progress')}
     assert client.get('/api/v1/digital-confidence/progress').status_code==401
     assert client.post('/api/v1/digital-confidence/submissions',json={}).status_code==401
+    grade=client.post('/api/v1/instructor/submissions/not-a-submission/grade',json={'criterion_scores':[{'criterion_id':'dc2-files','points':1}],'feedback_body':'unauthenticated'})
+    progress=client.post('/api/v1/sync/mutations',json={'client_mutation_id':'unauth-01','site_id':'site-alpha','section_id':'sec_alpha_dc_w01','device_id':'device','entity_type':'lesson_progress','entity_id':'lesson-1','operation':'upsert','payload':{'offset':1}})
+    assert grade.status_code==401
+    assert progress.status_code==401
+    after={name:db.execute(f'SELECT COUNT(*) FROM {name}').fetchone()[0] for name in before}
+    assert after==before
 
 def hdr(actor,role):return {'X-Waike-Actor-Id':actor,'X-Waike-Actor-Role':role}
 
