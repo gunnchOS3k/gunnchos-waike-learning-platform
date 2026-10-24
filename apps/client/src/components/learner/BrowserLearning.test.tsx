@@ -121,4 +121,41 @@ describe('browser course learning', () => {
       localStorage.clear();
     }
   });
+  it('opens the signed-in week-1 lesson, practices without a grade, and requests source tutoring', async () => {
+    const quiz = publicContentForTrack(PUBLIC_TRACKS[0])!.quizzes[0];
+    const fetch = vi.fn(async (url: string) => {
+      const target = String(url);
+      if (target.endsWith('/lessons/1')) {
+        return { ok: true, json: async () => ({ text: 'Server lesson week 1', progress_store: 'lesson_progress', grade_written: false }) };
+      }
+      if (target.endsWith('/lessons/1/practice')) {
+        return { ok: true, json: async () => ({ kind: 'formative_practice', persisted: false, grade_written: false, earned: 0, possible: quiz.items!.length, feedback: quiz.items!.map(item => ({ id: item.id, correct: false, explanation: 'Review the lesson.' })) }) };
+      }
+      if (target.endsWith('/ai/learner/assist')) {
+        return { ok: true, json: async () => ({ ok: true, suggestion_only: true, mutates_grades: false, text: 'Source: lesson\n\nServer lesson week 1' }) };
+      }
+      throw new Error(target);
+    });
+    vi.stubGlobal('fetch', fetch);
+    render(<BrowserLearning trackId="DIGITAL_CONFIDENCE" unit={1} onNavigate={vi.fn()} auth={{ token: 'learner-token', baseUrl: 'https://hub.example', sectionId: 'sec_alpha_dc_w01', onReview: vi.fn() }} />);
+    await waitFor(() => expect(screen.getByText('Progress is stored in lesson_progress. No grade was written.')).toBeInTheDocument());
+    expect(fetch.mock.calls[0][0]).toBe('https://hub.example/api/v1/sections/sec_alpha_dc_w01/lessons/1');
+    expect(fetch.mock.calls[0][1].headers.Authorization).toBe('Bearer learner-token');
+    Array.from(document.querySelectorAll('fieldset')).forEach(group => fireEvent.click(group.querySelector('input')!));
+    fireEvent.click(screen.getByRole('button', { name: 'Check my answers' }));
+    await waitFor(() => expect(screen.getByText(/Practice result: 0 \/ \d+\. No grade was written\./)).toBeInTheDocument());
+    const practice = fetch.mock.calls.find(call => String(call[0]).endsWith('/practice'));
+    expect(practice?.[0]).toBe('https://hub.example/api/v1/sections/sec_alpha_dc_w01/lessons/1/practice');
+    expect(practice?.[1].headers.Authorization).toBe('Bearer learner-token');
+    expect(JSON.parse(practice?.[1].body)).not.toHaveProperty('grade');
+    fireEvent.change(screen.getByLabelText('Ask about this lesson'), { target: { value: 'kiosk idle essay session' } });
+    fireEvent.click(screen.getByRole('button', { name: 'Request source tutoring' }));
+    await waitFor(() => expect(screen.getByText('Deterministic source text. modelCompletion is empty. This is not model inference.')).toBeInTheDocument());
+    const tutoring = fetch.mock.calls.find(call => String(call[0]).endsWith('/assist'));
+    const asked = JSON.parse(tutoring?.[1].body);
+    expect(asked.section_id).toBe('sec_alpha_dc_w01');
+    expect(asked.capability).toBe('explain');
+    expect(asked).not.toHaveProperty('learner_id');
+    expect(asked).not.toHaveProperty('grade');
+  });
 });

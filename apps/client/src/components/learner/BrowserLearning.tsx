@@ -36,6 +36,23 @@ function LoadedBrowserLearning({trackId, unit, onNavigate, auth, track, content}
   const [result, setResult] = useState<Result | null>(null);
   const [busy, setBusy] = useState(false);
   const [draft, setDraft] = useState('');
+  const [serverLesson, setServerLesson] = useState<{ text: string; progress_store: string; grade_written: boolean } | null>(null);
+  const [tutorQuestion, setTutorQuestion] = useState('');
+  const [tutorText, setTutorText] = useState('');
+  const [tutorNote, setTutorNote] = useState('');
+  const signedIn = Boolean(auth?.token && auth.sectionId && !auth.sectionId.startsWith('catalog:'));
+  useEffect(() => {
+    if (!signedIn || !auth) return;
+    let cancelled = false;
+    void fetch(`${auth.baseUrl}/api/v1/sections/${encodeURIComponent(auth.sectionId)}/lessons/${unit}`, {
+      headers: { Authorization: `Bearer ${auth.token}` },
+    }).then(async (response) => {
+      if (!response.ok || cancelled) return;
+      const data = await response.json();
+      if (!cancelled && typeof data.text === 'string') setServerLesson(data);
+    }).catch(() => { if (!cancelled) setMessage('The signed-in lesson could not be opened. No grade was written.'); });
+    return () => { cancelled = true; };
+  }, [signedIn, auth, unit]);
   useEffect(() => {
     try {
       const saved = localStorage.getItem(storageKey);
@@ -57,17 +74,42 @@ function LoadedBrowserLearning({trackId, unit, onNavigate, auth, track, content}
     event.preventDefault(); setBusy(true); setResult(null); setMessage('');
     try {
       // Same-origin reverse proxy. No user-controlled server URL and no credentials.
-      const response = await fetch(`/api/v1/public-practice/${track.trackId}/${unit}`, {
-        method: 'POST', headers: { 'Content-Type': 'application/json' }, credentials: 'omit',
+      const practiceUrl = signedIn && auth
+        ? `${auth.baseUrl}/api/v1/sections/${encodeURIComponent(auth.sectionId)}/lessons/${unit}/practice`
+        : `/api/v1/public-practice/${track.trackId}/${unit}`;
+      const response = await fetch(practiceUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', ...(signedIn && auth ? { Authorization: `Bearer ${auth.token}` } : {}) },
+        credentials: 'omit',
         body: JSON.stringify({ responses, quiz_sha256: quiz.sha256 }),
       });
       if (!response.ok) {
         const error = await response.json().catch(() => ({}));
         throw new Error(typeof error.detail === 'string' ? error.detail : 'Practice evaluation is unavailable. Your answers have not been graded.');
       }
-      const next: Result = await response.json(); setResult(next);
+      const next: Result & { grade_written?: boolean } = await response.json();
+      if (signedIn && next.grade_written) throw new Error('Practice must not write a grade.');
+      setResult(next);
       save({ ...record, quizzes: { ...record.quizzes, [unit]: { earned: next.earned, possible: next.possible } } });
     } catch (error) { setMessage(error instanceof Error ? error.message : 'Evaluation unavailable; no score recorded.'); }
+    finally { setBusy(false); }
+  }
+  async function requestTutoring(event: React.FormEvent) {
+    event.preventDefault();
+    if (!signedIn || !auth) return;
+    setBusy(true); setTutorText(''); setTutorNote(''); setMessage('');
+    try {
+      const response = await fetch(`${auth.baseUrl}/api/v1/ai/learner/assist`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${auth.token}` },
+        credentials: 'omit',
+        body: JSON.stringify({ section_id: auth.sectionId, capability: 'explain', query: tutorQuestion, processing_mode: 'local-only' }),
+      });
+      const data = await response.json();
+      if (!response.ok || data.suggestion_only !== true || data.mutates_grades) throw new Error('Tutoring stayed unavailable. No grade was written.');
+      setTutorText(typeof data.text === 'string' ? data.text : '');
+      setTutorNote('Deterministic source text. modelCompletion is empty. This is not model inference.');
+    } catch (error) { setMessage(error instanceof Error ? error.message : 'Tutoring unavailable. No grade was written.'); }
     finally { setBusy(false); }
   }
   function download() {
@@ -84,7 +126,7 @@ function LoadedBrowserLearning({trackId, unit, onNavigate, auth, track, content}
     <nav aria-label="Unit sections">{[["lesson","Lesson"],["practice-lab","Lab"],["practice-quiz","Quiz"],["practice-assignment","Assignment"],["practice-progress","My evidence"]].map(([id,label]) => <a key={id} href={`#${id}`} onClick={e => { e.preventDefault(); document.getElementById(id)?.scrollIntoView(); }}>{label}</a>)}</nav>
     {content.delivery && <p>{content.delivery.definition.introduction}</p>}
     {content.delivery && <><DigitalConfidencePractical key={`dc:${unit}`} delivery={content.delivery} unit={unit}/>{unit===10&&<DigitalConfidencePractical delivery={content.delivery} unit={11} auth={auth}/>}</>}
-    <article id="lesson" tabIndex={-1}>{content.delivery && <p>Shared General IT reading and authorized technical extension. Begin with the guided activity above; terminal commands require the separately stated environment and permission.</p>}<SafeMarkdown markdown={lesson.markdown.replace(/^(#{1,5}) /gm, "$1# ")} testId="full-lesson-content" />
+    <article id="lesson" tabIndex={-1}>{content.delivery && <p>Shared General IT reading and authorized technical extension. Begin with the guided activity above; terminal commands require the separately stated environment and permission.</p>}{serverLesson && <p>Progress is stored in {serverLesson.progress_store}. No grade was written.</p>}<SafeMarkdown markdown={(serverLesson?.text || lesson.markdown).replace(/^(#{1,5}) /gm, "$1# ")} testId="full-lesson-content" />
       <button onClick={() => save({ ...record, viewed: Array.from(new Set([...record.viewed, unit])) })}>Mark this lesson read</button>
       <p>Reading records engagement. It does not demonstrate mastery.</p>
     </article>
@@ -97,7 +139,10 @@ function LoadedBrowserLearning({trackId, unit, onNavigate, auth, track, content}
         {item.choices.map((choice,index) => <label className="quiz-choice" key={index}><input required type="radio" name={item.id} checked={responses[item.id] === index} onChange={() => { setResponses({ ...responses, [item.id]: index }); setResult(null); }} />{choice}</label>)}
         {result && <p className={result.feedback[i]?.correct ? 'practice-correct' : 'practice-review'}>{result.feedback[i]?.correct ? 'Correct. ' : 'Review. '}{result.feedback[i]?.explanation}</p>}
       </fieldset>)}<button disabled={busy}>{busy ? 'Checking…' : 'Check my answers'}</button><button type="button" onClick={() => { setResponses({}); setResult(null); }}>Retry with a fresh response</button></form>
-      {result && <p role="status">Practice result: {result.earned} / {result.possible}. No server record was created.</p>}
+      {result && <p role="status">Practice result: {result.earned} / {result.possible}. {signedIn ? 'No grade was written.' : 'No server record was created.'}</p>}
+      {signedIn && <form onSubmit={requestTutoring}><label>Ask about this lesson<input value={tutorQuestion} onChange={e => setTutorQuestion(e.target.value)} /></label><button disabled={busy || tutorQuestion.trim().length === 0}>Request source tutoring</button></form>}
+      {tutorNote && <p role="status">{tutorNote}</p>}
+      {tutorText && <SafeMarkdown markdown={tutorText} testId="source-tutoring" />}
     </section>
     <section id="practice-assignment"><h2>Independent assignment</h2>{content.delivery && <p>Shared General IT extension assignment. The Digital Confidence independent evidence portfolio appears after the Week 10 practical and uses its own rubric.</p>}<SafeMarkdown markdown={assignment.markdown.replace(/^(#{1,5}) /gm, "$1# ")} />
       <label>My private draft (avoid personal information, passwords and real learner records)<textarea rows={8} maxLength={20000} value={draft} onChange={e => setDraft(e.target.value)} /></label>
