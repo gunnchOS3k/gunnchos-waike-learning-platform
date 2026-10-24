@@ -294,6 +294,32 @@ def content_hash(text: str) -> str:
     return hashlib.sha256(text.encode("utf-8")).hexdigest()
 
 
+def align_lesson_citation(
+    citation: dict[str, Any], materials: list[dict[str, str]]
+) -> dict[str, Any]:
+    """Map a lesson.md citation onto the server-resolved pack path."""
+    source = str(citation.get("source") or "")
+    snippet = str(citation.get("snippet") or "")
+    tail = source.split(":", 1)[-1]
+    excerpt = snippet.split("\n\n", 1)[1] if "\n\n" in snippet else snippet
+    for material in materials:
+        path = material.get("path") or material.get("id") or ""
+        text = material.get("text") or ""
+        if not path or not text:
+            continue
+        if tail != path and not tail.endswith("/" + path):
+            continue
+        visible = excerpt[:200]
+        if not visible or visible not in text:
+            continue
+        return {
+            "source": path,
+            "snippet": visible,
+            "content_hash": material.get("content_hash") or content_hash(text),
+        }
+    return citation
+
+
 def material_path_allowed(path: str) -> bool:
     if not path:
         return False
@@ -741,8 +767,17 @@ class LocalGunnchAIProvider:
         cli = self.root / "src" / "system-layer" / "product_service" / "cli.ts"
         return cli if cli.is_file() else None
 
+    def in_process_script(self) -> Path | None:
+        if not self.root:
+            return None
+        script = self.root / "src" / "system-layer" / "product_service" / "in_process_tutoring.ts"
+        tsx = self.root / "node_modules" / ".bin" / "tsx"
+        if script.is_file() and tsx.is_file():
+            return script
+        return None
+
     def available(self) -> bool:
-        return self.cli_path() is not None
+        return self.in_process_script() is not None or self.cli_path() is not None
 
     def probe_cli(self) -> dict[str, Any]:
         """Non-destructive status: CLI presence only (no model weights required)."""
@@ -772,7 +807,69 @@ class LocalGunnchAIProvider:
             ),
         }
 
+    def _assist_in_process(self, req: AssistRequest, script: Path) -> AssistResponse:
+        """One-shot local contract. No listening port and no model load."""
+        disclosure = evaluate_cloud_disclosure(req)
+        tsx = self.root / "node_modules" / ".bin" / "tsx" if self.root else None
+        if tsx is None or not tsx.is_file():
+            raise ServiceError("AI_PROVIDER_UNAVAILABLE", 503)
+        try:
+            proc = subprocess.run(
+                [str(tsx), str(script), "--query", req.query[:2000]],
+                cwd=str(self.root),
+                capture_output=True,
+                text=True,
+                timeout=20,
+                check=False,
+                env=os.environ.copy(),
+            )
+        except (OSError, subprocess.TimeoutExpired) as exc:
+            raise ServiceError("AI_PROVIDER_UNAVAILABLE", 503) from exc
+        if proc.returncode != 0:
+            raise ServiceError("AI_PROVIDER_ERROR", 502)
+        try:
+            payload = json.loads(proc.stdout.strip() or "{}")
+        except json.JSONDecodeError as exc:
+            raise ServiceError("AI_PROVIDER_ERROR", 502) from exc
+        payload.pop("grade", None)
+        payload.pop("completion", None)
+        structured = payload.get("structured")
+        if isinstance(structured, dict):
+            structured.pop("grade", None)
+            structured.pop("completion", None)
+        self._assist_executed = False
+        text = str(payload.get("text") or "")
+        if req.learner_facing:
+            text = strip_answer_keys(text)
+        citations = [
+            align_lesson_citation(dict(item), req.course_materials)
+            for item in list(payload.get("citations") or [])
+            if isinstance(item, dict)
+        ]
+        return AssistResponse(
+            ok=bool(payload.get("ok", True)) and payload.get("suggestion_only") is True,
+            text=text,
+            grounded=bool(citations),
+            citations=citations,
+            provider_id=self.provider_id,
+            mode=req.mode,
+            capability=req.capability,
+            disclosure=disclosure["userVisibleDisclosure"],
+            suggestion_only=True,
+            mutates_grades=False,
+            detail={
+                "raw_ok": payload.get("ok"),
+                "cloud": disclosure,
+                "local_inference_executed": False,
+                "in_process_contract": True,
+                "real_inference": False,
+            },
+        )
+
     def assist(self, req: AssistRequest) -> AssistResponse:
+        script = self.in_process_script()
+        if script is not None:
+            return self._assist_in_process(req, script)
         cli = self.cli_path()
         if cli is None:
             raise ServiceError("AI_PROVIDER_UNAVAILABLE", 503)

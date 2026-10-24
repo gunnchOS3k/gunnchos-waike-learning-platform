@@ -313,7 +313,9 @@ def create_app(config: HubConfig | None = None, db_path: Path | None = None, see
         return cfg
 
     from app.api.public_practice import router as public_practice_router
+    from app.api.learner_session import router as learner_session_router
     app.include_router(public_practice_router)
+    app.include_router(learner_session_router)
     from app.api.digital_confidence import router as dc_router, install_definition
     install_definition(app)
     app.include_router(dc_router)

@@ -46,6 +46,7 @@ _AUDIT_REDACT_KEYS = frozenset(
 )
 
 _PREFERRED_GROUNDING_GLOBS = (
+    "weeks/**/lesson.md",
     "lessons/**/*.md",
     "gunnchai_tutor_cards/**/*.md",
     "syllabi/**/*.md",
