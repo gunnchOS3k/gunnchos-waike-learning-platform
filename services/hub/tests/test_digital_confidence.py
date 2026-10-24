@@ -47,6 +47,59 @@ def test_public_cannot_submit_or_read_progress(client):
     after={name:db.execute(f'SELECT COUNT(*) FROM {name}').fetchone()[0] for name in before}
     assert after==before
 
+def test_learner_cannot_read_or_write_another_learners_grade_or_progress(client):
+    def session(username):
+        logged=client.post('/api/v1/auth/login',json={'username':username,'password':'WaikeTestPass1!','site_id':'site-alpha'})
+        assert logged.status_code==200,logged.text
+        body=logged.json()
+        return {'Authorization':'Bearer '+body['token']},body['user']['user_id']
+    alpha,alpha_id=session('learner-alpha')
+    beta,_beta_id=session('learner-beta')
+    instructor,_instructor_id=session('instructor-alpha')
+    wrote=client.post('/api/v1/sync/mutations',headers=alpha,json={'client_mutation_id':'peer-progress-alpha-01','site_id':'site-alpha','section_id':'sec_alpha_dc_w01','device_id':'device-alpha','entity_type':'lesson_progress','entity_id':'lesson-peer-guard','operation':'upsert','payload':{'pack_id':'pack_dc','lesson_id':'lesson-peer-guard','percent_complete':40}})
+    assert wrote.status_code==200,wrote.text
+    assigns=client.get('/api/v1/assignments',headers=alpha)
+    assert assigns.status_code==200 and assigns.json(),assigns.text
+    aid=assigns.json()[0]['assignment_id']
+    submitted=client.post(f'/api/v1/assignments/{aid}/submit',headers=alpha,json={'idempotency_key':'peer-grade-alpha-1','text_response':'alpha evidence','section_id':'sec_alpha_dc_w01'})
+    assert submitted.status_code==200,submitted.text
+    sid=submitted.json()['submission_id']
+    detail=client.get(f'/api/v1/assignments/{aid}',headers=instructor)
+    assert detail.status_code==200,detail.text
+    scores=[{'criterion_id':c['criterion_id'],'points':c['levels'][0]['score'],'level_id':c['levels'][0]['level_id'],'comment':'fixture'} for c in detail.json()['rubric']['criteria']]
+    graded=client.post(f'/api/v1/instructor/submissions/{sid}/grade',headers=instructor,json={'criterion_scores':scores,'feedback_body':'instructor record','return_to_learner':True})
+    assert graded.status_code==200,graded.text
+    grade_id=graded.json()['grade']['grade_id']
+    db=client.app.state.db
+    before={name:db.execute(f'SELECT COUNT(*) FROM {name}').fetchone()[0] for name in ('grades','submissions','lesson_progress')}
+    alpha_percent=db.execute('SELECT percent_complete FROM lesson_progress WHERE user_id=? AND lesson_id=?',(alpha_id,'lesson-peer-guard')).fetchone()[0]
+    assert alpha_percent==40
+    peer_book=client.get('/api/v1/gradebook',headers=beta,params={'learner_id':alpha_id})
+    assert peer_book.status_code in (200,403)
+    if peer_book.status_code==200:
+        assert all(row.get('learner_id')!=alpha_id for row in peer_book.json())
+    section_book=client.get('/api/v1/sections/sec_alpha_dc_w01/gradebook',headers=beta)
+    assert section_book.status_code==200,section_book.text
+    assert all(row.get('learner_id')!=alpha_id for row in section_book.json().get('rows',[]))
+    mastery=client.get(f'/api/v1/assignments/{aid}/mastery',headers=beta,params={'learner_id':alpha_id})
+    assert mastery.status_code==403
+    pulled=client.get('/api/v1/sync/pull',headers=beta,params={'section_id':'sec_alpha_dc_w01'})
+    assert pulled.status_code==200,pulled.text
+    assert all(row.get('user_id')!=alpha_id for row in pulled.json()['lesson_progress'])
+    assert client.get(f'/api/v1/submissions/{sid}',headers=beta).status_code==403
+    assert grade_id not in client.get('/api/v1/digital-confidence/progress',headers=beta).text
+    assert client.get(f'/api/v1/instructor/assignments/{aid}/queue',headers=beta).status_code==403
+    assert client.get(f'/api/v1/instructor/grades/{grade_id}/audit',headers=beta).status_code==403
+    assert client.post(f'/api/v1/instructor/submissions/{sid}/grade',headers=beta,json={'criterion_scores':scores,'feedback_body':'learner rewrite'}).status_code==403
+    assert client.post('/api/v1/gradebook/items/not-an-item/scores',headers=beta,json={'learner_id':alpha_id,'points_earned':100,'status':'graded','reason':'peer'}).status_code==403
+    smash=client.post('/api/v1/sync/mutations',headers=beta,json={'client_mutation_id':'peer-progress-beta-smash','site_id':'site-alpha','section_id':'sec_alpha_dc_w01','device_id':'device-beta','entity_type':'lesson_progress','entity_id':'lesson-peer-guard','operation':'upsert','payload':{'pack_id':'pack_dc','lesson_id':'lesson-peer-guard','percent_complete':99,'user_id':alpha_id}})
+    assert smash.status_code in (200,403),smash.text
+    after={name:db.execute(f'SELECT COUNT(*) FROM {name}').fetchone()[0] for name in ('grades','submissions')}
+    assert after=={name:before[name] for name in after}
+    still=db.execute('SELECT percent_complete FROM lesson_progress WHERE user_id=? AND lesson_id=?',(alpha_id,'lesson-peer-guard')).fetchone()[0]
+    assert still==40
+    assert db.execute('SELECT COUNT(*) FROM lesson_progress WHERE user_id=? AND lesson_id=?',(alpha_id,'lesson-peer-guard')).fetchone()[0]==1
+
 def hdr(actor,role):return {'X-Waike-Actor-Id':actor,'X-Waike-Actor-Role':role}
 
 def test_existing_gradebook_submission_review_and_competence(client):
