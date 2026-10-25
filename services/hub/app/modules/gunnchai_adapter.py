@@ -863,6 +863,7 @@ class LocalGunnchAIProvider:
                 "local_inference_executed": False,
                 "in_process_contract": True,
                 "real_inference": False,
+                "modelCompletion": "",
             },
         )
 

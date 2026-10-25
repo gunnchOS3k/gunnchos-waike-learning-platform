@@ -529,6 +529,8 @@ class AiAssistService:
         return clean
 
     def _public(self, result: AssistResponse, effective: dict[str, Any]) -> dict[str, Any]:
+        detail = self._scrub_public_detail(result.detail)
+        completion = detail.get("modelCompletion")
         return {
             "ok": result.ok and not result.refused,
             "text": result.text,
@@ -542,8 +544,9 @@ class AiAssistService:
             "refusal_code": result.refusal_code,
             "suggestion_only": result.suggestion_only,
             "mutates_grades": False,
+            "modelCompletion": completion if isinstance(completion, str) else "",
             "policy": effective.get("policy"),
-            "detail": self._scrub_public_detail(result.detail),
+            "detail": detail,
         }
 
     def _scrub_public_detail(self, detail: dict[str, Any]) -> dict[str, Any]:

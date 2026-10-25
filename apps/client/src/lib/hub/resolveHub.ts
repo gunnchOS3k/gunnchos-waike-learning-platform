@@ -156,4 +156,29 @@ export function resolveHubClient(
   };
 }
 
+/** Loopback, or the same origin as the configured learn host. Nothing else may receive a bearer token. */
+export function bearerHubAllowed(baseUrl: string, configuredHubUrl = ""): boolean {
+  const checked = structuralNormalizeHubBase(baseUrl.trim());
+  if (!checked.ok) return false;
+  let target: URL;
+  try {
+    target = new URL(checked.base);
+  } catch {
+    return false;
+  }
+  const host = target.hostname.replace(/^\[|\]$/g, "").toLowerCase();
+  if ((target.protocol === "http:" || target.protocol === "https:") && (host === "localhost" || host === "127.0.0.1" || host === "::1")) {
+    return true;
+  }
+  const configured = configuredHubUrl.trim();
+  if (!configured) return false;
+  const allowed = structuralNormalizeHubBase(configured.replace(/\/$/, ""));
+  if (!allowed.ok) return false;
+  try {
+    return new URL(allowed.base).origin === target.origin;
+  } catch {
+    return false;
+  }
+}
+
 export type { AuthSession };

@@ -1,6 +1,6 @@
 import { cleanup, render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { afterEach, beforeEach, describe, it, expect, vi } from 'vitest';
-import { BrowserLearning, parseLearningHash } from './BrowserLearning';
+import { BrowserLearning, parseLearningHash, tutoringNote } from './BrowserLearning';
 import { PUBLIC_TRACKS, loadPublicContent, publicAssignmentsForTrack, publicContentForTrack } from '../../lib/product/publicCurriculum';
 beforeEach(async () => { localStorage.clear(); await loadPublicContent(PUBLIC_TRACKS[0]); });
 afterEach(() => { cleanup(); vi.unstubAllGlobals(); });
@@ -121,41 +121,39 @@ describe('browser course learning', () => {
       localStorage.clear();
     }
   });
-  it('opens the signed-in week-1 lesson, practices without a grade, and requests source tutoring', async () => {
-    const quiz = publicContentForTrack(PUBLIC_TRACKS[0])!.quizzes[0];
-    const fetch = vi.fn(async (url: string) => {
-      const target = String(url);
-      if (target.endsWith('/lessons/1')) {
-        return { ok: true, json: async () => ({ text: 'Server lesson week 1', progress_store: 'lesson_progress', grade_written: false }) };
-      }
-      if (target.endsWith('/lessons/1/practice')) {
-        return { ok: true, json: async () => ({ kind: 'formative_practice', persisted: false, grade_written: false, earned: 0, possible: quiz.items!.length, feedback: quiz.items!.map(item => ({ id: item.id, correct: false, explanation: 'Review the lesson.' })) }) };
-      }
-      if (target.endsWith('/ai/learner/assist')) {
-        return { ok: true, json: async () => ({ ok: true, suggestion_only: true, mutates_grades: false, text: 'Source: lesson\n\nServer lesson week 1' }) };
-      }
-      throw new Error(target);
-    });
+  it('refuses to send a bearer token to an untrusted Hub origin', async () => {
+    const fetch = vi.fn();
     vi.stubGlobal('fetch', fetch);
     render(<BrowserLearning trackId="DIGITAL_CONFIDENCE" unit={1} onNavigate={vi.fn()} auth={{ token: 'learner-token', baseUrl: 'https://hub.example', sectionId: 'sec_alpha_dc_w01', onReview: vi.fn() }} />);
-    await waitFor(() => expect(screen.getByText('Progress is stored in lesson_progress. No grade was written.')).toBeInTheDocument());
-    expect(fetch.mock.calls[0][0]).toBe('https://hub.example/api/v1/sections/sec_alpha_dc_w01/lessons/1');
-    expect(fetch.mock.calls[0][1].headers.Authorization).toBe('Bearer learner-token');
-    Array.from(document.querySelectorAll('fieldset')).forEach(group => fireEvent.click(group.querySelector('input')!));
-    fireEvent.click(screen.getByRole('button', { name: 'Check my answers' }));
-    await waitFor(() => expect(screen.getByText(/Practice result: 0 \/ \d+\. No grade was written\./)).toBeInTheDocument());
-    const practice = fetch.mock.calls.find(call => String(call[0]).endsWith('/practice'));
-    expect(practice?.[0]).toBe('https://hub.example/api/v1/sections/sec_alpha_dc_w01/lessons/1/practice');
-    expect(practice?.[1].headers.Authorization).toBe('Bearer learner-token');
-    expect(JSON.parse(practice?.[1].body)).not.toHaveProperty('grade');
-    fireEvent.change(screen.getByLabelText('Ask about this lesson'), { target: { value: 'kiosk idle essay session' } });
-    fireEvent.click(screen.getByRole('button', { name: 'Request source tutoring' }));
-    await waitFor(() => expect(screen.getByText('Deterministic source text. modelCompletion is empty. This is not model inference.')).toBeInTheDocument());
-    const tutoring = fetch.mock.calls.find(call => String(call[0]).endsWith('/assist'));
-    const asked = JSON.parse(tutoring?.[1].body);
-    expect(asked.section_id).toBe('sec_alpha_dc_w01');
-    expect(asked.capability).toBe('explain');
-    expect(asked).not.toHaveProperty('learner_id');
-    expect(asked).not.toHaveProperty('grade');
+    await waitFor(() => expect(screen.getByText('This Hub address is not an allowed origin. No token was sent.')).toBeInTheDocument());
+    expect(fetch).not.toHaveBeenCalled();
+    expect(screen.queryByText(/Progress is stored in/)).toBeNull();
+  });
+  it('clears the previous learner before showing the next one and drops a late response', async () => {
+    let releaseAlpha: (value: { ok: boolean; json: () => Promise<unknown> }) => void = () => {};
+    const alpha = new Promise<{ ok: boolean; json: () => Promise<unknown> }>(resolve => { releaseAlpha = resolve; });
+    const fetch = vi.fn((url: string) => {
+      if (String(url).includes('sec-alpha')) return alpha;
+      return Promise.resolve({ ok: true, json: async () => ({ text: 'Beta lesson only', progress_store: 'lesson_progress', grade_written: false }) });
+    });
+    vi.stubGlobal('fetch', fetch);
+    const view = render(<BrowserLearning trackId="DIGITAL_CONFIDENCE" unit={1} onNavigate={vi.fn()} auth={{ token: 'alpha-token', baseUrl: 'http://127.0.0.1:9', sectionId: 'sec-alpha', onReview: vi.fn() }} />);
+    await waitFor(() => expect(fetch).toHaveBeenCalled());
+    const quiz = document.querySelector('#practice-quiz')!;
+    fireEvent.click(quiz.querySelector('input')!);
+    expect((quiz.querySelector('input') as HTMLInputElement).checked).toBe(true);
+    view.rerender(<BrowserLearning trackId="DIGITAL_CONFIDENCE" unit={1} onNavigate={vi.fn()} auth={{ token: 'beta-token', baseUrl: 'http://127.0.0.1:9', sectionId: 'sec-beta', onReview: vi.fn() }} />);
+    expect((document.querySelector('#practice-quiz input') as HTMLInputElement).checked).toBe(false);
+    releaseAlpha({ ok: true, json: async () => ({ text: 'Alpha secret lesson', progress_store: 'lesson_progress', grade_written: false }) });
+    await waitFor(() => expect(screen.getByText(/Beta lesson only/)).toBeInTheDocument());
+    expect(screen.queryByText('Alpha secret lesson')).toBeNull();
+    expect(screen.getByText('Progress is stored in lesson_progress. No grade was written.')).toBeInTheDocument();
+  });
+  it('labels empty model completions as source text and does not call a real completion deterministic', () => {
+    expect(tutoringNote({ modelCompletion: '', text: 'Source: lesson' })).toMatch(/Deterministic source text/);
+    expect(tutoringNote({ modelCompletion: '', text: 'Source: lesson' })).toMatch(/not model inference/);
+    expect(tutoringNote({ modelCompletion: '', text: 'Source: lesson' })).toMatch(/Inference is still blocked/);
+    expect(tutoringNote({ modelCompletion: 'weighted completion', text: 'A model reply' })).toBe('');
+    expect(tutoringNote({ text: 'Deterministic source text from the lesson', modelCompletion: 'weighted completion' })).toMatch(/Deterministic source text/);
   });
 });

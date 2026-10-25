@@ -1,5 +1,6 @@
 import {DigitalConfidencePractical} from "./DigitalConfidencePractical";
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import { bearerHubAllowed } from '../../lib/hub/resolveHub';
 import { PUBLIC_TRACKS, usePublicContent, type PublicTrack, type PublicTrackContent } from '../../lib/product/publicCurriculum';
 import { SafeMarkdown } from '../content/SafeMarkdown';
 import './browserLearning.css';
@@ -7,26 +8,54 @@ import './browserLearning.css';
 type Result = { kind: string; persisted: false; earned: number; possible: number; feedback: { id: string; correct: boolean; explanation: string }[] };
 type RecordState = { viewed: number[]; quizzes: Record<string, { earned: number; possible: number }>; drafts: Record<string, string> };
 const empty = (): RecordState => ({ viewed: [], quizzes: {}, drafts: {} });
+const SOURCE_TUTORING_NOTE = 'Deterministic source text. modelCompletion is empty. This is not model inference. Inference is still blocked.';
+type SignedAuth = { token: string; baseUrl: string; sectionId: string; onReview: () => void };
+function sessionScope(token: string, sectionId: string): string {
+  let hash = 2166136261;
+  for (const ch of `${sectionId}:${token}`) hash = Math.imul(hash ^ ch.charCodeAt(0), 16777619);
+  return (hash >>> 0).toString(16);
+}
+function configuredLearnHost(): string {
+  return String(import.meta.env.VITE_HUB_URL || '');
+}
+async function hubFetch(input: string, init: RequestInit, controller: AbortController): Promise<Response> {
+  try {
+    return await fetch(input, { ...init, signal: controller.signal });
+  } catch (error) {
+    if (error instanceof TypeError && String(error.message).includes('AbortSignal')) return fetch(input, init);
+    throw error;
+  }
+}
+export function tutoringNote(data: { text?: unknown; modelCompletion?: unknown; detail?: { modelCompletion?: unknown } }): string {
+  const completion = data.modelCompletion ?? data.detail?.modelCompletion;
+  const realCompletion = typeof completion === 'string' && completion.trim().length > 0;
+  const saysSource = typeof data.text === 'string' && /deterministic source text/i.test(data.text);
+  if (realCompletion && !saysSource) return '';
+  return SOURCE_TUTORING_NOTE;
+}
 export function parseLearningHash(hash: string): { track: string; unit: number } | null {
   const match = /^#\/learn\/([A-Z_0-9]+)\/(\d+)$/.exec(hash);
   if (!match || !PUBLIC_TRACKS.some(t => t.trackId === match[1])) return null;
   const unit = Number(match[2]);
   return unit >= 1 && unit <= 10 ? { track: match[1], unit } : null;
 }
-export function BrowserLearning({ trackId, unit, onNavigate, auth }: { trackId: string; unit: number; onNavigate: (track: string, unit: number) => void; auth?: {token:string;baseUrl:string;sectionId:string;onReview:()=>void} }) {
+export function BrowserLearning({ trackId, unit, onNavigate, auth }: { trackId: string; unit: number; onNavigate: (track: string, unit: number) => void; auth?: SignedAuth }) {
   const track = PUBLIC_TRACKS.find(t => t.trackId === trackId) || PUBLIC_TRACKS[0];
   const {content, error, retry} = usePublicContent(track);
   if (!content) return <section className="browser-learning" aria-busy={!error}><h1>{track.title}</h1><p role={error ? "alert" : "status"}>{error || "Downloading this course…"}</p>{error && <button onClick={retry}>Retry course download</button>}</section>;
   return <LoadedBrowserLearning key={track.trackId} {...{trackId, unit, onNavigate, auth, track, content}} />;
 }
-function LoadedBrowserLearning({trackId, unit, onNavigate, auth, track, content}: {trackId: string; unit: number; onNavigate: (track: string, unit: number) => void; auth?: {token:string;baseUrl:string;sectionId:string;onReview:()=>void}; track: PublicTrack; content: PublicTrackContent}) {
+function LoadedBrowserLearning({trackId, unit, onNavigate, auth, track, content}: {trackId: string; unit: number; onNavigate: (track: string, unit: number) => void; auth?: SignedAuth; track: PublicTrack; content: PublicTrackContent}) {
   const lesson = content.lessons[unit - 1];
   const quiz = content.quizzes[unit - 1];
   const assignment = content.assignments[unit - 1];
   const lab = content.labs.find(l => l.id === lesson.labId);
-  const storageKey = `waike.practice.v1:${track.trackId}:${content.contentRootSha256}`;
+  const signedIn = Boolean(auth?.token && auth.sectionId && !auth.sectionId.startsWith('catalog:'));
+  const storageKey = signedIn && auth
+    ? `waike.practice.v1:${sessionScope(auth.token, auth.sectionId)}:${track.trackId}:${content.contentRootSha256}`
+    : `waike.practice.v1:${track.trackId}:${content.contentRootSha256}`;
   function clearCourseRecords() {
-    const keys = Array.from({length: localStorage.length}, (_, i) => localStorage.key(i)).filter((k): k is string => Boolean(k?.startsWith(`waike.practice.v1:${track.trackId}:`) || (trackId==='DIGITAL_CONFIDENCE' && k?.startsWith('waike.dc.work.v1:'))));
+    const keys = Array.from({length: localStorage.length}, (_, i) => localStorage.key(i)).filter((k): k is string => Boolean((k?.startsWith('waike.practice.v1:') && k.includes(`:${track.trackId}:`)) || (trackId==='DIGITAL_CONFIDENCE' && k?.startsWith('waike.dc.work.v1:'))));
     keys.forEach(k => localStorage.removeItem(k));
   }
   const [record, setRecord] = useState<RecordState>(empty);
@@ -40,19 +69,58 @@ function LoadedBrowserLearning({trackId, unit, onNavigate, auth, track, content}
   const [tutorQuestion, setTutorQuestion] = useState('');
   const [tutorText, setTutorText] = useState('');
   const [tutorNote, setTutorNote] = useState('');
-  const signedIn = Boolean(auth?.token && auth.sectionId && !auth.sectionId.startsWith('catalog:'));
+  const viewKey = `${signedIn && auth ? `${auth.token}\n${auth.sectionId}` : 'guest'}\n${track.trackId}\n${unit}`;
+  const [viewEpoch, setViewEpoch] = useState(viewKey);
+  const requestEpoch = useRef(0);
+  const inflight = useRef<AbortController | null>(null);
+  if (viewEpoch !== viewKey) {
+    inflight.current?.abort();
+    inflight.current = null;
+    requestEpoch.current += 1;
+    setViewEpoch(viewKey);
+    setRecord(empty());
+    setConsent(false);
+    setMessage('');
+    setResponses({});
+    setResult(null);
+    setBusy(false);
+    setDraft('');
+    setServerLesson(null);
+    setTutorQuestion('');
+    setTutorText('');
+    setTutorNote('');
+  }
+  function hubAllowsToken(): boolean {
+    return Boolean(signedIn && auth && bearerHubAllowed(auth.baseUrl, configuredLearnHost()));
+  }
+  const token = auth?.token ?? '';
+  const baseUrl = auth?.baseUrl ?? '';
+  const sectionId = auth?.sectionId ?? '';
   useEffect(() => {
-    if (!signedIn || !auth) return;
-    let cancelled = false;
-    void fetch(`${auth.baseUrl}/api/v1/sections/${encodeURIComponent(auth.sectionId)}/lessons/${unit}`, {
-      headers: { Authorization: `Bearer ${auth.token}` },
-    }).then(async (response) => {
-      if (!response.ok || cancelled) return;
+    if (!signedIn || !token || !sectionId) return;
+    if (!bearerHubAllowed(baseUrl, configuredLearnHost())) {
+      setMessage('This Hub address is not an allowed origin. No token was sent.');
+      return;
+    }
+    const epoch = requestEpoch.current;
+    const controller = new AbortController();
+    inflight.current = controller;
+    void hubFetch(`${baseUrl}/api/v1/sections/${encodeURIComponent(sectionId)}/lessons/${unit}`, {
+      headers: { Authorization: `Bearer ${token}` },
+    }, controller).then(async (response) => {
+      if (epoch !== requestEpoch.current) return;
+      if (!response.ok) {
+        setMessage('The signed-in lesson could not be opened. No grade was written.');
+        return;
+      }
       const data = await response.json();
-      if (!cancelled && typeof data.text === 'string') setServerLesson(data);
-    }).catch(() => { if (!cancelled) setMessage('The signed-in lesson could not be opened. No grade was written.'); });
-    return () => { cancelled = true; };
-  }, [signedIn, auth, unit]);
+      if (epoch === requestEpoch.current && typeof data.text === 'string') setServerLesson(data);
+    }).catch((error: unknown) => {
+      if (epoch !== requestEpoch.current || (error instanceof DOMException && error.name === 'AbortError')) return;
+      setMessage('The signed-in lesson could not be opened. No grade was written.');
+    });
+    return () => { controller.abort(); };
+  }, [signedIn, token, baseUrl, sectionId, unit]);
   useEffect(() => {
     try {
       const saved = localStorage.getItem(storageKey);
@@ -72,45 +140,70 @@ function LoadedBrowserLearning({trackId, unit, onNavigate, auth, track, content}
   }
   async function evaluate(event: React.FormEvent) {
     event.preventDefault(); setBusy(true); setResult(null); setMessage('');
+    const epoch = requestEpoch.current;
+    const trusted = hubAllowsToken();
+    if (signedIn && !trusted) {
+      setMessage('This Hub address is not an allowed origin. No token was sent.');
+      setBusy(false);
+      return;
+    }
+    const controller = new AbortController();
+    inflight.current = controller;
     try {
-      // Same-origin reverse proxy. No user-controlled server URL and no credentials.
-      const practiceUrl = signedIn && auth
+      const practiceUrl = trusted && auth
         ? `${auth.baseUrl}/api/v1/sections/${encodeURIComponent(auth.sectionId)}/lessons/${unit}/practice`
         : `/api/v1/public-practice/${track.trackId}/${unit}`;
-      const response = await fetch(practiceUrl, {
+      const response = await hubFetch(practiceUrl, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', ...(signedIn && auth ? { Authorization: `Bearer ${auth.token}` } : {}) },
+        headers: { 'Content-Type': 'application/json', ...(trusted && auth ? { Authorization: `Bearer ${auth.token}` } : {}) },
         credentials: 'omit',
         body: JSON.stringify({ responses, quiz_sha256: quiz.sha256 }),
-      });
+      }, controller);
+      if (epoch !== requestEpoch.current) return;
       if (!response.ok) {
         const error = await response.json().catch(() => ({}));
         throw new Error(typeof error.detail === 'string' ? error.detail : 'Practice evaluation is unavailable. Your answers have not been graded.');
       }
       const next: Result & { grade_written?: boolean } = await response.json();
+      if (epoch !== requestEpoch.current) return;
       if (signedIn && next.grade_written) throw new Error('Practice must not write a grade.');
       setResult(next);
       save({ ...record, quizzes: { ...record.quizzes, [unit]: { earned: next.earned, possible: next.possible } } });
-    } catch (error) { setMessage(error instanceof Error ? error.message : 'Evaluation unavailable; no score recorded.'); }
-    finally { setBusy(false); }
+    } catch (error) {
+      if (epoch !== requestEpoch.current || (error instanceof DOMException && error.name === 'AbortError')) return;
+      setMessage(error instanceof Error ? error.message : 'Evaluation unavailable; no score recorded.');
+    }
+    finally { if (epoch === requestEpoch.current) setBusy(false); }
   }
   async function requestTutoring(event: React.FormEvent) {
     event.preventDefault();
     if (!signedIn || !auth) return;
+    if (!hubAllowsToken()) {
+      setMessage('This Hub address is not an allowed origin. No token was sent.');
+      return;
+    }
+    const epoch = requestEpoch.current;
+    const controller = new AbortController();
+    inflight.current = controller;
     setBusy(true); setTutorText(''); setTutorNote(''); setMessage('');
     try {
-      const response = await fetch(`${auth.baseUrl}/api/v1/ai/learner/assist`, {
+      const response = await hubFetch(`${auth.baseUrl}/api/v1/ai/learner/assist`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${auth.token}` },
         credentials: 'omit',
         body: JSON.stringify({ section_id: auth.sectionId, capability: 'explain', query: tutorQuestion, processing_mode: 'local-only' }),
-      });
+      }, controller);
       const data = await response.json();
+      if (epoch !== requestEpoch.current) return;
       if (!response.ok || data.suggestion_only !== true || data.mutates_grades) throw new Error('Tutoring stayed unavailable. No grade was written.');
+      const note = tutoringNote(data);
       setTutorText(typeof data.text === 'string' ? data.text : '');
-      setTutorNote('Deterministic source text. modelCompletion is empty. This is not model inference.');
-    } catch (error) { setMessage(error instanceof Error ? error.message : 'Tutoring unavailable. No grade was written.'); }
-    finally { setBusy(false); }
+      setTutorNote(note);
+    } catch (error) {
+      if (epoch !== requestEpoch.current || (error instanceof DOMException && error.name === 'AbortError')) return;
+      setMessage(error instanceof Error ? error.message : 'Tutoring unavailable. No grade was written.');
+    }
+    finally { if (epoch === requestEpoch.current) setBusy(false); }
   }
   function download() {
     const blob = new Blob([JSON.stringify({ schema: 'waike.guest.practice.v1', trackId: track.trackId, sourceCommit: content.sourceCommit, contentHash: content.contentRootSha256, ...record, currentDraft: draft, status: 'ungraded guest evidence; no credential or completion credit' }, null, 2)], { type: 'application/json' });
@@ -140,7 +233,7 @@ function LoadedBrowserLearning({trackId, unit, onNavigate, auth, track, content}
         {result && <p className={result.feedback[i]?.correct ? 'practice-correct' : 'practice-review'}>{result.feedback[i]?.correct ? 'Correct. ' : 'Review. '}{result.feedback[i]?.explanation}</p>}
       </fieldset>)}<button disabled={busy}>{busy ? 'Checking…' : 'Check my answers'}</button><button type="button" onClick={() => { setResponses({}); setResult(null); }}>Retry with a fresh response</button></form>
       {result && <p role="status">Practice result: {result.earned} / {result.possible}. {signedIn ? 'No grade was written.' : 'No server record was created.'}</p>}
-      {signedIn && <form onSubmit={requestTutoring}><label>Ask about this lesson<input value={tutorQuestion} onChange={e => setTutorQuestion(e.target.value)} /></label><button disabled={busy || tutorQuestion.trim().length === 0}>Request source tutoring</button></form>}
+      {signedIn && <form onSubmit={requestTutoring}><label>Ask about this lesson<input value={tutorQuestion} onChange={e => setTutorQuestion(e.target.value)} /></label><button disabled={busy || tutorQuestion.trim().length === 0}>Request tutoring</button></form>}
       {tutorNote && <p role="status">{tutorNote}</p>}
       {tutorText && <SafeMarkdown markdown={tutorText} testId="source-tutoring" />}
     </section>
