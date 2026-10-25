@@ -115,10 +115,46 @@ class AssessmentService:
 
     def seed_digital_confidence_assignment(self) -> dict[str, Any]:
         """Load a REAL WAIKE DIGITAL_CONFIDENCE assignment — never invent curriculum."""
+        return self._seed_course_assignment(
+            course_dir="digital_confidence",
+            module_id=MODULE_ID,
+            outcome_id="outcome_dc_w01_reflection",
+            outcome_code="DC-W01-REFLECT",
+            outcome_title="Digital confidence community reflection",
+            outcome_description="Learner articulates what digital confidence means in community context.",
+        )
+
+    def seed_general_it_assignment(self) -> dict[str, Any] | None:
+        """Load the on-disk General IT week 1 assignment. Skip when that curriculum is absent."""
+        if self.waike_root is None:
+            return None
+        assign_path = self.waike_root / "assignments/by_course/general_it/week_01.yaml"
+        body_path = self.waike_root / "assignment_bodies/by_course/general_it/assignment_01.md"
+        if not assign_path.is_file() or not body_path.is_file():
+            return None
+        return self._seed_course_assignment(
+            course_dir="general_it",
+            module_id="GENERAL_IT",
+            outcome_id="outcome_git_w01_reflection",
+            outcome_code="GIT-W01-REFLECT",
+            outcome_title="General IT operator reflection",
+            outcome_description="Learner names the remember, calculate, and talk jobs from the canonical General IT week.",
+        )
+
+    def _seed_course_assignment(
+        self,
+        *,
+        course_dir: str,
+        module_id: str,
+        outcome_id: str,
+        outcome_code: str,
+        outcome_title: str,
+        outcome_description: str,
+    ) -> dict[str, Any]:
         if self.waike_root is None:
             raise ServiceError("WAIKE_ROOT_REQUIRED", 500)
-        assign_path = self.waike_root / "assignments/by_course/digital_confidence/week_01.yaml"
-        body_path = self.waike_root / "assignment_bodies/by_course/digital_confidence/assignment_01.md"
+        assign_path = self.waike_root / "assignments/by_course" / course_dir / "week_01.yaml"
+        body_path = self.waike_root / "assignment_bodies/by_course" / course_dir / "assignment_01.md"
         rubric_path = self.waike_root / "rubrics/master_rubric.yaml"
         if not assign_path.is_file():
             raise ServiceError("WAIKE_ASSIGNMENT_MISSING", 500)
@@ -142,10 +178,10 @@ class AssessmentService:
             "INSERT OR IGNORE INTO outcomes(outcome_id, module_id, code, title, description) VALUES (?,?,?,?,?)",
             (
                 outcome_id,
-                MODULE_ID,
-                "DC-W01-REFLECT",
-                "Digital confidence community reflection",
-                "Learner articulates what digital confidence means in community context.",
+                module_id,
+                outcome_code,
+                outcome_title,
+                outcome_description,
             ),
         )
 
@@ -189,7 +225,7 @@ class AssessmentService:
             """,
             (
                 assignment_id,
-                MODULE_ID,
+                module_id,
                 SCHEMA_VERSION,
                 title,
                 int(assign.get("week") or 1),
@@ -224,24 +260,30 @@ class AssessmentService:
             self.conn,
             "SELECT assignment_id, module_id, title, week, current_version, portfolio_connection FROM assignments ORDER BY week, assignment_id",
         )
-        section_id = None
-        course_title = None
+        fallback_section = None
+        fallback_title = None
+        by_module: dict[str, dict[str, Any]] = {}
         if self.sections is not None:
+            owned = self.sections.list_sections_for_actor(actor)
+            for sec in owned:
+                package = sec.get("package") or {}
+                module = package.get("module_id")
+                if module and module not in by_module:
+                    by_module[str(module)] = sec
             if actor.is_learner:
-                section_id = self.sections.default_section_for_learner(actor)
-            else:
-                owned = self.sections.list_sections_for_actor(actor)
-                if owned:
-                    section_id = owned[0]["section_id"]
-                    course_title = owned[0].get("title")
-            if section_id and not course_title:
-                sec = _row(self.conn, "SELECT title FROM sections WHERE section_id=?", (section_id,))
-                course_title = sec["title"] if sec else None
+                fallback_section = self.sections.default_section_for_learner(actor)
+            elif owned:
+                fallback_section = owned[0]["section_id"]
+                fallback_title = owned[0].get("title")
+            if fallback_section and not fallback_title:
+                sec = _row(self.conn, "SELECT title FROM sections WHERE section_id=?", (fallback_section,))
+                fallback_title = sec["title"] if sec else None
         listed = []
         for row in rows:
             item = dict(row)
-            item["section_id"] = section_id
-            item["course_title"] = course_title
+            matched = by_module.get(str(row["module_id"]))
+            item["section_id"] = matched["section_id"] if matched else fallback_section
+            item["course_title"] = matched.get("title") if matched else fallback_title
             item["submission_state"] = "not_started"
             item["grade_state"] = "none"
             if actor.is_learner:

@@ -30,19 +30,21 @@ def source(root: Path | None, track: str, unit: int):
         raise HTTPException(503, 'Invalid canonical package')
     return folder
 
-@router.post('/{track}/{unit}')
-def evaluate(track: str, unit: int, payload: Responses, request: Request):
+def score_folder(folder: Path, unit: int, payload: Responses) -> dict:
     import hashlib
-    folder = source(request.app.state.waike_root, track, unit)
-    path = folder/f'quizzes/q{unit:02d}.json'
+    if not 1 <= unit <= 10:
+        raise HTTPException(404, 'Unknown course or unit')
+    path = folder / f'quizzes/q{unit:02d}.json'
+    if not path.is_file():
+        raise HTTPException(404, 'Unknown course or unit')
     raw = path.read_bytes()
     if hashlib.sha256(raw).hexdigest() != payload.quiz_sha256:
         raise HTTPException(409, 'Quiz version changed. Refresh the course before retrying.')
     quiz = json.loads(raw)
-    keys = json.loads((folder/'instructor/answer_keys.json').read_text())['quizzes'].get(quiz['quiz_id'])
+    keys = json.loads((folder / 'instructor/answer_keys.json').read_text())['quizzes'].get(quiz['quiz_id'])
     if not isinstance(keys, list):
         raise HTTPException(503, 'Practice evaluation is unavailable for this quiz')
-    lookup = {k['id']:k for k in keys}
+    lookup = {k['id']: k for k in keys}
     items = quiz['items']
     if set(payload.responses) != {i['id'] for i in items}:
         raise HTTPException(422, 'Answer every question exactly once')
@@ -54,5 +56,22 @@ def evaluate(track: str, unit: int, payload: Responses, request: Request):
         key = lookup.get(item['id'])
         if key is None or not isinstance(key.get('answer_index'), int):
             raise HTTPException(503, 'Canonical evaluation is incomplete')
-        feedback.append(dict(id=item['id'], correct=value == key['answer_index'], explanation=key.get('explanation','Review the lesson and try again.')))
+        feedback.append(dict(id=item['id'], correct=value == key['answer_index'], explanation=key.get('explanation', 'Review the lesson and try again.')))
     return dict(kind='formative_practice', persisted=False, earned=sum(f['correct'] for f in feedback), possible=len(items), feedback=feedback)
+
+
+def evaluate_installed_module(root: Path | str | None, module_id: str, unit: int, payload: Responses) -> dict:
+    """Score a quiz that already lives under curriculum/digital_rc/<module>."""
+    if root is None or not module_id or module_id in {'.', '..'} or '/' in module_id or '\\' in module_id:
+        raise HTTPException(404, 'Unknown course or unit')
+    base = (Path(root) / 'curriculum' / 'digital_rc').resolve()
+    folder = (base / module_id).resolve()
+    if not folder.is_relative_to(base) or not folder.is_dir():
+        raise HTTPException(404, 'Unknown course or unit')
+    return score_folder(folder, unit, payload)
+
+
+@router.post('/{track}/{unit}')
+def evaluate(track: str, unit: int, payload: Responses, request: Request):
+    folder = source(request.app.state.waike_root, track, unit)
+    return score_folder(folder, unit, payload)

@@ -72,6 +72,51 @@ class SectionService:
         self.conn.commit()
         return self.get_section_public(section_id)
 
+    def seed_general_it_section(self, source_commit: str = "") -> dict[str, Any]:
+        """Second canonical section. Same site and the same learners as Digital Confidence."""
+        now = _now()
+        package_id = "pkg_general_it_w01"
+        self.conn.execute(
+            """
+            INSERT OR IGNORE INTO packages(package_id, module_id, title, source_commit, immutable, created_at)
+            VALUES (?,?,?,?,1,?)
+            """,
+            (package_id, "GENERAL_IT", "General IT — Operator to Support Specialist", source_commit, now),
+        )
+        section_id = "sec_alpha_git_w01"
+        self.conn.execute(
+            """
+            INSERT OR IGNORE INTO sections(section_id, site_id, package_id, code, title, published, created_at)
+            VALUES (?,?,?,?,?,1,?)
+            """,
+            (
+                section_id,
+                "site-alpha",
+                package_id,
+                "GIT-W01-A",
+                "General IT — Operator to Support Specialist",
+                now,
+            ),
+        )
+        self.conn.execute(
+            """
+            INSERT OR IGNORE INTO section_runtime_metadata(section_id, due_override_json, publish_notes, updated_at)
+            VALUES (?,?,?,?)
+            """,
+            (section_id, "{}", "Canonical General IT week 1", now),
+        )
+        for uid in ("instructor-alpha", "instructor-1"):
+            if _row(self.conn, "SELECT user_id FROM users WHERE user_id=?", (uid,)):
+                self.conn.execute(
+                    "INSERT OR IGNORE INTO section_instructors(section_id, user_id, assigned_at) VALUES (?,?,?)",
+                    (section_id, uid, now),
+                )
+        for uid in ("learner-alpha", "learner-beta"):
+            if _row(self.conn, "SELECT user_id FROM users WHERE user_id=?", (uid,)):
+                self._enroll_unchecked(section_id, uid, now)
+        self.conn.commit()
+        return self.get_section_public(section_id)
+
     def _enroll_unchecked(self, section_id: str, user_id: str, now: str) -> None:
         active = _row(
             self.conn,

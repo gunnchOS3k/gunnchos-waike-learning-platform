@@ -10,7 +10,7 @@ from pathlib import Path
 
 from fastapi import APIRouter, Depends, HTTPException, Request
 from app.auth import Actor, require_actor, require_learner
-from app.api.public_practice import Responses, evaluate as evaluate_practice
+from app.api.public_practice import Responses, evaluate as evaluate_practice, evaluate_installed_module
 from app.modules.assessment_lifecycle import ServiceError
 from app.modules.gunnchai_adapter import resolve_waike_root
 
@@ -68,10 +68,15 @@ def open_lesson(
     module_id, path = _lesson_path(request, section_id, week)
     text = path.read_text(encoding="utf-8")
     lesson_id = f"w{week:02d}"
+    mutation_id = (
+        f"open-{actor.actor_id}-{lesson_id}"
+        if module_id == "DIGITAL_CONFIDENCE"
+        else f"open-{actor.actor_id}-{section_id}-{lesson_id}"
+    )
     try:
         request.app.state.sync.apply_mutation(
             actor,
-            client_mutation_id=f"open-{actor.actor_id}-{lesson_id}",
+            client_mutation_id=mutation_id,
             site_id=actor.site_id,
             section_id=section_id,
             device_id="lesson-session",
@@ -89,6 +94,7 @@ def open_lesson(
         raise HTTPException(exc.status, exc.code) from exc
     return {
         "section_id": section_id,
+        "module_id": module_id,
         "lesson_id": lesson_id,
         "path": f"weeks/{lesson_id}/lesson.md",
         "text": text,
@@ -107,7 +113,12 @@ def practice_lesson(
 ) -> dict:
     _enrolled_learner(request, section_id, actor)
     module_id, _path = _lesson_path(request, section_id, week)
-    result = evaluate_practice(module_id, week, body, request)
+    try:
+        result = evaluate_practice(module_id, week, body, request)
+    except HTTPException as exc:
+        if exc.status_code != 404:
+            raise
+        result = evaluate_installed_module(getattr(request.app.state, "waike_root", None), module_id, week, body)
     result["persisted"] = False
     result["grade_written"] = False
     result["section_id"] = section_id
