@@ -587,8 +587,11 @@ export default function App() {
     }
     if (mode === "instruct") {
       void hub.listSections().then((rows) => {
-        if (!cancelled) {
-          setHomeCards(rows.map((r) => ({ section_id: r.section_id, code: r.code, title: r.title, mastery: null, recent_feedback: [] })));
+        if (cancelled) return;
+        setHomeCards(rows.map((r) => ({ section_id: r.section_id, code: r.code, title: r.title, mastery: null, recent_feedback: [] })));
+        if (!sectionId && rows[0]?.section_id) {
+          setSectionId(rows[0].section_id);
+          persistActiveCourseId(rows[0].section_id);
         }
       }).catch(() => undefined);
     }
@@ -625,7 +628,7 @@ export default function App() {
         if (!cancelled) setModuleRows(rows);
       }).catch(() => undefined);
     }
-    if (mode === "instruct") {
+    if (mode === "instruct" && sectionId) {
       void hub
         .instructorDashboard(sectionId)
         .then((d) => {

@@ -224,7 +224,52 @@ class AssessmentService:
             self.conn,
             "SELECT assignment_id, module_id, title, week, current_version, portfolio_connection FROM assignments ORDER BY week, assignment_id",
         )
-        return [dict(r) for r in rows]
+        section_id = None
+        course_title = None
+        if self.sections is not None:
+            if actor.is_learner:
+                section_id = self.sections.default_section_for_learner(actor)
+            else:
+                owned = self.sections.list_sections_for_actor(actor)
+                if owned:
+                    section_id = owned[0]["section_id"]
+                    course_title = owned[0].get("title")
+            if section_id and not course_title:
+                sec = _row(self.conn, "SELECT title FROM sections WHERE section_id=?", (section_id,))
+                course_title = sec["title"] if sec else None
+        listed = []
+        for row in rows:
+            item = dict(row)
+            item["section_id"] = section_id
+            item["course_title"] = course_title
+            item["submission_state"] = "not_started"
+            item["grade_state"] = "none"
+            if actor.is_learner:
+                sub = _row(
+                    self.conn,
+                    """
+                    SELECT status FROM submissions
+                    WHERE assignment_id=? AND learner_id=?
+                    ORDER BY attempt_number DESC LIMIT 1
+                    """,
+                    (row["assignment_id"], actor.actor_id),
+                )
+                if sub:
+                    item["submission_state"] = sub["status"]
+                grade = _row(
+                    self.conn,
+                    """
+                    SELECT g.returned FROM grades g
+                    JOIN submissions s ON s.submission_id = g.submission_id
+                    WHERE s.assignment_id=? AND s.learner_id=? AND g.returned=1
+                    ORDER BY s.attempt_number DESC LIMIT 1
+                    """,
+                    (row["assignment_id"], actor.actor_id),
+                )
+                if grade:
+                    item["grade_state"] = "returned"
+            listed.append(item)
+        return listed
 
     def get_assignment(self, assignment_id: str) -> dict[str, Any]:
         row = _row(self.conn, "SELECT * FROM assignments WHERE assignment_id=?", (assignment_id,))

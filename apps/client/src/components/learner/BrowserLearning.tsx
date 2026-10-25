@@ -66,6 +66,7 @@ function LoadedBrowserLearning({trackId, unit, onNavigate, auth, track, content}
   const [busy, setBusy] = useState(false);
   const [draft, setDraft] = useState('');
   const [serverLesson, setServerLesson] = useState<{ text: string; progress_store: string; grade_written: boolean } | null>(null);
+  const [resumedLesson, setResumedLesson] = useState<string | null>(null);
   const [tutorQuestion, setTutorQuestion] = useState('');
   const [tutorText, setTutorText] = useState('');
   const [tutorNote, setTutorNote] = useState('');
@@ -86,6 +87,7 @@ function LoadedBrowserLearning({trackId, unit, onNavigate, auth, track, content}
     setBusy(false);
     setDraft('');
     setServerLesson(null);
+    setResumedLesson(null);
     setTutorQuestion('');
     setTutorText('');
     setTutorNote('');
@@ -105,20 +107,35 @@ function LoadedBrowserLearning({trackId, unit, onNavigate, auth, track, content}
     const epoch = requestEpoch.current;
     const controller = new AbortController();
     inflight.current = controller;
-    void hubFetch(`${baseUrl}/api/v1/sections/${encodeURIComponent(sectionId)}/lessons/${unit}`, {
-      headers: { Authorization: `Bearer ${token}` },
-    }, controller).then(async (response) => {
-      if (epoch !== requestEpoch.current) return;
-      if (!response.ok) {
+    const lessonId = `w${String(unit).padStart(2, '0')}`;
+    void (async () => {
+      try {
+        const prior = await hubFetch(
+          `${baseUrl}/api/v1/sync/pull?section_id=${encodeURIComponent(sectionId)}&since_revision=0`,
+          { headers: { Authorization: `Bearer ${token}` } },
+          controller,
+        );
+        if (epoch !== requestEpoch.current) return;
+        if (prior.ok) {
+          const body = await prior.json() as { lesson_progress?: Array<{ lesson_id?: string; user_id?: string }> };
+          const stored = Array.isArray(body.lesson_progress) && body.lesson_progress.some((row) => row.lesson_id === lessonId);
+          if (stored && epoch === requestEpoch.current) setResumedLesson(lessonId);
+        }
+        const response = await hubFetch(`${baseUrl}/api/v1/sections/${encodeURIComponent(sectionId)}/lessons/${unit}`, {
+          headers: { Authorization: `Bearer ${token}` },
+        }, controller);
+        if (epoch !== requestEpoch.current) return;
+        if (!response.ok) {
+          setMessage('The signed-in lesson could not be opened. No grade was written.');
+          return;
+        }
+        const data = await response.json();
+        if (epoch === requestEpoch.current && typeof data.text === 'string') setServerLesson(data);
+      } catch (error: unknown) {
+        if (epoch !== requestEpoch.current || (error instanceof DOMException && error.name === 'AbortError')) return;
         setMessage('The signed-in lesson could not be opened. No grade was written.');
-        return;
       }
-      const data = await response.json();
-      if (epoch === requestEpoch.current && typeof data.text === 'string') setServerLesson(data);
-    }).catch((error: unknown) => {
-      if (epoch !== requestEpoch.current || (error instanceof DOMException && error.name === 'AbortError')) return;
-      setMessage('The signed-in lesson could not be opened. No grade was written.');
-    });
+    })();
     return () => { controller.abort(); };
   }, [signedIn, token, baseUrl, sectionId, unit]);
   useEffect(() => {
@@ -219,7 +236,7 @@ function LoadedBrowserLearning({trackId, unit, onNavigate, auth, track, content}
     <nav aria-label="Unit sections">{[["lesson","Lesson"],["practice-lab","Lab"],["practice-quiz","Quiz"],["practice-assignment","Assignment"],["practice-progress","My evidence"]].map(([id,label]) => <a key={id} href={`#${id}`} onClick={e => { e.preventDefault(); document.getElementById(id)?.scrollIntoView(); }}>{label}</a>)}</nav>
     {content.delivery && <p>{content.delivery.definition.introduction}</p>}
     {content.delivery && <><DigitalConfidencePractical key={`dc:${unit}`} delivery={content.delivery} unit={unit}/>{unit===10&&<DigitalConfidencePractical delivery={content.delivery} unit={11} auth={auth}/>}</>}
-    <article id="lesson" tabIndex={-1}>{content.delivery && <p>Shared General IT reading and authorized technical extension. Begin with the guided activity above; terminal commands require the separately stated environment and permission.</p>}{serverLesson && <p>Progress is stored in {serverLesson.progress_store}. No grade was written.</p>}<SafeMarkdown markdown={(serverLesson?.text || lesson.markdown).replace(/^(#{1,5}) /gm, "$1# ")} testId="full-lesson-content" />
+    <article id="lesson" tabIndex={-1}>{content.delivery && <p>Shared General IT reading and authorized technical extension. Begin with the guided activity above; terminal commands require the separately stated environment and permission.</p>}{resumedLesson && <p data-testid="resumed-progress">Resumed stored lesson progress for {resumedLesson}. This read did not write a grade.</p>}{serverLesson && <p>Progress is stored in {serverLesson.progress_store}. No grade was written.</p>}<SafeMarkdown markdown={(serverLesson?.text || lesson.markdown).replace(/^(#{1,5}) /gm, "$1# ")} testId="full-lesson-content" />
       <button onClick={() => save({ ...record, viewed: Array.from(new Set([...record.viewed, unit])) })}>Mark this lesson read</button>
       <p>Reading records engagement. It does not demonstrate mastery.</p>
     </article>
