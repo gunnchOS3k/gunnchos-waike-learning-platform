@@ -1240,7 +1240,7 @@ jobs:
           uv pip install --python .venv/bin/python fastapi uvicorn pydantic httpx pytest pyyaml jsonschema argon2-cffi cryptography PyJWT
           cd apps/client
           pnpm install --frozen-lockfile
-          pnpm exec vitest run --config vitest.live.config.ts src/test/live/activityUi.live.test.tsx src/test/live/laterWeek.live.test.tsx
+          pnpm exec vitest run --config vitest.live.config.ts src/test/live/activityUi.live.test.tsx src/test/live/networkingWeek.live.test.tsx
           pnpm run lint
           pnpm run build
           node --input-type=module <<'NODE'
