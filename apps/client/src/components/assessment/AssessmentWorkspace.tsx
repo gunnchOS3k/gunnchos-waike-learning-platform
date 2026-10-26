@@ -64,7 +64,13 @@ export function AssessmentWorkspace({ hub, assignmentId = null, sectionId = null
   }, [hub, assignmentId]);
 
   useEffect(() => {
-    void refreshSide();
+    let cancelled = false;
+    void refreshSide().catch((e) => {
+      if (!cancelled) setError(String(e));
+    });
+    return () => {
+      cancelled = true;
+    };
   }, [refreshSide, submission]);
 
   function scheduleAutosave(next: string) {
