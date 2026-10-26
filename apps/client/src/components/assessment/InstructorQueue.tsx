@@ -5,7 +5,7 @@ type Props = { hub: HubClient };
 
 export function InstructorQueue({ hub }: Props) {
   const [assignment, setAssignment] = useState<AssignmentDetail | null>(null);
-  const [queue, setQueue] = useState<Array<{ submission_id: string; learner_id: string; attempt_number: number; status: string }>>([]);
+  const [queue, setQueue] = useState<Array<{ submission_id: string; learner_id: string; attempt_number: number; status: string; assignment_id: string }>>([]);
   const [active, setActive] = useState<SubmissionView | null>(null);
   const [feedback, setFeedback] = useState("Instructor feedback");
   const [criterionPoints, setCriterionPoints] = useState<Record<string, number>>({});
@@ -14,25 +14,38 @@ export function InstructorQueue({ hub }: Props) {
 
   async function reload() {
     const list = await hub.listAssignments();
-    const id = list[0]?.assignment_id;
-    if (!id) return;
-    const detail = await hub.getAssignment(id);
-    setAssignment(detail);
-    const initial: Record<string, number> = {};
-    for (const c of detail.rubric.criteria) {
-      initial[c.criterion_id] = 2;
+    const rows: Array<{ submission_id: string; learner_id: string; attempt_number: number; status: string; assignment_id: string }> = [];
+    const seen = new Set<string>();
+    for (const row of list) {
+      const queued = await hub.queue(row.assignment_id);
+      for (const item of queued) {
+        if (seen.has(item.submission_id)) continue;
+        seen.add(item.submission_id);
+        rows.push({ ...item, assignment_id: row.assignment_id });
+      }
     }
-    setCriterionPoints(initial);
-    setQueue(await hub.queue(id));
+    setQueue(rows);
+    if (!assignment && list[0]) {
+      const detail = await hub.getAssignment(list[0].assignment_id);
+      setAssignment(detail);
+      const initial: Record<string, number> = {};
+      for (const c of detail.rubric.criteria) initial[c.criterion_id] = 2;
+      setCriterionPoints(initial);
+    }
   }
 
   useEffect(() => {
     void reload().catch((e) => setError(String(e)));
   }, [hub]);
 
-  async function open(id: string) {
+  async function open(id: string, assignmentId: string) {
     setError(null);
     try {
+      const detail = await hub.getAssignment(assignmentId);
+      setAssignment(detail);
+      const initial: Record<string, number> = {};
+      for (const c of detail.rubric.criteria) initial[c.criterion_id] = 2;
+      setCriterionPoints(initial);
       setActive(await hub.getSubmission(id));
     } catch (e) {
       setError(String(e));
@@ -72,7 +85,12 @@ export function InstructorQueue({ hub }: Props) {
       <ul data-testid="queue-list">
         {queue.map((q) => (
           <li key={q.submission_id}>
-            <button type="button" className="ghost" onClick={() => void open(q.submission_id)}>
+            <button
+              type="button"
+              className="ghost"
+              data-testid={`queue-item-${q.assignment_id}-${q.submission_id}`}
+              onClick={() => void open(q.submission_id, q.assignment_id)}
+            >
               {q.learner_id} · attempt {q.attempt_number} · {q.status}
             </button>
           </li>
