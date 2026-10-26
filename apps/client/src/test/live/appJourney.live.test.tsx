@@ -219,8 +219,12 @@ describe("real client journeys on the local Hub", () => {
     await signOut();
 
     await signIn("instructor-alpha");
-    const queued = await screen.findAllByTestId((id) => id.startsWith("queue-item-general_it_w01-"));
-    fireEvent.click(queued[queued.length - 1]);
+    await waitFor(() => {
+      expect(document.querySelector("[data-testid^='queue-item-general_it_w01-']")).toBeTruthy();
+    });
+    const queued = document.querySelector("[data-testid^='queue-item-general_it_w01-']");
+    if (!(queued instanceof HTMLButtonElement)) throw new Error("General IT queue item was not a button");
+    fireEvent.click(queued);
     await waitFor(() => expect(screen.getByTestId("grade-panel")).toHaveTextContent(evidence));
     fireEvent.change(screen.getByTestId("feedback-text"), { target: { value: feedback } });
     fireEvent.click(screen.getByTestId("return-grade-btn"));

@@ -17,7 +17,7 @@ export function InstructorQueue({ hub }: Props) {
     const rows: Array<{ submission_id: string; learner_id: string; attempt_number: number; status: string; assignment_id: string }> = [];
     const seen = new Set<string>();
     for (const row of list) {
-      const queued = await hub.queue(row.assignment_id);
+      const queued = await hub.queue(row.assignment_id, row.section_id);
       for (const item of queued) {
         if (seen.has(item.submission_id)) continue;
         seen.add(item.submission_id);
