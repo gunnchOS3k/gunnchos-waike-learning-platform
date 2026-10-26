@@ -282,9 +282,10 @@ export function createHttpHubClient(
   actor?: HubActor,
 ): HubClient {
   async function req<T>(path: string, init?: RequestInit): Promise<T> {
+    const tokenAtSend = getToken();
     const res = await fetch(`${baseUrl}${path}`, {
       ...init,
-      headers: { ...authHeaders(getToken(), actor), ...(init?.headers || {}) },
+      headers: { ...authHeaders(tokenAtSend, actor), ...(init?.headers || {}) },
     });
     if (!res.ok) {
       const body = await res.text();
@@ -294,7 +295,9 @@ export function createHttpHubClient(
       } catch {
         /* raw */
       }
-      if (res.status === 401 && onAuthFailure) {
+      // A 401 for a token that has already been replaced belongs to the previous
+      // sign-in. It must not sign out the person who is signed in now.
+      if (res.status === 401 && onAuthFailure && getToken() === tokenAtSend) {
         onAuthFailure(String(detail));
       }
       throw new HubAuthError(res.status, String(detail));
