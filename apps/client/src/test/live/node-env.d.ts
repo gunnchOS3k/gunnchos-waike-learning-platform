@@ -8,6 +8,7 @@
 
 declare module "node:child_process" {
   export interface ChildProcess {
+    pid?: number;
     killed: boolean;
     stderr: { on(event: "data", cb: (chunk: { toString(): string }) => void): void } | null;
     on(event: "exit", cb: (code: number | null) => void): void;
@@ -16,12 +17,18 @@ declare module "node:child_process" {
   export function spawn(
     command: string,
     args: string[],
-    options: { cwd?: string; stdio?: Array<"ignore" | "pipe" | "inherit"> },
+    options: {
+      cwd?: string;
+      env?: Record<string, string | undefined>;
+      stdio?: "ignore" | "pipe" | "inherit" | Array<"ignore" | "pipe" | "inherit">;
+    },
   ): ChildProcess;
 }
 
 declare module "node:fs" {
   export function mkdtempSync(prefix: string): string;
+  export function readFileSync(path: string, encoding: "utf8"): string;
+  export function writeFileSync(path: string, data: string): void;
   export function rmSync(path: string, options?: { recursive?: boolean; force?: boolean }): void;
 }
 
@@ -39,4 +46,5 @@ declare const __dirname: string;
 declare const process: {
   env: Record<string, string | undefined>;
   stderr: { write(text: string): void };
+  kill(pid: number, signal?: string): boolean;
 };
