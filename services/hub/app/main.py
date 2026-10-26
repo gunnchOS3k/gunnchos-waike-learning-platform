@@ -233,6 +233,10 @@ def create_app(config: HubConfig | None = None, db_path: Path | None = None, see
             general = assessment.seed_general_it_assignment()
             if general:
                 gradebook.seed_for_section("sec_alpha_git_w01", general.get("assignment_id"))
+            for track in sections.seed_canonical_track_sections(source_commit=src, waike_root=waike):
+                created = assessment.seed_track_lesson_assignment(track["track_id"], track["package_dir"])
+                if created:
+                    gradebook.seed_for_section(track["section_id"], created.get("assignment_id"))
         # Gate A synthetic activity fixtures (quizzes/labs) for enrolled Alpha section.
         instructor_row = conn.execute(
             "SELECT user_id FROM users WHERE username=? AND site_id=?",

@@ -141,6 +141,86 @@ class AssessmentService:
             outcome_description="Learner names the remember, calculate, and talk jobs from the canonical General IT week.",
         )
 
+    def seed_track_lesson_assignment(self, track_id: str, package_dir: str) -> dict[str, Any] | None:
+        """Seed week 1 from the canonical package assignment file. The body is the on-disk lesson assignment."""
+        if self.waike_root is None:
+            return None
+        if track_id in {".", ".."} or "/" in track_id or package_dir in {".", ".."} or "/" in package_dir:
+            return None
+        base = (self.waike_root / "curriculum" / "digital_rc").resolve()
+        folder = (base / package_dir).resolve()
+        body_path = self.waike_root / "curriculum" / "digital_rc" / package_dir / "assignments" / "a01.md"
+        rubric_path = self.waike_root / "rubrics" / "master_rubric.yaml"
+        if not folder.is_relative_to(base) or not body_path.is_file() or not rubric_path.is_file():
+            return None
+        assignment_id = f"{track_id.lower()}_w01"
+        existing = _row(self.conn, "SELECT assignment_id FROM assignments WHERE assignment_id=?", (assignment_id,))
+        if existing:
+            return self.get_assignment(assignment_id)
+        body = body_path.read_text(encoding="utf-8")
+        heading = next((line.strip().lstrip("#").strip() for line in body.splitlines() if line.strip()), assignment_id)
+        rubric_yaml = yaml.safe_load(rubric_path.read_text(encoding="utf-8"))
+        outcome_id = f"outcome_{track_id.lower()}_w01"
+        now = _now()
+        self.conn.execute(
+            "INSERT OR IGNORE INTO outcomes(outcome_id, module_id, code, title, description) VALUES (?,?,?,?,?)",
+            (outcome_id, track_id, f"{track_id}-W01", heading, heading),
+        )
+        rubric_id = "rubric_master_waike_v1"
+        self.conn.execute(
+            "INSERT OR IGNORE INTO rubrics(rubric_id, schema_version, title, source_path, source_commit) VALUES (?,?,?,?,?)",
+            (rubric_id, SCHEMA_VERSION, "WAIKE master rubric", str(rubric_path.relative_to(self.waike_root)), self.source_commit),
+        )
+        scale = rubric_yaml.get("scale") or {}
+        for idx, cat in enumerate(list(rubric_yaml.get("categories") or [])[:5]):
+            criterion_id = f"crit_{cat}"
+            self.conn.execute(
+                "INSERT OR IGNORE INTO rubric_criteria(criterion_id, rubric_id, description, max_points, sort_order) VALUES (?,?,?,?,?)",
+                (criterion_id, rubric_id, str(cat).replace("_", " "), 4.0, idx),
+            )
+            for score, label in sorted(((int(k), v) for k, v in scale.items()), reverse=True):
+                self.conn.execute(
+                    "INSERT OR IGNORE INTO rubric_levels(level_id, criterion_id, score, label, description) VALUES (?,?,?,?,?)",
+                    (f"{criterion_id}_L{score}", criterion_id, float(score), f"Level {score}", str(label)),
+                )
+        self.conn.execute(
+            """
+            INSERT INTO assignments(
+              assignment_id, module_id, schema_version, title, week, body_markdown,
+              source_path, source_commit, rubric_id, outcome_id, mastery_threshold,
+              portfolio_connection, revision_policy, current_version, created_at
+            ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
+            """,
+            (
+                assignment_id,
+                track_id,
+                SCHEMA_VERSION,
+                heading,
+                1,
+                body,
+                str(body_path.relative_to(self.waike_root)),
+                self.source_commit,
+                rubric_id,
+                outcome_id,
+                MASTERY_THRESHOLD,
+                0,
+                "allowed_with_changelog",
+                1,
+                now,
+            ),
+        )
+        self.conn.execute(
+            """
+            INSERT INTO assignment_versions(
+              assignment_version_id, assignment_id, version, title, body_markdown, rubric_id, content_hash, created_at
+            ) VALUES (?,?,?,?,?,?,?,?)
+            """,
+            (_id("asgv"), assignment_id, 1, heading, body, rubric_id, _sha256_text(heading + "\n" + body), now),
+        )
+        _audit(self.conn, "system", "seed_assignment", "assignment", assignment_id, {"source": str(body_path)})
+        self.conn.commit()
+        return self.get_assignment(assignment_id)
+
     def _seed_course_assignment(
         self,
         *,

@@ -70,6 +70,7 @@ type Mode =
   | "dc-practicals"
   | "dc-course"
   | "git-course"
+  | "track-course"
   | "lessons"
   | "home"
   | "courses"
@@ -714,6 +715,7 @@ export default function App() {
   }));
   const courseModels = publicCatalogMode ? publicCourseModels(pinnedIds) : hubCourseModels;
   const activeCourse = resolveActiveCourse(courseModels, sectionId || null);
+  const openedTrack = PUBLIC_TRACKS.find((track) => track.title === (activeCourse?.title || "")) ?? null;
   const activePublicTrack = publicCatalogMode ? publicTrackForSection(sectionId) : null;
   const publicLessonTrack = activePublicTrack || (publicCatalogMode ? PUBLIC_TRACKS[0] : null);
   const {content: activePublicContent} = usePublicContent(activePublicTrack);
@@ -1173,9 +1175,11 @@ export default function App() {
 
       {hub && session && learnerAccess && activeCourse?.title.toLowerCase().includes("digital confidence") && <div><button onClick={()=>{setCatalogUnit(1);setMode("dc-course");}}>Open Digital Confidence weekly reader</button><button onClick={()=>setMode("dc-practicals")}>Open Digital Confidence independent practical</button></div>}
       {hub && session && learnerAccess && weeklyReaderForCourse(activeCourse?.title || "")?.mode === "git-course" && <div><button data-testid="open-general-it-reader" onClick={()=>{setCatalogUnit(1);setMode("git-course");}}>{weeklyReaderForCourse(activeCourse?.title || "")?.label}</button></div>}
+      {hub && session && learnerAccess && openedTrack && !weeklyReaderForCourse(activeCourse?.title || "") && <div><button data-testid="open-track-reader" onClick={()=>{setCatalogUnit(1);setMode("track-course");}}>Open weekly reader</button></div>}
       <div className="layout" id="main" tabIndex={-1}>
         {mode === "dc-course" && hub && session && hubResolution.status === "http" && <BrowserLearning key={`dc-auth:${catalogUnit}`} trackId="DIGITAL_CONFIDENCE" unit={catalogUnit} onNavigate={(_,unit)=>setCatalogUnit(unit)} auth={{token:session.token,baseUrl:hubResolution.baseUrl,sectionId:sectionId||"",onReview:()=>{setOpenAssignmentId("DIGITAL_CONFIDENCE-independent-v1");setMode("assignments");}}}/>}
         {mode === "git-course" && hub && session && hubResolution.status === "http" && <BrowserLearning key={`git-auth:${catalogUnit}`} trackId="IT_SUPPORT_HARDWARE" unit={catalogUnit} onNavigate={(_,unit)=>setCatalogUnit(unit)} auth={{token:session.token,baseUrl:hubResolution.baseUrl,sectionId:sectionId||"",onReview:()=>{setOpenAssignmentId("general_it_w01");setMode("assignments");}}}/>}
+        {mode === "track-course" && hub && session && hubResolution.status === "http" && openedTrack && <BrowserLearning key={`track-auth:${openedTrack.trackId}:${catalogUnit}`} trackId={openedTrack.trackId} unit={catalogUnit} onNavigate={(_,unit)=>setCatalogUnit(unit)} auth={{token:session.token,baseUrl:hubResolution.baseUrl,sectionId:sectionId||"",onReview:()=>{setOpenAssignmentId(`${openedTrack.trackId.toLowerCase()}_w01`);setMode("assignments");}}}/>}
         {mode === "dc-practicals" && hub && session && hubResolution.status === "http" && dcContent?.delivery && <DigitalConfidencePractical delivery={dcContent!.delivery!} unit={11} auth={{token:session.token,baseUrl:hubResolution.baseUrl,sectionId:sectionId||"",onReview:()=>{setOpenAssignmentId("DIGITAL_CONFIDENCE-independent-v1");setMode("assignments");}}}/>}
         {mode === "lessons" && publicCatalogMode ? <BrowserLearning
           key={`${publicLessonTrack?.trackId || PUBLIC_TRACKS[0].trackId}:${catalogUnit}`}

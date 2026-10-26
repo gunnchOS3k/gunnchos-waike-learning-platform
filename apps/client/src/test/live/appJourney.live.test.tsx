@@ -257,4 +257,101 @@ describe("real client journeys on the local Hub", () => {
     expect(screen.queryByText(feedback)).not.toBeInTheDocument();
     expect(screen.queryByTestId("learner-grade")).not.toBeInTheDocument();
   }, 120_000);
+
+  const remainingTracks = PUBLIC_TRACKS.filter((track) => track.trackId !== "DIGITAL_CONFIDENCE");
+  it.each(remainingTracks.map((track) => [track.trackId, track.title] as const))(
+    "opens the on-disk %s week without a practice grade and keeps the return with Alpha",
+    async (trackId, title) => {
+      const assignmentId = `${trackId.toLowerCase()}_w01`;
+      const evidence = `Alpha ${trackId} evidence for the submitting learner.`;
+      const feedback = `Returned only to the ${trackId} learner.`;
+      const courseButton = (name: string) => name === title || name.startsWith(`${title} ·`);
+      await loadPublicContent(remainingTracks.find((track) => track.trackId === trackId)!);
+      render(<App />);
+      await waitFor(() => expect(screen.getByTestId("login-form")).toBeInTheDocument());
+      await signIn("learner-alpha");
+
+      fireEvent.click(await screen.findByRole("button", { name: courseButton }));
+      fireEvent.click(screen.getByTestId("open-track-reader"));
+      await waitFor(() => expect(screen.getByText("Progress is stored in lesson_progress. No grade was written.")).toBeInTheDocument(), { timeout: 20_000 });
+
+      document.querySelectorAll("#practice-quiz form fieldset").forEach((group) => {
+        const choice = group.querySelector("input");
+        if (choice) fireEvent.click(choice);
+      });
+      fireEvent.click(screen.getByRole("button", { name: "Check my answers" }));
+      await waitFor(() => expect(screen.getByText(/Practice result: \d+ \/ \d+\. No grade was written\./)).toBeInTheDocument(), { timeout: 20_000 });
+      expect(screen.queryByTestId("learner-grade")).not.toBeInTheDocument();
+
+      fireEvent.click(screen.getByTestId("mode-assignments"));
+      fireEvent.click(await screen.findByTestId(`open-assignment-${assignmentId}`));
+      await waitFor(() => expect(screen.getByTestId("draft-text")).toBeInTheDocument());
+      fireEvent.change(screen.getByTestId("draft-text"), { target: { value: evidence } });
+      fireEvent.click(screen.getByTestId("submit-btn"));
+      await waitFor(() => expect(screen.getByTestId("assignment-status")).toHaveTextContent(/Submitted/), { timeout: 20_000 });
+      expect(screen.queryByTestId("learner-grade")).not.toBeInTheDocument();
+      expect(screen.queryByTestId("learner-feedback")).not.toBeInTheDocument();
+
+      await signOut();
+      const anonymous = await fetch(`${hubUrl()}/api/v1/assignments/${assignmentId}/submit`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          idempotency_key: `anonymous-${assignmentId}`,
+          text_response: "must not persist",
+          section_id: `sec_alpha_${trackId.toLowerCase()}_w01`,
+        }),
+      });
+      expect(anonymous.status).toBe(401);
+
+      await signIn("learner-beta");
+      fireEvent.click(screen.getByTestId("mode-assignments"));
+      fireEvent.click(await screen.findByTestId(`open-assignment-${assignmentId}`));
+      await waitFor(() => expect(screen.getByTestId("draft-text")).toHaveValue(""));
+      expect(screen.queryByText(evidence)).not.toBeInTheDocument();
+      expect(screen.queryByText(feedback)).not.toBeInTheDocument();
+      expect(screen.queryByTestId("learner-grade")).not.toBeInTheDocument();
+      await signOut();
+
+      await signIn("instructor-alpha");
+      await waitFor(() => {
+        expect(document.querySelector(`[data-testid^='queue-item-${assignmentId}-']`)).toBeTruthy();
+      }, { timeout: 20_000 });
+      const queued = document.querySelector(`[data-testid^='queue-item-${assignmentId}-']`);
+      if (!(queued instanceof HTMLButtonElement)) throw new Error(`${trackId} queue item was not a button`);
+      fireEvent.click(queued);
+      await waitFor(() => expect(screen.getByTestId("grade-panel")).toHaveTextContent(evidence));
+      fireEvent.change(screen.getByTestId("feedback-text"), { target: { value: feedback } });
+      fireEvent.click(screen.getByTestId("return-grade-btn"));
+      await waitFor(() => expect(screen.getByTestId("instructor-status")).toHaveTextContent(/Graded/), { timeout: 20_000 });
+      await signOut();
+
+      await restartHub();
+      await signIn("learner-alpha");
+      fireEvent.click(await screen.findByRole("button", { name: courseButton }));
+      fireEvent.click(screen.getByTestId("open-track-reader"));
+      await waitFor(() => expect(screen.getByTestId("resumed-progress")).toHaveTextContent("Resumed stored lesson progress for w01"), { timeout: 20_000 });
+
+      fireEvent.click(screen.getByTestId("mode-assignments"));
+      const card = await screen.findByTestId(`open-assignment-${assignmentId}`);
+      expect(card.textContent).toMatch(/returned/i);
+      fireEvent.click(card);
+      await waitFor(() => expect(screen.getByTestId("learner-feedback")).toHaveTextContent(feedback));
+      expect(screen.getByTestId("learner-grade").textContent).toMatch(/10/);
+      await signOut();
+
+      await signIn("learner-beta");
+      fireEvent.click(await screen.findByRole("button", { name: courseButton }));
+      fireEvent.click(screen.getByTestId("open-track-reader"));
+      await waitFor(() => expect(screen.getByText("Progress is stored in lesson_progress. No grade was written.")).toBeInTheDocument(), { timeout: 20_000 });
+      expect(screen.queryByTestId("resumed-progress")).not.toBeInTheDocument();
+      fireEvent.click(screen.getByTestId("mode-assignments"));
+      fireEvent.click(await screen.findByTestId(`open-assignment-${assignmentId}`));
+      await waitFor(() => expect(screen.getByTestId("draft-text")).toHaveValue(""));
+      expect(screen.queryByText(evidence)).not.toBeInTheDocument();
+      expect(screen.queryByText(feedback)).not.toBeInTheDocument();
+      expect(screen.queryByTestId("learner-grade")).not.toBeInTheDocument();
+    },
+    180_000,
+  );
 });

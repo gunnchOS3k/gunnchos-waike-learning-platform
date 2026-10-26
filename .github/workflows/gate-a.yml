@@ -1243,6 +1243,40 @@ jobs:
           pnpm exec vitest run --config vitest.live.config.ts src/test/live/activityUi.live.test.tsx src/test/live/appJourney.live.test.tsx
           pnpm run lint
           pnpm run build
+          node --input-type=module <<'NODE'
+          import { readFileSync } from "node:fs";
+          const html = readFileSync("dist/index.html", "utf8");
+          const titles = [
+            "Digital Confidence to Computer Operator",
+            "IT Support and Hardware Foundations",
+            "Software Builder Zero-to-Hero",
+            "Networking and Internet Infrastructure",
+            "Cybersecurity Foundations and SOC Readiness",
+            "Data, Databases, and Dashboards",
+            "AI/ML and Edge AI Foundations",
+            "Embedded Systems and Device Prototyping",
+            "Wireless, DSP, and 6G Foundations",
+            "Project Management, Agile, and Lean Six Sigma",
+            "Game Development and Interactive Media",
+            "7GC AI-RAN Research Apprenticeship",
+            "Cloud and DevOps",
+            "Communication, Professional Development, and Ethics",
+            "Robotics and Control",
+            "gunnchOS Device OS and Product Lab",
+            "Hardware Engineering",
+            "Data Visualization and Business Intelligence",
+          ];
+          if (!html.includes('id="waike-public-tracks"')) {
+            console.error("public reader HTML has no track list");
+            process.exit(1);
+          }
+          const missing = titles.filter((title) => !html.includes(`>${title}<`));
+          if (missing.length !== 0 || titles.length !== 18) {
+            console.error(missing);
+            process.exit(1);
+          }
+          console.log("public reader lists 18 tracks");
+          NODE
 
   verify-gate-a:
     name: verify-gate-a
