@@ -1237,7 +1237,7 @@ jobs:
           PYTHONPATH: services/hub
         run: |
           uv venv .venv
-          uv pip install --python .venv/bin/python fastapi uvicorn pydantic httpx pytest pyyaml jsonschema argon2-cffi
+          uv pip install --python .venv/bin/python fastapi uvicorn pydantic httpx pytest pyyaml jsonschema argon2-cffi cryptography PyJWT
           cd apps/client
           pnpm install --frozen-lockfile
           pnpm exec vitest run --config vitest.live.config.ts src/test/live/activityUi.live.test.tsx src/test/live/appJourney.live.test.tsx
