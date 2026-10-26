@@ -867,12 +867,56 @@ class LocalGunnchAIProvider:
             },
         )
 
+    def _quote_opened_lesson(self, req: AssistRequest, disclosure: dict[str, Any]) -> AssistResponse | None:
+        """Quote the opened lesson when no local model can run. Not an inference claim."""
+        if req.processing_mode != "local-only" or not req.learner_facing:
+            return None
+        for material in req.course_materials:
+            text = material.get("text") or ""
+            path = (material.get("path") or material.get("id") or "").replace("\\", "/")
+            if "w01/lesson.md" not in path or not text.strip() or not material_path_allowed(path):
+                continue
+            return AssistResponse(
+                ok=True,
+                text="Suggestion from the lesson already opened. No grade was written.\n\n" + text,
+                grounded=True,
+                citations=[
+                    {
+                        "source": path,
+                        "snippet": text[:120],
+                        "content_hash": material.get("content_hash") or content_hash(text),
+                    }
+                ],
+                provider_id=self.provider_id,
+                mode=req.mode,
+                capability=req.capability,
+                disclosure=disclosure["userVisibleDisclosure"],
+                suggestion_only=True,
+                mutates_grades=False,
+                detail={
+                    "cloud": disclosure,
+                    "local_inference_executed": False,
+                    "real_inference": False,
+                    "lesson_quote_only": True,
+                },
+            )
+        return None
+
     def assist(self, req: AssistRequest) -> AssistResponse:
         script = self.in_process_script()
         if script is not None:
-            return self._assist_in_process(req, script)
+            try:
+                return self._assist_in_process(req, script)
+            except ServiceError:
+                quoted = self._quote_opened_lesson(req, evaluate_cloud_disclosure(req))
+                if quoted is not None:
+                    return quoted
+                raise
         cli = self.cli_path()
         if cli is None:
+            quoted = self._quote_opened_lesson(req, evaluate_cloud_disclosure(req))
+            if quoted is not None:
+                return quoted
             raise ServiceError("AI_PROVIDER_UNAVAILABLE", 503)
         disclosure = evaluate_cloud_disclosure(req)
         cmd = [
@@ -895,12 +939,21 @@ class LocalGunnchAIProvider:
                 check=False,
             )
         except (OSError, subprocess.TimeoutExpired) as e:
+            quoted = self._quote_opened_lesson(req, disclosure)
+            if quoted is not None:
+                return quoted
             raise ServiceError("AI_PROVIDER_UNAVAILABLE", 503) from e
         if proc.returncode != 0:
+            quoted = self._quote_opened_lesson(req, disclosure)
+            if quoted is not None:
+                return quoted
             raise ServiceError("AI_PROVIDER_ERROR", 502)
         try:
             payload = json.loads(proc.stdout.strip() or "{}")
         except json.JSONDecodeError as e:
+            quoted = self._quote_opened_lesson(req, disclosure)
+            if quoted is not None:
+                return quoted
             raise ServiceError("AI_PROVIDER_ERROR", 502) from e
         self._assist_executed = True
         text = str(payload.get("text") or payload.get("message") or payload)
