@@ -106,12 +106,15 @@ def test_multi_user_lms_alpha_37_steps(client):
     home_a = client.get("/api/v1/learner/home", headers=lah)
     home_b = client.get("/api/v1/learner/home", headers=lbh)
     assert home_a.status_code == 200 and home_b.status_code == 200
-    assert home_a.json()[0]["section_id"] == SECTION
+    owned = [row for row in home_a.json() if row["section_id"] == SECTION]
+    assert len(owned) == 1
+    assert owned[0]["module_id"] == "DIGITAL_CONFIDENCE"
+    assert any(row["section_id"] != SECTION for row in home_a.json())
     steps["8_learner_alpha_home"] = "PASS"
     steps["9_learner_beta_home_independent"] = "PASS"
 
     assigns = client.get("/api/v1/assignments", headers=lah).json()
-    aid = assigns[0]["assignment_id"]
+    aid = next(row["assignment_id"] for row in assigns if row.get("section_id") == SECTION)
     detail = client.get(f"/api/v1/assignments/{aid}", headers=lah).json()
 
     # 10–12 draft / submit alpha

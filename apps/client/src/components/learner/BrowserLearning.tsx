@@ -33,6 +33,12 @@ export function tutoringNote(data: { text?: unknown; modelCompletion?: unknown; 
   if (realCompletion && !saysSource) return '';
   return SOURCE_TUTORING_NOTE;
 }
+export function campusReturnHref(search: string): string | null {
+  const params = new URLSearchParams(search.startsWith("?") ? search.slice(1) : search);
+  const keys = [...params.keys()];
+  if (keys.length !== 1 || keys[0] !== "return") return null;
+  return params.get("return") === "https://gunnchos.com" ? "https://gunnchos.com" : null;
+}
 export function parseLearningHash(hash: string): { track: string; unit: number } | null {
   const match = /^#\/learn\/([A-Z_0-9]+)\/(\d+)$/.exec(hash);
   if (!match || !PUBLIC_TRACKS.some(t => t.trackId === match[1])) return null;
@@ -117,9 +123,10 @@ function LoadedBrowserLearning({trackId, unit, onNavigate, auth, track, content}
         );
         if (epoch !== requestEpoch.current) return;
         if (prior.ok) {
-          const body = await prior.json() as { lesson_progress?: Array<{ lesson_id?: string; user_id?: string }> };
-          const stored = Array.isArray(body.lesson_progress) && body.lesson_progress.some((row) => row.lesson_id === lessonId);
+          const body = await prior.json() as { lesson_progress?: Array<{ lesson_id?: string; percent_complete?: number }> };
+          const stored = Array.isArray(body.lesson_progress) ? body.lesson_progress.find((row) => row.lesson_id === lessonId) : undefined;
           if (stored && epoch === requestEpoch.current) setResumedLesson(lessonId);
+          if (stored?.percent_complete === 100 && epoch === requestEpoch.current) setMessage(`Lesson ${lessonId} is complete. No grade was written.`);
         }
         const response = await hubFetch(`${baseUrl}/api/v1/sections/${encodeURIComponent(sectionId)}/lessons/${unit}`, {
           headers: { Authorization: `Bearer ${token}` },
@@ -222,6 +229,29 @@ function LoadedBrowserLearning({trackId, unit, onNavigate, auth, track, content}
     }
     finally { if (epoch === requestEpoch.current) setBusy(false); }
   }
+  async function markLessonComplete() {
+    if (!signedIn || !auth) return;
+    if (!hubAllowsToken()) {
+      setMessage('This Hub address is not an allowed origin. No token was sent.');
+      return;
+    }
+    const lessonId = `w${String(unit).padStart(2, '0')}`;
+    try {
+      const response = await hubFetch(`${auth.baseUrl}/api/v1/sections/${encodeURIComponent(auth.sectionId)}/lessons/${unit}/complete`, {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${auth.token}` },
+        credentials: 'omit',
+      }, new AbortController());
+      const data = await response.json().catch(() => ({}));
+      if (!response.ok || data.grade_written || data.percent_complete !== 100) {
+        setMessage('Lesson completion was not stored. No grade was written.');
+        return;
+      }
+      setMessage(`Lesson ${lessonId} is complete. No grade was written.`);
+    } catch {
+      setMessage('Lesson completion was not stored. No grade was written.');
+    }
+  }
   function download() {
     const blob = new Blob([JSON.stringify({ schema: 'waike.guest.practice.v1', trackId: track.trackId, sourceCommit: content.sourceCommit, contentHash: content.contentRootSha256, ...record, currentDraft: draft, status: 'ungraded guest evidence; no credential or completion credit' }, null, 2)], { type: 'application/json' });
     const url = URL.createObjectURL(blob); const link = document.createElement('a');
@@ -231,13 +261,14 @@ function LoadedBrowserLearning({trackId, unit, onNavigate, auth, track, content}
     <header><p className="eyebrow">WAIKE / Open learning</p><h1>{track.title}</h1>
       {!auth && <><label htmlFor="reader-course">Choose course</label><select id="reader-course" value={track.trackId} onChange={e => onNavigate(e.target.value, 1)}>{PUBLIC_TRACKS.map(t => <option key={t.trackId} value={t.trackId}>{t.title}</option>)}</select></>}
       <label htmlFor="reader-unit">Choose unit</label><select id="reader-unit" value={unit} onChange={e => onNavigate(track.trackId, Number(e.target.value))}>{content.lessons.map((l,i) => <option key={l.id} value={i+1}>{i+1}. {l.title}</option>)}</select>
+      {campusReturnHref(window.location.search) && <a data-testid="campus-return" href={campusReturnHref(window.location.search) || undefined}>Return to gunnchos.com</a>}
       <p>Prerequisites: {content.prerequisites?.required?.join('; ') || 'Review the course syllabus before starting.'}</p>
     </header>
     <nav aria-label="Unit sections">{[["lesson","Lesson"],["practice-lab","Lab"],["practice-quiz","Quiz"],["practice-assignment","Assignment"],["practice-progress","My evidence"]].map(([id,label]) => <a key={id} href={`#${id}`} onClick={e => { e.preventDefault(); document.getElementById(id)?.scrollIntoView(); }}>{label}</a>)}</nav>
     {content.delivery && <p>{content.delivery.definition.introduction}</p>}
     {content.delivery && <><DigitalConfidencePractical key={`dc:${unit}`} delivery={content.delivery} unit={unit}/>{unit===10&&<DigitalConfidencePractical delivery={content.delivery} unit={11} auth={auth}/>}</>}
     <article id="lesson" tabIndex={-1}>{content.delivery && <p>Shared General IT reading and authorized technical extension. Begin with the guided activity above; terminal commands require the separately stated environment and permission.</p>}{resumedLesson && <p data-testid="resumed-progress">Resumed stored lesson progress for {resumedLesson}. This read did not write a grade.</p>}{serverLesson && <p>Progress is stored in {serverLesson.progress_store}. No grade was written.</p>}<SafeMarkdown markdown={(serverLesson?.text || lesson.markdown).replace(/^(#{1,5}) /gm, "$1# ")} testId="full-lesson-content" />
-      <button onClick={() => save({ ...record, viewed: Array.from(new Set([...record.viewed, unit])) })}>Mark this lesson read</button>
+      <button onClick={() => { save({ ...record, viewed: Array.from(new Set([...record.viewed, unit])) }); void markLessonComplete(); }}>Mark this lesson read</button>
       <p>Reading records engagement. It does not demonstrate mastery.</p>
     </article>
     <section id="practice-lab"><h2>Practice lab</h2>{content.delivery && <p>The guided Digital Confidence practical above is the beginner pathway. This shared General IT laboratory is an optional technical extension.</p>}{lab ? <SafeMarkdown markdown={lab.markdown.replace(/^(#{1,5}) /gm, "$1# ")} /> : <p>The linked lab could not be loaded. No lab completion is recorded.</p>}

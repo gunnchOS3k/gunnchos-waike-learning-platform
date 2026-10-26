@@ -435,6 +435,7 @@ class SectionService:
             out.append(
                 {
                     **s,
+                    "module_id": (s.get("package") or {}).get("module_id"),
                     "mastery": dict(mastery) if mastery else None,
                     "recent_feedback": [dict(f) for f in feedback],
                 }

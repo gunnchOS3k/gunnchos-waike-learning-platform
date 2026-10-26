@@ -103,6 +103,54 @@ def open_lesson(
     }
 
 
+@router.post("/sections/{section_id}/lessons/{week}/complete")
+def complete_lesson(
+    section_id: str,
+    week: int,
+    request: Request,
+    actor: Actor = Depends(require_actor),
+) -> dict:
+    """Record that this learner finished the lesson. Completion is progress, not a grade."""
+    _enrolled_learner(request, section_id, actor)
+    module_id, _path = _lesson_path(request, section_id, week)
+    lesson_id = f"w{week:02d}"
+    existing = request.app.state.db.execute(
+        """
+        SELECT revision FROM lesson_progress
+        WHERE user_id=? AND section_id=? AND pack_id=? AND lesson_id=?
+        """,
+        (actor.actor_id, section_id, module_id, lesson_id),
+    ).fetchone()
+    try:
+        request.app.state.sync.apply_mutation(
+            actor,
+            client_mutation_id=f"complete-{actor.actor_id}-{section_id}-{lesson_id}",
+            site_id=actor.site_id,
+            section_id=section_id,
+            device_id="lesson-session",
+            entity_type="lesson_progress",
+            entity_id=lesson_id,
+            base_revision=int(existing["revision"]) if existing else 0,
+            operation="upsert",
+            payload={
+                "pack_id": module_id,
+                "lesson_id": lesson_id,
+                "path": f"weeks/{lesson_id}/lesson.md",
+                "percent_complete": 100,
+            },
+        )
+    except ServiceError as exc:
+        raise HTTPException(exc.status, exc.code) from exc
+    return {
+        "section_id": section_id,
+        "module_id": module_id,
+        "lesson_id": lesson_id,
+        "percent_complete": 100,
+        "progress_store": "lesson_progress",
+        "grade_written": False,
+    }
+
+
 @router.post("/sections/{section_id}/lessons/{week}/practice")
 def practice_lesson(
     section_id: str,

@@ -237,6 +237,9 @@ def create_app(config: HubConfig | None = None, db_path: Path | None = None, see
                 created = assessment.seed_track_lesson_assignment(track["track_id"], track["package_dir"])
                 if created:
                     gradebook.seed_for_section(track["section_id"], created.get("assignment_id"))
+                later = assessment.seed_track_lesson_assignment(track["track_id"], track["package_dir"], week=2)
+                if later:
+                    gradebook.seed_for_section(track["section_id"], later.get("assignment_id"), title="Week 02 assignment")
         # Gate A synthetic activity fixtures (quizzes/labs) for enrolled Alpha section.
         instructor_row = conn.execute(
             "SELECT user_id FROM users WHERE username=? AND site_id=?",
