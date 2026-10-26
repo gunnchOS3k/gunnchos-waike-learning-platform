@@ -333,8 +333,10 @@ describe("real client journeys on the local Hub", () => {
       await waitFor(() => expect(screen.getByTestId("resumed-progress")).toHaveTextContent("Resumed stored lesson progress for w01"), { timeout: 20_000 });
 
       fireEvent.click(screen.getByTestId("mode-assignments"));
-      const card = await screen.findByTestId(`open-assignment-${assignmentId}`);
-      expect(card.textContent).toMatch(/returned/i);
+      await waitFor(() => {
+        expect(screen.getByTestId(`open-assignment-${assignmentId}`).textContent).toMatch(/returned/i);
+      }, { timeout: 20_000 });
+      const card = screen.getByTestId(`open-assignment-${assignmentId}`);
       fireEvent.click(card);
       await waitFor(() => expect(screen.getByTestId("learner-feedback")).toHaveTextContent(feedback));
       expect(screen.getByTestId("learner-grade").textContent).toMatch(/10/);

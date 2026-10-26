@@ -576,6 +576,10 @@ export default function App() {
   }
 
   useEffect(() => {
+    if (!session && !isMock) setAssignmentSummaries([]);
+  }, [session, isMock]);
+
+  useEffect(() => {
     if (!hub || (!session && !isMock)) return;
     let cancelled = false;
     void hub.listAssignments().then((rows) => {
