@@ -219,7 +219,7 @@ describe("real client journeys on the local Hub", () => {
     await signOut();
 
     await signIn("instructor-alpha");
-    const queued = await screen.findAllByTestId(/queue-item-general_it_w01-/);
+    const queued = await screen.findAllByTestId((id) => id.startsWith("queue-item-general_it_w01-"));
     fireEvent.click(queued[queued.length - 1]);
     await waitFor(() => expect(screen.getByTestId("grade-panel")).toHaveTextContent(evidence));
     fireEvent.change(screen.getByTestId("feedback-text"), { target: { value: feedback } });

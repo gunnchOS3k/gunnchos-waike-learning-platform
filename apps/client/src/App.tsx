@@ -1,5 +1,5 @@
 import {DigitalConfidencePractical} from "./components/learner/DigitalConfidencePractical";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { invoke } from "@tauri-apps/api/core";
 import { AssessmentWorkspace } from "./components/assessment/AssessmentWorkspace";
 import { InstructorQueue } from "./components/assessment/InstructorQueue";
@@ -279,13 +279,15 @@ export default function App() {
   const [runtimeHubPolicyAuthorized, setRuntimeHubPolicyAuthorized] = useState(false);
 
   const tokenRef = useCallback(() => session?.token ?? null, [session]);
+  const currentToken = useRef<string | null>(null);
+  currentToken.current = session?.token ?? null;
 
-  const onAuthFailure = useCallback((detail: string) => {
-    if (detail.includes("SESSION") || detail.includes("AUTH") || detail.includes("EXPIRED")) {
-      setSessionExpired(true);
-      setSession(null);
-      sessionStorage.removeItem(SESSION_KEY);
-    }
+  const onAuthFailure = useCallback((detail: string, failedToken?: string | null) => {
+    if (!(detail.includes("SESSION") || detail.includes("AUTH") || detail.includes("EXPIRED"))) return;
+    if (failedToken && currentToken.current && currentToken.current !== failedToken) return;
+    setSessionExpired(true);
+    setSession(null);
+    sessionStorage.removeItem(SESSION_KEY);
   }, []);
 
   const hubResolution = useMemo(

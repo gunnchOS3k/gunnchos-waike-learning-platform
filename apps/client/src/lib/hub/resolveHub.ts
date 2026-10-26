@@ -79,7 +79,7 @@ export function structuralNormalizeHubBase(
  */
 export function resolveHubClient(
   getToken: () => string | null,
-  onAuthFailure?: (detail: string) => void,
+  onAuthFailure?: (detail: string, failedToken?: string | null) => void,
   actor?: HubActor,
   env: HubEnv = import.meta.env,
 ): HubResolution {

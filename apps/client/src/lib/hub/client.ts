@@ -278,7 +278,7 @@ function authHeaders(token: string | null, actor?: HubActor): HeadersInit {
 export function createHttpHubClient(
   baseUrl: string,
   getToken: () => string | null,
-  onAuthFailure?: (detail: string) => void,
+  onAuthFailure?: (detail: string, failedToken?: string | null) => void,
   actor?: HubActor,
 ): HubClient {
   async function req<T>(path: string, init?: RequestInit): Promise<T> {
@@ -298,7 +298,7 @@ export function createHttpHubClient(
       // A 401 for a token that has already been replaced belongs to the previous
       // sign-in. It must not sign out the person who is signed in now.
       if (res.status === 401 && onAuthFailure && getToken() === tokenAtSend) {
-        onAuthFailure(String(detail));
+        onAuthFailure(String(detail), tokenAtSend);
       }
       throw new HubAuthError(res.status, String(detail));
     }
