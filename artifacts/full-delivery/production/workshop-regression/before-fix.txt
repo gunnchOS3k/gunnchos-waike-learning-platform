@@ -1,0 +1,22 @@
+
+> waike-learning-client@0.1.0 test /Users/gunnchos/Downloads/gunnchos-7gc-research-product-spine/repos/_waike_full_delivery/platform/apps/client
+> vitest run DigitalConfidencePractical.test.tsx
+
+
+ RUN  v2.1.9 /Users/gunnchos/Downloads/gunnchos-7gc-research-product-spine/repos/_waike_full_delivery/platform/apps/client
+
+ ❯ src/components/learner/DigitalConfidencePractical.test.tsx (1 test | 1 failed) 59ms
+   × a delayed file read preserves answers entered while bytes were loading 58ms
+     → expect(element).toHaveValue(25)
+
+Expected the element to have value:
+  25
+Received:
+  null
+
+ Test Files  1 failed (1)
+      Tests  1 failed (1)
+   Start at  15:41:02
+   Duration  943ms (transform 64ms, setup 152ms, collect 81ms, tests 59ms, environment 421ms, prepare 53ms)
+
+ ELIFECYCLE  Test failed. See above for more details.

@@ -1,0 +1,1 @@
+{"alg":"Ed25519","pack_id":"DIGITAL_CONFIDENCE.learner.v1","public_key_id":"TEST_ONLY","role":"learner","schema_version":"1.0.0","signature_b64":"g4+jtrPNOkc6nBZp/4Q3PhVZLBC1yQ40Tu/dsmV7o8hTvoWt/S8JRm/yNd4I4HesLKxChUVEIjSiC39/d9otBw==","signed_payload_sha256":"864bf1fe7ce214b45241f79a9d35b9f0e816dd3fa3b8b928282b2365a281b305"}

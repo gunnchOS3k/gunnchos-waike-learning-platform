@@ -1,0 +1,159 @@
+import { cleanup, render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { afterEach, beforeEach, describe, it, expect, vi } from 'vitest';
+import { BrowserLearning, parseLearningHash, tutoringNote } from './BrowserLearning';
+import { PUBLIC_TRACKS, loadPublicContent, publicAssignmentsForTrack, publicContentForTrack } from '../../lib/product/publicCurriculum';
+beforeEach(async () => { localStorage.clear(); await loadPublicContent(PUBLIC_TRACKS[0]); });
+afterEach(() => { cleanup(); vi.unstubAllGlobals(); });
+describe('browser course learning', () => {
+  it('only accepts known course and unit deep links', () => {
+    expect(parseLearningHash('#/learn/DIGITAL_CONFIDENCE/10')).toEqual({track:'DIGITAL_CONFIDENCE',unit:10});
+    for (const h of ['#/learn/UNKNOWN/1','#/learn/DIGITAL_CONFIDENCE/0','#/learn/DIGITAL_CONFIDENCE/11','#/learn/../1','#/learn/DIGITAL_CONFIDENCE/1?hub=evil']) expect(parseLearningHash(h)).toBeNull();
+  });
+  it('evaluates selected responses and preserves practice as ungraded evidence', async () => {
+    const quiz=publicContentForTrack(PUBLIC_TRACKS[0])!.quizzes[0];
+    const fetch=vi.fn().mockResolvedValue({ok:true,json:async()=>({kind:'formative_practice',persisted:false,earned:0,possible:quiz.items!.length,feedback:quiz.items!.map(q=>({id:q.id,correct:false,explanation:'Review the lesson.'}))})});
+    vi.stubGlobal('fetch',fetch);
+    render(<BrowserLearning trackId="DIGITAL_CONFIDENCE" unit={1} onNavigate={vi.fn()} />);
+    fireEvent.click(screen.getByLabelText(/Save practice on this browser/));
+    const groups=Array.from(document.querySelectorAll('fieldset'));
+    groups.forEach(group=>fireEvent.click(group.querySelector('input')!));
+    fireEvent.click(screen.getByRole('button',{name:'Check my answers'}));
+    await waitFor(()=>expect(screen.getByText(/Practice result: 0/)).toBeInTheDocument());
+    const request=JSON.parse(fetch.mock.calls[0][1].body);
+    expect(Object.keys(request.responses)).toHaveLength(quiz.items!.length);
+    expect(request.quiz_sha256).toBe(quiz.sha256);
+    expect(fetch.mock.calls[0][1].credentials).toBe('omit');
+    expect(screen.getByText(/Course completion: not established/)).toBeInTheDocument();
+    expect(localStorage.length).toBe(1);
+    fireEvent.click(screen.getByRole('button',{name:'Retry with a fresh response'}));
+    expect(screen.getAllByRole('radio').every(r=>!(r as HTMLInputElement).checked)).toBe(true);
+  });
+  it('does not invent a score when evaluation fails',async()=>{
+    vi.stubGlobal('fetch',vi.fn().mockRejectedValue(new Error('Connection lost')));
+    render(<BrowserLearning trackId="DIGITAL_CONFIDENCE" unit={1} onNavigate={vi.fn()} />);
+    Array.from(document.querySelectorAll('fieldset')).forEach(g=>fireEvent.click(g.querySelector('input')!));
+    fireEvent.click(screen.getByRole('button',{name:'Check my answers'}));
+    await waitFor(()=>expect(screen.getByText('Connection lost')).toBeInTheDocument());
+    expect(screen.queryByText(/Practice result:/)).toBeNull(); expect(localStorage.length).toBe(0);
+  });
+  it('stores an opted-in private draft and restores it without creating a submission',()=>{
+    const props={trackId:'DIGITAL_CONFIDENCE',unit:1,onNavigate:vi.fn()};
+    const view=render(<BrowserLearning {...props}/>);
+    fireEvent.click(screen.getByLabelText(/Save practice on this browser/));
+    fireEvent.change(screen.getByRole('textbox'),{target:{value:'Fictional ticket draft'}});
+    fireEvent.click(screen.getByRole('button',{name:'Save draft on this device'}));view.unmount();
+    render(<BrowserLearning {...props}/>);expect(screen.getByRole('textbox')).toHaveValue('Fictional ticket draft');
+    expect(screen.getByText(/Draft only/)).toBeInTheDocument();
+  });
+  it('reads lesson progress back after device saving is turned on', async () => {
+    const props={trackId:'DIGITAL_CONFIDENCE',unit:1,onNavigate:vi.fn()};
+    const view=render(<BrowserLearning {...props}/>);
+    fireEvent.click(screen.getByRole('button',{name:'Mark this lesson read'}));
+    expect(screen.getByText(/Lesson reads: 1 \//)).toBeInTheDocument();
+    expect(localStorage.length).toBe(0);
+    fireEvent.click(screen.getByLabelText(/Save practice on this browser/));
+    view.unmount();
+    render(<BrowserLearning {...props}/>);
+    await waitFor(() => expect(screen.getByText(/Lesson reads: 1 \//)).toBeInTheDocument());
+    expect(screen.getByText(/1 lessons marked read/)).toBeInTheDocument();
+    expect(screen.getByText(/Course completion: not established/)).toBeInTheDocument();
+  });
+  it('executes a unit-1 read for every canonical track without awarding completion', async () => {
+    expect(PUBLIC_TRACKS.map(t => t.trackId)).toEqual([
+      'DIGITAL_CONFIDENCE','IT_SUPPORT_HARDWARE','SOFTWARE_BUILDER','NETWORKING_INFRA','CYBER_SOC','DATA_DASHBOARDS','AI_ML_EDGE','EMBEDDED_PROTOTYPING','WIRELESS_6G','PM_AGILE_LSS','GAME_DEV_INTERACTIVE','SEVEN_GC_APPRENTICESHIP','CLOUD_DEVOPS','COMM_PD_ETHICS','ROBOTICS_CONTROL','GUNNCHOS_PRODUCT_LAB','HARDWARE_ENGINEERING','DATA_VIZ_BI',
+    ]);
+    for (const track of PUBLIC_TRACKS) {
+      const content = await loadPublicContent(track);
+      expect(content.lessons[0]?.markdown.length).toBeGreaterThan(0);
+      const view = render(<BrowserLearning trackId={track.trackId} unit={1} onNavigate={vi.fn()} />);
+      const reader = screen.getByTestId('browser-learning');
+      expect(reader.querySelector('header h1')?.textContent).toBe(track.title);
+      fireEvent.click(screen.getByRole('button', { name: 'Mark this lesson read' }));
+      expect(screen.getByText(/Lesson reads: 1 \//)).toBeInTheDocument();
+      expect(screen.getByText(/Course completion: not established/)).toBeInTheDocument();
+      view.unmount();
+      cleanup();
+    }
+  });
+  it('lets a guest complete an ungraded journey on more than one track', async () => {
+    expect(PUBLIC_TRACKS).toHaveLength(18);
+    for (const track of PUBLIC_TRACKS) {
+      const content = await loadPublicContent(track);
+      expect(content.lessons[0]?.markdown.length).toBeGreaterThan(80);
+      expect((content.labs[0]?.markdown || '').length).toBeGreaterThan(40);
+      expect(content.quizzes.length).toBeGreaterThan(0);
+      expect(content.assignments.length).toBeGreaterThan(0);
+      for (const quiz of content.quizzes) {
+        for (const item of quiz.items || []) {
+          expect(item).not.toHaveProperty('answer_index');
+          expect(item).not.toHaveProperty('answer');
+          expect(JSON.stringify(item).toLowerCase()).not.toContain('answer_key');
+        }
+      }
+      for (const card of publicAssignmentsForTrack(track)) {
+        expect(card.submission_state).toBe('Requires a school Hub');
+        expect(card.grade_state).toBe('none');
+      }
+    }
+    for (const track of [PUBLIC_TRACKS[0], PUBLIC_TRACKS[8], PUBLIC_TRACKS[17]]) {
+      const content = publicContentForTrack(track)!;
+      const quiz = content.quizzes[0];
+      const fetch = vi.fn().mockResolvedValue({ok:true,json:async()=>({kind:'formative_practice',persisted:false,earned:0,possible:quiz.items!.length,feedback:quiz.items!.map(q=>({id:q.id,correct:false,explanation:'Review the lesson.'}))})});
+      vi.stubGlobal('fetch', fetch);
+      const view = render(<BrowserLearning trackId={track.trackId} unit={1} onNavigate={vi.fn()} />);
+      expect((screen.getByTestId('full-lesson-content').textContent || '').length).toBeGreaterThan(40);
+      expect(screen.getByRole('heading', {name:'Practice lab'})).toBeInTheDocument();
+      expect(screen.getByText(/This practice score is not an authenticated grade/)).toBeInTheDocument();
+      expect(screen.getByText(/A guest draft is not submitted automatically/)).toBeInTheDocument();
+      expect(screen.queryByText(/answer key/i)).toBeNull();
+      expect(screen.queryByRole('button', {name:/exam/i})).toBeNull();
+      Array.from(document.querySelectorAll('fieldset')).forEach(group => fireEvent.click(group.querySelector('input')!));
+      fireEvent.click(screen.getByRole('button', {name:'Check my answers'}));
+      await waitFor(() => expect(screen.getByText(/No server record was created/)).toBeInTheDocument());
+      expect(screen.getByText(/Course completion: not established/)).toBeInTheDocument();
+      expect(fetch.mock.calls[0][0]).toBe(`/api/v1/public-practice/${track.trackId}/1`);
+      expect(fetch.mock.calls[0][1].credentials).toBe('omit');
+      const body = JSON.parse(fetch.mock.calls[0][1].body);
+      expect(body.quiz_sha256).toBe(quiz.sha256);
+      expect(body).not.toHaveProperty('grade');
+      view.unmount();
+      cleanup();
+      localStorage.clear();
+    }
+  });
+  it('refuses to send a bearer token to an untrusted Hub origin', async () => {
+    const fetch = vi.fn();
+    vi.stubGlobal('fetch', fetch);
+    render(<BrowserLearning trackId="DIGITAL_CONFIDENCE" unit={1} onNavigate={vi.fn()} auth={{ token: 'learner-token', baseUrl: 'https://hub.example', sectionId: 'sec_alpha_dc_w01', onReview: vi.fn() }} />);
+    await waitFor(() => expect(screen.getByText('This Hub address is not an allowed origin. No token was sent.')).toBeInTheDocument());
+    expect(fetch).not.toHaveBeenCalled();
+    expect(screen.queryByText(/Progress is stored in/)).toBeNull();
+  });
+  it('clears the previous learner before showing the next one and drops a late response', async () => {
+    let releaseAlpha: (value: { ok: boolean; json: () => Promise<unknown> }) => void = () => {};
+    const alpha = new Promise<{ ok: boolean; json: () => Promise<unknown> }>(resolve => { releaseAlpha = resolve; });
+    const fetch = vi.fn((url: string) => {
+      if (String(url).includes('sec-alpha')) return alpha;
+      return Promise.resolve({ ok: true, json: async () => ({ text: 'Beta lesson only', progress_store: 'lesson_progress', grade_written: false }) });
+    });
+    vi.stubGlobal('fetch', fetch);
+    const view = render(<BrowserLearning trackId="DIGITAL_CONFIDENCE" unit={1} onNavigate={vi.fn()} auth={{ token: 'alpha-token', baseUrl: 'http://127.0.0.1:9', sectionId: 'sec-alpha', onReview: vi.fn() }} />);
+    await waitFor(() => expect(fetch).toHaveBeenCalled());
+    const quiz = document.querySelector('#practice-quiz')!;
+    fireEvent.click(quiz.querySelector('input')!);
+    expect((quiz.querySelector('input') as HTMLInputElement).checked).toBe(true);
+    view.rerender(<BrowserLearning trackId="DIGITAL_CONFIDENCE" unit={1} onNavigate={vi.fn()} auth={{ token: 'beta-token', baseUrl: 'http://127.0.0.1:9', sectionId: 'sec-beta', onReview: vi.fn() }} />);
+    expect((document.querySelector('#practice-quiz input') as HTMLInputElement).checked).toBe(false);
+    releaseAlpha({ ok: true, json: async () => ({ text: 'Alpha secret lesson', progress_store: 'lesson_progress', grade_written: false }) });
+    await waitFor(() => expect(screen.getByText(/Beta lesson only/)).toBeInTheDocument());
+    expect(screen.queryByText('Alpha secret lesson')).toBeNull();
+    expect(screen.getByText('Progress is stored in lesson_progress. No grade was written.')).toBeInTheDocument();
+  });
+  it('labels empty model completions as source text and does not call a real completion deterministic', () => {
+    expect(tutoringNote({ modelCompletion: '', text: 'Source: lesson' })).toMatch(/Deterministic source text/);
+    expect(tutoringNote({ modelCompletion: '', text: 'Source: lesson' })).toMatch(/not model inference/);
+    expect(tutoringNote({ modelCompletion: '', text: 'Source: lesson' })).toMatch(/Inference is still blocked/);
+    expect(tutoringNote({ modelCompletion: 'weighted completion', text: 'A model reply' })).toBe('');
+    expect(tutoringNote({ text: 'Deterministic source text from the lesson', modelCompletion: 'weighted completion' })).toMatch(/Deterministic source text/);
+  });
+});

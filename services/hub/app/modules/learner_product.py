@@ -282,11 +282,25 @@ class LearnerProductService:
 
     def mlv_summary(self, actor: Actor) -> dict[str, Any]:
         sections = self.sections.list_sections_for_actor(actor)
+        continue_learning = None
+        if len(sections) == 1:
+            continue_learning = {
+                "section_id": sections[0]["section_id"],
+                "title": sections[0]["title"],
+                "module_id": (sections[0].get("package") or {}).get("module_id"),
+            }
         return {
             "display_name": actor.display_name,
-            "continue_learning": {"title": sections[0]["title"]} if sections else None,
+            "continue_learning": continue_learning,
             "due_soon": [],
-            "courses": [{"section_id": s["section_id"], "title": s.get("title")} for s in sections],
+            "courses": [
+                {
+                    "section_id": s["section_id"],
+                    "title": s.get("title"),
+                    "module_id": (s.get("package") or {}).get("module_id"),
+                }
+                for s in sections
+            ],
             "recent_feedback_count": 0,
             "upcoming_count": 0,
             "contract": "WAIKE_MLV_EDUCATION_CONTRACT.v1",

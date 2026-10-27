@@ -102,10 +102,11 @@ describe("WAIKE Learning OS shell", () => {
     await user.click(screen.getAllByRole("button", { name: "Open course" })[1]);
     expect(screen.getByTestId("course-home")).toHaveTextContent(/IT Support and Hardware Foundations/);
     expect(screen.getByTestId("module-sequence")).toHaveTextContent(/Assignment A01/);
-    expect(screen.getByTestId("module-sequence")).toHaveTextContent(/lab_accessibility_contrast_check/);
+    expect(screen.getByTestId("module-sequence")).toHaveTextContent(/lab_ticket_queue/);
 
-    await user.click(screen.getByRole("button", { name: /Lesson: Week 1 presentation/ }));
-    expect(screen.getByTestId("study-mode")).toHaveTextContent(/Idle policy 1200s/);
+    await user.click(screen.getByRole("button", { name: /Lesson: The Civic Tech Desk/ }));
+    expect(screen.getByTestId("full-lesson-content")).toHaveTextContent(/Idle policy 1200s/);
+    expect(screen.getByRole("button", { name: "Check my answers" })).toBeInTheDocument();
 
     await user.click(screen.getByTestId("mode-assignments"));
     await user.click(screen.getByRole("button", { name: /Assignment A01/i }));
@@ -130,7 +131,8 @@ describe("WAIKE Learning OS shell", () => {
     await waitFor(() => expect(screen.getByTestId("public-catalog-banner")).toBeInTheDocument());
     await user.click(screen.getByRole("button", { name: /Install learner pack/i }));
     expect(screen.getByRole("alert")).toHaveTextContent(/does not pretend to install/i);
-    expect(screen.getByTestId("trust-banner")).not.toHaveTextContent(/Verified learner pack/i);
+    expect(screen.queryByTestId("trust-banner")).not.toBeInTheDocument();
+    expect(screen.getByText(/signed-pack trust applies only/)).toBeInTheDocument();
   });
 
   it("runs learner assignment draft submit and instructor grade path", async () => {
@@ -177,5 +179,25 @@ describe("WAIKE Learning OS shell", () => {
     await waitFor(() => {
       expect(screen.getByTestId("remediation-list").textContent).toMatch(/assigned|Revise/i);
     });
+  });
+});
+
+
+describe("single-origin public reader", () => {
+  it("lets anonymous learners read and deliberately switch to existing school login", async () => {
+    vi.stubEnv("VITE_PUBLIC_READER", "true");
+    vi.stubEnv("VITE_HUB_SAME_ORIGIN", "true");
+    vi.stubEnv("VITE_HUB_URL", "");
+    sessionStorage.clear();
+    const user=userEvent.setup();
+    render(<App/>);
+    expect(screen.queryByTestId("login-form")).not.toBeInTheDocument();
+    expect(screen.getByTestId("public-catalog-banner")).toBeInTheDocument();
+    await user.click(screen.getByRole("button", {name:"Sign in to my learning Hub"}));
+    expect(screen.getByTestId("login-form")).toBeInTheDocument();
+    expect(screen.getByTestId("login-site-id")).toHaveValue("");
+    await user.click(screen.getByRole("button", {name:"Continue public learning"}));
+    expect(screen.queryByTestId("login-form")).not.toBeInTheDocument();
+    expect(screen.getByTestId("public-catalog-banner")).toBeInTheDocument();
   });
 });

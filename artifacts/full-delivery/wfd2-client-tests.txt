@@ -1,0 +1,29 @@
+
+> waike-learning-client@0.1.0 test /Users/gunnchos/Downloads/gunnchos-7gc-research-product-spine/repos/_waike_full_delivery/platform/apps/client
+> vitest run
+
+
+ RUN  v2.1.9 /Users/gunnchos/Downloads/gunnchos-7gc-research-product-spine/repos/_waike_full_delivery/platform/apps/client
+
+ ✓ src/lib/hub/resolveHub.test.ts (15 tests) 9ms
+ ✓ src/test/a11y.gate-b.test.tsx (3 tests) 75ms
+ ✓ src/lib/product/product.test.ts (33 tests) 73ms
+ ✓ src/components/learner/BrowserLearning.test.tsx (4 tests) 367ms
+ ✓ src/test/a11y.gate-c.test.tsx (5 tests) 155ms
+ ✓ src/test/keyboard.gate-c.test.tsx (5 tests) 279ms
+ ✓ src/test/a11y.pr3.test.tsx (3 tests) 283ms
+ ✓ src/test/a11y.gate-a.test.tsx (9 tests) 147ms
+ ✓ src/test/learner-first.adoption.test.tsx (5 tests) 419ms
+ ✓ src/lib/offline/syncUx.test.ts (3 tests) 2ms
+ ✓ src/platform/runtimeAdapter.test.ts (2 tests) 3ms
+ ✓ src/portalReturn.test.ts (2 tests) 1ms
+ ✓ src/test/a11y.learner-first.test.tsx (1 test) 56ms
+ ✓ src/App.test.tsx (10 tests) 1512ms
+   ✓ WAIKE Learning OS shell > keeps all 18 tracks discoverable without a Hub and does not fake school state 440ms
+   ✓ WAIKE Learning OS shell > runs learner assignment draft submit and instructor grade path 605ms
+
+ Test Files  14 passed (14)
+      Tests  100 passed (100)
+   Start at  08:37:57
+   Duration  3.38s (transform 973ms, setup 2.44s, collect 4.06s, tests 3.38s, environment 7.05s, prepare 969ms)
+

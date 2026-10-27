@@ -1,6 +1,6 @@
 {
   "module_id": "DIGITAL_CONFIDENCE",
-  "source_commit": "fbf7685bc5686201ccaa0128ee83346d59b3d584",
+  "source_commit": "e66cc977be755be35bdd560b67842ddcc926cad4",
   "learner_globs": [
     "programs/digital_confidence.md",
     "programs/digital_confidence_to_operator.md",
@@ -56,7 +56,8 @@
     "curriculum/digital_rc/GENERAL_IT/quizzes/**",
     "curriculum/digital_rc/GENERAL_IT/presentation/**",
     "curriculum/digital_rc/GENERAL_IT/assessments/**",
-    "curriculum/digital_rc/GENERAL_IT/projects/**"
+    "curriculum/digital_rc/GENERAL_IT/projects/**",
+    "curriculum/digital_rc/GENERAL_IT/delivery/*.json"
   ],
   "package_version": "1.0.0",
   "source_kind": "canonical_digital_rc_with_shared_general_it",

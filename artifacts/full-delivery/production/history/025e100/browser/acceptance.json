@@ -1,0 +1,55 @@
+{
+  "kind": "local_https_asgi_acceptance",
+  "synthetic_accounts": false,
+  "public_url_verified": false,
+  "human_learner_validation": false,
+  "ready": {
+    "status": "ready",
+    "curriculum_commit": "33a101852f4fefb0eb239bcffa60a65d71102e2c",
+    "platform_commit": "025e1002a611e4ece6465ac6a2176bfc90675ba2",
+    "seeded_test_fixtures": false
+  },
+  "slow_network": {
+    "download_kbps": 200,
+    "latency_ms": 80,
+    "time_to_first_course_ms": 8315
+  },
+  "initial_course_scripts": [
+    "/assets/DIGITAL_CONFIDENCE-BXeA6Aj-.js"
+  ],
+  "fictional_practical_evidence_sha256": "897506d0743ad74ce259a74244d04b65bf67c305f3e572e94c7ff07d717e128a",
+  "automated_accessibility": {
+    "scope": "Digital Confidence browser reader",
+    "wcag_tags": [
+      "wcag2a",
+      "wcag2aa",
+      "wcag21a",
+      "wcag21aa"
+    ],
+    "violations": 0,
+    "human_acceptance": false
+  },
+  "checks": [
+    "one selected course chunk",
+    "anonymous reader",
+    "same-origin fresh case with keyboard activation",
+    "missing evidence rejected",
+    "source-exact fictional note download and local file upload",
+    "practical criterion feedback with human review pending",
+    "unsubmitted evidence download",
+    "same-origin quiz feedback",
+    "completion remains unestablished",
+    "automated reader accessibility scan",
+    "explicit school login without fixture default",
+    "interrupted course loading and retry",
+    "private source denied",
+    "private API denied",
+    "mobile networking lesson without horizontal overflow"
+  ],
+  "screenshots": [
+    "dc-desktop.png",
+    "dc-practical-feedback.png",
+    "network-mobile.png",
+    "network-mobile-reading.png"
+  ]
+}

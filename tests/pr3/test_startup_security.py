@@ -5,6 +5,7 @@ from __future__ import annotations
 import os
 from pathlib import Path
 
+import pytest
 from fastapi.testclient import TestClient
 
 from app.main import HubConfig, create_app
@@ -128,10 +129,24 @@ def test_production_env_blocks_seed_without_fixture_auth(tmp_path, monkeypatch):
     monkeypatch.setenv("WAIKE_SEED_TEST_FIXTURES", "true")
     monkeypatch.setenv("WAIKE_ENV", "production")
     monkeypatch.delenv("WAIKE_FIXTURE_AUTH", raising=False)
+    monkeypatch.delenv("WAIKE_ALLOW_FAKE_AI", raising=False)
+    monkeypatch.delenv("WAIKE_PIXEL_PILOT", raising=False)
     app = create_app(db_path=tmp_path / "prodblock.sqlite3", seed=False)
     assert app.state.seeded_test_fixtures is False
     n = app.state.db.execute("SELECT COUNT(*) AS c FROM users").fetchone()["c"]
     assert n == 0
+
+
+def test_production_rejects_fake_ai_and_pixel_pilot(tmp_path, monkeypatch):
+    monkeypatch.setenv("WAIKE_ROOT", str(_waike()))
+    monkeypatch.setenv("WAIKE_ENV", "production")
+    monkeypatch.delenv("WAIKE_FIXTURE_AUTH", raising=False)
+    monkeypatch.delenv("WAIKE_SEED_TEST_FIXTURES", raising=False)
+    for name in ("WAIKE_ALLOW_FAKE_AI", "WAIKE_PIXEL_PILOT"):
+        monkeypatch.setenv(name, "1")
+        with pytest.raises(ValueError, match="PRODUCTION_PILOT_OR_FAKE_AI_FORBIDDEN"):
+            create_app(db_path=tmp_path / f"{name}.sqlite3", seed=False)
+        monkeypatch.delenv(name)
 
 
 def test_bootstrap_admin_empty_db(tmp_path, monkeypatch):

@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import json
 import sqlite3
+from pathlib import Path
 from typing import Any
 
 from app.auth import Actor, Role
@@ -71,6 +72,117 @@ class SectionService:
             self._enroll_unchecked(sec_beta, "learner-gamma", now)
         self.conn.commit()
         return self.get_section_public(section_id)
+
+    def seed_general_it_section(self, source_commit: str = "") -> dict[str, Any]:
+        """Second canonical section. Same site and the same learners as Digital Confidence."""
+        now = _now()
+        package_id = "pkg_general_it_w01"
+        self.conn.execute(
+            """
+            INSERT OR IGNORE INTO packages(package_id, module_id, title, source_commit, immutable, created_at)
+            VALUES (?,?,?,?,1,?)
+            """,
+            (package_id, "GENERAL_IT", "General IT — Operator to Support Specialist", source_commit, now),
+        )
+        section_id = "sec_alpha_git_w01"
+        self.conn.execute(
+            """
+            INSERT OR IGNORE INTO sections(section_id, site_id, package_id, code, title, published, created_at)
+            VALUES (?,?,?,?,?,1,?)
+            """,
+            (
+                section_id,
+                "site-alpha",
+                package_id,
+                "GIT-W01-A",
+                "General IT — Operator to Support Specialist",
+                now,
+            ),
+        )
+        self.conn.execute(
+            """
+            INSERT OR IGNORE INTO section_runtime_metadata(section_id, due_override_json, publish_notes, updated_at)
+            VALUES (?,?,?,?)
+            """,
+            (section_id, "{}", "Canonical General IT week 1", now),
+        )
+        for uid in ("instructor-alpha", "instructor-1"):
+            if _row(self.conn, "SELECT user_id FROM users WHERE user_id=?", (uid,)):
+                self.conn.execute(
+                    "INSERT OR IGNORE INTO section_instructors(section_id, user_id, assigned_at) VALUES (?,?,?)",
+                    (section_id, uid, now),
+                )
+        for uid in ("learner-alpha", "learner-beta"):
+            if _row(self.conn, "SELECT user_id FROM users WHERE user_id=?", (uid,)):
+                self._enroll_unchecked(section_id, uid, now)
+        self.conn.commit()
+        return self.get_section_public(section_id)
+
+    def seed_canonical_track_sections(self, source_commit: str, waike_root: Path) -> list[dict[str, str]]:
+        """Enroll the remaining on-disk canonical tracks. Digital Confidence stays on its existing section."""
+        taxonomy = waike_root / "curriculum" / "taxonomy" / "eighteen_tracks.json"
+        bindings_path = waike_root / "curriculum" / "canonical_packages" / "SOURCE_BINDINGS.json"
+        if not taxonomy.is_file() or not bindings_path.is_file():
+            return []
+        titles = {
+            str(track["track_id"]): str(track["title"])
+            for track in json.loads(taxonomy.read_text(encoding="utf-8")).get("tracks") or []
+        }
+        bindings = json.loads(bindings_path.read_text(encoding="utf-8")).get("bindings") or {}
+        base = (waike_root / "curriculum" / "digital_rc").resolve()
+        seeded: list[dict[str, str]] = []
+        now = _now()
+        for track_id, package_dir in bindings.items():
+            if track_id == "DIGITAL_CONFIDENCE" or track_id not in titles:
+                continue
+            if not isinstance(package_dir, str) or package_dir in {".", ".."} or "/" in package_dir:
+                continue
+            track_folder = (base / track_id).resolve()
+            package_folder = (base / package_dir).resolve()
+            lesson = (track_folder / "weeks" / "w01" / "lesson.md").resolve()
+            if not track_folder.is_relative_to(base) or not package_folder.is_relative_to(base):
+                continue
+            if not lesson.is_file() or not lesson.is_relative_to(base):
+                continue
+            if not (package_folder / "quizzes" / "q01.json").is_file():
+                continue
+            if not (package_folder / "assignments" / "a01.md").is_file():
+                continue
+            section_id = f"sec_alpha_{track_id.lower()}_w01"
+            package_id = f"pkg_{track_id.lower()}_w01"
+            self.conn.execute(
+                """
+                INSERT OR IGNORE INTO packages(package_id, module_id, title, source_commit, immutable, created_at)
+                VALUES (?,?,?,?,1,?)
+                """,
+                (package_id, track_id, titles[track_id], source_commit, now),
+            )
+            self.conn.execute(
+                """
+                INSERT OR IGNORE INTO sections(section_id, site_id, package_id, code, title, published, created_at)
+                VALUES (?,?,?,?,?,1,?)
+                """,
+                (section_id, "site-alpha", package_id, track_id, titles[track_id], now),
+            )
+            self.conn.execute(
+                """
+                INSERT OR IGNORE INTO section_runtime_metadata(section_id, due_override_json, publish_notes, updated_at)
+                VALUES (?,?,?,?)
+                """,
+                (section_id, "{}", f"Canonical {track_id} week 1", now),
+            )
+            for uid in ("instructor-alpha", "instructor-1"):
+                if _row(self.conn, "SELECT user_id FROM users WHERE user_id=?", (uid,)):
+                    self.conn.execute(
+                        "INSERT OR IGNORE INTO section_instructors(section_id, user_id, assigned_at) VALUES (?,?,?)",
+                        (section_id, uid, now),
+                    )
+            for uid in ("learner-alpha", "learner-beta"):
+                if _row(self.conn, "SELECT user_id FROM users WHERE user_id=?", (uid,)):
+                    self._enroll_unchecked(section_id, uid, now)
+            seeded.append({"track_id": track_id, "package_dir": package_dir, "section_id": section_id})
+        self.conn.commit()
+        return seeded
 
     def _enroll_unchecked(self, section_id: str, user_id: str, now: str) -> None:
         active = _row(
@@ -323,6 +435,7 @@ class SectionService:
             out.append(
                 {
                     **s,
+                    "module_id": (s.get("package") or {}).get("module_id"),
                     "mastery": dict(mastery) if mastery else None,
                     "recent_feedback": [dict(f) for f in feedback],
                 }

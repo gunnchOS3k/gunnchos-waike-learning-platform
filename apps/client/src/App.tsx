@@ -1,8 +1,10 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import {DigitalConfidencePractical} from "./components/learner/DigitalConfidencePractical";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { invoke } from "@tauri-apps/api/core";
 import { AssessmentWorkspace } from "./components/assessment/AssessmentWorkspace";
 import { InstructorQueue } from "./components/assessment/InstructorQueue";
 import { CourseCard } from "./components/CourseCard";
+import { BrowserLearning, parseLearningHash } from "./components/learner/BrowserLearning";
 import { LessonReader } from "./components/LessonReader";
 import { TrustBanner } from "./components/TrustBanner";
 import { SyncStatusBanner } from "./components/sync/SyncStatusBanner";
@@ -41,12 +43,13 @@ import {
   publicAssignmentContent,
   publicAssignmentsForTrack,
   publicCatalogStudyText,
-  publicContentForTrack,
+  usePublicContent,
   publicCourseModels,
   publicModulesForTrack,
   publicTrackForSection,
 } from "./lib/product/publicCurriculum";
 import type { PublicContentItem } from "./lib/product/publicCurriculum";
+import { weeklyReaderForCourse } from "./lib/product/secondTrack";
 import type { AssignmentCardModel, CourseCardModel, NotificationItem, SchoolApp, SearchHit } from "./lib/product/types";
 import type { AuthSession, HubActor, HubClient, AssignmentSummary, SectionCard, SessionUser } from "./lib/hub/client";
 import { HubAuthError } from "./lib/hub/client";
@@ -64,6 +67,10 @@ import {
 import { PortalReturnLink } from "./PortalReturnLink";
 
 type Mode =
+  | "dc-practicals"
+  | "dc-course"
+  | "git-course"
+  | "track-course"
   | "lessons"
   | "home"
   | "courses"
@@ -214,11 +221,12 @@ export default function App() {
   const [resumeHint, setResumeHint] = useState<string | null>(null);
   const [mode, setMode] = useState<Mode>("lessons");
   const [session, setSession] = useState<AuthSession | null>(() => loadSession());
+  const [loginRequested, setLoginRequested] = useState(false);
   const [sessionExpired, setSessionExpired] = useState(false);
   const [mockActor, setMockActor] = useState<HubActor>({ actorId: "learner-a", role: "learner" });
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [siteId, setSiteId] = useState("site-alpha");
+  const [siteId, setSiteId] = useState(import.meta.env.VITE_PUBLIC_READER === "true" ? "" : "site-alpha");
   const [homeCards, setHomeCards] = useState<SectionCard[]>([]);
   const [sectionId, setSectionId] = useState(() => loadActiveCourseId() || "");
   const [openAssignmentId, setOpenAssignmentId] = useState<string | null>(null);
@@ -272,13 +280,15 @@ export default function App() {
   const [runtimeHubPolicyAuthorized, setRuntimeHubPolicyAuthorized] = useState(false);
 
   const tokenRef = useCallback(() => session?.token ?? null, [session]);
+  const currentToken = useRef<string | null>(null);
+  currentToken.current = session?.token ?? null;
 
-  const onAuthFailure = useCallback((detail: string) => {
-    if (detail.includes("SESSION") || detail.includes("AUTH") || detail.includes("EXPIRED")) {
-      setSessionExpired(true);
-      setSession(null);
-      sessionStorage.removeItem(SESSION_KEY);
-    }
+  const onAuthFailure = useCallback((detail: string, failedToken?: string | null) => {
+    if (!(detail.includes("SESSION") || detail.includes("AUTH") || detail.includes("EXPIRED"))) return;
+    if (failedToken && currentToken.current && currentToken.current !== failedToken) return;
+    setSessionExpired(true);
+    setSession(null);
+    sessionStorage.removeItem(SESSION_KEY);
   }, []);
 
   const hubResolution = useMemo(
@@ -313,11 +323,19 @@ export default function App() {
     };
   }, [session, isMock, mockActor.actorId, mockActor.role]);
   const primaryRole = resolvePrimaryRole(user?.roles);
-  const needsLogin = hubResolution.status === "http" && !session;
+  const publicReaderEnabled = import.meta.env.VITE_PUBLIC_READER === "true";
+  const needsLogin = hubResolution.status === "http" && !session && (!publicReaderEnabled || loginRequested);
   const isStaff =
     primaryRole === "instructor" || primaryRole === "grader" || primaryRole === "site_admin";
-  const publicCatalogMode = hubResolution.status === "unavailable";
+  const publicCatalogMode = hubResolution.status === "unavailable" || (publicReaderEnabled && !session && !isMock);
   const learnerAccess = primaryRole === "learner" || isMock || publicCatalogMode;
+
+  useEffect(() => {
+    if (!publicCatalogMode) return;
+    const navigate = () => { const route = parseLearningHash(window.location.hash); if (route) { setSectionId(`catalog:${route.track}`); setCatalogUnit(route.unit); setMode("lessons"); } };
+    navigate(); window.addEventListener("hashchange", navigate);
+    return () => window.removeEventListener("hashchange", navigate);
+  }, [publicCatalogMode]);
 
   const device = useMemo(() => deviceId(), []);
   // Only a real HTTP hub can settle mutations; the mock hub has no sync ledger.
@@ -558,6 +576,10 @@ export default function App() {
   }
 
   useEffect(() => {
+    if (!session && !isMock) setAssignmentSummaries([]);
+  }, [session, isMock]);
+
+  useEffect(() => {
     if (!hub || (!session && !isMock)) return;
     let cancelled = false;
     void hub.listAssignments().then((rows) => {
@@ -574,8 +596,11 @@ export default function App() {
     }
     if (mode === "instruct") {
       void hub.listSections().then((rows) => {
-        if (!cancelled) {
-          setHomeCards(rows.map((r) => ({ section_id: r.section_id, code: r.code, title: r.title, mastery: null, recent_feedback: [] })));
+        if (cancelled) return;
+        setHomeCards(rows.map((r) => ({ section_id: r.section_id, code: r.code, title: r.title, mastery: null, recent_feedback: [] })));
+        if (!sectionId && rows[0]?.section_id) {
+          setSectionId(rows[0].section_id);
+          persistActiveCourseId(rows[0].section_id);
         }
       }).catch(() => undefined);
     }
@@ -612,7 +637,7 @@ export default function App() {
         if (!cancelled) setModuleRows(rows);
       }).catch(() => undefined);
     }
-    if (mode === "instruct") {
+    if (mode === "instruct" && sectionId) {
       void hub
         .instructorDashboard(sectionId)
         .then((d) => {
@@ -694,9 +719,12 @@ export default function App() {
   }));
   const courseModels = publicCatalogMode ? publicCourseModels(pinnedIds) : hubCourseModels;
   const activeCourse = resolveActiveCourse(courseModels, sectionId || null);
+  const openedTrack = PUBLIC_TRACKS.find((track) => track.title === (activeCourse?.title || "")) ?? null;
   const activePublicTrack = publicCatalogMode ? publicTrackForSection(sectionId) : null;
   const publicLessonTrack = activePublicTrack || (publicCatalogMode ? PUBLIC_TRACKS[0] : null);
-  const activePublicContent = publicContentForTrack(activePublicTrack);
+  const {content: activePublicContent} = usePublicContent(activePublicTrack);
+  usePublicContent(publicLessonTrack);
+  const {content: dcContent} = usePublicContent(mode === "dc-practicals" ? PUBLIC_TRACKS[0] : null);
   const hubAssignmentCards: AssignmentCardModel[] = assignmentSummaries.map((a) => ({
     assignment_id: a.assignment_id,
     section_id: a.section_id || sectionId || "",
@@ -807,6 +835,7 @@ export default function App() {
             Session expired — please sign in again.
           </div>
         ) : null}
+        {publicReaderEnabled && <button onClick={() => setLoginRequested(false)}>Continue public learning</button>}
         <form className="panel login-form" onSubmit={(e) => void onLogin(e)} data-testid="login-form">
           <h2>Sign in</h2>
           <label className="field-label" htmlFor="site-id">
@@ -858,7 +887,7 @@ export default function App() {
 
   return (
     <div className={`app-shell ${runtime.isTouchPrimary ? "touch-ui" : ""}`}>
-      <a className="skip-link" href="#main">
+      <a className="skip-link" href="#main" onClick={e => { e.preventDefault(); document.getElementById("main")?.focus(); document.getElementById("main")?.scrollIntoView(); }}>
         Skip to content
       </a>
       <header>
@@ -882,6 +911,7 @@ export default function App() {
           </div>
         ) : null}
         <div className="toolbar">
+          {publicCatalogMode && hubResolution.status === "http" && <button onClick={() => setLoginRequested(true)}>Sign in to my learning Hub</button>}
           {runtime.isTouchPrimary ? (
             <button
               type="button"
@@ -1129,7 +1159,7 @@ export default function App() {
         </div>
       </header>
 
-      <TrustBanner trust={trust} />
+      {publicCatalogMode ? <p className="muted">Open curriculum reader · signed-pack trust applies only after installing a verified offline pack.</p> : <TrustBanner trust={trust} />}
       <SyncStatusBanner state={syncUx} />
       {resumeHint ? (
         <p className="muted" data-testid="resume-hint">
@@ -1147,7 +1177,18 @@ export default function App() {
         </div>
       ) : null}
 
-      <div className="layout" id="main">
+      {hub && session && learnerAccess && activeCourse?.title.toLowerCase().includes("digital confidence") && <div><button onClick={()=>{setCatalogUnit(1);setMode("dc-course");}}>Open Digital Confidence weekly reader</button><button onClick={()=>setMode("dc-practicals")}>Open Digital Confidence independent practical</button></div>}
+      {hub && session && learnerAccess && weeklyReaderForCourse(activeCourse?.title || "")?.mode === "git-course" && <div><button data-testid="open-general-it-reader" onClick={()=>{setCatalogUnit(1);setMode("git-course");}}>{weeklyReaderForCourse(activeCourse?.title || "")?.label}</button></div>}
+      {hub && session && learnerAccess && openedTrack && !weeklyReaderForCourse(activeCourse?.title || "") && <div><button data-testid="open-track-reader" onClick={()=>{setCatalogUnit(1);setMode("track-course");}}>Open weekly reader</button></div>}
+      <div className="layout" id="main" tabIndex={-1}>
+        {mode === "dc-course" && hub && session && hubResolution.status === "http" && <BrowserLearning key={`dc-auth:${catalogUnit}`} trackId="DIGITAL_CONFIDENCE" unit={catalogUnit} onNavigate={(_,unit)=>setCatalogUnit(unit)} auth={{token:session.token,baseUrl:hubResolution.baseUrl,sectionId:sectionId||"",onReview:()=>{setOpenAssignmentId("DIGITAL_CONFIDENCE-independent-v1");setMode("assignments");}}}/>}
+        {mode === "git-course" && hub && session && hubResolution.status === "http" && <BrowserLearning key={`git-auth:${catalogUnit}`} trackId="IT_SUPPORT_HARDWARE" unit={catalogUnit} onNavigate={(_,unit)=>setCatalogUnit(unit)} auth={{token:session.token,baseUrl:hubResolution.baseUrl,sectionId:sectionId||"",onReview:()=>{setOpenAssignmentId("general_it_w01");setMode("assignments");}}}/>}
+        {mode === "track-course" && hub && session && hubResolution.status === "http" && openedTrack && <BrowserLearning key={`track-auth:${openedTrack.trackId}:${catalogUnit}`} trackId={openedTrack.trackId} unit={catalogUnit} onNavigate={(_,unit)=>setCatalogUnit(unit)} auth={{token:session.token,baseUrl:hubResolution.baseUrl,sectionId:sectionId||"",onReview:()=>{setOpenAssignmentId(`${openedTrack.trackId.toLowerCase()}_w${String(catalogUnit).padStart(2,"0")}`);setMode("assignments");}}}/>}
+        {mode === "dc-practicals" && hub && session && hubResolution.status === "http" && dcContent?.delivery && <DigitalConfidencePractical delivery={dcContent!.delivery!} unit={11} auth={{token:session.token,baseUrl:hubResolution.baseUrl,sectionId:sectionId||"",onReview:()=>{setOpenAssignmentId("DIGITAL_CONFIDENCE-independent-v1");setMode("assignments");}}}/>}
+        {mode === "lessons" && publicCatalogMode ? <BrowserLearning
+          key={`${publicLessonTrack?.trackId || PUBLIC_TRACKS[0].trackId}:${catalogUnit}`}
+          trackId={publicLessonTrack?.trackId || PUBLIC_TRACKS[0].trackId} unit={catalogUnit}
+          onNavigate={(track, unit) => { window.location.hash = `/learn/${track}/${unit}`; setSectionId(`catalog:${track}`); setCatalogUnit(unit); setMode("lessons"); }} /> : null}
         {mode === "lessons" && !publicCatalogMode ? (
           <>
             {module ? (
@@ -1432,7 +1473,7 @@ export default function App() {
             }}
           />
         ) : null}
-        {mode === "study" || (mode === "lessons" && publicCatalogMode) ? (
+        {mode === "study" ? (
           <StudyMode
             title={publicLessonTrack?.title || lesson?.title || activeCourse?.title || "Study"}
             markdown={publicLessonTrack ? publicCatalogStudyText(publicLessonTrack, catalogUnit) : lesson?.markdown || "Open a lesson from your course to study here."}

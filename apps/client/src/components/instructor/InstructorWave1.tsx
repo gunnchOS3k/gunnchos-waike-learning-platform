@@ -28,7 +28,7 @@ export function InstructorWave1({
   onSaveComment,
   onMessage,
 }: Props) {
-  const [source, setSource] = useState(sections[0]?.section_id || "");
+  const [source, setSource] = useState("");
   const [code, setCode] = useState("");
   const [title, setTitle] = useState("");
   const [term, setTerm] = useState("");
@@ -47,6 +47,7 @@ export function InstructorWave1({
         Template course
       </label>
       <select id="copy-source" data-testid="copy-source" value={source} onChange={(e) => setSource(e.target.value)}>
+        <option value="">Choose the course this section copies</option>
         {sections.map((s) => (
           <option key={s.section_id} value={s.section_id}>
             {s.title}

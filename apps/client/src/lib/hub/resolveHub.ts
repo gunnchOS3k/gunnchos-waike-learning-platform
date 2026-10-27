@@ -10,6 +10,8 @@ export type HubResolution =
 export type HubEnv = {
   MODE?: string;
   VITE_HUB_URL?: string;
+  /** Operator-built same-origin web deployment. No URL or launch query can enable it. */
+  VITE_HUB_SAME_ORIGIN?: string;
   VITE_WAIKE_MOCK_HUB?: string;
   /** Pixel physical pilot — production-shaped; never allow silent mockHub fallback. */
   VITE_PIXEL_PILOT?: string;
@@ -77,7 +79,7 @@ export function structuralNormalizeHubBase(
  */
 export function resolveHubClient(
   getToken: () => string | null,
-  onAuthFailure?: (detail: string) => void,
+  onAuthFailure?: (detail: string, failedToken?: string | null) => void,
   actor?: HubActor,
   env: HubEnv = import.meta.env,
 ): HubResolution {
@@ -96,6 +98,13 @@ export function resolveHubClient(
       client: createHttpHubClient(checked.base, getToken, onAuthFailure, undefined),
       baseUrl: checked.base,
     };
+  }
+
+  if (env.VITE_HUB_SAME_ORIGIN === "true") {
+    const origin = typeof window === "undefined" ? "" : window.location.origin;
+    const checked = structuralNormalizeHubBase(origin);
+    if (!checked.ok || (!origin.startsWith("https://") && !/^http:\/\/(localhost|127\.0\.0\.1)(:|$)/.test(origin))) return {status: "unavailable", client: null, reason: "Same-origin Hub requires HTTPS or a loopback test origin"};
+    return {status: "http", client: createHttpHubClient(checked.base, getToken, onAuthFailure, undefined), baseUrl: checked.base};
   }
 
   const runtimeRaw = (env.runtimeHubUrl || "").trim();
@@ -145,6 +154,31 @@ export function resolveHubClient(
     client: null,
     reason: "School Hub not configured / unavailable",
   };
+}
+
+/** Loopback, or the same origin as the configured learn host. Nothing else may receive a bearer token. */
+export function bearerHubAllowed(baseUrl: string, configuredHubUrl = ""): boolean {
+  const checked = structuralNormalizeHubBase(baseUrl.trim());
+  if (!checked.ok) return false;
+  let target: URL;
+  try {
+    target = new URL(checked.base);
+  } catch {
+    return false;
+  }
+  const host = target.hostname.replace(/^\[|\]$/g, "").toLowerCase();
+  if ((target.protocol === "http:" || target.protocol === "https:") && (host === "localhost" || host === "127.0.0.1" || host === "::1")) {
+    return true;
+  }
+  const configured = configuredHubUrl.trim();
+  if (!configured) return false;
+  const allowed = structuralNormalizeHubBase(configured.replace(/\/$/, ""));
+  if (!allowed.ok) return false;
+  try {
+    return new URL(allowed.base).origin === target.origin;
+  } catch {
+    return false;
+  }
 }
 
 export type { AuthSession };

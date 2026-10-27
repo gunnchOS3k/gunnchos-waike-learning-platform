@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import sqlite3
+import threading
 from pathlib import Path
 
 from app.migrations.m001_assessment_lifecycle import SQL as M001
@@ -27,10 +28,82 @@ MIGRATIONS: list[tuple[str, str]] = [
 ]
 
 
+class _LockedRows:
+    """Holds the connection lock until the caller reads the result."""
+
+    def __init__(self, cursor: sqlite3.Cursor, lock: threading.RLock) -> None:
+        self._cursor = cursor
+        self._lock = lock
+        self._open = True
+
+    def _release(self) -> None:
+        if self._open:
+            self._open = False
+            self._lock.release()
+
+    def fetchone(self):
+        try:
+            return self._cursor.fetchone()
+        finally:
+            self._release()
+
+    def fetchall(self):
+        try:
+            return self._cursor.fetchall()
+        finally:
+            self._release()
+
+    def __iter__(self):
+        try:
+            yield from self._cursor
+        finally:
+            self._release()
+
+    def __del__(self) -> None:
+        self._release()
+
+
+class SerializedConnection(sqlite3.Connection):
+    """One Hub connection is shared by FastAPI's threadpool. Serialize it."""
+
+    def __init__(self, *args, **kwargs) -> None:
+        super().__init__(*args, **kwargs)
+        self._lock = threading.RLock()
+
+    def execute(self, sql, parameters=()):  # type: ignore[override]
+        self._lock.acquire()
+        try:
+            cursor = super().execute(sql, parameters)
+        except Exception:
+            self._lock.release()
+            raise
+        head = str(sql).lstrip().split(None, 1)[0].upper() if str(sql).strip() else ""
+        if head in {"SELECT", "WITH", "PRAGMA"}:
+            return _LockedRows(cursor, self._lock)
+        self._lock.release()
+        return cursor
+
+    def executemany(self, sql, seq):  # type: ignore[override]
+        with self._lock:
+            return super().executemany(sql, seq)
+
+    def executescript(self, sql):  # type: ignore[override]
+        with self._lock:
+            return super().executescript(sql)
+
+    def commit(self):  # type: ignore[override]
+        with self._lock:
+            return super().commit()
+
+    def rollback(self):  # type: ignore[override]
+        with self._lock:
+            return super().rollback()
+
+
 def connect(db_path: str | Path) -> sqlite3.Connection:
     path = Path(db_path)
     path.parent.mkdir(parents=True, exist_ok=True)
-    conn = sqlite3.connect(str(path), check_same_thread=False)
+    conn = sqlite3.connect(str(path), check_same_thread=False, factory=SerializedConnection)
     conn.row_factory = sqlite3.Row
     conn.execute("PRAGMA foreign_keys = ON")
     return conn

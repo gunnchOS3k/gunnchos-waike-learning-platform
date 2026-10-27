@@ -38,7 +38,11 @@ export function AssessmentWorkspace({ hub, assignmentId = null, sectionId = null
     setPortfolio(p);
     setMastery(m);
     setGradebook(g.filter((x: { assignment_id: string }) => x.assignment_id === assignment.assignment_id));
-  }, [assignment, hub]);
+    if (!submission && h.length > 0) {
+      const latest = h[h.length - 1];
+      setSubmission(await hub.getSubmission(latest.submission_id));
+    }
+  }, [assignment, hub, submission]);
 
   useEffect(() => {
     (async () => {
@@ -60,7 +64,13 @@ export function AssessmentWorkspace({ hub, assignmentId = null, sectionId = null
   }, [hub, assignmentId]);
 
   useEffect(() => {
-    void refreshSide();
+    let cancelled = false;
+    void refreshSide().catch((e) => {
+      if (!cancelled) setError(String(e));
+    });
+    return () => {
+      cancelled = true;
+    };
   }, [refreshSide, submission]);
 
   function scheduleAutosave(next: string) {

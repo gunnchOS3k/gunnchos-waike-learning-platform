@@ -46,3 +46,13 @@ artifacts/pixel6a_waike/screenshots/soak_*.png
 artifacts/pixel6a_waike/hub_launcher.py
 *.db.enc
 services/hub/data/pixel_pilot/
+
+# Local TEST_ONLY compiler workspaces: do not stage instructor payloads or duplicate trees.
+/artifacts/full-delivery/wfd2-test-only/*/instructor/
+/artifacts/full-delivery/wfd2-test-only/*/instructor_*
+/artifacts/full-delivery/wfd2-test-only/*/*.instructor.aes256gcm
+/artifacts/full-delivery/wfd2-test-only/*/learner/
+
+# Private release snapshots and host runtime/backup secrets stay outside Git.
+/.release/
+/deploy/production/private/

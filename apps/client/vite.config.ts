@@ -5,7 +5,7 @@ import react from "@vitejs/plugin-react";
 export default defineConfig({
   plugins: [react()],
   clearScreen: false,
-  server: { port: 1420, strictPort: true },
+  server: { port: 1420, strictPort: true, proxy: { "/api/v1/digital-confidence": (process.env.WAIKE_DEV_HUB_PROXY || "http://127.0.0.1:4191"), "/api/v1/public-practice": (process.env.WAIKE_DEV_HUB_PROXY || "http://127.0.0.1:4191") } },
   envPrefix: ["VITE_", "TAURI_"],
   build: { target: "esnext" },
   test: {

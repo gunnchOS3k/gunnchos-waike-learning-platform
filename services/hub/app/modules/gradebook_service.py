@@ -23,7 +23,7 @@ class GradebookService:
         self.conn = conn
         self.sections = sections
 
-    def seed_for_section(self, section_id: str, assignment_id: str | None = None) -> None:
+    def seed_for_section(self, section_id: str, assignment_id: str | None = None, title: str = "Week 01 assignment") -> None:
         now = _now()
         cat_id = f"gcat_{section_id}_assignments"
         self.conn.execute(
@@ -48,7 +48,7 @@ class GradebookService:
                   item_id, section_id, category_id, assignment_id, title, points_possible, due_at, created_at
                 ) VALUES (?,?,?,?,?,?,NULL,?)
                 """,
-                (item_id, section_id, cat_id, assignment_id, "Week 01 assignment", 20.0, now),
+                (item_id, section_id, cat_id, assignment_id, title, 20.0, now),
             )
         self.conn.commit()
 

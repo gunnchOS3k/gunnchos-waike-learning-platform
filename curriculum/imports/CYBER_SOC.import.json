@@ -1,6 +1,6 @@
 {
   "module_id": "CYBER_SOC",
-  "source_commit": "fbf7685bc5686201ccaa0128ee83346d59b3d584",
+  "source_commit": "e66cc977be755be35bdd560b67842ddcc926cad4",
   "package_version": "1.0.0",
   "source_kind": "digital_rc",
   "digital_rc_package": "CYBERSECURITY",
@@ -28,7 +28,8 @@
     "curriculum/digital_rc/CYBERSECURITY/ai_use_policy.json",
     "curriculum/digital_rc/CYBERSECURITY/guides/**",
     "programs/cybersecurity_soc.md",
-    "programs/cybersecurity.md"
+    "programs/cybersecurity.md",
+    "curriculum/digital_rc/CYBERSECURITY/learner_exercises/**"
   ],
   "instructor_only_globs": [
     "curriculum/digital_rc/CYBERSECURITY/instructor/**"

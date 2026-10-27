@@ -92,17 +92,28 @@ class AssessmentService:
         cols = {r[1] for r in self.conn.execute(f"PRAGMA table_info({table})").fetchall()}
         return column in cols
 
-    def _resolve_section_id(self, actor: Actor, section_id: str | None = None) -> str | None:
+    def _owned_section_ids(self, actor: Actor, module_id: str | None) -> list[str]:
+        """Sections this actor can access whose package is this course. No alphabetical default."""
+        if self.sections is None or not module_id:
+            return []
+        owned: list[str] = []
+        for sec in self.sections.list_sections_for_actor(actor):
+            package = sec.get("package") or {}
+            if str(package.get("module_id") or "") == str(module_id):
+                owned.append(str(sec["section_id"]))
+        return owned
+
+    def _resolve_section_id(
+        self, actor: Actor, section_id: str | None = None, module_id: str | None = None
+    ) -> str | None:
         if not self._has_column("submissions", "section_id"):
             return None
         if section_id:
             return section_id
-        if self.sections is None:
-            return None
-        if actor.is_learner:
-            return self.sections.default_section_for_learner(actor)
-        rows = self.sections.list_sections_for_actor(actor)
-        return rows[0]["section_id"] if rows else DEFAULT_SECTION_ID
+        owned = self._owned_section_ids(actor, module_id)
+        if len(owned) == 1:
+            return owned[0]
+        return None
 
     # --- seed -----------------------------------------------------------------
     def seed_synthetic_actors(self) -> None:
@@ -115,10 +126,127 @@ class AssessmentService:
 
     def seed_digital_confidence_assignment(self) -> dict[str, Any]:
         """Load a REAL WAIKE DIGITAL_CONFIDENCE assignment — never invent curriculum."""
+        return self._seed_course_assignment(
+            course_dir="digital_confidence",
+            module_id=MODULE_ID,
+            outcome_id="outcome_dc_w01_reflection",
+            outcome_code="DC-W01-REFLECT",
+            outcome_title="Digital confidence community reflection",
+            outcome_description="Learner articulates what digital confidence means in community context.",
+        )
+
+    def seed_general_it_assignment(self) -> dict[str, Any] | None:
+        """Load the on-disk General IT week 1 assignment. Skip when that curriculum is absent."""
+        if self.waike_root is None:
+            return None
+        assign_path = self.waike_root / "assignments/by_course/general_it/week_01.yaml"
+        body_path = self.waike_root / "assignment_bodies/by_course/general_it/assignment_01.md"
+        if not assign_path.is_file() or not body_path.is_file():
+            return None
+        return self._seed_course_assignment(
+            course_dir="general_it",
+            module_id="GENERAL_IT",
+            outcome_id="outcome_git_w01_reflection",
+            outcome_code="GIT-W01-REFLECT",
+            outcome_title="General IT operator reflection",
+            outcome_description="Learner names the remember, calculate, and talk jobs from the canonical General IT week.",
+        )
+
+    def seed_track_lesson_assignment(self, track_id: str, package_dir: str, week: int = 1) -> dict[str, Any] | None:
+        """Seed one week from the canonical package assignment file. The body is the on-disk lesson assignment."""
+        if self.waike_root is None or not 1 <= int(week) <= 10:
+            return None
+        if track_id in {".", ".."} or "/" in track_id or package_dir in {".", ".."} or "/" in package_dir:
+            return None
+        label = f"w{int(week):02d}"
+        base = (self.waike_root / "curriculum" / "digital_rc").resolve()
+        folder = (base / package_dir).resolve()
+        body_path = self.waike_root / "curriculum" / "digital_rc" / package_dir / "assignments" / f"a{int(week):02d}.md"
+        rubric_path = self.waike_root / "rubrics" / "master_rubric.yaml"
+        if not folder.is_relative_to(base) or not body_path.is_file() or not rubric_path.is_file():
+            return None
+        assignment_id = f"{track_id.lower()}_{label}"
+        existing = _row(self.conn, "SELECT assignment_id FROM assignments WHERE assignment_id=?", (assignment_id,))
+        if existing:
+            return self.get_assignment(assignment_id)
+        body = body_path.read_text(encoding="utf-8")
+        heading = next((line.strip().lstrip("#").strip() for line in body.splitlines() if line.strip()), assignment_id)
+        rubric_yaml = yaml.safe_load(rubric_path.read_text(encoding="utf-8"))
+        outcome_id = f"outcome_{track_id.lower()}_{label}"
+        now = _now()
+        self.conn.execute(
+            "INSERT OR IGNORE INTO outcomes(outcome_id, module_id, code, title, description) VALUES (?,?,?,?,?)",
+            (outcome_id, track_id, f"{track_id}-{label.upper()}", heading, heading),
+        )
+        rubric_id = "rubric_master_waike_v1"
+        self.conn.execute(
+            "INSERT OR IGNORE INTO rubrics(rubric_id, schema_version, title, source_path, source_commit) VALUES (?,?,?,?,?)",
+            (rubric_id, SCHEMA_VERSION, "WAIKE master rubric", str(rubric_path.relative_to(self.waike_root)), self.source_commit),
+        )
+        scale = rubric_yaml.get("scale") or {}
+        for idx, cat in enumerate(list(rubric_yaml.get("categories") or [])[:5]):
+            criterion_id = f"crit_{cat}"
+            self.conn.execute(
+                "INSERT OR IGNORE INTO rubric_criteria(criterion_id, rubric_id, description, max_points, sort_order) VALUES (?,?,?,?,?)",
+                (criterion_id, rubric_id, str(cat).replace("_", " "), 4.0, idx),
+            )
+            for score, label in sorted(((int(k), v) for k, v in scale.items()), reverse=True):
+                self.conn.execute(
+                    "INSERT OR IGNORE INTO rubric_levels(level_id, criterion_id, score, label, description) VALUES (?,?,?,?,?)",
+                    (f"{criterion_id}_L{score}", criterion_id, float(score), f"Level {score}", str(label)),
+                )
+        self.conn.execute(
+            """
+            INSERT INTO assignments(
+              assignment_id, module_id, schema_version, title, week, body_markdown,
+              source_path, source_commit, rubric_id, outcome_id, mastery_threshold,
+              portfolio_connection, revision_policy, current_version, created_at
+            ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
+            """,
+            (
+                assignment_id,
+                track_id,
+                SCHEMA_VERSION,
+                heading,
+                int(week),
+                body,
+                str(body_path.relative_to(self.waike_root)),
+                self.source_commit,
+                rubric_id,
+                outcome_id,
+                MASTERY_THRESHOLD,
+                0,
+                "allowed_with_changelog",
+                1,
+                now,
+            ),
+        )
+        self.conn.execute(
+            """
+            INSERT INTO assignment_versions(
+              assignment_version_id, assignment_id, version, title, body_markdown, rubric_id, content_hash, created_at
+            ) VALUES (?,?,?,?,?,?,?,?)
+            """,
+            (_id("asgv"), assignment_id, 1, heading, body, rubric_id, _sha256_text(heading + "\n" + body), now),
+        )
+        _audit(self.conn, "system", "seed_assignment", "assignment", assignment_id, {"source": str(body_path)})
+        self.conn.commit()
+        return self.get_assignment(assignment_id)
+
+    def _seed_course_assignment(
+        self,
+        *,
+        course_dir: str,
+        module_id: str,
+        outcome_id: str,
+        outcome_code: str,
+        outcome_title: str,
+        outcome_description: str,
+    ) -> dict[str, Any]:
         if self.waike_root is None:
             raise ServiceError("WAIKE_ROOT_REQUIRED", 500)
-        assign_path = self.waike_root / "assignments/by_course/digital_confidence/week_01.yaml"
-        body_path = self.waike_root / "assignment_bodies/by_course/digital_confidence/assignment_01.md"
+        assign_path = self.waike_root / "assignments/by_course" / course_dir / "week_01.yaml"
+        body_path = self.waike_root / "assignment_bodies/by_course" / course_dir / "assignment_01.md"
         rubric_path = self.waike_root / "rubrics/master_rubric.yaml"
         if not assign_path.is_file():
             raise ServiceError("WAIKE_ASSIGNMENT_MISSING", 500)
@@ -142,10 +270,10 @@ class AssessmentService:
             "INSERT OR IGNORE INTO outcomes(outcome_id, module_id, code, title, description) VALUES (?,?,?,?,?)",
             (
                 outcome_id,
-                MODULE_ID,
-                "DC-W01-REFLECT",
-                "Digital confidence community reflection",
-                "Learner articulates what digital confidence means in community context.",
+                module_id,
+                outcome_code,
+                outcome_title,
+                outcome_description,
             ),
         )
 
@@ -189,7 +317,7 @@ class AssessmentService:
             """,
             (
                 assignment_id,
-                MODULE_ID,
+                module_id,
                 SCHEMA_VERSION,
                 title,
                 int(assign.get("week") or 1),
@@ -224,7 +352,47 @@ class AssessmentService:
             self.conn,
             "SELECT assignment_id, module_id, title, week, current_version, portfolio_connection FROM assignments ORDER BY week, assignment_id",
         )
-        return [dict(r) for r in rows]
+        by_module: dict[str, dict[str, Any]] = {}
+        if self.sections is not None:
+            for sec in self.sections.list_sections_for_actor(actor):
+                package = sec.get("package") or {}
+                module = package.get("module_id")
+                if module and module not in by_module:
+                    by_module[str(module)] = sec
+        listed = []
+        for row in rows:
+            item = dict(row)
+            matched = by_module.get(str(row["module_id"]))
+            item["section_id"] = matched["section_id"] if matched else None
+            item["course_title"] = matched.get("title") if matched else None
+            item["submission_state"] = "not_started"
+            item["grade_state"] = "none"
+            if actor.is_learner:
+                sub = _row(
+                    self.conn,
+                    """
+                    SELECT status FROM submissions
+                    WHERE assignment_id=? AND learner_id=?
+                    ORDER BY attempt_number DESC LIMIT 1
+                    """,
+                    (row["assignment_id"], actor.actor_id),
+                )
+                if sub:
+                    item["submission_state"] = sub["status"]
+                grade = _row(
+                    self.conn,
+                    """
+                    SELECT g.returned FROM grades g
+                    JOIN submissions s ON s.submission_id = g.submission_id
+                    WHERE s.assignment_id=? AND s.learner_id=? AND g.returned=1
+                    ORDER BY s.attempt_number DESC LIMIT 1
+                    """,
+                    (row["assignment_id"], actor.actor_id),
+                )
+                if grade:
+                    item["grade_state"] = "returned"
+            listed.append(item)
+        return listed
 
     def get_assignment(self, assignment_id: str) -> dict[str, Any]:
         row = _row(self.conn, "SELECT * FROM assignments WHERE assignment_id=?", (assignment_id,))
@@ -267,8 +435,8 @@ class AssessmentService:
     ) -> dict[str, Any]:
         if not actor.is_learner:
             raise ServiceError("LEARNER_ROLE_REQUIRED", 403)
-        self.get_assignment(assignment_id)
-        sid = self._resolve_section_id(actor, section_id)
+        assignment = self.get_assignment(assignment_id)
+        sid = self._resolve_section_id(actor, section_id, str(assignment.get("module_id") or ""))
         if self.sections is not None and sid and not self.sections.is_enrolled(actor.actor_id, sid):
             raise ServiceError("NOT_ENROLLED", 403)
         existing = _row(
@@ -409,7 +577,7 @@ class AssessmentService:
         if not (text or "").strip():
             raise ServiceError("EMPTY_SUBMISSION", 400)
 
-        sid = self._resolve_section_id(actor, section_id)
+        sid = self._resolve_section_id(actor, section_id, str(assignment.get("module_id") or ""))
         if self.sections is not None and sid and not self.sections.is_enrolled(actor.actor_id, sid):
             raise ServiceError("NOT_ENROLLED", 403)
 
@@ -614,26 +782,33 @@ class AssessmentService:
     ) -> list[dict[str, Any]]:
         if not actor.is_instructor_side:
             raise ServiceError("INSTRUCTOR_ROLE_REQUIRED", 403)
-        self.get_assignment(assignment_id)
-        sid = self._resolve_section_id(actor, section_id)
-        if sid and self.sections is not None:
-            if not (
-                self.sections.can_instruct(actor, sid)
-                or self.sections.can_grade(actor, sid)
-                or actor.is_site_admin
-            ):
-                raise ServiceError("FORBIDDEN", 403)
+        assignment = self.get_assignment(assignment_id)
+        if section_id:
+            owned_ids = [section_id]
+        else:
+            owned_ids = self._owned_section_ids(actor, str(assignment.get("module_id") or ""))
+        if self.sections is not None and self._has_column("submissions", "section_id"):
+            if not owned_ids:
+                return []
+            for sid in owned_ids:
+                if not (
+                    self.sections.can_instruct(actor, sid)
+                    or self.sections.can_grade(actor, sid)
+                    or actor.is_site_admin
+                ):
+                    raise ServiceError("FORBIDDEN", 403)
+            marks = ",".join("?" for _ in owned_ids)
             rows = _rows(
                 self.conn,
-                """
+                f"""
                 SELECT s.submission_id, s.learner_id, s.attempt_number, s.status, s.submitted_at, s.content_hash,
                        s.section_id, g.returned AS grade_returned
                 FROM submissions s
                 LEFT JOIN grades g ON g.submission_id = s.submission_id
-                WHERE s.assignment_id=? AND (s.section_id=? OR s.section_id IS NULL)
+                WHERE s.assignment_id=? AND (s.section_id IN ({marks}) OR s.section_id IS NULL)
                 ORDER BY s.submitted_at
                 """,
-                (assignment_id, sid),
+                (assignment_id, *owned_ids),
             )
         else:
             rows = _rows(

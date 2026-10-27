@@ -1,0 +1,38 @@
+
+> waike-learning-client@0.1.0 build /Users/gunnchos/Downloads/gunnchos-7gc-research-product-spine/repos/_waike_full_delivery/platform/apps/client
+> vite build
+
+vite v6.4.3 building for production...
+transforming...
+✓ 111 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/index.html                                    1.27 kB │ gzip:  0.57 kB
+dist/assets/index-C00vqRsL.css                     7.66 kB │ gzip:  2.52 kB
+dist/assets/PM_AGILE_LSS-DqwpGOng.js              44.18 kB │ gzip: 11.67 kB
+dist/assets/ROBOTICS_CONTROL-XamP0Wgc.js          44.30 kB │ gzip: 12.80 kB
+dist/assets/GAME_DEV_INTERACTIVE-2DizpZkZ.js      45.82 kB │ gzip: 12.18 kB
+dist/assets/HARDWARE_ENGINEERING-C6FKfopZ.js      46.16 kB │ gzip: 12.62 kB
+dist/assets/EMBEDDED_PROTOTYPING-CpKfo8Nr.js      46.58 kB │ gzip:  8.75 kB
+dist/assets/DATA_VIZ_BI-BtnRA2Pc.js               47.05 kB │ gzip: 13.39 kB
+dist/assets/CLOUD_DEVOPS-BnnwXJJc.js              47.37 kB │ gzip: 13.02 kB
+dist/assets/WIRELESS_6G-DdSMRkYz.js               47.46 kB │ gzip: 14.11 kB
+dist/assets/GUNNCHOS_PRODUCT_LAB-CWf8-YIo.js      48.02 kB │ gzip:  9.20 kB
+dist/assets/COMM_PD_ETHICS-BHv08lPA.js            51.21 kB │ gzip: 13.97 kB
+dist/assets/AI_ML_EDGE-BhWD3ZQS.js                52.29 kB │ gzip: 16.47 kB
+dist/assets/SEVEN_GC_APPRENTICESHIP-Icvm0QB8.js   53.88 kB │ gzip: 13.52 kB
+dist/assets/CYBER_SOC-DtAoa-MD.js                 70.13 kB │ gzip: 22.48 kB
+dist/assets/IT_SUPPORT_HARDWARE-Cjm2vzFG.js       75.07 kB │ gzip: 25.23 kB
+dist/assets/SOFTWARE_BUILDER-BNGGeW-2.js          79.67 kB │ gzip: 24.53 kB
+dist/assets/NETWORKING_INFRA-PdqLuiJw.js          94.73 kB │ gzip: 30.14 kB
+dist/assets/DATA_DASHBOARDS-Dy84IHyW.js           95.41 kB │ gzip: 27.75 kB
+dist/assets/DIGITAL_CONFIDENCE-BXeA6Aj-.js        98.87 kB │ gzip: 31.62 kB
+dist/assets/index-ujRAGU_Q.js                    322.91 kB │ gzip: 98.31 kB
+✓ built in 622ms
+{
+  "format": "waike-runtime-release-v1",
+  "platform_commit": "025e1002a611e4ece6465ac6a2176bfc90675ba2",
+  "curriculum_commit": "33a101852f4fefb0eb239bcffa60a65d71102e2c",
+  "curriculum_tree_sha256": "43d1f53e2ced9d41269f62d21b5f606bad4d81ef85d024b60571221bece07a0b",
+  "reader_tree_sha256": "6f80ef3c2691fb1dd218f08e191cf1fb350bf3d1c3fe7671cbcf449015a98a62"
+}

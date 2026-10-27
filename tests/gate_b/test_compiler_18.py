@@ -25,8 +25,9 @@ def compiled_18(tmp_path_factory):
     return out, results
 
 
-# Consumer pin: PR #60 tip. SEVEN_GC digital merge ancestry remains fbf7685 (PR #57).
-WAIKE_CONSUMER_PIN = "63ba9f25ac6b8d8d1b6dd118923566fd51c57b62"
+# Consumer pin: must equal PIN.json pinned_commit and authoritative_pin_commit.
+# SEVEN_GC digital merge ancestry remains fbf7685 (PR #57).
+WAIKE_CONSUMER_PIN = "33a101852f4fefb0eb239bcffa60a65d71102e2c"
 SEVEN_GC_DIGITAL_MERGE = "fbf7685bc5686201ccaa0128ee83346d59b3d584"
 
 

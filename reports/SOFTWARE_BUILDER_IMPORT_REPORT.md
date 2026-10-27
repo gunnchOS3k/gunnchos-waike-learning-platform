@@ -1,15 +1,15 @@
 # SOFTWARE_BUILDER Import Report
 
 - module_id: `SOFTWARE_BUILDER`
-- declared_pinned_commit: `63ba9f25ac6b8d8d1b6dd118923566fd51c57b62`
-- observed_source_commit: `63ba9f25ac6b8d8d1b6dd118923566fd51c57b62`
+- declared_pinned_commit: `e66cc977be755be35bdd560b67842ddcc926cad4`
+- observed_source_commit: `e66cc977be755be35bdd560b67842ddcc926cad4`
 - provenance_match: `true`
 - package_version: `1.0.0`
-- learner files: **78**
+- learner files: **88**
 - instructor files: **12**
-- learner zip sha256: `accb83a1d2f10a5489992087af306a72cfe6d3181ac263efee77619d4c7b2eda`
-- instructor plaintext sha256: `2bd66fdcd30196f94ad99d0f5445c52b5a87828108cbf038324164b123b1431d`
-- instructor ciphertext sha256 (non-reproducible): `4abd167cf45e6b77bd6bc97492adfdcb5041fbb2f5b4158c8795d93148d61c01`
+- learner zip sha256: `a138f152163d9c9f2717390bbe6862e4ce5663490734842737fdf528bc127bdc`
+- instructor plaintext sha256: `11d635675c754ac3f3538f5b55c8de621761d758298effac7bbd695eea52586c`
+- instructor ciphertext sha256 (non-reproducible): `5ba71508be81cda3cf259759e94e6be2e7757da6fff1adb231f6bceaf067e7f6`
 - lessons indexed: 10
 - activity inventory: `{"assignments": 10, "discussions": 0, "groups": 1, "labs": 10, "lessons": 10, "outcomes": 4, "portfolio": 3, "quizzes": 10, "rubrics": 8}`
 

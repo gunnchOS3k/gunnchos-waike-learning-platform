@@ -75,18 +75,8 @@ def _waike_env_name() -> str:
 
 
 def _fixture_seeding_allowed_by_env() -> bool:
-    """Synthetic Alpha/Beta fixtures require unmistakable opt-in and non-production shape.
-
-    Impossible in production mode unless an explicit test/dev path is also selected
-    (WAIKE_FIXTURE_AUTH or WAIKE_ENV in {test,dev,development,local}).
-    """
-    if not _env_truthy("WAIKE_SEED_TEST_FIXTURES"):
-        return False
-    env_name = _waike_env_name()
-    if env_name in {"production", "prod"}:
-        # Production mode: require an explicit test/dev selector (fixture auth) as well.
-        return _env_truthy("WAIKE_FIXTURE_AUTH")
-    return True
+    """Production never seeds fixtures, even if fixture authentication is requested."""
+    return _env_truthy("WAIKE_SEED_TEST_FIXTURES") and _waike_env_name() not in {"production", "prod"}
 
 
 def _default_db_path() -> Path:
@@ -135,7 +125,7 @@ def create_app(config: HubConfig | None = None, db_path: Path | None = None, see
     """Create hub app. Synthetic fixture seeding is off by default.
 
     Prefer ``seed=True`` in tests. Runtime opt-in requires ``WAIKE_SEED_TEST_FIXTURES=true``
-    and is refused for production-shaped processes without an explicit test/dev selector.
+    and is ignored in production. Production rejects explicit seed=True, fixture auth and pilot seeding.
     """
     if config is None:
         # Allow process env to opt into fixture auth for live HTTP seam / local PR2 tools.
@@ -146,6 +136,14 @@ def create_app(config: HubConfig | None = None, db_path: Path | None = None, see
             environment=_waike_env_name(),
         )
     cfg = config
+    production = cfg.environment.lower() in {"production", "prod"} or _waike_env_name() in {"production", "prod"}
+    if production:
+        if seed or cfg.fixture_auth_enabled or _env_truthy("WAIKE_FIXTURE_AUTH"):
+            raise ValueError("PRODUCTION_FIXTURE_AUTH_OR_SEED_FORBIDDEN")
+        if _env_truthy("WAIKE_PIXEL_PILOT") or _env_truthy("WAIKE_ALLOW_FAKE_AI"):
+            raise ValueError("PRODUCTION_PILOT_OR_FAKE_AI_FORBIDDEN")
+        if not cfg.production_auth_enabled:
+            raise ValueError("PRODUCTION_AUTH_REQUIRED")
     app = FastAPI(
         title="WAIKE Learning Hub",
         version=cfg.version,
@@ -218,7 +216,7 @@ def create_app(config: HubConfig | None = None, db_path: Path | None = None, see
     guardian = GuardianService(conn)
     learner_product = LearnerProductService(conn, sections, assessment)
 
-    should_seed = bool(seed) or _fixture_seeding_allowed_by_env()
+    should_seed = not production and (bool(seed) or _fixture_seeding_allowed_by_env())
     pixel_pilot = _env_truthy("WAIKE_PIXEL_PILOT")
     curriculum_inventory: dict | None = None
     if should_seed:
@@ -227,10 +225,21 @@ def create_app(config: HubConfig | None = None, db_path: Path | None = None, see
         identity.seed_sites_and_users()
         guardian.seed_fixture_links()
         sections.seed_digital_confidence_section(source_commit=src)
+        sections.seed_general_it_section(source_commit=src)
         if waike is not None:
             assign = assessment.seed_digital_confidence_assignment()
             gradebook.seed_for_section("sec_alpha_dc_w01", assign.get("assignment_id"))
             gradebook.seed_for_section("sec_beta_dc_w01", assign.get("assignment_id"))
+            general = assessment.seed_general_it_assignment()
+            if general:
+                gradebook.seed_for_section("sec_alpha_git_w01", general.get("assignment_id"))
+            for track in sections.seed_canonical_track_sections(source_commit=src, waike_root=waike):
+                created = assessment.seed_track_lesson_assignment(track["track_id"], track["package_dir"])
+                if created:
+                    gradebook.seed_for_section(track["section_id"], created.get("assignment_id"))
+                later = assessment.seed_track_lesson_assignment(track["track_id"], track["package_dir"], week=2)
+                if later:
+                    gradebook.seed_for_section(track["section_id"], later.get("assignment_id"), title="Week 02 assignment")
         # Gate A synthetic activity fixtures (quizzes/labs) for enrolled Alpha section.
         instructor_row = conn.execute(
             "SELECT user_id FROM users WHERE username=? AND site_id=?",
@@ -314,6 +323,13 @@ def create_app(config: HubConfig | None = None, db_path: Path | None = None, see
     def get_config() -> HubConfig:
         return cfg
 
+    from app.api.public_practice import router as public_practice_router
+    from app.api.learner_session import router as learner_session_router
+    app.include_router(public_practice_router)
+    app.include_router(learner_session_router)
+    from app.api.digital_confidence import router as dc_router, install_definition
+    install_definition(app)
+    app.include_router(dc_router)
     app.include_router(api_router)
     app.include_router(gate_c_router)
     app.include_router(gate_d_router)
@@ -322,4 +338,4 @@ def create_app(config: HubConfig | None = None, db_path: Path | None = None, see
 
 
 # Production-shaped module import: never auto-seed Alpha/Beta test accounts.
-app = create_app(seed=False)
+app = None if _env_truthy("WAIKE_FACTORY_MODE") else create_app(seed=False)

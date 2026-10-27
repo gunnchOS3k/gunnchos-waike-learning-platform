@@ -1,0 +1,95 @@
+{
+  "sourceCommit": "33a101852f4fefb0eb239bcffa60a65d71102e2c",
+  "tracks": [
+    {
+      "trackId": "DIGITAL_CONFIDENCE",
+      "offlinePackDeclared": false,
+      "contentRootSha256": "9e1f53a1caf4d43052ca155f12a61c078fbabd8e8f1f2519ba9a2edc206da2e1"
+    },
+    {
+      "trackId": "IT_SUPPORT_HARDWARE",
+      "offlinePackDeclared": false,
+      "contentRootSha256": "62d05bf821017547c7eccae08b6f625f58286170f62a21bf252a55b738cc24d2"
+    },
+    {
+      "trackId": "SOFTWARE_BUILDER",
+      "offlinePackDeclared": false,
+      "contentRootSha256": "85272131e5c7c0649b2b667aa3d4cc839b8142c47f30172907ae674b239cef4a"
+    },
+    {
+      "trackId": "NETWORKING_INFRA",
+      "offlinePackDeclared": false,
+      "contentRootSha256": "c251debd2ce86914dab1d411fd61e5ccfabf1c42b4bbe2e16e8f85c9702ecb87"
+    },
+    {
+      "trackId": "CYBER_SOC",
+      "offlinePackDeclared": false,
+      "contentRootSha256": "5bb77bde79016c2bb356a9b063875a949dea90e254c92f04c240b40a6c76e117"
+    },
+    {
+      "trackId": "DATA_DASHBOARDS",
+      "offlinePackDeclared": false,
+      "contentRootSha256": "3d09a577c1b7e0b001633e3993bff39c4f9bd2ca1a8f47ba102052aaba19a0dc"
+    },
+    {
+      "trackId": "AI_ML_EDGE",
+      "offlinePackDeclared": false,
+      "contentRootSha256": "30393baed4f31cc60b415bd8e96911dd18ee34c40af98b6eb85489fa4f2d4ac3"
+    },
+    {
+      "trackId": "EMBEDDED_PROTOTYPING",
+      "offlinePackDeclared": false,
+      "contentRootSha256": "1c1b2664122682062c459c9ca21aeaf8e93d409a4ca1ac2cbb370bcfe2b8e36f"
+    },
+    {
+      "trackId": "WIRELESS_6G",
+      "offlinePackDeclared": false,
+      "contentRootSha256": "0eb8ed051c0170da772ef5dc87dfd0ed518a89f3953061c408ad086af8f8e0bb"
+    },
+    {
+      "trackId": "PM_AGILE_LSS",
+      "offlinePackDeclared": false,
+      "contentRootSha256": "cb89e99cbefb6bfc5680470074cf6868ef9644a83aa8fc258dcda1a5898a5126"
+    },
+    {
+      "trackId": "GAME_DEV_INTERACTIVE",
+      "offlinePackDeclared": false,
+      "contentRootSha256": "4bdf4224ec85788ca65b54945480ad779a7e1d685d44e6aec4068116c6e03688"
+    },
+    {
+      "trackId": "SEVEN_GC_APPRENTICESHIP",
+      "offlinePackDeclared": false,
+      "contentRootSha256": "390e4717dc44a9e8102ff0383510fdb7d16a6f9842be3b1d6081bbf2d17253fe"
+    },
+    {
+      "trackId": "CLOUD_DEVOPS",
+      "offlinePackDeclared": false,
+      "contentRootSha256": "b6623f7c8b503ce0e7b15298c8feca4de45dd043071cba88a91c058edb391e67"
+    },
+    {
+      "trackId": "COMM_PD_ETHICS",
+      "offlinePackDeclared": false,
+      "contentRootSha256": "a3015e049eab0ed27df81f0ea5de05392fcedd97f7557bdff67782b47ab0047a"
+    },
+    {
+      "trackId": "ROBOTICS_CONTROL",
+      "offlinePackDeclared": false,
+      "contentRootSha256": "a3dac84590ee50a2ab7d02a89f81eada8fb20858f17f52e062d003db8ac75cfc"
+    },
+    {
+      "trackId": "GUNNCHOS_PRODUCT_LAB",
+      "offlinePackDeclared": false,
+      "contentRootSha256": "4fa8a3b9250923d30bf1a1b1a888fe5a1802a63665d8b94e9d45f33ecc9ba938"
+    },
+    {
+      "trackId": "HARDWARE_ENGINEERING",
+      "offlinePackDeclared": false,
+      "contentRootSha256": "c8673013514b0ae6f2e4d306e1abb581fbb7d8e7068aebce811072381c3b3754"
+    },
+    {
+      "trackId": "DATA_VIZ_BI",
+      "offlinePackDeclared": false,
+      "contentRootSha256": "2533e0de78ffdff52060f16af2f7b5b86bb4c8fad7f5671ab12ac3716d174a7a"
+    }
+  ]
+}

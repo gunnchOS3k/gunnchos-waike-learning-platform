@@ -28,7 +28,7 @@ SECTION = "sec_alpha_dc_w01"
 
 PINS = {
     "device_os": "4f02a48780d300a5d3a7758937b20e3bf9364d0d",
-    "waike": "63ba9f25ac6b8d8d1b6dd118923566fd51c57b62",
+    "waike": "33a101852f4fefb0eb239bcffa60a65d71102e2c",
     "gunnchai": "e2d1adcb5847cf00282fb7fa64970254b14e344e",
 }
 

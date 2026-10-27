@@ -1,0 +1,7 @@
+{
+  "format": "waike-runtime-release-v1",
+  "platform_commit": "c7d1aefd9a641e99c8cf1746c9d6eef841a3096f",
+  "curriculum_commit": "33a101852f4fefb0eb239bcffa60a65d71102e2c",
+  "curriculum_tree_sha256": "43d1f53e2ced9d41269f62d21b5f606bad4d81ef85d024b60571221bece07a0b",
+  "reader_tree_sha256": "e3149fe58edd9600ba7df0bb3619e31c2b23d38f5a6fa6ce360a89bbda189a02"
+}

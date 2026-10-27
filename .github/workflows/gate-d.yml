@@ -13,7 +13,7 @@ env:
   SOURCE_DATE_EPOCH: "1700000000"
   WAIKE_DEV_DB_KEY: "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef"
   CARGO_TERM_COLOR: always
-  WAIKE_PIN_REF: "63ba9f25ac6b8d8d1b6dd118923566fd51c57b62"
+  WAIKE_PIN_REF: "33a101852f4fefb0eb239bcffa60a65d71102e2c"
   GUNNCHAI_PIN_REF: "e2d1adcb5847cf00282fb7fa64970254b14e344e"
   DEVICE_OS_PIN_REF: "4f02a48780d300a5d3a7758937b20e3bf9364d0d"
   LEARNING_OS_EXECUTABLE: ${{ github.workspace }}/gunnchos-device-os/fixtures/learning_os/waike-learning-os
@@ -123,12 +123,15 @@ jobs:
           DEVICE_OS_ROOT: ${{ github.workspace }}/gunnchos-device-os
           GUNNCHAI_ROOT: ${{ github.workspace }}/gunnchAI3k
           PYTHONPATH: services/hub
-          WAIKE_ALLOW_FAKE_AI: "1"
         run: |
-          .venv/bin/pytest -q \
+          # Production startup must not inherit a fake-AI or pilot flag.
+          env -u WAIKE_ALLOW_FAKE_AI -u WAIKE_PIXEL_PILOT \
+            .venv/bin/pytest -q tests/pr3/test_startup_security.py --tb=line
+          WAIKE_ALLOW_FAKE_AI=1 .venv/bin/pytest -q \
             tests/compatibility tests/security tests/integration \
             tests/assessment tests/pr3 tests/gate_a \
-            services/hub/tests --tb=line
+            services/hub/tests --tb=line \
+            --ignore=tests/pr3/test_startup_security.py
           .venv/bin/pytest -q tests/gate_c --tb=line
           PYTHONPATH=tools/course_compiler:services/hub .venv/bin/pytest -q tests/gate_b --tb=line
 

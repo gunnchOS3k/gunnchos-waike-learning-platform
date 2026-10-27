@@ -2,8 +2,8 @@
   "schema_version": "1.0.0",
   "source_repo": "waike-research-ops",
   "source_path": "../waike-research-ops",
-  "absolute_path_hint": "/tmp/waike-ops-pin-candidate-63ba9f25",
-  "pinned_commit": "63ba9f25ac6b8d8d1b6dd118923566fd51c57b62",
+  "absolute_path_hint": "../curriculum",
+  "pinned_commit": "33a101852f4fefb0eb239bcffa60a65d71102e2c",
   "taxonomy_paths": [
     "curriculum/taxonomy/eighteen_tracks.json",
     "artifacts/taxonomy/CANONICAL_TRACK_REGISTRY.export.json"
@@ -71,7 +71,7 @@
     "data_viz_bi": "DATA_VIZ_BI",
     "WAIKE_COURSE_DATA_VIZ_BI": "DATA_VIZ_BI"
   },
-  "note": "Pinned to waike-research-ops PR #60 tip (curriculum/pr59-ci-depth-quality-closure) after CI green run 35522241481.",
+  "note": "Local full-learning continuation source pin. No remote CI, offline package release or owner educational acceptance is asserted for this revision. Previous public checkpoint retained in Git history.",
   "package_aliases_evidence_backed": {
     "COMPUTER_NETWORKING": "NETWORKING_INFRA",
     "CYBERSECURITY": "CYBER_SOC"
@@ -99,13 +99,17 @@
   "registry_hash": "7c72905b45ca2bbe55650b89ef0ccd66ae15269be84b5cf18a2b89e896d9c4ac",
   "compatibility_version": "waike.taxonomy.consumer.v1",
   "taxonomy_source_commit_sha": "34bfdc9f5048b85e1dbc1b232e01ea743b01cb9a",
-  "ops_pr": "https://github.com/gunnchOS3k/waike-research-ops/pull/60",
-  "ops_pr_status": "draft_open_ci_green",
-  "ops_ci_run": "https://github.com/gunnchOS3k/waike-research-ops/actions/runs/35522241481",
   "shared_package_aliases_handoff": {
     "DIGITAL_CONFIDENCE+IT_SUPPORT_HARDWARE": "GENERAL_IT",
     "NETWORKING_INFRA": "COMPUTER_NETWORKING",
     "CYBER_SOC": "CYBERSECURITY"
   },
-  "authoritative_pin_commit": "63ba9f25ac6b8d8d1b6dd118923566fd51c57b62"
+  "authoritative_pin_commit": "33a101852f4fefb0eb239bcffa60a65d71102e2c",
+  "previous_pinned_commit": "63ba9f25ac6b8d8d1b6dd118923566fd51c57b62",
+  "historical_ops_review": {
+    "ops_pr": "https://github.com/gunnchOS3k/waike-research-ops/pull/60",
+    "ops_pr_status": "draft_open_ci_green",
+    "ops_ci_run": "https://github.com/gunnchOS3k/waike-research-ops/actions/runs/35522241481"
+  },
+  "continuation_checkpoint_before_cidr": "b0d1645c90580fca546c51deaeb0ebb59d080bde"
 }

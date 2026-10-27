@@ -1,0 +1,13 @@
+
+> waike-learning-client@0.1.0 build /Users/gunnchos/Downloads/gunnchos-7gc-research-product-spine/repos/_waike_full_delivery/platform/apps/client
+> vite build
+
+vite v6.4.3 building for production...
+transforming...
+✓ 92 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/index.html                     1.27 kB │ gzip:   0.57 kB
+dist/assets/index-C00vqRsL.css      7.66 kB │ gzip:   2.52 kB
+dist/assets/index-Dqf6qPYD.js   1,351.96 kB │ gzip: 374.55 kB
+✓ built in 703ms

@@ -1,5 +1,6 @@
 import type { AssignmentCardModel, CourseCardModel } from "./types";
-import contentBundleJson from "../../generated/publicCurriculumContent.json";
+import { useEffect, useState } from "react";
+import contentIndex from "../../generated/publicCurriculumIndex.json";
 
 /**
  * Browser-safe catalog compiled from the pinned 18-track registry and package
@@ -38,6 +39,8 @@ export type PublicContentItem = {
   path: string;
   sha256: string;
   markdown: string;
+  labId?: string;
+  items?: { id: string; kind: string; stem: string; choices: string[] }[];
 };
 
 export type PublicTrackContent = {
@@ -52,11 +55,46 @@ export type PublicTrackContent = {
   quizzes: PublicContentItem[];
   labs: PublicContentItem[];
   portfolio: PublicContentItem[];
+  delivery?: import("../../components/learner/DigitalConfidencePractical").DcDelivery | null;
+  references?: PublicContentItem[];
+  resources?: PublicContentItem[];
+  prerequisites?: { required?: string[]; recommended?: string[] };
 };
 
-const CONTENT_TRACKS = contentBundleJson.tracks as PublicTrackContent[];
+const loaders = import.meta.glob<{ default: PublicTrackContent }>("../../generated/publicCurriculumChunks/*.json");
+const loaded = new Map<string, PublicTrackContent>();
+const pending = new Map<string, Promise<PublicTrackContent>>();
+export const PUBLIC_CURRICULUM_SOURCE_COMMIT = contentIndex.sourceCommit;
 
-export const PUBLIC_CURRICULUM_SOURCE_COMMIT = "63ba9f25ac6b8d8d1b6dd118923566fd51c57b62";
+export function loadPublicContent(track: PublicTrack): Promise<PublicTrackContent> {
+  const cached = loaded.get(track.trackId);
+  if (cached) return Promise.resolve(cached);
+  const underway = pending.get(track.trackId);
+  if (underway) return underway;
+  const loader = loaders[`../../generated/publicCurriculumChunks/${track.trackId}.json`];
+  if (!loader) return Promise.reject(new Error("This course is unavailable in this edition."));
+  const request = loader().then(module => {
+    const content = module.default;
+    const expected = contentIndex.tracks.find(t => t.trackId === track.trackId);
+    if (content.trackId !== track.trackId || content.sourceCommit !== contentIndex.sourceCommit || content.contentRootSha256 !== expected?.contentRootSha256) throw new Error("The course version differs from this reader. Reload the page.");
+    loaded.set(track.trackId, content);
+    return content;
+  }).finally(() => pending.delete(track.trackId));
+  pending.set(track.trackId, request);
+  return request;
+}
+
+/** One course request; retries do not alter records or manufacture offline scores. */
+export function usePublicContent(track: PublicTrack | null) {
+  const [state, setState] = useState<{content: PublicTrackContent | null; error: string | null}>({content: publicContentForTrack(track), error: null});
+  useEffect(() => {
+    let active = true;
+    setState({content: publicContentForTrack(track), error: null});
+    if (track) loadPublicContent(track).then(content => { if (active) setState({content, error: null}); }).catch(() => { if (active) setState({content: null, error: "The course could not be downloaded. Check your connection and retry. Saved practice remains on this browser."}); });
+    return () => { active = false; };
+  }, [track?.trackId]);
+  return {...state, content: state.content?.trackId === track?.trackId ? state.content : null, retry: () => window.location.reload()};
+}
 
 export const PUBLIC_TRACKS: PublicTrack[] = [
   ["DIGITAL_CONFIDENCE", "Digital Confidence to Computer Operator", "Information Technology", "Foundation", 10, 10, 10, 10, 25, 3, true, true],
@@ -106,7 +144,7 @@ export function publicTrackForSection(sectionId: string | null): PublicTrack | n
 
 export function publicContentForTrack(track: PublicTrack | null): PublicTrackContent | null {
   if (!track) return null;
-  return CONTENT_TRACKS.find((content) => content.trackId === track.trackId) || null;
+  return loaded.get(track.trackId) || null;
 }
 
 export function publicCourseModels(pinnedIds: string[] = []): CourseCardModel[] {
@@ -116,11 +154,11 @@ export function publicCourseModels(pinnedIds: string[] = []): CourseCardModel[] 
     title: track.title,
     site: track.academy,
     term: track.level,
-    status: "Verified package catalog",
+    status: "Open learning · educational review pending",
     pinned: pinnedIds.includes(catalogSectionId(track.trackId)),
     progress: null,
     summary: `${track.lessons} lessons · ${track.assignments} assignments · ${track.labs} labs${track.quizzes ? ` · ${track.quizzes} quizzes` : ""}`,
-    availability: track.offlinePack ? "Offline pack declared" : "Online/package install required",
+    availability: contentIndex.tracks.find(t => t.trackId === track.trackId)?.offlinePackDeclared ? "Offline pack declared" : "Web reader available · offline release pending",
   }));
 }
 
@@ -137,7 +175,7 @@ export function publicModulesForTrack(track: PublicTrack | null): PublicModuleRo
       lesson: lesson.title,
       assignment: content.assignments[index]?.title,
       quiz: content.quizzes[index]?.title,
-      lab: content.labs[index]?.title,
+      lab: content.labs.find(l => l.id === lesson.labId)?.title,
     };
   });
 }

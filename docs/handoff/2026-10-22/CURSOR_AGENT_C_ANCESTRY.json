@@ -1,0 +1,128 @@
+{
+  "schema": "cursor.agent_c.ancestry.v1",
+  "date": "2026-10-22",
+  "v1": "NOT READY",
+  "rc2": "NOT READY",
+  "b03_fixed": false,
+  "lesson_read_is_not_a_grade": true,
+  "origin_main_sha": "2641042936f3b965daccb11091c80cbc6fa64f91",
+  "pr_29": {
+    "url": "https://github.com/gunnchOS3k/gunnchos-waike-learning-platform/pull/29",
+    "state": "open",
+    "is_draft": true,
+    "left_open": true,
+    "head_before_this_note": "d2fde4177a9de0686e265ba74c0539aa0e9f541f",
+    "base_sha": "2641042936f3b965daccb11091c80cbc6fa64f91",
+    "commits_ahead_of_main_before_this_note": 16,
+    "label": "delivery stack, not a one-commit fix"
+  },
+  "lesson_read_fix_sha": "f668ea40a32c3d991a7ba42d9be5d836356b1dbb",
+  "lesson_read_test_in_same_commit": true,
+  "prior_handoff_shas_not_the_fix": [
+    "eb229afd13e4aa7d01a3c40a022c38d3fbac250b",
+    "d2fde4177a9de0686e265ba74c0539aa0e9f541f"
+  ],
+  "older_delivery_shas": [
+    "f15795b7d4e8e64e2430d19fe6c62d40feb97abd",
+    "220f5e1ae6dc1b40225a0ae91d89232310332cbd",
+    "8a1d8bb90eb866afa025f5063cd96af2bd5235b6",
+    "f4e71d7310a30d189a3cf59e68ab9d2440892a0f",
+    "f15667ccc79dec713d1661921cba5705c269512d",
+    "b435600c5d3ba994856292c15a0435e6b90f7dea",
+    "1e133e8876a444835f3ca90598aae018badff89a",
+    "0668da932ed4b1aa5be0ff22cf0a56a7906551f4",
+    "c6b9362f3426852467bec557a93ba578cb958a73",
+    "025e1002a611e4ece6465ac6a2176bfc90675ba2",
+    "32731aeec37ee3bf780736691bda2b3d2ea9a987",
+    "c7d1aefd9a641e99c8cf1746c9d6eef841a3096f",
+    "6bdfa0b416ea95b0abb36669faa8059095962281"
+  ],
+  "focused_candidate": {
+    "branch": "eng/cursor-v1-agent-c-learn-focused",
+    "pushed": false,
+    "draft_pr": null,
+    "blocked": true,
+    "reason": "Cherry-pick of f668ea40 onto origin/main 2641042936f3b965daccb11091c80cbc6fa64f91 failed with modify/delete. BrowserLearning.tsx and BrowserLearning.test.tsx are absent on main. Cherry-pick aborted. Empty branch removed. Delivery stack was not rebased onto main.",
+    "main_has_lesson_reader_tsx": true,
+    "main_has_browser_learning_tsx": false
+  },
+  "provenance": {
+    "pin_changed": false,
+    "reason": "33a10185 is the baked reader generation and is not on GitHub. 63ba9f25 is the workflow checkout and is on origin/main. Lesson bodies differ. Equating them would mislabel the reader or break CI fetch.",
+    "recorded_pin": {
+      "sha": "33a101852f4fefb0eb239bcffa60a65d71102e2c",
+      "repo": "waike-research-ops",
+      "local_type": "commit",
+      "on_github": false,
+      "github_status": 422,
+      "branch": "delivery/full-learning-2026-10-15",
+      "on_origin_main": false,
+      "recorded_in": [
+        "curriculum/registry/PIN.json pinned_commit",
+        "curriculum/registry/PIN.json authoritative_pin_commit",
+        "apps/client/src/generated/publicCurriculumContent.json sourceCommit",
+        "artifacts/full-delivery/production/runtime-release.json curriculum_commit"
+      ]
+    },
+    "workflow_checkout": {
+      "sha": "63ba9f25ac6b8d8d1b6dd118923566fd51c57b62",
+      "repo": "waike-research-ops",
+      "local_type": "commit",
+      "on_github": true,
+      "html": "https://github.com/gunnchOS3k/waike-research-ops/commit/63ba9f25ac6b8d8d1b6dd118923566fd51c57b62",
+      "ancestor_of_origin_main": true,
+      "origin_main_sha": "34ae043abbd38c89bd30f7ae1ae7cf8cc06645a0",
+      "also_on_branch": "origin/curriculum/pr59-ci-depth-quality-closure",
+      "recorded_in": [
+        ".github/workflows/gate-b.yml WAIKE_PIN_REF",
+        ".github/workflows/gate-c.yml WAIKE_PIN_REF",
+        ".github/workflows/gate-d.yml WAIKE_PIN_REF",
+        ".github/workflows/windows-pilot0.yml WAIKE_PIN_REF",
+        "origin/main curriculum/registry/PIN.json pinned_commit"
+      ],
+      "comparison": "Gate C checks out that ref and exits PROVENANCE_MISMATCH when PIN.json pinned_commit differs"
+    },
+    "relationship": {
+      "63ba_is_ancestor_of_33a": true,
+      "commits_between": 24,
+      "eighteen_tracks_blob_same": true,
+      "canonical_registry_blob_same": true,
+      "lesson_md_files_differ": 51,
+      "networking_w01_sha256_matches_33a": "f07d07ef3ecd3b283694f9683009f40d733388305fe9706b2d3a54774555f0de",
+      "networking_w01_sha256_at_63ba": "ad2bb3daf72f833c2d61f03ec9529f5e2014434ef1eb79d736e4b0a6845d2df0"
+    }
+  },
+  "tests": {
+    "install": "none",
+    "disk_free_gib_approx": 12,
+    "command": "./node_modules/.bin/vitest run src/lib/product/product.test.ts -t \"hides overall percent when weighting is not modeled\"",
+    "result": "1 passed, 32 skipped, 0 failed",
+    "evidence_level": "grade percent suppressed when weighting is not modeled",
+    "not_run": [
+      "lesson-read localStorage round-trip (already on f668ea40; not recreated)",
+      "practice evaluator",
+      "instructor auth",
+      "Gallery publication",
+      "offline Hub sync",
+      "gunnchAI provider"
+    ]
+  },
+  "tls": {
+    "status": "unchanged",
+    "bypass": false,
+    "certificate_injected": false,
+    "trusted_replay": "not attempted"
+  },
+  "not_edited": [
+    "anime-aggressors",
+    "partylink",
+    "beatlink-party",
+    "website",
+    "codex-art",
+    "gunnchos-research-portal",
+    "waike-research-ops",
+    "gunnchAI3k"
+  ],
+  "waike_lp_stream_b_deleted": false,
+  "next_executable_learning_task": "Review #29 as the delivery stack that contains BrowserLearning. Do not cherry-pick f668ea40 onto main until that reader exists there. Do not retarget 33a10185 or 63ba9f25. Next proof is an existing evaluator or instructor-auth test on that stack, without TLS bypass and without a production gunnchAI call."
+}
